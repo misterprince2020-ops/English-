@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الكلمات - القارئ المترجم</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        .quiz-container {
+            background: #fff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; }
+        .word-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 20px 0;
+            direction: ltr;
+        }
+        .btn-read {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .btn-read:hover { background-color: #2980b9; }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-btn:hover { background-color: #d5dbdb; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b; }
+        .score-display {
+            font-size: 1.2em;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #next-btn {
+            margin-top: 20px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+        #next-btn:hover { background-color: #27ae60; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>اختبار الكلمات - وقت الفراغ</h1>
+    <p>السؤال <span id="q-num">1</span> من 50</p>
+    
+    <div class="word-display" id="word-text">Word</div>
+    
+    <button class="btn-read" onclick="readWord()">🔊 استمع للكلمة (القارئ)</button>
+    
+    <div class="options-container" id="options">
+        <!-- الخيارات ستظهر هنا -->
+    </div>
+
+    <button id="next-btn" onclick="nextQuestion()">السؤال التالي ➡️</button>
+
+    <div class="score-display">النتيجة: <span id="score">0</span> / 50</div>
+</div>
+
+<script>
+    // قائمة بـ 50 كلمة مستوحاة من الصورة وكلمات مساعدة
+    const vocabulary = [
+        { word: "Baseball", answer: "كرة القاعدة", options: ["كرة السلة", "كرة القاعدة", "التنس"] },
+        { word: "Karate", answer: "كاراتيه", options: ["ملاكمة", "جودو", "كاراتيه"] },
+        { word: "Roller skating", answer: "التزلج على العجلات", options: ["السباحة", "التزلج على العجلات", "الجري"] },
+        { word: "Basketball", answer: "كرة السلة", options: ["كرة السلة", "كرة القدم", "كرة الطائرة"] },
+        { word: "Arts and crafts", answer: "فنون وحرف", options: ["الرياضيات", "فنون وحرف", "العلوم"] },
+        { word: "Board games", answer: "ألعاب لوحية", options: ["ألعاب لوحية", "ألعاب فيديو", "ألعاب رياضية"] },
+        { word: "Cards", answer: "ورق لعب", options: ["كتب", "مجلات", "ورق لعب"] },
+        { word: "Magazine", answer: "مجلة", options: ["جريدة", "مجلة", "كتاب"] },
+        { word: "Potato", answer: "بطاطس", options: ["طماطم", "بطاطس", "جزر"] },
+        { word: "Orange", answer: "برتقال", options: ["تفاح", "برتقال", "موز"] },
+        { word: "Cow", answer: "بقرة", options: ["حصان", "بقرة", "خروف"] },
+        { word: "Football", answer: "كرة القدم", options: ["كرة القدم", "كرة السلة", "تنس"] },
+        { word: "Tennis", answer: "تنس", options: ["تنس", "ريشة طائرة", "اسكواش"] },
+        { word: "Swimming", answer: "سباحة", options: ["غوص", "سباحة", "إبحار"] },
+        { word: "Reading", answer: "قراءة", options: ["كتابة", "قراءة", "استماع"] },
+        { word: "Writing", answer: "كتابة", options: ["تحدث", "قراءة", "كتابة"] },
+        { word: "Running", answer: "ركض", options: ["مشي", "قفز", "ركض"] },
+        { word: "Jumping", answer: "قفز", options: ["قفز", "زحف", "ركض"] },
+        { word: "Playing", answer: "لعب", options: ["لعب", "نوم", "عمل"] },
+        { word: "Singing", answer: "غناء", options: ["تمثيل", "غناء", "رقص"] },
+        { word: "Dancing", answer: "رقص", options: ["رقص", "غناء", "رسم"] },
+        { word: "Painting", answer: "تلوين / رسم", options: ["نحت", "تصوير", "تلوين / رسم"] },
+        { word: "Drawing", answer: "رسم خطي", options: ["رسم خطي", "تلوين", "قص"] },
+        { word: "Cycling", answer: "ركوب الدراجة", options: ["قيادة السيارة", "ركوب الدراجة", "الطيران"] },
+        { word: "Fishing", answer: "صيد السمك", options: ["صيد السمك", "سباحة", "غوص"] },
+        { word: "Cooking", answer: "طبخ", options: ["طبخ", "أكل", "شرب"] },
+        { word: "Baking", answer: "خبز (في الفرن)", options: ["قلي", "خبز (في الفرن)", "شوي"] },
+        { word: "Gardening", answer: "بستنة", options: ["بستنة", "تنظيف", "ترتيب"] },
+        { word: "Hiking", answer: "تنزه على الأقدام", options: ["تسلق", "تنزه على الأقدام", "ركض"] },
+        { word: "Camping", answer: "تخييم", options: ["سفر", "تخييم", "بقاء في المنزل"] },
+        { word: "Photography", answer: "تصوير", options: ["تصوير", "رسم", "طباعة"] },
+        { word: "Listening", answer: "استماع", options: ["تحدث", "استماع", "مشاهدة"] },
+        { word: "Watching", answer: "مشاهدة", options: ["مشاهدة", "قراءة", "كتابة"] },
+        { word: "Collecting", answer: "جمع المقتنيات", options: ["رمي", "بيع", "جمع المقتنيات"] },
+        { word: "Climbing", answer: "تسلق", options: ["هبوط", "تسلق", "قفز"] },
+        { word: "Sailing", answer: "إبحار", options: ["غوص", "إبحار", "طيران"] },
+        { word: "Skiing", answer: "تزلج على الثلج", options: ["تزلج على الثلج", "تزلج على الماء", "سباحة"] },
+        { word: "Surfing", answer: "ركوب الأمواج", options: ["غوص", "صيد", "ركوب الأمواج"] },
+        { word: "Chess", answer: "شطرنج", options: ["دومينو", "شطرنج", "طاولة"] },
+        { word: "Puzzle", answer: "أحجية / لغز", options: ["أحجية / لغز", "قصة", "قصيدة"] },
+        { word: "Gymnastics", answer: "جمباز", options: ["أثقال", "جمباز", "ركض"] },
+        { word: "Athletics", answer: "ألعاب قوى", options: ["ألعاب قوى", "سباحة", "فروسية"] },
+        { word: "Volleyball", answer: "كرة الطائرة", options: ["كرة الطائرة", "تنس", "كرة السلة"] },
+        { word: "Table tennis", answer: "تنس الطاولة", options: ["تنس أرضي", "تنس الطاولة", "ريشة طائرة"] },
+        { word: "Badminton", answer: "تنس الريشة", options: ["تنس الريشة", "اسكواش", "ملاكمة"] },
+        { word: "Boxing", answer: "ملاكمة", options: ["مصارعة", "ملاكمة", "كاراتيه"] },
+        { word: "Judo", answer: "جودو", options: ["جودو", "ملاكمة", "تنس"] },
+        { word: "Archery", answer: "رماية", options: ["صيد", "رماية", "ركض"] },
+        { word: "Diving", answer: "غوص", options: ["غوص", "سباحة", "إبحار"] },
+        { word: "Horse riding", answer: "ركوب الخيل", options: ["ركوب الجمال", "ركوب الخيل", "سباق السيارات"] }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    // دالة خلط الخيارات عشوائياً
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuestion() {
+        answered = false;
+        document.getElementById("next-btn").style.display = "none";
+        
+        if (currentQuestionIndex >= vocabulary.length) {
+            document.querySelector(".quiz-container").innerHTML = `<h1>انتهى الاختبار!</h1><h2>نتيجتك النهائية: ${score} من 50</h2>`;
+            return;
+        }
+
+        document.getElementById("q-num").innerText = currentQuestionIndex + 1;
+        const currentData = vocabulary[currentQuestionIndex];
+        
+        document.getElementById("word-text").innerText = currentData.word;
+        
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+        
+        const shuffledOptions = shuffle([...currentData.options]);
+        
+        shuffledOptions.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(btn, opt, currentData.answer);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(btn, selected, correct) {
+        if (answered) return; // منع الإجابة مرتين
+        answered = true;
+        
+        const allButtons = document.querySelectorAll(".option-btn");
+        
+        if (selected === correct) {
+            btn.classList.add("correct");
+            score++;
+            document.getElementById("score").innerText = score;
+        } else {
+            btn.classList.add("wrong");
+            // إظهار الإجابة الصحيحة
+            allButtons.forEach(b => {
+                if (b.innerText === correct) b.classList.add("correct");
+            });
+        }
+        
+        document.getElementById("next-btn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        loadQuestion();
+    }
+
+    // كود القارئ المترجم (نطق الكلمة)
+    function readWord() {
+        const text = vocabulary[currentQuestionIndex].word;
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'en-US'; // نطق باللغة الإنجليزية
+        speech.rate = 0.9;     // سرعة القراءة
+        window.speechSynthesis.speak(speech);
+    }
+
+    // تحميل أول سؤال عند تشغيل الصفحة
+    window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
