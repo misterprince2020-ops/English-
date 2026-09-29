@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التطبيق الذهبي - منهج Super Goal 1</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --secondary: #0369a1;
+      --bg: #f0f9ff;
+      --card: #ffffff;
+      --accent: #059669;
+      --danger: #dc2626;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white; padding: 24px; border-radius: 16px; text-align: center;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-bottom: 20px;
+    }
+    h1 { margin: 0 0 8px; font-size: 1.8rem; }
+
+    .unit-nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
+    .unit-btn {
+      background: white; border: 2px solid var(--secondary); color: var(--secondary);
+      padding: 10px 20px; border-radius: 20px; font-weight: 700; font-size: 1.1rem;
+      cursor: pointer; transition: all 0.1s ease;
+    }
+    .unit-btn:hover, .unit-btn.active {
+      background: var(--secondary); color: white; box-shadow: 0 4px 10px rgba(3, 105, 161, 0.3);
+    }
+
+    .section-card {
+      background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 25px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e0f2fe; position: relative;
+    }
+    .section-title {
+      color: var(--primary); border-bottom: 2px solid #e0f2fe; padding-bottom: 10px;
+      margin-top: 0; font-size: 1.3rem;
+    }
+
+    .autoplay-btn {
+      background: var(--accent); color: white; border: none; padding: 15px 20px;
+      font-size: 1.2rem; border-radius: 8px; cursor: pointer; font-weight: bold;
+      display: inline-block; margin-bottom: 15px; transition: 0.15s; width: 100%;
+    }
+    .autoplay-btn:hover { background: #047857; }
+    .autoplay-btn.playing { background: var(--danger); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+    .vocab-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
+    .vocab-row {
+      display: flex; flex-direction: row; gap: 10px; background: #f8fafc;
+      padding: 12px; border: 3px solid #bae6fd; border-radius: 14px; direction: ltr; align-items: stretch;
+    }
+
+    .vocab-item {
+      position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #ffffff; border: 2px solid #e2e8f0; padding: 20px 10px;
+      border-radius: 10px; cursor: pointer; text-align: center;
+      transition: background-color 0.1s ease, border-color 0.1s ease;
+      -webkit-user-select: none; user-select: none;
+    }
+    
+    .vocab-item.active-yellow { background-color: #fef08a !important; border-color: #eab308 !important; }
+    .vocab-item.active-yellow .word-ar { display: block !important; color: #dc2626 !important; }
+
+    .loop-btn {
+      flex-basis: 90px; flex-shrink: 0; background: var(--primary); color: white;
+      border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s;
+    }
+    .loop-btn:hover { background: #0369a1; }
+    .loop-btn.playing { background: var(--danger); animation: pulse 1.5s infinite; }
+
+    .vocab-num { position: absolute; top: 8px; left: 10px; color: #94a3b8; font-weight: bold; font-size: 1.2rem; }
+    .vocab-emoji { font-size: 4.5rem; margin-bottom: 10px; width: 100%; text-align: center; line-height: 1.2; text-shadow: 2px 2px 6px rgba(0,0,0,0.15); }
+    .word-en { font-weight: 900; font-size: 1.5rem; color: #0f172a; text-align: center; width: 100%; margin-bottom: 5px; }
+    .word-ar { display: none; font-size: 1.4rem; font-weight: bold; direction: rtl; text-align: center; width: 100%; margin-top: 10px; padding-top: 10px; border-top: 2px dashed #bae6fd; }
+
+    .quiz-question { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .q-text { text-align: center; margin-bottom: 20px; }
+    .q-word { color: var(--secondary); font-size: 2.2rem; font-weight: 900; display: inline-block; cursor: pointer; text-decoration: underline dashed var(--primary); padding: 5px 15px; border-radius: 10px; transition: 0.2s; }
+    .q-word:hover { background: #e0f2fe; }
+    
+    .q-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; direction: ltr;} 
+    @media (max-width: 600px) {
+      .q-options { grid-template-columns: 1fr 1fr; }
+      .vocab-row { flex-direction: column; direction: rtl; }
+      .loop-btn { padding: 15px; flex-direction: row; gap: 10px; }
+      .vocab-emoji { font-size: 3.5rem; }
+    }
+    
+    .opt-label {
+      background: #f8fafc; border: 2px solid #cbd5e1; padding: 15px; border-radius: 12px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; gap: 15px; transition: 0.1s ease; font-size: 4.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    .opt-label input { transform: scale(1.8); cursor: pointer; margin-right: 15px; }
+    .opt-label:hover { border-color: var(--secondary); background: #f0f9ff; transform: translateY(-2px); }
+    .correct-ans { border-color: var(--accent) !important; background-color: #d1fae5 !important; box-shadow: 0 0 10px rgba(5,150,105,0.4); }
+    .wrong-ans { border-color: var(--danger) !important; background-color: #fee2e2 !important; }
+
+    .action-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+    .action-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; text-align: center; transition: 0.1s ease; }
+    .action-btn:hover { background: #0369a1; }
+    .reset-btn { background: #f59e0b; }
+    .reset-btn:hover { background: #d97706; }
+    .score-box { text-align: center; font-size: 1.6rem; font-weight: bold; margin-top: 15px; color: var(--primary); }
+    .scroll-box { max-height: 700px; overflow-y: auto; padding-right: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Super Goal 1 - Vocabulary</h1>
+  </header>
+
+  <div class="unit-nav" id="sectionNav">
+    <!-- الأزرار ستتولد تلقائياً هنا -->
+  </div>
+
+  <section class="section-card">
+    <h3 class="section-title" id="displayTitle">📘 الكلمات الأساسية</h3>
+    <button class="autoplay-btn" id="autoPlayBtn" onclick="toggleAutoPlay()">🔁 تكرار كلمات الوحدة بالكامل (تمرير تلقائي)</button>
+    <div class="vocab-grid" id="vocabGrid"></div>
+  </section>
+
+  <section class="section-card">
+    <h3 class="section-title">🎯 اختبار الصور التفاعلي</h3>
+    <p style="font-size:1rem; color:#64748b; text-align:center; font-weight:bold;">(اضغط على الكلمة الإنجليزية لسماع نطقها، ثم اختر الصورة المناسبة لها)</p>
+    <div class="scroll-box" id="meaningContainer"></div>
+    <div class="action-group">
+      <button class="action-btn" onclick="checkQuiz()">✅ تصحيح</button>
+      <button class="action-btn reset-btn" onclick="renderQuiz()">🔄 إعادة بناء الاختبار (عشوائية جديدة)</button>
+    </div>
+    <div class="score-box" id="meaningScore"></div>
+  </section>
+
+</div>
+
+<script>
+  // بنك الكلمات الدقيق المطابق لصور المنهج المرفقة
+  const rawData = [
+    // Unit 1: Good Morning - Nouns & Time
+    ["Unit 1", "Best friend", "أعز الأصدقاء", "🫂"],
+    ["Unit 1", "Classmate", "زميل الدراسة", "🧑‍🎓"],
+    ["Unit 1", "Father / Dad", "الأب", "👨"],
+    ["Unit 1", "Friend", "صديق", "🤝"],
+    ["Unit 1", "Man", "رجل", "👨‍🦰"],
+    ["Unit 1", "Name", "الاسم", "📛"],
+    ["Unit 1", "Student", "طالب", "🎒"],
+    ["Unit 1", "Woman", "امرأة", "👩"],
+    ["Unit 1", "Class", "صف دراسي", "🏫"],
+    ["Unit 1", "Family", "العائلة", "👨‍👩‍👧‍👦"],
+    ["Unit 1", "First name", "الاسم الأول", "🆔"],
+    ["Unit 1", "Last name", "الاسم الأخير", "🏷️"],
+    ["Unit 1", "Mother / Mom", "الأم", "👩‍🍼"],
+    ["Unit 1", "Principal", "المدير", "🕴️"],
+    ["Unit 1", "Teacher", "المعلم", "👨‍🏫"],
+    ["Unit 1", "Afternoon", "بعد الظهر", "🌤️"],
+    ["Unit 1", "Morning", "الصباح", "🌅"],
+    ["Unit 1", "Evening", "المساء", "🌇"],
+    ["Unit 1", "Night", "الليل", "🌃"],
+    
+    // Unit 1: Titles & Adjectives
+    ["Unit 1", "Miss", "آنسة (غير متزوجة)", "👩‍💼"],
+    ["Unit 1", "Mrs.", "السيدة (متزوجة)", "💍"],
+    ["Unit 1", "Mr.", "السيد", "👨‍💼"],
+    ["Unit 1", "Ms.", "سيدة (متزوجة أو غير متزوجة)", "👜"],
+    ["Unit 1", "Big", "كبير", "🐘"],
+    ["Unit 1", "Single", "أعزب", "👤"],
+    ["Unit 1", "Married", "متزوج", "💒"],
+    
+    // Unit 1: Expressions
+    ["Unit 1", "Good afternoon", "مساء الخير (بعد الظهر)", "🌞"],
+    ["Unit 1", "Good evening", "مساء الخير (بعد المغرب)", "🌆"],
+    ["Unit 1", "Good morning", "صباح الخير", "🌄"],
+    ["Unit 1", "Hello / Hi", "مرحباً / أهلاً", "👋"],
+    ["Unit 1", "Welcome to...", "أهلاً وسهلاً بكم إلى...", "👐"],
+    ["Unit 1", "Bye", "وداعاً", "🚶"],
+    ["Unit 1", "Good night", "تصبح على خير", "😴"],
+    ["Unit 1", "Take care", "انتبه لنفسك", "🛡️"],
+    ["Unit 1", "Goodbye", "إلى اللقاء", "👋"],
+    ["Unit 1", "See you later", "أراك لاحقاً", "👀"],
+    ["Unit 1", "How do you spell..?", "كيف تتهجى (اسمك)؟", "🔠"],
+    ["Unit 1", "I'm (name)", "أنا (اسمي)", "🙋‍♂️"],
+    ["Unit 1", "My friends call me..", "أصدقائي ينادونني", "🗣️"],
+    ["Unit 1", "My name's (name)", "اسمي هو", "📛"],
+    ["Unit 1", "Nice to meet you", "سررت بلقائك", "🤝"],
+    ["Unit 1", "This is (name)", "هذا (اسم الشخص)", "👉"],
+    ["Unit 1", "How are you?", "كيف حالك؟", "❓"],
+    ["Unit 1", "I'm fine, thanks.", "أنا بخير، شكراً.", "😌"],
+    ["Unit 1", "Not bad.", "لا بأس.", "😐"],
+    ["Unit 1", "How's it going?", "كيف الأوضاع؟", "🤔"],
+    ["Unit 1", "I'm OK.", "أنا بخير.", "👍"],
+    ["Unit 1", "Thanks / Thank you", "شكراً لك", "🙏"],
+    ["Unit 1", "I'm sorry", "أنا آسف", "😔"],
+
+    // Unit 2: What Day Is Today? - Nouns & Days
+    ["Unit 2", "Age", "العمر", "🎂"],
+    ["Unit 2", "Date", "التاريخ", "📅"],
+    ["Unit 2", "Cat", "قطة", "🐈"],
+    ["Unit 2", "Middle name", "الاسم الأوسط", "🪪"],
+    ["Unit 2", "Sunday", "الأحد", "☀️"],
+    ["Unit 2", "Monday", "الاثنين", "🌙"],
+    ["Unit 2", "Tuesday", "الثلاثاء", "🌋"],
+    ["Unit 2", "Wednesday", "الأربعاء", "🐪"],
+    ["Unit 2", "Thursday", "الخميس", "🌴"],
+    ["Unit 2", "Friday", "الجمعة", "🕌"],
+    ["Unit 2", "Saturday", "السبت", "🛋️"],
+    
+    // Unit 2: Months
+    ["Unit 2", "January", "يناير", "⛄"],
+    ["Unit 2", "February", "فبراير", "🌧️"],
+    ["Unit 2", "March", "مارس", "🌷"],
+    ["Unit 2", "April", "أبريل", "🌼"],
+    ["Unit 2", "May", "مايو", "🌺"],
+    ["Unit 2", "June", "يونيو", "☀️"],
+    ["Unit 2", "July", "يوليو", "🍉"],
+    ["Unit 2", "August", "أغسطس", "🏖️"],
+    ["Unit 2", "September", "سبتمبر", "🍂"],
+    ["Unit 2", "October", "أكتوبر", "🎃"],
+    ["Unit 2", "November", "نوفمبر", "🍁"],
+    ["Unit 2", "December", "ديسمبر", "❄️"],
+    
+    // Unit 2: Numbers (Key milestones for functionality)
+    ["Unit 2", "one", "واحد", "1️⃣"],
+    ["Unit 2", "two", "اثنان", "2️⃣"],
+    ["Unit 2", "three", "ثلاثة", "3️⃣"],
+    ["Unit 2", "four", "أربعة", "4️⃣"],
+    ["Unit 2", "five", "خمسة", "5️⃣"],
+    ["Unit 2", "ten", "عشرة", "🔟"],
+    ["Unit 2", "twenty", "عشرون", "2️⃣0️⃣"],
+    ["Unit 2", "thirty", "ثلاثون", "3️⃣0️⃣"],
+    ["Unit 2", "forty", "أربعون", "4️⃣0️⃣"],
+    ["Unit 2", "fifty", "خمسون", "5️⃣0️⃣"],
+    ["Unit 2", "one hundred", "مائة", "💯"],
+    ["Unit 2", "one thousand", "ألف", "1️⃣0️⃣0️⃣0️⃣"],
+    ["Unit 2", "first", "الأول", "🥇"],
+    ["Unit 2", "second", "الثاني", "🥈"],
+    ["Unit 2", "third", "الثالث", "🥉"],
+    
+    // Unit 2: Adjectives & Prepositions
+    ["Unit 2", "Cute", "لطيف", "🥰"],
+    ["Unit 2", "Our", "ملكنا", "👨‍👩‍👧‍👦"],
+    ["Unit 2", "Your", "ملكك / ملككم", "🫵"],
+    ["Unit 2", "Favorite", "مفضل", "⭐"],
+    ["Unit 2", "Their", "ملكهم", "👥"],
+    ["Unit 2", "in", "في", "📥"],
+    ["Unit 2", "on", "على", "🔛"],
+    
+    // Unit 2: Expressions
+    ["Unit 2", "How old are you?", "كم عمرك؟", "🎈"],
+    ["Unit 2", "How old is he/she?", "كم عمره / عمرها؟", "👦"],
+    ["Unit 2", "What month is it?", "في أي شهر نحن؟", "🗓️"],
+    ["Unit 2", "What day is today?", "ما هو اليوم؟", "📆"],
+    ["Unit 2", "You're welcome", "عفواً", "😇"]
+  ];
+
+  const vocabData = rawData.map(item => ({ unit: item[0], en: item[1], ar: item[2], emoji: item[3] }));
+  const unitsList = [...new Set(vocabData.map(item => item.unit))];
+  
+  let currentUnitName = unitsList[0];
+  let currentUnitData = [];
+  let isAutoPlaying = false;
+  let autoPlayIndex = 0;
+  let autoPlayTimeout = null;
+  let isRowLooping = false;
+  let activeRowId = null;
+  let loopingIndices = [];
+  let currentLoopIndex = 0;
+
+  function initNav() {
+    let navHTML = "";
+    unitsList.forEach((unitName) => {
+      let safeName = unitName.replace(/\s+/g, '-');
+      navHTML += `<button class="unit-btn" id="btn-${safeName}" onclick="setUnit('${unitName}')">${unitName}</button>`;
+    });
+    document.getElementById("sectionNav").innerHTML = navHTML;
+  }
+
+  function setUnit(unitName) {
+    stopAutoPlay();
+    stopRowLoop();
+    currentUnitName = unitName;
+    currentUnitData = vocabData.filter(item => item.unit === unitName);
+    document.querySelectorAll(".unit-btn").forEach(btn => btn.classList.remove("active"));
+    let safeName = unitName.replace(/\s+/g, '-');
+    document.getElementById(`btn-${safeName}`).classList.add("active");
+    renderGrid();
+    renderQuiz(); 
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  function toggleRowLoop(rowId, indicesStr) {
+    let indices = indicesStr.split(',').map(Number);
+    if (isRowLooping && activeRowId === rowId) { stopRowLoop(); return; }
+    stopAutoPlay();
+    stopRowLoop();
+    isRowLooping = true;
+    activeRowId = rowId;
+    loopingIndices = indices;
+    currentLoopIndex = 0;
+
+    let btn = document.getElementById(`loop-btn-${rowId}`);
+    if(btn) { btn.classList.add("playing"); btn.innerHTML = "⏹️ إيقاف"; }
+    playNextInRowLoop();
+  }
+
+  function playNextInRowLoop() {
+    if (!isRowLooping) return;
+    document.querySelectorAll('.vocab-item').forEach(el => el.classList.remove('active-yellow'));
+
+    let localIdx = loopingIndices[currentLoopIndex];
+    let card = document.getElementById(`vocab-card-${localIdx}`);
+    if (card) { card.classList.add("active-yellow"); }
+    
+    // لا يوجد تمرير (Scroll) هنا لعدم تشتيت الطالب أثناء التكرار الموضعي
+
+    let wordToSpeak = currentUnitData[localIdx].en;
+    let u = new SpeechSynthesisUtterance(wordToSpeak);
+    u.lang = 'en-US'; u.rate = 0.85;
+    u.onend = () => {
+      if (!isRowLooping) return;
+      setTimeout(() => {
+        if (!isRowLooping) return;
+        currentLoopIndex++;
+        if (currentLoopIndex >= loopingIndices.length) { currentLoopIndex = 0; }
+        playNextInRowLoop();
+      }, 800); 
+    };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
+
+  function stopRowLoop() {
+    isRowLooping = false;
+    activeRowId = null;
+    window.speechSynthesis.cancel();
+    document.querySelectorAll('.loop-btn').forEach(btn => {
+      btn.classList.remove("playing");
+      btn.innerHTML = "🔁<br>تكرار";
+    });
+    document.querySelectorAll('.vocab-item').forEach(el => el.classList.remove('active-yellow'));
+  }
+
+  function playAndShow(word, localIdx) {
+    stopAutoPlay();
+    stopRowLoop();
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      let u = new SpeechSynthesisUtterance(word);
+      u.lang = 'en-US'; u.rate = 0.9; 
+      window.speechSynthesis.speak(u);
+    }
+    let targetCard = document.getElementById(`vocab-card-${localIdx}`);
+    let isAlreadyActive = targetCard.classList.contains("active-yellow");
+    document.querySelectorAll('.vocab-item').forEach(el => el.classList.remove("active-yellow"));
+    if (!isAlreadyActive) targetCard.classList.add("active-yellow");
+  }
+
+  function renderGrid() {
+    document.getElementById("displayTitle").innerText = `📘 الكلمات الأساسية (${currentUnitName})`;
+    let vHTML = "";
+    for (let i = 0; i < currentUnitData.length; i += 3) {
+      let rowItems = currentUnitData.slice(i, i + 3);
+      let indices = [];
+      let itemsHTML = "";
+      rowItems.forEach((item, localOffset) => {
+        let localIdx = i + localOffset;
+        let globalNum = localIdx + 1; 
+        indices.push(localIdx);
+        let safeEn = item.en.replace(/'/g, "\\'");
+        itemsHTML += `
+          <div class="vocab-item" id="vocab-card-${localIdx}" onclick="playAndShow('${safeEn}', ${localIdx})">
+            <span class="vocab-num">${globalNum}.</span>
+            <div class="vocab-emoji">${item.emoji}</div>
+            <div class="word-en">${item.en}</div>
+            <div class="word-ar" id="ar-${localIdx}">${item.ar}</div>
+          </div>`;
+      });
+      let indicesStr = indices.join(',');
+      let btnHTML = `
+        <button class="loop-btn" id="loop-btn-${i}" onclick="toggleRowLoop(${i}, '${indicesStr}')">
+          🔁<br>تكرار
+        </button>
+      `;
+      vHTML += `<div class="vocab-row">${btnHTML}${itemsHTML}</div>`;
+    }
+    document.getElementById("vocabGrid").innerHTML = vHTML;
+  }
+
+  function toggleAutoPlay() {
+    isAutoPlaying = !isAutoPlaying;
+    let btn = document.getElementById("autoPlayBtn");
+    if(isAutoPlaying) {
+      stopRowLoop();
+      btn.innerHTML = "⏹️ إيقاف التكرار";
+      btn.classList.add("playing");
+      autoPlayIndex = 0;
+      runAutoPlayLoop();
+    } else {
+      stopAutoPlay();
+    }
+  }
+
+  function stopAutoPlay() {
+    isAutoPlaying = false;
+    let btn = document.getElementById("autoPlayBtn");
+    btn.innerHTML = "🔁 تكرار كلمات الوحدة بالكامل (تمرير تلقائي)";
+    btn.classList.remove("playing");
+    clearTimeout(autoPlayTimeout);
+    document.querySelectorAll('.vocab-item').forEach(el => el.classList.remove('active-yellow'));
+  }
+
+  function runAutoPlayLoop() {
+    if(!isAutoPlaying) return;
+    if(autoPlayIndex >= currentUnitData.length) autoPlayIndex = 0; 
+    
+    document.querySelectorAll('.vocab-item').forEach(el => el.classList.remove('active-yellow'));
+    let localIdx = autoPlayIndex;
+    let currentCard = document.getElementById(`vocab-card-${localIdx}`);
+    if (currentCard) { 
+      currentCard.classList.add("active-yellow"); 
+      // تفعيل التمرير للصفحة ليلحق الطالب بالكلمة أثناء تشغيل المجموعة ككل
+      currentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    let wordToSpeak = currentUnitData[localIdx].en;
+    let u = new SpeechSynthesisUtterance(wordToSpeak);
+    u.lang = 'en-US'; u.rate = 0.85;
+    u.onend = () => {
+      if(!isAutoPlaying) return;
+      autoPlayTimeout = setTimeout(() => {
+        autoPlayIndex++;
+        runAutoPlayLoop();
+      }, 1200); 
+    };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
+
+  function manualSpeak(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      let u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.85; window.speechSynthesis.speak(u);
+    }
+  }
+
+  function renderQuiz() {
+    let shuffledQuestions = [...currentUnitData];
+    shuffleArray(shuffledQuestions);
+    let meanHTML = "";
+    shuffledQuestions.forEach((q, idx) => {
+      let correctEmoji = q.emoji;
+      let others = currentUnitData.filter(v => v.emoji !== correctEmoji);
+      shuffleArray(others);
+      let wrongOpts = others.slice(0, 3).map(v => v.emoji);
+      let opts = [correctEmoji, ...wrongOpts];
+      shuffleArray(opts);
+      let optsHTML = opts.map((opt, oIdx) => `
+        <label class="opt-label">
+          <input type="radio" name="mean-${idx}" value="${opt}">
+          <span>${opt}</span>
+        </label>
+      `).join("");
+      let safeEn = q.en.replace(/'/g, "\\'");
+      meanHTML += `
+        <div class="quiz-question" data-correct="${correctEmoji}" data-idx="${idx}">
+          <div class="q-text">
+            <span dir="ltr" class="q-word" onclick="manualSpeak('${safeEn}')">${q.en}</span>
+            <br><span style="font-size:0.9rem; color:#94a3b8;">(اضغط للنسخ الصوتي 🔊)</span>
+          </div>
+          <div class="q-options">${optsHTML}</div>
+        </div>`;
+    });
+    document.getElementById("meaningContainer").innerHTML = meanHTML;
+    document.getElementById("meaningScore").innerText = "";
+  }
+
+  function checkQuiz() {
+    let score = 0;
+    let questions = document.querySelectorAll('.quiz-question');
+    questions.forEach((qDiv) => {
+      let idx = qDiv.getAttribute('data-idx');
+      let correctEmoji = qDiv.getAttribute('data-correct');
+      let selected = qDiv.querySelector(`input[name="mean-${idx}"]:checked`);
+      qDiv.querySelectorAll('.opt-label').forEach(lbl => {
+        lbl.classList.remove('correct-ans', 'wrong-ans');
+        let input = lbl.querySelector('input');
+        if (input.value === correctEmoji) { lbl.classList.add('correct-ans'); }
+      });
+      if (selected) {
+        if (selected.value === correctEmoji) { score++; } 
+        else { selected.closest('.opt-label').classList.add('wrong-ans'); }
+      }
+    });
+    document.getElementById(`meaningScore`).innerText = `النتيجة: ${score} من ${currentUnitData.length}`;
+  }
+
+  window.onload = () => {
+    initNav();
+    setUnit(unitsList[0]);
+  };
+</script>
+</body>
+</html>
