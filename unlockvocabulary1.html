@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive English Learning Activities</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #3b82f6;
+            --success-color: #10b981;
+            --success-bg: #d1fae5;
+            --success-border: #047857;
+            --pending-color: #60a5fa;
+            --pending-bg: #eff6ff;
+            --highlight-bg: #fef08a;
+            --translate-color: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            color: #334155;
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .mode-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0 10px 0;
+            background: #eef2ff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Matching Game Styles */
+        .matching-wrapper {
+            display: flex;
+            gap: 30px;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .match-item {
+            position: relative;
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            padding: 18px 20px;
+            padding-top: 35px; /* Leave space for translation */
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .match-item.selected {
+            background-color: var(--pending-bg) !important;
+            border-color: var(--pending-color) !important;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+        }
+
+        .match-item.correct {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            cursor: default;
+        }
+
+        .item-prefix {
+            font-weight: bold;
+            margin-right: 12px;
+            color: #64748b;
+        }
+
+        /* Clickable Words & Translations */
+        .word-token {
+            display: inline-block;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+            margin: 0 2px;
+        }
+
+        .word-token:hover {
+            background-color: #e2e8f0;
+        }
+
+        .word-token.active-word {
+            background-color: var(--highlight-bg) !important;
+        }
+
+        .inline-translation {
+            position: absolute;
+            top: 4px;
+            left: 20px;
+            font-size: 0.85rem;
+            color: var(--translate-color);
+            font-weight: bold;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Controls / Buttons */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        button.btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button.btn:hover {
+            background-color: #4338ca;
+        }
+
+        button.btn-reset {
+            background-color: #64748b;
+        }
+
+        button.btn-reset:hover {
+            background-color: #475569;
+        }
+
+        /* Multiple Choice Styles */
+        .mc-question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mc-question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mc-option {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mc-option:hover {
+            background: #f1f5f9;
+        }
+
+        .mc-option.correct-choice {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .mc-option.wrong-choice {
+            background-color: #fee2e2 !important;
+            border-color: #dc2626 !important;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>أنشطة اللغة الإنجليزية التفاعلية</h1>
+
+    <!-- القسم الأول: توصيل أنصاف الجمل -->
+    <div class="section-box">
+        <h2>1. Match the Sentence Halves (توصيل أنصاف الجمل)</h2>
+        
+        <!-- Practice Mode -->
+        <div class="mode-title">وضع التدريب (Practice Mode - مع النطق والترجمة)</div>
+        <div class="matching-wrapper" id="match-practice-1">
+            <div class="column left-col"></div>
+            <div class="column right-col"></div>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="showAnswers('match-practice-1')">Show Answer</button>
+            <button class="btn btn-reset" onclick="resetMatching('match-practice-1')">Reset (Shuffle)</button>
+        </div>
+
+        <!-- Exam Mode -->
+        <div class="mode-title" style="margin-top: 35px;">وضع الاختبار (Exam Mode - بدون نطق أو ترجمة)</div>
+        <div class="matching-wrapper" id="match-exam-1">
+            <div class="column left-col"></div>
+            <div class="column right-col"></div>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="showAnswers('match-exam-1')">Show Answer</button>
+            <button class="btn btn-reset" onclick="resetMatching('match-exam-1')">Reset (Shuffle)</button>
+        </div>
+    </div>
+
+    <!-- القسم الثاني: أسئلة الاختيار من متعدد الأولى (الكلمات المميزة) -->
+    <div class="section-box">
+        <h2>2. Vocabulary Definitions (معاني المفردات والعبارات)</h2>
+        <div id="mc-container-1"></div>
+    </div>
+
+    <!-- القسم الثالث: أسئلة الاختيار من متعدد الثانية (الجمل والأفعال اليومية) -->
+    <div class="section-box">
+        <h2>3. Daily Routines & Verbs (الجمل والأفعال اليومية)</h2>
+        <div id="mc-container-2"></div>
+    </div>
+
+</div>
+
+<script>
+    // قاموس الترجمات الفورية
+    const dictionary = {
+        "eun": "يون", "jung": "جونغ", "studies": "يدرس", "asif": "آسف", "gets": "يحصل على", "up": "استيقاظ",
+        "melody": "ميلودي", "and": "و", "ginger": "جنجر", "take": "يأخذ", "in": "في", "the": "الـ",
+        "morning": "الصباح", "i": "أنا", "have": "أتناول / أملك", "my": "أصدقائي", "friends": "أصدقاء",
+        "go": "يذهب", "coffee": "قهوة", "before": "قبل", "work": "عمل", "physics": "فيزياء",
+        "at": "في", "cambridge": "كامبريدج", "university": "جامعة", "am": "صباحاً",
+        "to": "إلى", "gym": "صالة الألعاب الرياضية", "every": "كل", "saturday": "سبت", "bus": "حافلة",
+        "after": "بعد", "lunch": "غداء", "like": "أحب", "for": "لـ", "a": "أداة نكرة", "walk": "ممشى / نزهة",
+        "noon": "الظهيرة", "am": "أنا أكون", "very": "جداً", "busy": "مشغول", "many": "العديد من",
+        "courses": "دورات", "timetable": "جدول مواعيد", "same": "نفس", "day": "يوم", "school": "مدرسة",
+        "make": "يصنع", "eat": "يأكل", "breakfast": "فطور", "relax": "يسترخي", "watch": "يشاهد",
+        "tv": "تلفزيون", "evening": "مساءً", "do": "يقوم بـ", "homework": "واجب منزلي", "read": "يقرأ",
+        "book": "كتاب", "bed": "سرير", "school": "مدرسة", "weekdays": "أيام العمل أسبوعياً", "early": "مبكراً",
+        "weekend": "عطلة نهاية الأسبوع", "cycling": "ركوب الدراجات", "fun": "متعة", "with": "مع",
+        "wake": "يستيقظ", "cook": "يطبخ", "food": "طعام", "home": "منزل", "restaurants": "مطاعم",
+        "toast": "توست", "usually": "عادةً", "desk": "مكتب", "salad": "سلطة", "soup": "شوربة",
+        "dinner": "عشاء", "travel": "يسافر", "china": "الصين", "japan": "اليابان", "job": "وظيفة",
+        "really": "حقاً", "enjoy": "يستمتع", "talking": "التحدث", "new": "جديد", "people": "أشخاص",
+        "swim": "يسبح", "pool": "حمام سباحة", "near": "بالقرب من", "house": "منزل"
+    };
+
+    // بيانات جدول التوصيل الأول
+    const matchingData1 = {
+        left: [
+            { id: 1, text: "Eun Jung studies" },
+            { id: 2, text: "Asif gets up" },
+            { id: 3, text: "Melody and Ginger take" },
+            { id: 4, text: "In the morning, I have" },
+            { id: 5, text: "My friends go" }
+        ],
+        right: [
+            { id: 1, text: "Physics at Cambridge University.", matchId: 1 },
+            { id: 2, text: "at 6 am.", matchId: 2 },
+            { id: 3, text: "the bus every morning.", matchId: 3 },
+            { id: 4, text: "coffee before work.", matchId: 4 },
+            { id: 5, text: "to the gym every Saturday.", matchId: 5 }
+        ]
+    };
+
+    // بيانات أسئلة الاختيار من متعدد الأولى (Definitions)
+    const mcData1 = [
+        {
+            question: "1. After lunch, I like to go for a walk in the afternoon.",
+            options: ["the time between 12 pm and 6 pm", "something you eat for lunch", "the time between 6 pm and 11 pm"],
+            correct: 0
+        },
+        {
+            question: "2. I am very busy at university. I take many courses.",
+            options: ["having a lot of friends", "having a lot of things to do", "having free time"],
+            correct: 1
+        },
+        {
+            question: "3. My timetable is the same every day. I work and then go to school.",
+            options: ["a place where you work to make money", "a list or plan to show when you do things", "a rest period"],
+            correct: 1
+        },
+        {
+            question: "4. I get up at 6 am every morning. I make coffee and eat breakfast.",
+            options: ["the time between 5 am and 12 pm", "the place where you make food", "the evening time"],
+            correct: 0
+        },
+        {
+            question: "5. I relax after work. I watch TV.",
+            options: ["to become calm and comfortable", "to have many things to do", "to run fast"],
+            correct: 0
+        },
+        {
+            question: "6. In the evening, I do my homework and read a book before bed.",
+            options: ["a place you go to relax", "the time between 6 pm and 11 pm", "the morning hours"],
+            correct: 1
+        },
+        {
+            question: "7. I have school on weekdays. I have to get up early.",
+            options: ["the five days of the week when many people work", "the two days of the week when people do not work", "holiday time"],
+            correct: 0
+        },
+        {
+            question: "8. At the weekend, I go cycling. I have fun with friends.",
+            options: ["the five days of the week when many people work", "the two days of the week when many people do not work", "working days"],
+            correct: 1
+        }
+    ];
+
+    // بيانات أسئلة الاختيار من متعدد الثانية (Daily Routines)
+    const mcData2 = [
+        {
+            question: "1. I do not like to wake up early. I ____ up around 10:00 am.",
+            options: ["get", "cook", "eat", "have"],
+            correct: 0
+        },
+        {
+            question: "2. I like to ____ my food at home, but many of my friends eat at restaurants.",
+            options: ["do", "cook", "meet", "swim"],
+            correct: 1
+        },
+        {
+            question: "3. Before I go to work, I ____ coffee and toast for breakfast every morning.",
+            options: ["go", "have", "relax", "cook"],
+            correct: 1
+        },
+        {
+            question: "4. I usually eat lunch at my desk at work. I usually ____ a salad or soup.",
+            options: ["have", "go", "do", "meets"],
+            correct: 0
+        },
+        {
+            question: "5. I eat dinner after work. Sometimes, I eat with friends at a restaurant.",
+            options: ["cook", "eat", "travel", "swim"],
+            correct: 1
+        },
+        {
+            question: "6. I often ____ to China and Japan for my work.",
+            options: ["travel", "relax", "cook", "have"],
+            correct: 0
+        },
+        {
+            question: "7. I ____ a lot of people in my job. I really enjoy talking with new people.",
+            options: ["meet", "do", "go", "eat"],
+            correct: 0
+        },
+        {
+            question: "8. I ____ every Saturday. I have lessons at a pool near my house.",
+            options: ["swim", "cook", "travel", "meet"],
+            correct: 0
+        }
+    ];
+
+    // دالة النطق الصوتي
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    // توليد محتوى نصي مقسم لكلمات مع التفاعل (للحالة التدريبية)
+    function renderInteractiveSentence(text, isPractice) {
+        if (!isPractice) return text;
+        const words = text.split(' ');
+        return words.map(word => {
+            const cleanWord = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+            const translation = dictionary[cleanWord] || '';
+            return `<span class="word-token" onclick="handleWordClick(this, '${word}', '${translation}')">
+                <span class="inline-translation">${translation}</span>${word}
+            </span>`;
+        }).join(' ');
+    }
+
+    function handleWordClick(element, word, translation) {
+        // إزالة التحديد السابق
+        document.querySelectorAll('.word-token').forEach(el => el.classList.remove('active-word'));
+        element.classList.add('active-word');
+        
+        // نطق الكلمة
+        const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+        speakText(cleanWord);
+    }
+
+    // بناء جداول التوصيل
+    function buildMatchingGame(wrapperId, isPractice) {
+        const wrapper = document.getElementById(wrapperId);
+        const leftCol = wrapper.querySelector('.left-col');
+        const rightCol = wrapper.querySelector('.right-col');
+
+        leftCol.innerHTML = '';
+        rightCol.innerHTML = '';
+
+        // ترقيم العمود الأيسر (A, B, C...) والأيمن (1, 2, 3...) وخلط الأيمن عشوائياً
+        const shuffledRight = [...matchingData1.right].sort(() => Math.random() - 0.5);
+
+        matchingData1.left.forEach((item, index) => {
+            const letter = String.fromCharCode(65 + index); // A, B, C...
+            const div = document.createElement('div');
+            div.className = 'match-item left-item';
+            div.dataset.id = item.id;
+            div.innerHTML = `<span class="item-prefix">${letter}.</span> <div class="item-text">${renderInteractiveSentence(item.text, isPractice)}</div>`;
+            div.onclick = (e) => {
+                if (e.target.closest('.word-token') && isPractice) return; // منع التداخل عند النقر على الكلمة المنفردة
+                selectLeftItem(wrapperId, div);
+            };
+            leftCol.appendChild(div);
+        });
+
+        shuffledRight.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'match-item right-item';
+            div.dataset.matchId = item.matchId;
+            div.innerHTML = `<span class="item-prefix">${index + 1}.</span> <div class="item-text">${renderInteractiveSentence(item.text, isPractice)}</div>`;
+            div.onclick = (e) => {
+                if (e.target.closest('.word-token') && isPractice) return;
+                selectRightItem(wrapperId, div);
+            };
+            rightCol.appendChild(div);
+        });
+    }
+
+    let selectedLeft = null;
+
+    function selectLeftItem(wrapperId, element) {
+        const wrapper = document.getElementById(wrapperId);
+        if (element.classList.contains('correct')) return;
+
+        wrapper.querySelectorAll('.left-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedLeft = { wrapperId, element, id: element.dataset.id };
+    }
+
+    function selectRightItem(wrapperId, element) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!selectedLeft || selectedLeft.wrapperId !== wrapperId) return;
+        if (element.classList.contains('correct')) return;
+
+        const leftElement = selectedLeft.element;
+        const matchId = selectedLeft.id;
+
+        if (element.dataset.matchId === matchId) {
+            // إجابة صحيحة
+            leftElement.classList.remove('selected');
+            leftElement.classList.add('correct');
+            element.classList.add('correct');
+            selectedLeft = null;
+        } else {
+            // إجابة خاطئة: التحديد الأزرق يظل ثابتاً ولا يختفي ليعطي الطالب فرصة أخرى
+            // يمكن إضافة تأثير بصري خفيف للتنبيه إن أردت، ولكن التحديد الأزرق يبقى كما طلبتم.
+        }
+    }
+
+    function showAnswers(wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        wrapper.querySelectorAll('.left-item').forEach(leftEl => {
+            const leftId = leftEl.dataset.id;
+            const rightEl = Array.from(wrapper.querySelectorAll('.right-item')).find(r => r.dataset.matchId === leftId);
+            
+            leftEl.classList.remove('selected');
+            leftEl.classList.add('correct');
+            if (rightEl) rightEl.classList.add('correct');
+        });
+        selectedLeft = null;
+    }
+
+    function resetMatching(wrapperId) {
+        const isPractice = wrapperId.includes('practice');
+        buildMatchingGame(wrapperId, isPractice);
+        selectedLeft = null;
+    }
+
+    // بناء أسئلة الاختيار من متعدد
+    function buildMultipleChoice(containerId, data) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+
+        data.forEach((q, qIndex) => {
+            const card = document.createElement('div');
+            card.className = 'mc-question-card';
+
+            let optionsHtml = '';
+            q.options.forEach((opt, optIndex) => {
+                optionsHtml += `<div class="mc-option" onclick="checkChoice(this, ${optIndex}, ${q.correct})">${opt}</div>`;
+            });
+
+            card.innerHTML = `
+                <div class="mc-question-text">${q.question}</div>
+                <div class="mc-options">${optionsHtml}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function checkChoice(element, selectedIndex, correctIndex) {
+        const parent = element.parentElement;
+        const options = parent.querySelectorAll('.mc-option');
+
+        // منع إعادة الاختيار إذا تم الحل مسبقاً في هذا السؤال
+        if (parent.dataset.answered === "true") return;
+
+        if (selectedIndex === correctIndex) {
+            element.classList.add('correct-choice');
+            parent.dataset.answered = "true";
+        } else {
+            element.classList.add('wrong-choice');
+            options[correctIndex].classList.add('correct-choice');
+            parent.dataset.answered = "true";
+        }
+    }
+
+    // تهيئة الصفحة عند التحميل
+    window.onload = function() {
+        buildMatchingGame('match-practice-1', true);
+        buildMatchingGame('match-exam-1', false);
+        buildMultipleChoice('mc-container-1', mcData1);
+        buildMultipleChoice('mc-container-2', mcData2);
+    };
+</script>
+
+</body>
+</html>
