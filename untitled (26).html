@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive English Lessons - Master System</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #0ea5e9;
+            --success-color: #059669;
+            --success-hover: #047857;
+            --success-bg: #d1fae5;
+            --success-border: #047857;
+            --pending-color: #3b82f6;
+            --pending-bg: #eff6ff;
+            --highlight-bg: #fef08a;
+            --translate-color: #dc2626; /* لون أحمر واضح للترجمة */
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --btn-reset-bg: #64748b;
+            --btn-reset-hover: #475569;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #e2e8f0;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #475569;
+            font-size: 1rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        h2 {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            color: #1e293b;
+            margin-top: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Score Display Styles */
+        .score-board {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #dc2626;
+            background-color: #fef2f2;
+            border: 2px dashed #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        /* Controls Layout (Top & Bottom) */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button.btn-action {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(5, 150, 105, 0.2);
+        }
+
+        button.btn-action:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-1px);
+        }
+
+        button.btn-reset {
+            background-color: var(--btn-reset-bg);
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(100, 116, 139, 0.2);
+        }
+
+        button.btn-reset:hover {
+            background-color: var(--btn-reset-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Matching Game Styles */
+        .matching-wrapper {
+            display: flex;
+            gap: 30px;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .match-item {
+            position: relative;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            padding: 18px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .match-item:hover {
+            border-color: var(--primary-color);
+            background: #ffffff;
+        }
+
+        .match-item.selected {
+            background-color: var(--pending-bg) !important;
+            border-color: var(--pending-color) !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        .match-item.correct {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            cursor: default;
+        }
+
+        .item-prefix {
+            font-weight: bold;
+            margin-right: 12px;
+            color: #64748b;
+        }
+
+        /* Clickable Words & Translation without Box */
+        .word-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0 2px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .word-wrapper:hover {
+            background-color: #e2e8f0;
+        }
+
+        .word-wrapper.active-word {
+            background-color: var(--highlight-bg) !important;
+        }
+
+        .word-trans {
+            display: none;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--translate-color);
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* Multiple Choice Styles */
+        .mc-question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.2s;
+        }
+
+        .mc-question-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .mc-question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mc-option {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.02rem;
+        }
+
+        .mc-option:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .mc-option.correct-choice {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .mc-option.wrong-choice {
+            background-color: #fee2e2 !important;
+            border-color: #dc2626 !important;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>أنشطة اللغة الإنجليزية التفاعلية المتقدمة</h1>
+
+    <!-- شريط التبويبات -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab(0)">1. Matching (التوصيل)</button>
+        <button class="tab-btn" onclick="switchTab(1)">2. Group 1 (المجموعة الأولى)</button>
+        <button class="tab-btn" onclick="switchTab(2)">3. Group 2 (الكلوكيشن الصارم)</button>
+        <button class="tab-btn" onclick="switchTab(3)">4. Group 3 (المجموعة الثالثة)</button>
+    </div>
+
+    <!-- التبويب الأول: التوصيل -->
+    <div id="tab-0" class="tab-content active">
+        <div class="section-box">
+            <h2>Match the Sentence Halves (توصيل أنصاف الجمل)</h2>
+            
+            <div class="controls">
+                <button class="btn-action" onclick="showAnswers('match-practice-1')">عرض النتيجة</button>
+                <button class="btn-reset" onclick="resetMatching('match-practice-1')">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div class="matching-wrapper" id="match-practice-1">
+                <div class="column left-col"></div>
+                <div class="column right-col"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showAnswers('match-practice-1')">عرض النتيجة</button>
+                <button class="btn-reset" onclick="resetMatching('match-practice-1')">إعادة ترتيب الأسئلة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- التبويب الثاني: المجموعة الأولى -->
+    <div id="tab-1" class="tab-content">
+        <div class="section-box">
+            <h2>Group 1: Daily Routines (10 الأسئلة)</h2>
+            
+            <div class="score-board" id="score-top-1"></div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showGroupAnswer(1)">عرض النتيجة</button>
+                <button class="btn-reset" onclick="initMCQGroup(1)">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div id="mc-container-1"></div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showGroupAnswer(1)">عرض النتيجة</button>
+                <button class="btn-reset" onclick="initMCQGroup(1)">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div class="score-board" id="score-bottom-1"></div>
+        </div>
+    </div>
+
+    <!-- التبويب الثالث: المجموعة الثانية -->
+    <div id="tab-2" class="tab-content">
+        <div class="section-box">
+            <h2>Group 2: Collocations Verbs (have, play, study, go, relax)</h2>
+            
+            <div class="score-board" id="score-top-2"></div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showGroupAnswer(2)">عرض النتيجة</button>
+                <button class="btn-reset" onclick="initMCQGroup(2)">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div id="mc-container-2"></div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showGroupAnswer(2)">عرض النتيجة</button>
+                <button class="btn-reset" onclick="initMCQGroup(2)">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div class="score-board" id="score-bottom-2"></div>
+        </div>
+    </div>
+
+    <!-- التبويب الرابع: المجموعة الثالثة -->
+    <div id="tab-3" class="tab-content">
+        <div class="section-box">
+            <h2>Group 3: Activities & Definitions (10 الأسئلة)</h2>
+            
+            <div class="score-board" id="score-top-3"></div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showGroupAnswer(3)">عرض النتيجة</button>
+                <button class="btn-reset" onclick="initMCQGroup(3)">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div id="mc-container-3"></div>
+
+            <div class="controls">
+                <button class="btn-action" onclick="showGroupAnswer(3)">عرض النتيجة</button>
+                <button class="btn-reset" onclick="initMCQGroup(3)">إعادة ترتيب الأسئلة</button>
+            </div>
+
+            <div class="score-board" id="score-bottom-3"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const dictionary = {
+        "eun": "يون", "jung": "جونغ", "studies": "يدرس", "study": "دراسة / يدرس", "asif": "آسف", "gets": "يحصل على", "get": "يحصل على", "up": "استيقاظ / أعلى",
+        "melody": "ميلودي", "and": "و", "ginger": "جنجر", "take": "يأخذ", "in": "في", "the": "الـ",
+        "morning": "الصباح", "i": "أنا", "have": "يتمتع / يملك", "friends": "أصدقاء", "go": "يذهب", "goes": "يذهب",
+        "coffee": "قهوة", "before": "قبل", "work": "عمل", "physics": "فيزياء", "at": "في",
+        "cambridge": "كامبريدج", "university": "جامعة", "am": "صباحاً", "to": "إلى",
+        "gym": "صالة الرياضة", "every": "كل", "saturday": "سبت", "saturdays": "أيام السبت", "bus": "حافلة", "abdullah": "عبد الله",
+        "with": "مع", "his": "الخاص به", "group": "مجموعة", "sundays": "أيام الأحد",
+        "you": "أنت", "breakfast": "فطور", "lunch": "غداء", "dinner": "عشاء", "relax": "يسترخي",
+        "relaxes": "يسترخي", "after": "بعد", "walk": "ممشى / نزهة", "busy": "مشغول", "timetable": "جدول مواعيد", "evening": "مساءً",
+        "weekdays": "أيام العمل أسبوعياً", "weekend": "عطلة نهاية الأسبوع", "cook": "يطبخ", "cooks": "يطبخ", "travel": "يسافر",
+        "meet": "يقابل", "meets": "يقابل", "swim": "يسبح", "play": "يلعب", "video": "فيديو", "games": "ألعاب",
+        "library": "مكتبة", "eat": "يأكل", "eats": "يأكل", "food": "طعام", "home": "منزل",
+        "restaurants": "مطاعم", "toast": "توست", "usually": "عادةً", "desk": "مكتب", "salad": "سلطة",
+        "soup": "شوربة", "china": "الصين", "japan": "اليابان", "job": "وظيفة", "really": "حقاً",
+        "enjoy": "يستمتع", "talking": "التحدث", "new": "جديد", "people": "أشخاص", "pool": "حمام سباحة",
+        "near": "بالقرب من", "house": "منزل", "same": "نفس", "day": "يوم",
+        "school": "مدرسة", "make": "يصنع", "watch": "يشاهد", "tv": "تلفزيون", "read": "يقرأ",
+        "book": "كتاب", "bed": "سرير", "cycling": "ركوب الدراجات", "fun": "متعة",
+        "football": "كرة قدم", "something": "شيء ما", "having": "امتلاك",
+        "lot": "كثير", "things": "أشياء", "free": "حرة", "time": "وقت",
+        "place": "مكان", "where": "حيث", "money": "مال", "rest": "راحة", "period": "فترة",
+        "between": "بين", "pm": "مساءً", "hours": "ساعات", "five": "خمسة", "days": "أيام",
+        "two": "يومان", "when": "عندما", "many": "كثير من", "not": "لا", "holiday": "إجازة",
+        "working": "عمل", "fast": "بسرعة", "run": "يجري", "calm": "هادئ", "comfortable": "مريح",
+        "collocation": "مترافق لفظي", "english": "الإنجليزية", "do": "يفعل", "does": "يفعل", "doesnt": "لا يفعل",
+        "dont": "لا", "on": "على", "is": "يكون", "are": "يكونون", "our": "خاصتنا", "we": "نحن",
+        "they": "هم", "she": "هي", "he": "هو", "it": "هو/هي غير العاقل", "my": "خاصتي", "your": "خاصتك"
+    };
+
+    function getWordTranslation(word) {
+        let clean = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        if (!clean) return '';
+        if (dictionary[clean]) return dictionary[clean];
+        
+        if (clean.endsWith('s') && dictionary[clean.slice(0, -1)]) return dictionary[clean.slice(0, -1)];
+        if (clean.endsWith('es') && dictionary[clean.slice(0, -2)]) return dictionary[clean.slice(0, -2)];
+        if (clean.endsWith('ed') && dictionary[clean.slice(0, -2)]) return dictionary[clean.slice(0, -2)];
+        if (clean.endsWith('ing') && dictionary[clean.slice(0, -3)]) return dictionary[clean.slice(0, -3)];
+        if (clean.endsWith('ing') && dictionary[clean.slice(0, -3) + 'e']) return dictionary[clean.slice(0, -3) + 'e'];
+        
+        return clean;
+    }
+
+    function switchTab(index) {
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === index);
+        });
+        document.querySelectorAll('.tab-content').forEach((content, idx) => {
+            content.classList.toggle('active', idx === index);
+        });
+    }
+
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function renderClickableText(text, isPractice) {
+        if (!isPractice) return text;
+        const words = text.split(' ');
+        return words.map(word => {
+            const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+            const translation = getWordTranslation(word);
+            return `<span class="word-wrapper" onclick="handleWordClick(event, this, '${word}', '${translation}')">
+                <span class="word-trans">${translation}</span>${word}
+            </span>`;
+        }).join(' ');
+    }
+
+    function handleWordClick(event, element, word, translation) {
+        event.stopPropagation();
+        const container = element.closest('.tab-content');
+        if (container) {
+            container.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+            container.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+        }
+
+        element.classList.add('active-word');
+        const transSpan = element.querySelector('.word-trans');
+        if (transSpan) {
+            transSpan.style.display = 'block';
+        }
+
+        const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+        if (cleanWord) {
+            speakText(cleanWord);
+        }
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+    });
+
+    const matchingData1 = {
+        left: [
+            { id: 1, text: "Eun Jung studies" },
+            { id: 2, text: "Asif gets up" },
+            { id: 3, text: "Melody and Ginger take" },
+            { id: 4, text: "In the morning, I have" },
+            { id: 5, text: "My friends go" }
+        ],
+        right: [
+            { id: 1, text: "Physics at Cambridge University.", matchId: 1 },
+            { id: 2, text: "at 6 am.", matchId: 2 },
+            { id: 3, text: "the bus every morning.", matchId: 3 },
+            { id: 4, text: "coffee before work.", matchId: 4 },
+            { id: 5, text: "to the gym every Saturday.", matchId: 5 }
+        ]
+    };
+
+    function buildMatchingGame(wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        const leftCol = wrapper.querySelector('.left-col');
+        const rightCol = wrapper.querySelector('.right-col');
+        leftCol.innerHTML = '';
+        rightCol.innerHTML = '';
+
+        const shuffledRight = [...matchingData1.right].sort(() => Math.random() - 0.5);
+
+        matchingData1.left.forEach((item, index) => {
+            const letter = String.fromCharCode(65 + index);
+            const div = document.createElement('div');
+            div.className = 'match-item left-item';
+            div.dataset.id = item.id;
+            div.innerHTML = `<span class="item-prefix">${letter}.</span> <div class="item-text">${renderClickableText(item.text, true)}</div>`;
+            div.onclick = (e) => {
+                if (e.target.closest('.word-wrapper')) return;
+                selectLeftItem(wrapperId, div);
+            };
+            leftCol.appendChild(div);
+        });
+
+        shuffledRight.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'match-item right-item';
+            div.dataset.matchId = item.matchId;
+            div.innerHTML = `<span class="item-prefix">${index + 1}.</span> <div class="item-text">${renderClickableText(item.text, true)}</div>`;
+            div.onclick = (e) => {
+                if (e.target.closest('.word-wrapper')) return;
+                selectRightItem(wrapperId, div);
+            };
+            rightCol.appendChild(div);
+        });
+    }
+
+    let selectedLeft = null;
+    function selectLeftItem(wrapperId, element) {
+        const wrapper = document.getElementById(wrapperId);
+        if (element.classList.contains('correct')) return;
+        wrapper.querySelectorAll('.left-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedLeft = { wrapperId, element, id: element.dataset.id };
+    }
+
+    function selectRightItem(wrapperId, element) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!selectedLeft || selectedLeft.wrapperId !== wrapperId) return;
+        if (element.classList.contains('correct')) return;
+
+        const leftElement = selectedLeft.element;
+        if (element.dataset.matchId === selectedLeft.id) {
+            leftElement.classList.remove('selected');
+            leftElement.classList.add('correct');
+            element.classList.add('correct');
+            selectedLeft = null;
+        }
+    }
+
+    function showAnswers(wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        wrapper.querySelectorAll('.left-item').forEach(leftEl => {
+            const rightEl = Array.from(wrapper.querySelectorAll('.right-item')).find(r => r.dataset.matchId === leftEl.dataset.id);
+            leftEl.classList.remove('selected');
+            leftEl.classList.add('correct');
+            if (rightEl) rightEl.classList.add('correct');
+        });
+        selectedLeft = null;
+    }
+
+    function resetMatching(wrapperId) {
+        buildMatchingGame(wrapperId);
+        selectedLeft = null;
+    }
+
+    const rawGroup1 = [
+        { q: "Abdullah _____ with his study group on Sundays.", options: ["cooks", "meets", "eats", "goes"], correct: 1 },
+        { q: "I _____ the bus to university every morning.", options: ["take", "do", "relax", "cook"], correct: 0 },
+        { q: "You _____ to the gym every day.", options: ["cooks", "go", "has", "does"], correct: 1 },
+        { q: "Melody and Ginger _____ breakfast at 7 am.", options: ["do", "have", "cooks", "goes"], correct: 1 },
+        { q: "Li Mei _____ her lunch in the café.", options: ["eat", "cooks", "eats", "have"], correct: 2 },
+        { q: "Sandra and Andreia _____ with friends in the evening.", options: ["relax", "takes", "cook", "does"], correct: 0 },
+        { q: "My sister _____ dinner for my family.", options: ["cook", "cooks", "have", "go"], correct: 1 },
+        { q: "You _____ your homework in the evening.", options: ["make", "do", "cook", "takes"], correct: 1 },
+        { q: "I _____ breakfast every morning.", options: ["have", "do", "go", "play"], correct: 0 },
+        { q: "Abdullah _____ English.", options: ["studies", "eats", "cooks", "takes"], correct: 0 }
+    ];
+
+    const rawGroup2 = [
+        { q: "I _____ breakfast every morning.", options: ["have", "play", "study", "go"], correct: 0 },
+        { q: "Hiroki and Ken _____ video games.", options: ["play", "have", "go", "relax"], correct: 0 },
+        { q: "Abdullah _____ English at university.", options: ["studies", "goes", "plays", "have"], correct: 0 },
+        { q: "Abdullah _____ to the gym after work.", options: ["goes", "has", "plays", "studies"], correct: 0 },
+        { q: "Abdullah _____ in the library.", options: ["studies", "plays", "has", "goes"], correct: 0 },
+        { q: "Abdullah _____ with friends in the evening.", options: ["relaxes", "goes", "has", "plays"], correct: 0 },
+        { q: "We _____ football on Saturdays.", options: ["play", "have", "go", "study"], correct: 0 },
+        { q: "They _____ lunch at the café.", options: ["have", "play", "go", "study"], correct: 0 },
+        { q: "I _____ to school by bus.", options: ["go", "have", "play", "study"], correct: 0 },
+        { q: "My friends _____ at home on weekends.", options: ["relax", "go", "play", "have"], correct: 0 }
+    ];
+
+    const rawGroup3 = [
+        { q: "After lunch, I like to go for a walk in the afternoon.", options: ["the time between 12 pm and 6 pm", "something you eat", "evening time"], correct: 0 },
+        { q: "I am very busy at university. I take many courses.", options: ["having a lot of friends", "having a lot of things to do", "having free time"], correct: 1 },
+        { q: "My timetable is the same every day. I work and then go to school.", options: ["a workplace", "a list or plan to show when you do things", "a rest period"], correct: 1 },
+        { q: "I get up at 6 am every morning. I make coffee and eat breakfast.", options: ["the time between 5 am and 12 pm", "the place where you make food", "the evening"], correct: 0 },
+        { q: "I relax after work. I watch TV.", options: ["to become calm and comfortable", "to have many things to do", "to run fast"], correct: 0 },
+        { q: "In the evening, I do my homework and read a book before bed.", options: ["a place you go", "the time between 6 pm and 11 pm", "morning hours"], correct: 1 },
+        { q: "I have school on weekdays. I have to get up early.", options: ["the five days when people work", "the weekend days", "holiday time"], correct: 0 },
+        { q: "At the weekend, I go cycling. I have fun with friends.", options: ["working days", "the two days when many people do not work", "school days"], correct: 1 },
+        { q: "I do not like to wake up early. I _____ up around 10:00 am.", options: ["get", "cook", "eat", "have"], correct: 0 },
+        { q: "I _____ every Saturday. I have lessons at a pool near my house.", options: ["swim", "cook", "travel", "meet"], correct: 0 }
+    ];
+
+    function initMCQGroup(groupNum) {
+        let rawData = groupNum === 1 ? rawGroup1 : (groupNum === 2 ? rawGroup2 : rawGroup3);
+        const container = document.getElementById(`mc-container-${groupNum}`);
+        container.innerHTML = '';
+
+        document.getElementById(`score-top-${groupNum}`).style.display = 'none';
+        document.getElementById(`score-bottom-${groupNum}`).style.display = 'none';
+
+        const shuffledQuestions = [...rawData].sort(() => Math.random() - 0.5);
+
+        shuffledQuestions.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'mc-question-card';
+            card.dataset.userCorrect = "false";
+
+            const originalCorrectText = item.options[item.correct];
+            const shuffledOptions = [...item.options].sort(() => Math.random() - 0.5);
+            const newCorrectIndex = shuffledOptions.indexOf(originalCorrectText);
+            card.dataset.correctIndex = newCorrectIndex;
+
+            let optionsHtml = '';
+            shuffledOptions.forEach((opt, optIdx) => {
+                const renderedOptText = renderClickableText(opt, true);
+                optionsHtml += `<div class="mc-option" onclick="checkChoice(this, event, ${optIdx}, ${newCorrectIndex})">${renderedOptText}</div>`;
+            });
+
+            const displayNum = index + 1;
+            const formattedText = `${displayNum}. ${item.q}`;
+            const renderedQText = renderClickableText(formattedText, true);
+
+            card.innerHTML = `
+                <div class="mc-question-text">${renderedQText}</div>
+                <div class="mc-options">${optionsHtml}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function checkChoice(element, event, selectedIndex, correctIndex) {
+        if (event && event.target.closest('.word-wrapper')) {
+            return;
+        }
+
+        const parentCard = element.closest('.mc-question-card');
+        const options = parentCard.querySelectorAll('.mc-option');
+        if (parentCard.dataset.answered === "true") return;
+
+        parentCard.dataset.userSelected = selectedIndex;
+
+        if (selectedIndex === correctIndex) {
+            element.classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "true";
+        } else {
+            element.classList.add('wrong-choice');
+            options[correctIndex].classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "false";
+        }
+        parentCard.dataset.answered = "true";
+    }
+
+    function showGroupAnswer(groupNum) {
+        const container = document.getElementById(`mc-container-${groupNum}`);
+        const cards = container.querySelectorAll('.mc-question-card');
+        let score = 0;
+
+        cards.forEach(card => {
+            const options = card.querySelectorAll('.mc-option');
+            const correctIdx = parseInt(card.dataset.correctIndex);
+
+            options.forEach((opt, idx) => {
+                if (idx === correctIdx) {
+                    opt.classList.add('correct-choice');
+                }
+            });
+
+            if (card.dataset.userCorrect === "true") {
+                score++;
+            }
+            card.dataset.answered = "true";
+        });
+
+        const scoreMessage = `النتيجة النهائية: ${score} من 10`;
+        
+        const topScore = document.getElementById(`score-top-${groupNum}`);
+        const bottomScore = document.getElementById(`score-bottom-${groupNum}`);
+        
+        topScore.innerText = scoreMessage;
+        topScore.style.display = 'block';
+        
+        bottomScore.innerText = scoreMessage;
+        bottomScore.style.display = 'block';
+    }
+
+    window.onload = function() {
+        buildMatchingGame('match-practice-1');
+        initMCQGroup(1);
+        initMCQGroup(2);
+        initMCQGroup(3);
+    };
+</script>
+
+</body>
+</html>
