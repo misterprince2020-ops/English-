@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Present Continuous Tense Master Test (50 Questions)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+        }
+        .word-token {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .word-token:hover {
+            background-color: #fef08a;
+            color: #b45309;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="bg-indigo-700 text-white shadow-lg rounded-2xl p-6 mb-8 text-center">
+            <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Present Continuous Tense Test</h1>
+            <p class="text-indigo-200 text-lg">50 Comprehensive Questions | Click any word to hear & translate instantly</p>
+        </header>
+
+        <!-- Instant Translation & Audio Floating Box -->
+        <div id="translator-box" class="sticky top-4 z-50 bg-red-50 border-2 border-red-500 text-red-700 p-4 rounded-xl shadow-xl mb-6 flex items-center justify-between transition-all transform scale-100">
+            <div>
+                <span class="font-bold uppercase tracking-wider text-sm bg-red-200 px-2 py-1 rounded text-red-800 mr-2">Instant Translation & Audio:</span>
+                <span id="selected-word-info" class="text-xl font-bold">Click any word in questions or choices...</span>
+            </div>
+            <button onclick="clearTranslationBox()" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
+        </div>
+
+        <!-- Groups Container -->
+        <div id="groups-container"></div>
+    </div>
+
+    <script>
+        // Dictionary for instant English-Arabic translation
+        const dictionary = {
+            "i": "أنا", "am": "أكون", "writing": "يكتب", "a": "أ / واحد", "letter": "رسالة", "now": "الآن",
+            "you": "أنت / أنتم", "are": "تكونون / تكون", "watching": "يشاهد", "tv": "التلفزيون", "at": "في", "the": "الـ", "moment": "اللحظة",
+            "he": "هو", "is": "يكون", "sleeping": "ينام", "in": "في", "his": "له / خاصته", "bed": "سرير", "right": "حالاً / تماماً",
+            "she": "هي", "cooking": "يطبخ", "dinner": "العشاء", "present": "الحاضر / الوقت الحالي",
+            "it": "هو / هي لغير العاقل", "raining": "يمطر", "outside": "في الخارج", "look": "انظر",
+            "we": "نحن", "cleaning": "ينظف", "our": "خاصتنا", "classroom": "فصل دراسي",
+            "they": "هم", "playing": "يلعب", "football": "كرة القدم",
+            "ahmed": "أحمد", "running": "يجري", "park": "منتزه / حديقة",
+            "mona": "منى", "painting": "يرسم", "picture": "صورة",
+            "students": "طلاب", "listening": "يستمع", "teacher": "معلم",
+            "not": "ليس / لا", "drinking": "يشرب", "milk": "حليب",
+            "working": "يعمل", "today": "اليوم",
+            "eating": "يأكل", "lunch": "غداء",
+            "studying": "يُذاكر", "english": "اللغة الإنجليزية",
+            "barking": "ينبح",
+            "swimming": "يسبح", "pool": "حمام السباحة",
+            "movie": "فيلم",
+            "ali": "علي", "reading": "يقرأ",
+            "sarah": "سارة", "singing": "يغني", "song": "أغنية",
+            "cats": "قطط",
+            "doing": "يفعل", "homework": "واجب منزلي",
+            "music": "موسيقى",
+            "fixing": "يُصلح", "car": "سيارة",
+            "wearing": "يرتدي", "red": "أحمر", "dress": "فستان",
+            "waiting": "ينتظر", "bus": "حافلة / أتوبيس",
+            "tennis": "تنس",
+            "omar": "عمر", "driving": "يقود",
+            "layla": "ليلى",
+            "boys": "أولاد",
+            "bird": "طائر", "fly": "يطير", "sky": "سماء",
+            "someone": "شخص ما", "knocking": "يطرق", "door": "باب",
+            "what": "ماذا", "where": "أين", "why": "لماذا",
+            "crying": "يبكي", "mother": "أم", "baking": "يخبز", "cake": "كعكة",
+            "children": "أطفال", "garden": "حديقة",
+            "father": "أب",
+            "having": "يتناول",
+            "john": "جون", "magazine": "مجلة",
+            "baby": "رضيع", "loudly": "بصوت عالٍ",
+            "email": "بريد إلكتروني",
+            "fish": "سمك",
+            "traveling": "يسافر", "paris": "باريس",
+            "phone": "هاتف", "ringing": "يرن",
+            "sun": "شمس", "shining": "تشرق / تسطع", "brightly": "بسطوع",
+            "grammar": "قواعد النحو",
+            "dogs": "كلاب", "cat": "قطة",
+            "happen": "يحدث", "here": "هنا",
+            "listen": "استمع"
+        };
+
+        // 50 Questions Data divided into 5 groups (10 questions each)
+        const groupsData = [
+            {
+                title: "Group 1: Affirmative Sentences (الإثبات)",
+                questions: [
+                    { q: "I ___ a letter <span class='text-red-600 font-bold'>now</span>.", choices: ["am writing", "is writing", "are writing", "write"], ans: 0 },
+                    { q: "You ___ TV <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["am watching", "is watching", "are watching", "watch"], ans: 2 },
+                    { q: "He ___ in his bed <span class='text-red-600 font-bold'>right now</span>.", choices: ["is sleeping", "are sleeping", "am sleeping", "sleep"], ans: 0 },
+                    { q: "She ___ dinner <span class='text-red-600 font-bold'>at present</span>.", choices: ["is cooking", "are cooking", "am cooking", "cooks"], ans: 0 },
+                    { q: "It ___ outside <span class='text-red-600 font-bold'>look!</span>", choices: ["is raining", "are raining", "am raining", "rains"], ans: 0 },
+                    { q: "We ___ our classroom <span class='text-red-600 font-bold'>now</span>.", choices: ["is cleaning", "are cleaning", "am cleaning", "clean"], ans: 1 },
+                    { q: "They ___ football <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["is playing", "are playing", "am playing", "play"], ans: 1 },
+                    { q: "Ahmed ___ in the park <span class='text-red-600 font-bold'>right now</span>.", choices: ["is running", "are running", "am running", "run"], ans: 0 },
+                    { q: "Mona ___ a picture <span class='text-red-600 font-bold'>at present</span>.", choices: ["is painting", "are painting", "am painting", "paint"], ans: 0 },
+                    { q: "The students ___ to the teacher <span class='text-red-600 font-bold'>listen!</span>", choices: ["is listening", "are listening", "am listening", "listen"], ans: 1 }
+                ]
+            },
+            {
+                title: "Group 2: Negative Sentences (النفي)",
+                questions: [
+                    { q: "I ___ milk <span class='text-red-600 font-bold'>now</span>.", choices: ["am not drinking", "is not drinking", "are not drinking", "don't drink"], ans: 0 },
+                    { q: "You ___ today <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["am not working", "is not working", "are not working", "don't work"], ans: 2 },
+                    { q: "He ___ lunch <span class='text-red-600 font-bold'>right now</span>.", choices: ["is not eating", "are not eating", "am not eating", "doesn't eat"], ans: 0 },
+                    { q: "She ___ English <span class='text-red-600 font-bold'>at present</span>.", choices: ["is not studying", "are not studying", "am not studying", "doesn't study"], ans: 0 },
+                    { q: "The dog ___ <span class='text-red-600 font-bold'>listen!</span>", choices: ["is not barking", "are not barking", "am not barking", "barks not"], ans: 0 },
+                    { q: "We ___ in the pool <span class='text-red-600 font-bold'>now</span>.", choices: ["is not swimming", "are not swimming", "am not swimming", "don't swim"], ans: 1 },
+                    { q: "They ___ a movie <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["is not watching", "are not watching", "am not watching", "don't watch"], ans: 1 },
+                    { q: "Ali ___ a book <span class='text-red-600 font-bold'>right now</span>.", choices: ["is not reading", "are not reading", "am not reading", "reads not"], ans: 0 },
+                    { q: "Sarah ___ a song <span class='text-red-600 font-bold'>at present</span>.", choices: ["is not singing", "are not singing", "am not singing", "sings not"], ans: 0 },
+                    { q: "The cats ___ <span class='text-red-600 font-bold'>look!</span>", choices: ["is not sleeping", "are not sleeping", "am not sleeping", "sleep not"], ans: 1 }
+                ]
+            },
+            {
+                title: "Group 3: Questions & Interrogative (السؤال)",
+                questions: [
+                    { q: "___ I doing my homework <span class='text-red-600 font-bold'>now</span>?", choices: ["Am", "Is", "Are", "Do"], ans: 0 },
+                    { q: "___ you listening to music <span class='text-red-600 font-bold'>at the moment</span>?", choices: ["Am", "Is", "Are", "Do"], ans: 2 },
+                    { q: "___ he fixing his car <span class='text-red-600 font-bold'>right now</span>?", choices: ["Am", "Is", "Are", "Does"], ans: 1 },
+                    { q: "___ she wearing a red dress <span class='text-red-600 font-bold'>at present</span>?", choices: ["Am", "Is", "Are", "Does"], ans: 1 },
+                    { q: "___ it raining outside <span class='text-red-600 font-bold'>look!</span>?", choices: ["Am", "Is", "Are", "Does"], ans: 1 },
+                    { q: "___ we waiting for the bus <span class='text-red-600 font-bold'>now</span>?", choices: ["Am", "Is", "Are", "Do"], ans: 2 },
+                    { q: "___ they playing tennis <span class='text-red-600 font-bold'>at the moment</span>?", choices: ["Am", "Is", "Are", "Do"], ans: 2 },
+                    { q: "___ Omar driving his car <span class='text-red-600 font-bold'>right now</span>?", choices: ["Am", "Is", "Are", "Does"], ans: 1 },
+                    { q: "___ Layla cooking dinner <span class='text-red-600 font-bold'>at present</span>?", choices: ["Am", "Is", "Are", "Does"], ans: 1 },
+                    { q: "___ the boys playing outside <span class='text-red-600 font-bold'>listen!</span>?", choices: ["Am", "Is", "Are", "Do"], ans: 2 }
+                ]
+            },
+            {
+                title: "Group 4: Mixed Part 1 (مختلط ١)",
+                questions: [
+                    { q: "The bird ___ in the sky <span class='text-red-600 font-bold'>look!</span>", choices: ["is flying", "are flying", "fly", "flies"], ans: 0 },
+                    { q: "Someone ___ on the door <span class='text-red-600 font-bold'>listen!</span>", choices: ["is knocking", "are knocking", "knocks", "knock"], ans: 0 },
+                    { q: "What ___ you doing <span class='text-red-600 font-bold'>now</span>?", choices: ["is", "are", "do", "am"], ans: 1 },
+                    { q: "Where ___ she going <span class='text-red-600 font-bold'>at the moment</span>?", choices: ["is", "are", "does", "do"], ans: 0 },
+                    { q: "Why ___ they crying <span class='text-red-600 font-bold'>right now</span>?", choices: ["is", "are", "do", "does"], ans: 1 },
+                    { q: "I ___ sleeping <span class='text-red-600 font-bold'>at present</span>.", choices: ["am not", "is not", "are not", "don't"], ans: 0 },
+                    { q: "My mother ___ a cake <span class='text-red-600 font-bold'>now</span>.", choices: ["is baking", "are baking", "bake", "bakes"], ans: 0 },
+                    { q: "The children ___ in the garden <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["is playing", "are playing", "play", "plays"], ans: 1 },
+                    { q: "___ your father working today <span class='text-red-600 font-bold'>right now</span>?", choices: ["Am", "Is", "Are", "Does"], ans: 1 },
+                    { q: "We ___ lunch <span class='text-red-600 font-bold'>at present</span>.", choices: ["is having", "are having", "have", "has"], ans: 1 }
+                ]
+            },
+            {
+                title: "Group 5: Mixed Part 2 (مختلط ٢)",
+                questions: [
+                    { q: "John ___ a magazine <span class='text-red-600 font-bold'>now</span>.", choices: ["is reading", "are reading", "reads", "read"], ans: 0 },
+                    { q: "The baby ___ loudly <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["is crying", "are crying", "cry", "cries"], ans: 0 },
+                    { q: "Are you ___ an email <span class='text-red-600 font-bold'>right now</span>?", choices: ["write", "writing", "writes", "written"], ans: 1 },
+                    { q: "Is she ___ fish <span class='text-red-600 font-bold'>at present</span>?", choices: ["cook", "cooks", "cooking", "cooked"], ans: 2 },
+                    { q: "They ___ to Paris <span class='text-red-600 font-bold'>now</span>.", choices: ["is traveling", "are traveling", "travel", "travels"], ans: 1 },
+                    { q: "The phone ___ <span class='text-red-600 font-bold'>listen!</span>", choices: ["is ringing", "are ringing", "ring", "rings"], ans: 0 },
+                    { q: "The sun ___ brightly <span class='text-red-600 font-bold'>look!</span>", choices: ["is shining", "are shining", "shine", "shines"], ans: 0 },
+                    { q: "I ___ English grammar <span class='text-red-600 font-bold'>right now</span>.", choices: ["am studying", "is studying", "are studying", "study"], ans: 0 },
+                    { q: "The dogs ___ at the cat <span class='text-red-600 font-bold'>at the moment</span>.", choices: ["is barking", "are barking", "bark", "barks"], ans: 1 },
+                    { q: "What ___ happening here <span class='text-red-600 font-bold'>now</span>?", choices: ["is", "are", "do", "does"], ans: 0 }
+                ]
+            }
+        ];
+
+        // Function to tokenize text into clickable words for audio and translation
+        function makeWordsClickable(htmlText) {
+            // Temporarily replace HTML tags like <span ...> with tokens so we don't break them
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlText;
+            
+            // Recursively process text nodes
+            function processNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.nodeValue;
+                    const words = text.split(/(\s+)/);
+                    const fragment = document.createDocumentFragment();
+                    
+                    words.forEach(word => {
+                        if (word.trim().length > 0) {
+                            const span = document.createElement('span');
+                            span.className = 'word-token';
+                            span.textContent = word;
+                            span.onclick = (e) => {
+                                e.stopPropagation();
+                                handleWordClick(word);
+                            };
+                            fragment.appendChild(span);
+                        } else {
+                            fragment.appendChild(document.createTextNode(word));
+                        }
+                    });
+                    node.parentNode.replaceChild(fragment, node);
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    Array.from(node.childNodes).forEach(processNode);
+                }
+            }
+            
+            processNode(tempDiv);
+            return tempDiv.innerHTML;
+        }
+
+        function handleWordClick(word) {
+            const cleanWord = word.replace(/[.,/#!$%^&*;:{}=\-_`~()?]/g, "").toLowerCase();
+            const translation = dictionary[cleanWord] || "غير موجود في القاموس السريع";
+            
+            // Speak using Speech Synthesis
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(cleanWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+
+            // Update floating box
+            const infoBox = document.getElementById('selected-word-info');
+            infoBox.innerHTML = `Word: <strong class="text-blue-600">"${cleanWord}"</strong> ➔ المعنى العربي: <strong class="text-green-700">"${translation}"</strong>`;
+            
+            const box = document.getElementById('translator-box');
+            box.classList.add('bg-red-100', 'border-red-600');
+            setTimeout(() => {
+                box.classList.remove('bg-red-100', 'border-red-600');
+            }, 500);
+        }
+
+        function clearTranslationBox() {
+            document.getElementById('selected-word-info').textContent = 'Click any word in questions or choices...';
+        }
+
+        // Render Groups and Questions
+        function renderTest() {
+            const container = document.getElementById('groups-container');
+            container.innerHTML = '';
+
+            groupsData.forEach((group, gIndex) => {
+                let groupHTML = `
+                    <div class="bg-white rounded-2xl shadow-md p-6 mb-8 border border-slate-200">
+                        <h2 class="text-2xl font-bold text-indigo-700 mb-6 pb-2 border-b-2 border-indigo-100">${group.title}</h2>
+                        <div id="group-${gIndex}-questions" class="space-y-6">
+                `;
+
+                group.questions.forEach((q, qIndex) => {
+                    const clickableQText = makeWordsClickable(q.q);
+                    groupHTML += `
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 shadow-sm question-card" data-group="${gIndex}" data-q="${qIndex}" data-ans="${q.ans}">
+                            <div class="text-xl font-semibold mb-3 text-slate-900 flex items-start">
+                                <span class="bg-indigo-100 text-indigo-800 text-sm font-bold px-2.5 py-0.5 rounded mr-3 mt-1">${qIndex + 1}</span>
+                                <div class="flex-1">${clickableQText}</div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-8 choices-container">
+                    `;
+
+                    q.choices.forEach((choice, cIndex) => {
+                        const clickableChoice = makeWordsClickable(choice);
+                        groupHTML += `
+                            <label class="flex items-center p-3 bg-white border border-slate-300 rounded-lg cursor-pointer hover:bg-indigo-50 transition">
+                                <input type="radio" name="q_${gIndex}_${qIndex}" value="${cIndex}" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 mr-3">
+                                <span class="text-lg text-slate-700">${clickableChoice}</span>
+                            </label>
+                        `;
+                    });
+
+                    groupHTML += `
+                            </div>
+                            <div id="feedback_${gIndex}_${qIndex}" class="mt-3 pl-8 hidden font-semibold text-base"></div>
+                        </div>
+                    `;
+                });
+
+                groupHTML += `
+                        </div>
+                        <!-- Group Action Buttons -->
+                        <div class="mt-8 flex flex-wrap gap-4 pt-4 border-t border-slate-200">
+                            <button onclick="shuffleGroup(${gIndex})" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-xl shadow transition flex items-center">
+                                🔀 Shuffle Questions
+                            </button>
+                            <button onclick="checkGroup(${gIndex})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow transition flex items-center">
+                                ✅ Show Score & Correction
+                            </button>
+                            <div id="score_result_${gIndex}" class="ml-auto text-xl font-extrabold flex items-center"></div>
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML += groupHTML;
+            });
+        }
+
+        // Check Group Score and Show Instant Corrections
+        function checkGroup(gIndex) {
+            const group = groupsData[gIndex];
+            let correctCount = 0;
+
+            group.questions.forEach((q, qIndex) => {
+                const radios = document.querySelectorAll(`input[name="q_${gIndex}_${qIndex}"]`);
+                let selectedVal = -1;
+                radios.forEach((radio, rIdx) => {
+                    if (radio.checked) selectedVal = rIdx;
+                });
+
+                const feedbackDiv = document.getElementById(`feedback_${gIndex}_${qIndex}`);
+                feedbackDiv.classList.remove('hidden');
+
+                if (selectedVal === q.ans) {
+                    correctCount++;
+                    feedbackDiv.innerHTML = `<span class="text-emerald-600">✔ Correct! Great job.</span>`;
+                } else if (selectedVal === -1) {
+                    feedbackDiv.innerHTML = `<span class="text-amber-600">⚠ Not answered. The correct answer is: <strong>${q.choices[q.ans]}</strong></span>`;
+                } else {
+                    feedbackDiv.innerHTML = `<span class="text-red-600">✖ Incorrect. The correct answer is: <strong>${q.choices[q.ans]}</strong></span>`;
+                }
+            });
+
+            const scoreDisplay = document.getElementById(`score_result_${gIndex}`);
+            scoreDisplay.innerHTML = `Score: <span class="text-indigo-700">${correctCount} / 10</span>`;
+        }
+
+        // Shuffle Group Questions
+        function shuffleGroup(gIndex) {
+            // Fisher-Yates shuffle
+            for (let i = groupsData[gIndex].questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [groupsData[gIndex].questions[i], groupsData[gIndex].questions[j]] = [groupsData[gIndex].questions[j], groupsData[gIndex].questions[i]];
+            }
+            renderTest();
+        }
+
+        // Initialize test on load
+        window.onload = renderTest;
+    </script>
+</body>
+</html>
