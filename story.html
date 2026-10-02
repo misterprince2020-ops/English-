@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق تعلم المفردات التفاعلي</title>
+    <style>
+        :root {
+            --bg-color: #e0f2fe;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-en: #0f172a;
+            --text-ar: #dc2626;
+            --highlight: #fef08a;
+            --btn-blue: #3b82f6;
+            --btn-green: #22c55e;
+            --btn-red: #ef4444;
+            --btn-gray: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        /* أزرار التنقل بين المجموعات */
+        .group-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .group-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--btn-gray);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .group-btn.active {
+            background-color: var(--btn-blue);
+            transform: scale(1.05);
+        }
+
+        /* قسم المذاكرة */
+        .study-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .btn-loop-all {
+            background-color: var(--btn-blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-loop-all.stop {
+            background-color: var(--btn-red);
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 40px repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: stretch;
+        }
+
+        .row-loop-btn {
+            background-color: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .row-loop-btn:hover {
+            background-color: #e2e8f0;
+        }
+        .row-loop-btn.active {
+            background-color: var(--btn-red);
+            border-color: var(--btn-red);
+            color: white;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            height: 180px; /* حجم ثابت */
+            transition: background-color 0.3s, border-color 0.3s;
+            user-select: none;
+        }
+        
+        .card.active {
+            background-color: var(--highlight);
+            border-color: #eab308;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background-color: #e2e8f0;
+            color: #475569;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .card-emoji {
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .card-en {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-en);
+            direction: ltr;
+        }
+
+        .card-ar {
+            font-size: 1.2rem;
+            color: var(--text-ar);
+            font-weight: bold;
+            margin-top: 5px;
+            visibility: hidden; /* مخفية افتراضياً */
+        }
+
+        .card.active .card-ar {
+            visibility: visible;
+        }
+
+        /* قسم الاختبار */
+        .quiz-section {
+            border-top: 5px dashed #cbd5e1;
+            padding-top: 30px;
+        }
+
+        .quiz-question {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .quiz-word {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--text-en);
+            cursor: pointer;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: 0.2s;
+            direction: ltr;
+        }
+        .quiz-word:hover {
+            background-color: #f1f5f9;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-box {
+            background-color: white;
+            border: 3px solid #cbd5e1;
+            border-radius: 15px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-box:hover {
+            border-color: var(--btn-blue);
+        }
+        .option-box.selected {
+            border-color: var(--btn-blue);
+            background-color: #eff6ff;
+        }
+        .option-box.correct {
+            border-color: var(--btn-green);
+            background-color: #dcfce7;
+        }
+        .option-box.wrong {
+            border-color: var(--btn-red);
+            background-color: #fee2e2;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .btn-quiz {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+        .btn-check { background-color: var(--btn-blue); }
+        .btn-check:hover { background-color: #2563eb; }
+        .btn-rebuild { background-color: #8b5cf6; }
+        .btn-rebuild:hover { background-color: #7c3aed; }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+            color: var(--text-main);
+        }
+
+        @media (max-width: 768px) {
+            .grid-row { grid-template-columns: 40px 1fr 1fr; }
+            .grid-row .card:nth-child(4) { display: none; } /* إخفاء البطاقة الرابعة في الشاشات الصغيرة */
+            .quiz-options { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📚 مذاكرة المفردات</h1>
+        
+        <!-- أزرار التنقل بين المجموعات -->
+        <div class="group-nav" id="groupNav">
+            <!-- سيتم توليدها بالجافاسكربت -->
+        </div>
+
+        <!-- قسم المذاكرة -->
+        <div class="study-header">
+            <h2>✨ قسم المذاكرة</h2>
+            <button class="btn-loop-all" id="btnLoopAll">🔁 تكرار المجموعة ككل</button>
+        </div>
+        <div id="studyGrid">
+            <!-- سيتم توليد البطاقات هنا -->
+        </div>
+    </div>
+
+    <!-- قسم الاختبار -->
+    <div class="container quiz-section">
+        <h2>📝 اختبار صارم (Hard Mode)</h2>
+        <div class="quiz-question">
+            <div class="quiz-word" id="quizWord" title="اضغط للاستماع">Word</div>
+        </div>
+        <div class="quiz-options" id="quizOptions">
+            <!-- سيتم توليد الخيارات هنا -->
+        </div>
+        <div class="quiz-controls">
+            <button class="btn-quiz btn-check" id="btnCheck">✔️ تصحيح</button>
+            <button class="btn-quiz btn-rebuild" id="btnRebuild">🔄 إعادة بناء الاختبار</button>
+        </div>
+        <div class="score-display" id="scoreDisplay">النتيجة: 0 / 0</div>
+    </div>
+
+    <script>
+        // 1. بنك الكلمات (مستخرج من الصور المرفقة)
+        const wordBank = [
+            // المجموعة 1: الحروف والكلمات الأساسية
+            { id: 1, en: "cap", ar: "قبعة", emoji: "🧢" },
+            { id: 2, en: "tap", ar: "صنبور", emoji: "🚰" },
+            { id: 3, en: "cape", ar: "عباءة", emoji: "🦸" },
+            { id: 4, en: "tape", ar: "شريط لاصق", emoji: "📼" },
+            { id: 5, en: "clock", ar: "ساعة حائط", emoji: "🕰️" },
+            { id: 6, en: "clap", ar: "تصفيق", emoji: "👏" },
+            { id: 7, en: "lock", ar: "قفل", emoji: "🔒" },
+            { id: 8, en: "apple", ar: "تفاحة", emoji: "🍎" },
+            { id: 9, en: "apron", ar: "مريلة", emoji: "🧑‍🍳" },
+            { id: 10, en: "ink", ar: "حبر", emoji: "🖋️" },
+            { id: 11, en: "iron", ar: "مكواة", emoji: "🧺" },
+            { id: 12, en: "pin", ar: "دبوس", emoji: "📌" },
+            { id: 13, en: "pine", ar: "شجرة صنوبر", emoji: "🌲" },
+            { id: 14, en: "time", ar: "وقت", emoji: "⏰" },
+            // المجموعة 2: المشاعر والحالات
+            { id: 15, en: "hungry", ar: "جائع", emoji: "😋" },
+            { id: 16, en: "thirsty", ar: "عطشان", emoji: "🥤" },
+            { id: 17, en: "hot", ar: "حار", emoji: "🥵" },
+            { id: 18, en: "cold", ar: "بارد", emoji: "🥶" },
+            { id: 19, en: "sleepy", ar: "نعسان", emoji: "🥱" },
+            { id: 20, en: "scared", ar: "خائف", emoji: "😨" },
+            // المجموعة 3: كلمات إضافية من الصور
+            { id: 21, en: "cat", ar: "قطة", emoji: "🐈" },
+            { id: 22, en: "hat", ar: "قبعة", emoji: "🎩" },
+            { id: 23, en: "can", ar: "علبة", emoji: "🥫" },
+            { id: 24, en: "pan", ar: "مقلاة", emoji: "🍳" },
+            { id: 25, en: "man", ar: "رجل", emoji: "👨" },
+            { id: 26, en: "fan", ar: "مروحة", emoji: "🪭" },
+            { id: 27, en: "jam", ar: "مربى", emoji: "🍓" },
+            { id: 28, en: "ram", ar: "كبش", emoji: "🐏" },
+            { id: 29, en: "van", ar: "شاحنة صغيرة", emoji: "🚐" },
+            { id: 30, en: "yak", ar: "ثور التبت", emoji: "🐂" }
+        ];
+
+        // تقسيم الكلمات إلى مجموعات (كل مجموعة 10 كلمات)
+        const GROUP_SIZE = 10;
+        const groups = [];
+        for (let i = 0; i < wordBank.length; i += GROUP_SIZE) {
+            groups.push(wordBank.slice(i, i + GROUP_SIZE));
+        }
+
+        // 2. المتغيرات العامة
+        let currentGroupIndex = 0;
+        let isLoopingAll = false;
+        let loopAllTimer = null;
+        let loopRowTimer = null;
+        let currentRowLoopIndex = -1;
+        
+        // متغيرات الاختبار
+        let currentQuizQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // لتخزين إجابات المستخدم
+        let quizScore = 0;
+        let isQuizChecked = false;
+
+        // 3. دوال الصوت (Web Speech API)
+        function speakWord(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // إلغاء أي نطق سابق
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9; // سرعة مناسبة
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 4. بناء واجهة المذاكرة
+        function renderStudySection() {
+            const grid = document.getElementById('studyGrid');
+            grid.innerHTML = '';
+            const currentGroup = groups[currentGroupIndex];
+
+            // تقسيم المجموعة إلى صفوف (3 كلمات في كل صف)
+            for (let i = 0; i < currentGroup.length; i += 3) {
+                const rowWords = currentGroup.slice(i, i + 3);
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'grid-row';
+                
+                // زر تكرار الصف
+                const rowBtn = document.createElement('button');
+                rowBtn.className = 'row-loop-btn';
+                rowBtn.innerHTML = '🔁';
+                rowBtn.title = 'تكرار هذا الصف';
+                rowBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleRowLoop(rowDiv, rowWords);
+                };
+                rowDiv.appendChild(rowBtn);
+
+                // بطاقات الكلمات
+                rowWords.forEach(word => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.dataset.id = word.id;
+                    card.innerHTML = `
+                        <div class="card-number">${word.id}</div>
+                        <div class="card-emoji">${word.emoji}</div>
+                        <div class="card-en">${word.en}</div>
+                        <div class="card-ar">${word.ar}</div>
+                    `;
+                    card.onclick = () => {
+                        // إيقاف أي تكرار تلقائي عند الضغط اليدوي
+                        stopAllLoops(); 
+                        // نطق الكلمة
+                        speakWord(word.en);
+                        // تظليل البطاقة
+                        card.classList.add('active');
+                        // إزالة التظليل بعد 1.5 ثانية
+                        setTimeout(() => {
+                            card.classList.remove('active');
+                        }, 1500);
+                    };
+                    rowDiv.appendChild(card);
+                });
+
+                // إضافة بطاقات فارغة إذا كان الصف أقل من 3 (للمحاذاة)
+                while (rowDiv.children.length < 4) {
+                    const emptyCard = document.createElement('div');
+                    emptyCard.style.visibility = 'hidden';
+                    rowDiv.appendChild(emptyCard);
+                }
+
+                grid.appendChild(rowDiv);
+            }
+        }
+
+        // 5. تكرار الصف (Loop Row)
+        function toggleRowLoop(rowDiv, words) {
+            if (currentRowLoopIndex === words[0].id) {
+                // إيقاف التكرار
+                stopAllLoops();
+                return;
+            }
+            stopAllLoops(); // إيقاف أي تكرار آخر
+            
+            currentRowLoopIndex = words[0].id;
+            const btn = rowDiv.querySelector('.row-loop-btn');
+            btn.classList.add('active');
+            btn.innerHTML = '⏹️';
+
+            let wordIndex = 0;
+            const loop = () => {
+                // إزالة التظليل عن كل بطاقات الصف
+                rowDiv.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+                
+                const word = words[wordIndex];
+                speakWord(word.en);
+                
+                // تظليل البطاقة الحالية
+                const cardToHighlight = rowDiv.querySelector(`.card[data-id="${word.id}"]`);
+                if (cardToHighlight) cardToHighlight.classList.add('active');
+
+                wordIndex = (wordIndex + 1) % words.length;
+            };
+
+            loop(); // تشغيل أول كلمة فوراً
+            loopRowTimer = setInterval(loop, 2500); // كل 2.5 ثانية
+        }
+
+        // 6. تكرار المجموعة ككل (Loop All)
+        function toggleLoopAll() {
+            const btn = document.getElementById('btnLoopAll');
+            if (isLoopingAll) {
+                stopAllLoops();
+                return;
+            }
+            
+            stopAllLoops(); // إيقاف أي تكرار آخر
+            isLoopingAll = true;
+            btn.classList.add('stop');
+            btn.innerHTML = '⏹️ إيقاف التكرار';
+
+            const currentGroup = groups[currentGroupIndex];
+            let wordIndex = 0;
+
+            const loop = () => {
+                // إزالة التظليل عن كل البطاقات في الصفحة
+                document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+
+                const word = currentGroup[wordIndex];
+                speakWord(word.en);
+
+                // تظليل البطاقة الحالية
+                const cardToHighlight = document.querySelector(`.card[data-id="${word.id}"]`);
+                if (cardToHighlight) cardToHighlight.classList.add('active');
+
+                wordIndex = (wordIndex + 1) % currentGroup.length;
+            };
+
+            loop(); // تشغيل أول كلمة
+            loopAllTimer = setInterval(loop, 2500);
+        }
+
+        function stopAllLoops() {
+            // إيقاف تكرار المجموعة
+            if (loopAllTimer) {
+                clearInterval(loopAllTimer);
+                loopAllTimer = null;
+            }
+            isLoopingAll = false;
+            const btnAll = document.getElementById('btnLoopAll');
+            if (btnAll) {
+                btnAll.classList.remove('stop');
+                btnAll.innerHTML = '🔁 تكرار المجموعة ككل';
+            }
+
+            // إيقاف تكرار الصف
+            if (loopRowTimer) {
+                clearInterval(loopRowTimer);
+                loopRowTimer = null;
+            }
+            currentRowLoopIndex = -1;
+            document.querySelectorAll('.row-loop-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.innerHTML = '🔁';
+            });
+
+            // إزالة التظليل
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        }
+
+        // 7. بناء أزرار التنقل بين المجموعات
+        function renderGroupNav() {
+            const nav = document.getElementById('groupNav');
+            nav.innerHTML = '';
+            groups.forEach((group, index) => {
+                const btn = document.createElement('button');
+                btn.className = `group-btn ${index === currentGroupIndex ? 'active' : ''}`;
+                btn.innerText = `المجموعة ${index + 1}`;
+                btn.onclick = () => {
+                    stopAllLoops();
+                    currentGroupIndex = index;
+                    renderGroupNav();
+                    renderStudySection();
+                    // إعادة بناء الاختبار عند تغيير المجموعة
+                    buildQuiz();
+                };
+                nav.appendChild(btn);
+            });
+        }
+
+        // 8. دوال الاختبار (Quiz)
+        function buildQuiz() {
+            stopAllLoops();
+            const currentGroup = groups[currentGroupIndex];
+            
+            // خلط أسئلة المجموعة
+            currentQuizQuestions = [...currentGroup].sort(() => Math.random() - 0.5);
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentQuizQuestions.length).fill(null);
+            quizScore = 0;
+            isQuizChecked = false;
+            
+            document.getElementById('scoreDisplay').innerText = `النتيجة: 0 / ${currentQuizQuestions.length}`;
+            document.getElementById('btnCheck').disabled = false;
+            document.getElementById('btnCheck').style.opacity = '1';
+            
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= currentQuizQuestions.length) {
+                // انتهى الاختبار
+                document.getElementById('quizWord').innerText = "🎉 انتهى الاختبار!";
+                document.getElementById('quizOptions').innerHTML = '';
+                return;
+            }
+
+            const question = currentQuizQuestions[currentQuestionIndex];
+            
+            // عرض الكلمة
+            const wordDisplay = document.getElementById('quizWord');
+            wordDisplay.innerText = question.en;
+            wordDisplay.onclick = () => speakWord(question.en);
+
+            // توليد الخيارات
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            // الإجابة الصحيحة
+            const correctOption = question;
+            
+            // توليد 3 إجابات خاطئة عشوائية من نفس المجموعة
+            const wrongOptions = currentGroup
+                .filter(w => w.id !== correctOption.id)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3);
+
+            // دمج الخيارات وخلطها
+            const allOptions = [correctOption, ...wrongOptions].sort(() => Math.random() - 0.5);
+
+            allOptions.forEach(opt => {
+                const box = document.createElement('div');
+                box.className = 'option-box';
+                box.innerText = opt.emoji;
+                box.dataset.id = opt.id;
+                
+                // إذا كان المستخدم قد اختار سابقاً (في حالة التنقل)
+                if (userAnswers[currentQuestionIndex] === opt.id) {
+                    box.classList.add('selected');
+                }
+
+                box.onclick = () => {
+                    if (isQuizChecked) return; // منع التغيير بعد التصحيح
+                    
+                    // إزالة التحديد من الكل
+                    optionsContainer.querySelectorAll('.option-box').forEach(b => b.classList.remove('selected'));
+                    // تحديد الخيار الحالي
+                    box.classList.add('selected');
+                    // حفظ الإجابة
+                    userAnswers[currentQuestionIndex] = opt.id;
+                };
+                optionsContainer.appendChild(box);
+            });
+
+            // إظهار رقم السؤال
+            // يمكن إضافة عداد الأسئلة هنا إذا أردت
+        }
+
+        function checkQuiz() {
+            if (isQuizChecked) return;
+            isQuizChecked = true;
+            
+            let correctCount = 0;
+            const question = currentQuizQuestions[currentQuestionIndex];
+            const optionsContainer = document.getElementById('quizOptions');
+            const boxes = optionsContainer.querySelectorAll('.option-box');
+
+            boxes.forEach(box => {
+                const optId = parseInt(box.dataset.id);
+                if (optId === question.id) {
+                    box.classList.add('correct'); // إبراز الإجابة الصحيحة بالأخضر
+                } else if (userAnswers[currentQuestionIndex] === optId && optId !== question.id) {
+                    box.classList.add('wrong'); // إبراز إجابة الطالب الخاطئة بالأحمر
+                }
+            });
+
+            // حساب النتيجة الإجمالية حتى الآن
+            // (لأننا في وضع السؤال الواحد، يمكننا حساب النتيجة النهائية عند الانتهاء)
+            // لكن للتبسيط، سنقوم بحساب النتيجة الإجمالية عند الضغط على تصحيح لكل سؤال
+            // ولكن الأفضل أن يكون التصحيح النهائي في النهاية. 
+            // سأقوم بحساب النتيجة بناءً على الإجابات المخزنة.
+            
+            let totalCorrect = 0;
+            currentQuizQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.id) {
+                    totalCorrect++;
+                }
+            });
+            
+            document.getElementById('scoreDisplay').innerText = `النتيجة: ${totalCorrect} / ${currentQuizQuestions.length}`;
+            
+            // تعطيل زر التصحيح
+            document.getElementById('btnCheck').disabled = true;
+            document.getElementById('btnCheck').style.opacity = '0.5';
+
+            // الانتقال للسؤال التالي تلقائياً بعد 2 ثانية
+            setTimeout(() => {
+                if (currentQuestionIndex < currentQuizQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                    // إعادة تفعيل زر التصحيح للسؤال الجديد
+                    isQuizChecked = false;
+                    document.getElementById('btnCheck').disabled = false;
+                    document.getElementById('btnCheck').style.opacity = '1';
+                } else {
+                    // انتهى الاختبار
+                    document.getElementById('quizWord').innerText = "🎉 انتهى الاختبار!";
+                    document.getElementById('quizOptions').innerHTML = '';
+                    document.getElementById('scoreDisplay').innerText = `النتيجة النهائية: ${totalCorrect} / ${currentQuizQuestions.length}`;
+                }
+            }, 2000);
+        }
+
+        // 9. تهيئة التطبيق
+        function init() {
+            renderGroupNav();
+            renderStudySection();
+            buildQuiz();
+
+            // ربط الأحداث
+            document.getElementById('btnLoopAll').onclick = toggleLoopAll;
+            document.getElementById('btnCheck').onclick = checkQuiz;
+            document.getElementById('btnRebuild').onclick = buildQuiz;
+        }
+
+        // بدء التطبيق عند تحميل الصفحة
+        window.onload = init;
+
+    </script>
+</body>
+</html>
