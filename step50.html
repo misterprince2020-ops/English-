@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار STEP الشامل - قراءة واستيعاب</title>
+    <style>
+        :root {
+            --text-dark: #2c3e50;
+            --card-bg: #ffffff;
+            --option-bg: #f4f7fa;
+            --option-hover: #e3f0fb;
+            --success: #27ae60;
+            --danger: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.2em;
+            border-bottom: 3px dashed #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .instructions {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            line-height: 1.8;
+            box-shadow: 0 4px 10px rgba(255, 117, 140, 0.3);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid #3498db;
+            transition: transform 0.2s;
+        }
+        .question-card:hover { transform: translateY(-2px); }
+
+        .q-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            direction: ltr;
+        }
+
+        .q-num-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border-radius: 50%;
+            min-width: 35px;
+            height: 35px;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-right: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .q-text {
+            font-family: 'Arial', sans-serif;
+            font-size: 1.3em;
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .options-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            direction: ltr; 
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--option-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .option-label:hover { background: var(--option-hover); transform: translateX(5px); }
+        
+        input[type="radio"] { 
+            transform: scale(1.4); 
+            cursor: pointer; 
+            accent-color: #3498db; 
+        }
+
+        .opt-en { 
+            font-size: 1.15em; 
+            color: #34495e;
+            line-height: 1.4;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 18px;
+            color: white;
+            border: none;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+        
+        .btn-submit { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); }
+        .btn-reset { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+
+        .correct-ans { background: #d4edda !important; border-color: var(--success) !important; }
+        .wrong-ans { background: #fbd3d7 !important; border-color: var(--danger) !important; }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-top: 30px;
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <h1>📝 اختبار القراءة الشامل (9 نماذج)</h1>
+    
+    <div class="instructions">
+        ⚠️ هذا اختبار فعلي لقياس مستواك.<br>
+        الأسئلة باللغة الإنجليزية فقط، بدون ترجمة أو نطق.<br>
+        ✅ أجب عن جميع الأسئلة ثم اضغط على زر "تصحيح وعرض الدرجة".
+    </div>
+    
+    <div id="test-container"></div>
+    
+    <div class="btn-group">
+        <button class="action-btn btn-submit" onclick="checkAnswers()">🏆 تصحيح وعرض الدرجة</button>
+        <button class="action-btn btn-reset" onclick="resetAndShuffleTest()">🔄 تصفير وإعادة ترتيب الأسئلة</button>
+    </div>
+    
+    <div id="score-display" class="score-display"></div>
+
+</div>
+
+<script>
+    // بنك الأسئلة المجمع من جميع النماذج الـ 9 المذكورة في الملف
+    const originalQuizData = [
+        // Passage: Ktunaxa Language
+        { q: "Why is it too late to record the language?", options: [{ en: "It is mainly spoken by elders", correct: true }, { en: "It is mainly spoken by children", correct: false }, { en: "It is a dead language", correct: false }] },
+        { q: "The materials that will be published and the recordings will be available for?", options: [{ en: "Anyone who wishes to use it", correct: true }, { en: "Only elders", correct: false }, { en: "University students only", correct: false }] },
+        { q: "Author opinion to Ktunaxa language?", options: [{ en: "Supportive", correct: true }, { en: "Negative", correct: false }, { en: "Neutral", correct: false }] },
+        { q: "What does the word \"preserve\" mean?", options: [{ en: "Protected", correct: true }, { en: "Destroyed", correct: false }, { en: "Forgotten", correct: false }] },
+        { q: "The word \"can\" in the first sentence. What is the point of using it?", options: [{ en: "Create interest", correct: true }, { en: "Show facts", correct: false }, { en: "Make confused", correct: false }] },
+        { q: "Why Marina chose the internet?", options: [{ en: "To use technology younger generation are familiar with", correct: true }, { en: "Because it is fast and cheap", correct: false }, { en: "To read more books online", correct: false }] },
+        { q: "The pronoun \"it\" refers to?", options: [{ en: "Material", correct: true }, { en: "Internet", correct: false }, { en: "Language", correct: false }] },
+        { q: "How is it available online?", options: [{ en: "As recordings, games for children, written language", correct: true }, { en: "Only as books", correct: false }, { en: "Only as audio files", correct: false }] },
+
+        // Passage: Pizza
+        { q: "Why is pizza popular?", options: [{ en: "Adapt to different cultures", correct: true }, { en: "It is cheap", correct: false }, { en: "It is easy to make", correct: false }] },
+        { q: "Shaky pizza opened in?", options: [{ en: "California 1954", correct: true }, { en: "Italy 1954", correct: false }, { en: "New York 1960", correct: false }] },
+        { q: "What is the best title?", options: [{ en: "Popularity pizza", correct: true }, { en: "Unhealthy food", correct: false }, { en: "Italian history", correct: false }] },
+        { q: "Why is pizza not healthy?", options: [{ en: "Because it contains a lot of high calories", correct: true }, { en: "Because it has no vegetables", correct: false }, { en: "Because it is expensive", correct: false }] },
+        { q: "Why was pizza sold at supermarkets?", options: [{ en: "To meet the increased demand", correct: true }, { en: "To make it cheaper", correct: false }, { en: "Because restaurants closed", correct: false }] },
+        { q: "Pizza has vitamins because?", options: [{ en: "Variety of ingredients", correct: true }, { en: "It has cheese", correct: false }, { en: "It is baked", correct: false }] },
+
+        // Passage: Oud
+        { q: "What should we do to make Oud become perfume?", options: [{ en: "Distilling", correct: true }, { en: "Burning", correct: false }, { en: "Freezing", correct: false }] },
+        { q: "We can't use Oud in:", options: [{ en: "Cleaning", correct: true }, { en: "Perfumes", correct: false }, { en: "Incense", correct: false }] },
+        { q: "How can Oud's tree produce it?", options: [{ en: "Infected fungus", correct: true }, { en: "By planting seeds", correct: false }, { en: "From leaves", correct: false }] },
+        { q: "What kind of perfume that Europe used with Oud?", options: [{ en: "Rose and sandalwood", correct: true }, { en: "Jasmine and musk", correct: false }, { en: "Vanilla", correct: false }] },
+        { q: "What do \"harvesting\" and \"reaper\" mean?", options: [{ en: "Collected", correct: true }, { en: "Planted", correct: false }, { en: "Destroyed", correct: false }] },
+        { q: "Where does oud come from?", options: [{ en: "India, Yemen, Thailand, Ethiopia", correct: true }, { en: "Only Saudi Arabia", correct: false }, { en: "Europe and America", correct: false }] },
+        { q: "How do they make the little bottles which called in Arabic Talat?", options: [{ en: "They put it in water / they evaporate it", correct: true }, { en: "They freeze it", correct: false }, { en: "They mix it with oil", correct: false }] },
+        { q: "Oud is taken from:", options: [{ en: "4, 5 types of tree", correct: true }, { en: "15 types of trees", correct: false }, { en: "all healthy and green trees", correct: false }] },
+        { q: "What are the two things uses in Oud?", options: [{ en: "Oil and Bakhoor", correct: true }, { en: "Water and sugar", correct: false }, { en: "Wood and leaves", correct: false }] },
+
+        // Passage: Ants
+        { q: "What does (parallel) mean?", options: [{ en: "Similar", correct: true }, { en: "Different", correct: false }, { en: "Opposite", correct: false }] },
+        { q: "What is the best title?", options: [{ en: "Ant mirror of human activity", correct: true }, { en: "Ant kinds", correct: false }, { en: "Ant food", correct: false }, { en: "Ant studies of scientists", correct: false }] },
+        { q: "What is the sentence that is not mentioned in the third paragraph?", options: [{ en: "Ants has different organs", correct: true }, { en: "Ants differ in color", correct: false }, { en: "Ants differ in their diet", correct: false }] },
+        { q: "This type of meat ant from ants:", options: [{ en: "Protect their nest", correct: true }, { en: "You make a servant for the rest", correct: false }, { en: "Lay eggs", correct: false }] },
+        { q: "Where do the ants live?", options: [{ en: "Colonies", correct: true }, { en: "Trees", correct: false }, { en: "Water", correct: false }] },
+        { q: "Why are the ants useful?", options: [{ en: "They eat insects and clean houses", correct: true }, { en: "They produce honey", correct: false }, { en: "They are good pets", correct: false }] },
+        { q: "What does the word \"exhibit\" mean?", options: [{ en: "Display", correct: true }, { en: "Hide", correct: false }, { en: "Destroy", correct: false }] },
+        { q: "Who helps the queen to get food?", options: [{ en: "Worker ants", correct: true }, { en: "The king", correct: false }, { en: "Meat ants", correct: false }] },
+        { q: "How do ants get food?", options: [{ en: "By smell", correct: true }, { en: "By sight", correct: false }, { en: "By hearing", correct: false }] },
+
+        // Passage: Madain Saleh
+        { q: "Why is Madain Saleh important?", options: [{ en: "Great historical cultural site", correct: true }, { en: "It is a modern city", correct: false }, { en: "It has a large mall", correct: false }] },
+        { q: "What does the pronoun \"its\" refer to?", options: [{ en: "Madain Saleh", correct: true }, { en: "Petra", correct: false }, { en: "The desert", correct: false }] },
+        { q: "What does the word \"site\" mean?", options: [{ en: "Places", correct: true }, { en: "Books", correct: false }, { en: "People", correct: false }] },
+        { q: "What does (nocturnal) mean?", options: [{ en: "Active at night", correct: true }, { en: "Active in morning", correct: false }, { en: "Sleeping all day", correct: false }] },
+        { q: "What did the author describe Petra?", options: [{ en: "The capital of the Nabatean state", correct: true }, { en: "A small village", correct: false }, { en: "A new city", correct: false }] },
+        { q: "Which Nabateans not doing?", options: [{ en: "Decorations in Madinah", correct: true }, { en: "Building tombs", correct: false }, { en: "Trading", correct: false }] },
+        { q: "Why did Prophet Saleh leave his people?", options: [{ en: "So believers are not destroyed", correct: true }, { en: "To find a new city", correct: false }, { en: "To trade goods", correct: false }] },
+
+        // Passage: Family Responsibility
+        { q: "Why did the father buy a car for his son?", options: [{ en: "Reward because he passed all his exams", correct: true }, { en: "Because he needed it for work", correct: false }, { en: "It was his birthday", correct: false }] },
+        { q: "What does (smashed) mean?", options: [{ en: "Destroy", correct: true }, { en: "Build", correct: false }, { en: "Fix", correct: false }] },
+        { q: "What did Khaled understand from the gift?", options: [{ en: "It is used for family responsibilities", correct: true }, { en: "He can travel the world", correct: false }, { en: "He doesn't have to work", correct: false }] },
+
+        // Passage: Memories
+        { q: "Memory is the power to gather roses in winter. What do you understand from this statement?", options: [{ en: "Good memories solve problems", correct: true }, { en: "We need to gather roses in winter", correct: false }, { en: "Happy memories are bad in winter", correct: false }] },
+
+        // Passage: Dave and the Award
+        { q: "Who won the award?", options: [{ en: "Team of three students", correct: true }, { en: "Dave alone", correct: false }, { en: "Dave and three teams", correct: false }] },
+
+        // Passage: Shopping & Stars
+        { q: "Blue, red, green, these words are about:", options: [{ en: "Colors", correct: true }, { en: "Sizes", correct: false }, { en: "Price", correct: false }] },
+        { q: "Small and medium, these words are about:", options: [{ en: "Sizes", correct: true }, { en: "Colors", correct: false }, { en: "Price", correct: false }] },
+        { q: "What is the best title of the passage? (Stars)", options: [{ en: "Classifying stars according to their colors and size", correct: true }, { en: "How to buy a camera", correct: false }, { en: "Night photography", correct: false }] },
+        { q: "Why are scientists shooting stars?", options: [{ en: "To study it", correct: true }, { en: "To sell photos", correct: false }, { en: "Just for fun", correct: false }] },
+        { q: "What did not the author use in comparing among stars?", options: [{ en: "Shape", correct: true }, { en: "Color", correct: false }, { en: "Size", correct: false }] },
+        { q: "What does (sufficient) mean?", options: [{ en: "Enough", correct: true }, { en: "Little", correct: false }, { en: "Empty", correct: false }] }
+    ];
+
+    let currentQuizData = [];
+
+    // دالة بناء وخلط الاختبار
+    function renderTestSection() {
+        const testContainer = document.getElementById('test-container');
+        testContainer.innerHTML = '';
+        
+        // استنساخ المصفوفة الأصلية وخلط الأسئلة عشوائياً
+        currentQuizData = JSON.parse(JSON.stringify(originalQuizData)).sort(() => Math.random() - 0.5);
+
+        currentQuizData.forEach((q, qIndex) => {
+            // خلط الخيارات داخل السؤال الواحد عشوائياً
+            let shuffledOptions = q.options.sort(() => Math.random() - 0.5);
+            
+            let optionsHTML = shuffledOptions.map((opt, oIndex) => {
+                return `
+                <label class="option-label" id="test-label-${qIndex}-${oIndex}">
+                    <input type="radio" name="test_q${qIndex}" value="${opt.correct}" onchange="selectOption(${qIndex})">
+                    <span class="opt-en">${opt.en}</span>
+                </label>`
+            }).join('');
+
+            let questionHTML = `
+                <div class="question-card" id="test-q-card-${qIndex}">
+                    <div class="q-header">
+                        <span class="q-num-badge">${qIndex + 1}</span> 
+                        <div class="q-text">${q.q}</div>
+                    </div>
+                    <div class="options-container">
+                        ${optionsHTML}
+                    </div>
+                </div>`;
+            testContainer.innerHTML += questionHTML;
+        });
+    }
+
+    // تشغيل الدالة لبناء الاختبار عند فتح الصفحة
+    renderTestSection();
+
+    // تلوين إطار الإجابة عند الاختيار
+    function selectOption(qIndex) {
+        let labels = document.querySelectorAll(`#test-q-card-${qIndex} .option-label`);
+        labels.forEach(lbl => {
+            lbl.style.border = "2px solid transparent";
+            lbl.style.background = "var(--option-bg)";
+        });
+        
+        let checkedInput = document.querySelector(`input[name="test_q${qIndex}"]:checked`);
+        if(checkedInput) {
+            checkedInput.closest('.option-label').style.border = `2px solid #3498db`;
+            checkedInput.closest('.option-label').style.background = "#eef2fc";
+        }
+    }
+
+    // تصحيح الاختبار وحساب الدرجة
+    function checkAnswers() {
+        let score = 0;
+        let answeredQuestions = 0;
+
+        currentQuizData.forEach((q, qIndex) => {
+            let labels = document.querySelectorAll(`#test-q-card-${qIndex} .option-label`);
+            let checkedInput = document.querySelector(`input[name="test_q${qIndex}"]:checked`);
+            
+            if (checkedInput) answeredQuestions++;
+
+            labels.forEach(lbl => {
+                let input = lbl.querySelector('input');
+                lbl.classList.remove('correct-ans', 'wrong-ans'); 
+                
+                // تحديد الإجابة الصحيحة باللون الأخضر
+                if (input.value === "true") { 
+                    lbl.classList.add('correct-ans'); 
+                }
+                
+                // إذا أخطأ الطالب، تظلل إجابته بالأحمر
+                if (input.checked) {
+                    if (input.value === "true") { 
+                        score++; 
+                    } else { 
+                        lbl.classList.add('wrong-ans'); 
+                    }
+                }
+            });
+        });
+
+        let scoreDiv = document.getElementById(`score-display`);
+
+        if (answeredQuestions < currentQuizData.length) {
+            scoreDiv.innerHTML = `⚠️ لقد أجبت على ${answeredQuestions} من أصل ${currentQuizData.length} سؤال.<br> <span style="color:#e74c3c; display:block; margin-top:10px;">النتيجة المؤقتة: ${score} من ${currentQuizData.length}</span>`;
+            scoreDiv.style.borderTop = "5px solid #e74c3c";
+        } else {
+            scoreDiv.innerHTML = `🎉 ممتاز! تم إنهاء الاختبار بالكامل.<br> <span style="color:#27ae60; display:block; margin-top:10px;">النتيجة النهائية: ${score} من ${currentQuizData.length}</span>`;
+            scoreDiv.style.borderTop = "5px solid #27ae60";
+        }
+        
+        scoreDiv.style.display = 'block';
+        scoreDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // تصفير وإعادة ترتيب الأسئلة والخيارات
+    function resetAndShuffleTest() {
+        let scoreDiv = document.getElementById('score-display');
+        scoreDiv.style.display = 'none';
+        scoreDiv.innerHTML = '';
+
+        // إعادة بناء القسم بالكامل (خلط جديد للأسئلة والخيارات)
+        renderTestSection();
+
+        // الصعود لأعلى الصفحة بسلاسة
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
