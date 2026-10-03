@@ -1,51 +1,65 @@
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مكتبة الأستاذ حمادة التعليمية الشاملة</title>
-<style>
-body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; text-align: center; padding: 20px; }
-h1 { color: #2c3e50; margin-top: 10px; }
-p { color: #555; font-size: 18px; margin-bottom: 25px; }
-.section-title { color: #1abc9c; margin-top: 30px; font-size: 22px; border-bottom: 2px solid #1abc9c; display: inline-block; padding-bottom: 5px; }
-.button-container { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 400px; margin: 0 auto; }
-.btn { display: block; width: 100%; padding: 14px; background-color: #007bff; color: white; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 10px; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-.btn:hover { background-color: #0056b3; }
-.btn-secondary { background-color: #e67e22; }
-.btn-secondary:hover { background-color: #d35400; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة الأستاذ حمادة التعليمية</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8f9fa; text-align: center; padding: 20px; margin: 0; }
+        h1 { color: #2c3e50; margin-top: 15px; font-size: 26px; }
+        p { color: #555; font-size: 16px; margin-bottom: 25px; }
+        
+        /* عناوين المراحل والألوان */
+        .section-title { font-size: 20px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; display: inline-block; padding: 6px 15px; border-radius: 20px; color: white; }
+        
+        .primary-title { background-color: #27ae60; } /* أخضر للابتدائي */
+        .middle-title { background-color: #d35400; }  /* أصفر/برتقالي للمتوسط */
+        .secondary-title { background-color: #c0392b; }/* أحمر للثانوي */
+
+        .button-container { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 400px; margin: 0 auto; }
+        
+        /* أزرار المراحل بلون متناسق */
+        .btn { display: block; width: 100%; padding: 12px; color: white; text-decoration: none; font-size: 17px; font-weight: bold; border-radius: 8px; transition: 0.3s; box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
+        
+        .btn-primary { background-color: #2ecc71; }
+        .btn-primary:hover { background-color: #27ae60; }
+
+        .btn-middle { background-color: #f39c12; }
+        .btn-middle:hover { background-color: #d68910; }
+
+        .btn-secondary { background-color: #e74c3c; }
+        .btn-secondary:hover { background-color: #c0392b; }
+    </style>
 </head>
 <body>
-<h1>مكتبة الأستاذ حمادة</h1>
-<p>بوابتك المركزية للخدمات التعليمية - اختر المرحلة الدراسية:</p>
+    <h1>مكتبة الأستاذ حمادة التعليمية</h1>
+    <p>البوابـة المركزية لجميع المراحل الدراسية - اختر الصف:</p>
 
-<div class="section-title">المرحلة المتوسطة</div>
-<div class="button-container">
-<a href="first-intermediate.html" class="btn">أول متوسط</a>
-<a href="second-intermediate.html" class="btn">ثاني متوسط</a>
-<a href="third-intermediate.html" class="btn">ثالث متوسط</a>
-</div>
+    <!-- المرحلة الابتدائية (أخضر) -->
+    <div class="section-title primary-title">المرحلة الابتدائية</div>
+    <div class="button-container">
+        <a href="1primary.html" class="btn btn-primary">أول ابتدائي</a>
+        <a href="2primary.html" class="btn btn-primary">ثاني ابتدائي</a>
+        <a href="3primary.html" class="btn btn-primary">ثالث ابتدائي</a>
+        <a href="4primary.html" class="btn btn-primary">رابع ابتدائي</a>
+        <a href="5primary.html" class="btn btn-primary">خامس ابتدائي</a>
+        <a href="6primary.html" class="btn btn-primary">سادس ابتدائي</a>
+    </div>
 
-<div class="section-title">المرحلة الثانوية</div>
-<div class="button-container">
-<a href="first-secondary.html" class="btn btn-secondary">أول ثانوي</a>
-<a href="third-secondary.html" class="btn btn-secondary">ثالث ثانوي</a>
-</div>
+    <!-- المرحلة المتوسطة (أصفر / برتقالي) -->
+    <div class="section-title middle-title">المرحلة المتوسطة</div>
+    <div class="button-container">
+        <a href="1intermediate.html" class="btn btn-middle">أول متوسط</a>
+        <a href="2intermediate.html" class="btn btn-middle">ثاني متوسط</a>
+        <a href="3intermediate.html" class="btn btn-middle">ثالث متوسط</a>
+    </div>
 
-<div class="section-title">المرحلة الابتدائية</div>
-<div class="button-container">
-<a href="first-primary.html" class="btn" style="background-color: #8e44ad;">أول ابتدائي</a>
-<a href="second-primary.html" class="btn" style="background-color: #8e44ad;">ثاني ابتدائي</a>
-<a href="third-primary.html" class="btn" style="background-color: #8e44ad;">ثالث ابتدائي</a>
-</div>
+    <!-- المرحلة الثانوية (أحمر) -->
+    <div class="section-title secondary-title">المرحلة الثانوية</div>
+    <div class="button-container">
+        <a href="1secondary.html" class="btn btn-secondary">أول ثانوي</a>
+        <a href="2secondary.html" class="btn btn-secondary">ثاني ثانوي</a>
+        <a href="3secondary.html" class="btn btn-secondary">ثالث ثانوي</a>
+    </div>
 </body>
 </html>
-
