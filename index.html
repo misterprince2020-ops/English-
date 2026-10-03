@@ -5,25 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتبة الأستاذ حمادة التعليمية الشاملة</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8f9fa; text-align: center; padding: 20px; margin: 0; }
-        h1 { color: #2c3e50; margin-top: 15px; font-size: 26px; }
-        p { color: #555; font-size: 16px; margin-bottom: 25px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; text-align: center; padding: 20px; margin: 0; direction: rtl; }
+        h1 { color: #2c3e50; margin-top: 15px; font-size: 28px; }
+        p { color: #555; font-size: 16px; margin-bottom: 30px; }
+        
+        /* الحاوية الكبرى للتصميم الأفقي */
+        .container { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        
+        /* بطاقة كل مرحلة (أفقي متناسق) */
+        .category-card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); width: 300px; padding: 15px; text-align: right; display: flex; flex-direction: column; }
         
         /* عناوين المراحل والألوان المميزة */
-        .section-title { font-size: 19px; font-weight: bold; margin-top: 25px; margin-bottom: 10px; display: inline-block; padding: 6px 15px; border-radius: 20px; color: white; }
+        .section-title { font-size: 17px; font-weight: bold; margin-bottom: 12px; padding: 8px 12px; border-radius: 8px; color: white; text-align: center; }
         
-        .primary-early { background-color: #27ae60; }   /* أخضر: ابتدائي صفوف أولية */
-        .primary-upper { background-color: #16a085; }   /* أخضر فیروزي: ابتدائي صفوف عليا */
-        .middle-school { background-color: #d35400; }   /* برتقالي: متوسط */
-        .high-school { background-color: #c0392b; }     /* أحمر: ثانوي */
-        .university-school { background-color: #8e44ad; }/* بنفسجي: جامعي Unlock */
-        .step-school { background-color: #2980b9; }     /* أزرق: قسم STEP */
-        .general-school { background-color: #34495e; }  /* كحلي/رمادي: عام وقواعد صوتيات */
+        .c-primary-early { background-color: #27ae60; }   /* أخضر: ابتدائي صفوف أولية */
+        .c-primary-upper { background-color: #16a085; }   /* أخضر فیروزي: ابتدائي صفوف عليا */
+        .c-middle-school { background-color: #d35400; }   /* برتقالي: متوسط */
+        .c-high-school { background-color: #c0392b; }     /* أحمر: ثانوي */
+        .c-university-school { background-color: #8e44ad; }/* بنفسجي: جامعي Unlock */
+        .c-step-school { background-color: #2980b9; }     /* أزرق: قسم STEP */
+        .c-general-school { background-color: #34495e; }  /* كحلي/رمادي: عام وقواعد */
 
-        .button-container { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 400px; margin: 0 auto; }
+        /* حاوية الأزرار داخل كل بطاقة */
+        .button-group { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
         
-        /* تصميم الأزرار */
-        .btn { display: block; width: 100%; padding: 12px; color: white; text-decoration: none; font-size: 17px; font-weight: bold; border-radius: 8px; transition: 0.3s; box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
+        /* تصميم الأزرار الفردية */
+        .btn { display: block; width: 100%; padding: 10px; color: white; text-decoration: none; font-size: 15px; font-weight: bold; border-radius: 6px; text-align: center; transition: 0.2s; box-sizing: border-box; }
         
         .btn-p1 { background-color: #2ecc71; }
         .btn-p2 { background-color: #1abc9c; }
@@ -32,66 +39,88 @@
         .btn-uni { background-color: #9b59b6; }
         .btn-step { background-color: #3498db; }
         .btn-gen { background-color: #7f8c8d; }
+
+        .btn:hover { opacity: 0.85; transform: translateY(-2px); }
     </style>
 </head>
 <body>
+
     <h1>مكتبة الأستاذ حمادة التعليمية</h1>
-    <p>بوابتك الشاملة لجميع المراحل والمهارات - اختر القسم المطلوب:</p>
+    <p>البوابـة المركزية الشاملة - اختر المرحلة أو القسم المطلوب:</p>
 
-    <!-- 1. المرحلة الابتدائية - الصفوف الأولية -->
-    <div class="section-title primary-early">الابتدائية: الصفوف الأولية</div>
-    <div class="button-container">
-        <a href="1primary.html" class="btn btn-p1">أول ابتدائي</a>
-        <a href="2primary.html" class="btn btn-p1">ثاني ابتدائي</a>
-        <a href="3primary.html" class="btn btn-p1">ثالث ابتدائي</a>
+    <div class="container">
+        
+        <!-- 1. الابتدائية - الصفوف الأولية -->
+        <div class="category-card">
+            <div class="section-title c-primary-early">ابتدائي: صفوف أولية</div>
+            <div class="button-group">
+                <a href="1primary.html" class="btn btn-p1">أول ابتدائي</a>
+                <a href="2primary.html" class="btn btn-p1">ثاني ابتدائي</a>
+                <a href="3primary.html" class="btn btn-p1">ثالث ابتدائي</a>
+            </div>
+        </div>
+
+        <!-- 2. الابتدائية - الصفوف العليا -->
+        <div class="category-card">
+            <div class="section-title c-primary-upper">ابتدائي: صفوف عليا</div>
+            <div class="button-group">
+                <a href="4primary.html" class="btn btn-p2">رابع ابتدائي</a>
+                <a href="5primary.html" class="btn btn-p2">خامس ابتدائي</a>
+                <a href="6primary.html" class="btn btn-p2">سادس ابتدائي</a>
+            </div>
+        </div>
+
+        <!-- 3. المرحلة المتوسطة -->
+        <div class="category-card">
+            <div class="section-title c-middle-school">المرحلة المتوسطة</div>
+            <div class="button-group">
+                <a href="1intermediate.html" class="btn btn-mid">أول متوسط</a>
+                <a href="2intermediate.html" class="btn btn-mid">ثاني متوسط</a>
+                <a href="3intermediate.html" class="btn btn-mid">ثالث متوسط</a>
+            </div>
+        </div>
+
+        <!-- 4. المرحلة الثانوية -->
+        <div class="category-card">
+            <div class="section-title c-high-school">المرحلة الثانوية</div>
+            <div class="button-group">
+                <a href="1secondary.html" class="btn btn-high">أول ثانوي</a>
+                <a href="2secondary.html" class="btn btn-high">ثاني ثانوي</a>
+                <a href="3secondary.html" class="btn btn-high">ثالث ثانوي</a>
+            </div>
+        </div>
+
+        <!-- 5. المرحلة الجامعية (Unlock) -->
+        <div class="category-card">
+            <div class="section-title c-university-school">المرحلة الجامعية (Unlock)</div>
+            <div class="button-group">
+                <a href="unlock1.html" class="btn btn-uni">Unlock 1</a>
+                <a href="unlock2.html" class="btn btn-uni">Unlock 2</a>
+                <a href="unlock3.html" class="btn btn-uni">Unlock 3</a>
+            </div>
+        </div>
+
+        <!-- 6. قسم اختبار STEP -->
+        <div class="category-card">
+            <div class="section-title c-step-school">قسم اختبار STEP</div>
+            <div class="button-group">
+                <a href="step-grammar.html" class="btn btn-step">Grammar (القواعد)</a>
+                <a href="step-writing.html" class="btn btn-step">Writing Analysis (التحليل الكتابي)</a>
+                <a href="step-reading.html" class="btn btn-step">Reading (القراءة)</a>
+                <a href="step-listening.html" class="btn btn-step">Listening (الاستماع)</a>
+            </div>
+        </div>
+
+        <!-- 7. القسم العام وقواعد الصوتيات -->
+        <div class="category-card">
+            <div class="section-title c-general-school">قسم عام وقواعد الصوتيات</div>
+            <div class="button-group">
+                <a href="general-rules.html" class="btn btn-gen">قواعد عامة</a>
+                <a href="phonics-rules.html" class="btn btn-gen">قواعد الصوتيات (Phonics)</a>
+            </div>
+        </div>
+
     </div>
 
-    <!-- 2. المرحلة الابتدائية - الصفوف العليا -->
-    <div class="section-title primary-upper">الابتدائية: الصفوف العليا</div>
-    <div class="button-container">
-        <a href="4primary.html" class="btn btn-p2">رابع ابتدائي</a>
-        <a href="5primary.html" class="btn btn-p2">خامس ابتدائي</a>
-        <a href="6primary.html" class="btn btn-p2">سادس ابتدائي</a>
-    </div>
-
-    <!-- 3. المرحلة المتوسطة -->
-    <div class="section-title middle-school">المرحلة المتوسطة</div>
-    <div class="button-container">
-        <a href="1intermediate.html" class="btn btn-mid">أول متوسط</a>
-        <a href="2intermediate.html" class="btn btn-mid">ثاني متوسط</a>
-        <a href="3intermediate.html" class="btn btn-mid">ثالث متوسط</a>
-    </div>
-
-    <!-- 4. المرحلة الثانوية -->
-    <div class="section-title high-school">المرحلة الثانوية</div>
-    <div class="button-container">
-        <a href="1secondary.html" class="btn btn-high">أول ثانوي</a>
-        <a href="2secondary.html" class="btn btn-high">ثاني ثانوي</a>
-        <a href="3secondary.html" class="btn btn-high">ثالث ثانوي</a>
-    </div>
-
-    <!-- 5. المرحلة الجامعية (Unlock) -->
-    <div class="section-title university-school">المرحلة الجامعية (Unlock)</div>
-    <div class="button-container">
-        <a href="unlock1.html" class="btn btn-uni">Unlock 1</a>
-        <a href="unlock2.html" class="btn btn-uni">Unlock 2</a>
-        <a href="unlock3.html" class="btn btn-uni">Unlock 3</a>
-    </div>
-
-    <!-- 6. قسم اختبار STEP -->
-    <div class="section-title step-school">قسم اختبار STEP</div>
-    <div class="button-container">
-        <a href="step-grammar.html" class="btn btn-step">Grammar (القواعد)</a>
-        <a href="step-writing.html" class="btn btn-step">Writing Analysis (التحليل الكتابي)</a>
-        <a href="step-reading.html" class="btn btn-step">Reading (القراءة)</a>
-        <a href="step-listening.html" class="btn btn-step">Listening (الاستماع)</a>
-    </div>
-
-    <!-- 7. قسم عام وقواعد الصوتيات -->
-    <div class="section-title general-school">قسم عام وقواعد الصوتيات</div>
-    <div class="button-container">
-        <a href="general-rules.html" class="btn btn-gen">قواعد عامة</a>
-        <a href="phonics-rules.html" class="btn btn-gen">قواعد الصوتيات (Phonics)</a>
-    </div>
 </body>
 </html>
