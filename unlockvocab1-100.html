@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منهج Unlock 1 - المجموعة الأولى (100 سؤال)</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #f0f4f8, #d9e2ec); 
+            display: flex; 
+            justify-content: center; 
+            padding: 30px; 
+            direction: ltr; 
+            margin: 0;
+            transition: background 0.5s;
+        }
+        
+        .page { 
+            background-color: white; 
+            width: 1100px; 
+            padding: 40px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            border-radius: 15px; 
+            border-top: 8px solid #0284c7; 
+            transition: border-color 0.3s;
+        }
+        
+        .main-title { 
+            text-align: center; 
+            color: #0369a1; 
+            font-size: 2.4em; 
+            font-weight: 900; 
+            margin-bottom: 5px; 
+            text-transform: uppercase; 
+            direction: rtl;
+        }
+        
+        .sub-title {
+            text-align: center; 
+            color: #dc2626; 
+            font-size: 1.4em; 
+            font-weight: bold; 
+            margin-bottom: 25px;
+            border-bottom: 3px double #cbd5e1;
+            padding-bottom: 15px;
+            direction: rtl;
+        }
+
+        /* زر وضع الاختبار */
+        .test-mode-container {
+            text-align: center;
+            margin-bottom: 25px;
+            direction: rtl;
+        }
+        .btn-test-mode {
+            background-color: #ef4444; 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            font-size: 1.2em; 
+            font-weight: 900; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+            border: 2px solid #b91c1c;
+        }
+        .btn-test-mode:hover { background-color: #dc2626; transform: translateY(-2px); }
+        .btn-test-mode.active { background-color: #10b981; border-color: #047857; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+        .btn-test-mode.active:hover { background-color: #059669; }
+
+        /* أزرار التبويبات */
+        .tab-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; direction: rtl; }
+        .tab-btn { background-color: #f0f4f8; border: 2px solid #90caf9; cursor: pointer; padding: 10px 22px; font-size: 1.1em; font-weight: bold; color: #0d47a1; border-radius: 12px; transition: 0.3s; }
+        .tab-btn:hover { background-color: #e3f2fd; }
+        .tab-btn.active { background-color: #1976d2; color: white; border-color: #0d47a1; box-shadow: 0 4px 10px rgba(25, 118, 210, 0.3); }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* شريط التحكم */
+        .group-control-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; direction: rtl; background: #f8fafc; padding: 15px 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .control-action-btn { background-color: #2563eb; color: white; border: none; padding: 10px 20px; font-size: 1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .control-action-btn:hover { background-color: #1d4ed8; }
+        .reset-shuffle-btn { background-color: #d32f2f; color: white; border: none; padding: 10px 20px; font-size: 1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .reset-shuffle-btn:hover { background-color: #b71c1c; }
+        .section-result { font-weight: bold; font-size: 1.3em; color: #0d47a1; }
+
+        /* تنسيق السؤال والاختيارات */
+        .question-row { 
+            background: #fdfefe; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 10px; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            transition: 0.2s;
+        }
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        
+        .q-header-wrapper { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 10px; }
+        .read-row-btn { background-color: #f59e0b; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 1.4em; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); transition: 0.2s; flex-shrink: 0; margin-top: 5px; }
+        .read-row-btn:hover { background-color: #d97706; transform: scale(1.1); }
+
+        .q-text-container { flex: 1; display: flex; flex-direction: column; }
+
+        .q-text { 
+            font-size: 1.3em; 
+            font-weight: bold; 
+            color: #1e293b; 
+            direction: ltr; 
+            text-align: left; 
+            line-height: 2.2; 
+        }
+
+        /* الترجمة العربية الفصحى للسؤال */
+        .q-translation {
+            color: #dc2626; 
+            font-size: 1.15em;
+            font-weight: bold;
+            direction: rtl; 
+            text-align: right;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            border-bottom: 1px dashed #fca5a5;
+            padding-bottom: 10px;
+        }
+
+        .q-number {
+            color: #0284c7; 
+            font-weight: 900;
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .options-list { 
+            display: flex; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+            align-items: center; 
+            margin-left: 60px; 
+        }
+        .opt-item { 
+            display: flex; 
+            align-items: center; 
+            background: transparent; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        
+        .choice-badge { 
+            border-radius: 50%; 
+            width: 32px; 
+            height: 32px; 
+            background: #f8fafc; 
+            border: 2px solid #cbd5e1; 
+            color: #1e293b; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.2s; 
+            margin-right: 10px; 
+            flex-shrink: 0; 
+        }
+        .opt-item:hover .choice-badge { background: #e2e8f0; border-color: #94a3b8; }
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; border-color: #2563eb !important; }
+        
+        .choice-text { font-weight: bold; font-size: 1.15em; color: #334155; line-height: 2.2; cursor: pointer; }
+        
+        .opt-item.correct .choice-badge { background-color: #22c55e !important; border-color: #16a34a !important; color: white !important; }
+        .opt-item.correct .choice-text .word-en { color: #16a34a !important; }
+        .opt-item.wrong .choice-badge { background-color: #ef4444 !important; border-color: #dc2626 !important; color: white !important; }
+        .opt-item.wrong .choice-text .word-en { color: #dc2626 !important; }
+
+        /* =========================================
+           الترجمة الحرة والتتبع الأصفر للكلمات
+           ========================================= */
+        .word { 
+            position: relative; 
+            display: inline-block; 
+            cursor: pointer; 
+            margin: 0 2px;
+        }
+        .word-ar { 
+            display: none; 
+            position: absolute; 
+            bottom: 110%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: transparent !important; 
+            color: #dc2626; 
+            border: none !important; 
+            font-size: 0.85em; 
+            font-weight: 900; 
+            white-space: nowrap; 
+            pointer-events: none; 
+            direction: rtl;
+            z-index: 100;
+            text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0px 2px 4px rgba(255,255,255,0.9);
+        }
+        .word-en { 
+            color: #0f172a; 
+            font-weight: bold; 
+            transition: 0.1s; 
+            border-radius: 4px; 
+            padding: 0 2px; 
+        }
+        
+        .word.active-word-manual .word-en, .word.active-word .word-en { 
+            background-color: #fef08a !important; 
+            color: #000 !important; 
+            box-shadow: 0 0 6px rgba(253, 224, 71, 0.9);
+        }
+        .word.active-word-manual .word-ar { display: block; }
+        
+        .phrasal .word-en { border-bottom: 2px solid #ef4444; padding-bottom: 2px;}
+
+        /* =========================================
+           تأثيرات وضع الاختبار (تخفي المساعدات فقط عند التفعيل)
+           ========================================= */
+        body.test-mode-active { background: linear-gradient(135deg, #fef2f2, #fee2e2); }
+        body.test-mode-active .page { border-top-color: #ef4444; }
+        /* إخفاء الترجمة الفصحى السفلية للسؤال */
+        body.test-mode-active .q-translation { display: none !important; }
+        /* إخفاء زر النطق */
+        body.test-mode-active .read-row-btn { display: none !important; }
+        /* شلل التتبع والترجمة الفردية للكلمات */
+        body.test-mode-active .word { pointer-events: none !important; cursor: default !important; }
+        body.test-mode-active .word-ar { display: none !important; }
+        body.test-mode-active .phrasal .word-en { border-bottom: none !important; }
+        body.test-mode-active .options-list { margin-left: 15px; }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">منهج Unlock 1 - اختبار الكلمات</div>
+    <div class="sub-title">المجموعة الأولى (100 سؤال)</div>
+
+    <!-- زر وضع الاختبار يتحكم في كل شيء -->
+    <div class="test-mode-container">
+        <button id="testModeBtn" class="btn-test-mode" onclick="toggleTestMode()">🎯 تفعيل وضع الاختبار (إيقاف المساعدات)</button>
+    </div>
+
+    <p id="help-text" style="direction: rtl; text-align: center; color: #475569; font-weight: bold; font-size:1.1em; margin-bottom: 25px;">
+        💡 المساعدات مفعلة: الترجمة متاحة أسفل السؤال، ويمكنك الضغط على (🔊) للإملاء، أو النقر على أي كلمة لترجمتها ونطقها.
+    </p>
+
+    <!-- أزرار التبويبات -->
+    <div class="tab-buttons" id="tabs-buttons"></div>
+
+    <!-- حاويات الأسئلة -->
+    <div id="tabs-contents"></div>
+
+</div>
+
+<script>
+// ==========================================
+// القاموس الشامل 
+// ==========================================
+const wordDictionary = {
+    "my": "ملكي", "father's": "أب", "mother's": "أم", "uncle's": "عم/خال", "is": "يكون", "aunt": "عمة", "grandmother": "جدة", "sister": "أخت", "daughter": "ابنة",
+    "uncle": "عم", "grandfather": "جد", "son": "ابن", "brother": "أخ", "nephew": "ابن الأخ", "wife": "زوجة", "mother": "أم", "father": "أب",
+    "noun": "اسم", "female": "أنثى", "male": "ذكر", "place": "مكان", "action": "حدث", "verb": "فعل", "state": "حالة",
+    "words": "كلمات", "for": "لـ", "people": "أشخاص", "places": "أماكن", "things": "أشياء", "are": "يكونون", "verbs": "أفعال", "nouns": "أسماء", "adjectives": "صفات", "adverbs": "ظروف",
+    "states": "حالات", "actions": "أفعال", "sultan": "سلطان", "on": "على", "a": "الـ", "farm": "مزرعة", "live": "يعيش", "lives": "يعيش", "living": "عيش",
+    "he": "هو", "in": "في", "mardin": "ماردين", "moeen": "معين", "ali": "علي", "with": "مع", "his": "الخاص به", "play": "يلعب", "plays": "يلعب", "playing": "يلعب",
+    "two": "اثنان", "languages": "لغات", "speak": "يتحدث", "speaks": "يتحدث", "speaking": "يتحدث", "from": "من", "turkey": "تركيا", "pakistan": "باكستان", "london": "لندن", "japan": "اليابان",
+    "that": "ذلك", "an": "الـ", "job": "وظيفة", "i": "أنا", "have": "أملك", "never": "أبدأ", "heard": "سمعت", "of": "من", "it": "هو/هي",
+    "normal": "عادي", "unusual": "غير عادي", "interested": "مهتم", "ordinary": "عادي", "student": "طالب", "at": "في", "english": "إنجليزي", "university": "جامعة", "school": "مدرسة", "shop": "متجر",
+    "teacher": "معلم", "work": "يعمل", "watch": "يشاهد", "andrea": "أندريا", "want": "يريد", "wants": "تريد", "learn": "يتعلم", "japanese": "ياباني", "big": "كبير",
+    "like": "يحب", "sound": "صوت", "the": "الـ", "piano": "بيانو", "cricket": "كريكيت", "music": "موسيقى", "tv": "تلفاز", "sports": "رياضات", "night": "ليل", "other": "آخر",
+    "look": "ينظر", "see": "يرى", "meet": "يقابل", "day": "يوم", "go": "يذهب", "then": "ثم", "come": "يأتي", "home": "منزل", "eat": "يأكل", "dinner": "عشاء", "family": "عائلة",
+    "four": "أربعة", "sisters": "أخوات", "three": "ثلاثة", "brothers": "إخوة", "group": "مجموعة", "related": "مرتبطين", "each": "كل", "such": "مثل", "as": "كـ", "their": "لهم", "children": "أطفال",
+    "sport": "رياضة", "usual": "معتاد", "expected": "متوقع", "your": "الخاص بك", "somewhere": "مكان ما", "wanting": "رغبة", "more": "مزيد", "about": "عن", "something": "شيء",
+    "sounds": "أصوات", "made": "مصنوعة", "by": "بواسطة", "instruments": "آلات", "or": "أو", "singing": "غناء", "different": "مختلف", "not": "ليس", "often": "غالباً", "way": "طريقة", "which": "التي", "interesting": "مثير", "exciting": "مثير",
+    "do": "يفعل", "especially": "خاصة", "get": "يحصل", "money": "مال", "some": "بعض", "time": "وقت", "early": "مبكراً", "around": "حوالي",
+    "food": "طعام", "but": "لكن", "many": "كثير", "friends": "أصدقاء", "restaurants": "مطاعم", "swim": "يسبح", "cook": "يطبخ", "travel": "يسافر",
+    "before": "قبل", "coffee": "قهوة", "toast": "خبز", "lunch": "غداء", "breakfast": "فطور", "meal": "وجبة", "usually": "عادة", "desk": "مكتب", "salad": "سلطة", "soup": "حساء",
+    "after": "بعد", "sometimes": "أحياناً", "restaurant": "مطعم", "china": "الصين", "really": "حقاً", "enjoy": "يستمتع", "talking": "تحدث", "new": "جديد",
+    "every": "كل", "saturday": "سبت", "lessons": "دروس", "pool": "مسبح", "near": "قرب", "house": "منزل", "end": "نهاية", "leave": "يغادر", "bed": "سرير", "sleeping": "نوم",
+    "someone": "شخص", "first": "أول", "move": "يتحرك", "through": "عبر", "water": "ماء", "body": "جسم", "prepare": "يجهز", "heating": "تسخين",
+    "middle": "منتصف", "one": "واحد", "another": "آخر", "distance": "مسافة", "long": "طويل", "over": "عبر",
+    "morning": "صباح", "afternoon": "بعد الظهر", "evening": "مساء", "weekend": "عطلة", "busy": "مشغول", "relax": "يسترخي", "calm": "هادئ", "comfortable": "مريح",
+    "timetable": "جدول", "weekdays": "أيام العمل", "physics": "فيزياء", "cambridge": "كامبريدج", "gym": "صالة رياضية", "bus": "حافلة", "cafe": "مقهى",
+    "eats": "يأكل", "cooks": "يطبخ", "lake": "بحيرة", "sea": "بحر", "ocean": "محيط", "mountain": "جبل", "forest": "غابة", "river": "نهر", "maps": "خرائط", "earth": "الأرض"
+};
+
+const multiWordPhrases = {
+    "wake up": "يستيقظ", "get up": "يستيقظ", "listen to": "يستمع إلى", "interested in": "مهتم بـ",
+    "look at": "ينظر إلى", "eat out": "يأكل بالخارج", "such as": "مثل", "each other": "بعضهم البعض",
+    "at night": "في الليل", "to get": "ليحصل على", "look forward to": "يتطلع إلى", "go for a walk": "يذهب للتمشي",
+    "study group": "مجموعة دراسة", "fresh water": "ماء عذب", "salt water": "ماء مالح", "growing closely together": "تنمو متقاربة"
+};
+
+// ==========================================
+// قاعدة البيانات المدمجة (90 سؤال) مع الترجمة الفصحى
+// ==========================================
+const questionsData = [
+    { q: "My father's mother is my .........", ar: "والدة أبي هي .........", opts: ["aunt", "grandmother", "sister", "daughter"], ans: "grandmother" },
+    { q: "My mother's brother is my .........", ar: "أخو أمي هو .........", opts: ["uncle", "grandfather", "son", "brother"], ans: "uncle" },
+    { q: "My father's son is my .........", ar: "ابن أبي هو .........", opts: ["uncle", "brother", "grandfather", "nephew"], ans: "brother" },
+    { q: "My mother's daughter is my .........", ar: "ابنة أمي هي .........", opts: ["aunt", "sister", "mother", "grandmother"], ans: "sister" },
+    { q: "My uncle's wife is my .........", ar: "زوجة عمي (أو خالي) هي .........", opts: ["sister", "aunt", "daughter", "mother"], ans: "aunt" },
+    { q: "\"Brother\" is a ......... noun.", ar: "كلمة \"أخ\" تعتبر اسماً .........", opts: ["female", "male", "place", "action"], ans: "male" },
+    { q: "\"Daughter\" is a ......... noun.", ar: "كلمة \"ابنة\" تعتبر اسماً .........", opts: ["male", "female", "verb", "place"], ans: "female" },
+    { q: "\"Grandfather\" is a ......... noun.", ar: "كلمة \"جد\" تعتبر اسماً .........", opts: ["female", "male", "action", "state"], ans: "male" },
+    { q: "Words for people, places or things are .........", ar: "الكلمات التي تدل على الأشخاص، الأماكن، أو الأشياء تُسمى .........", opts: ["verbs", "nouns", "adjectives", "adverbs"], ans: "nouns" },
+    { q: "Words for states or actions are .........", ar: "الكلمات التي تدل على الحالات أو الأفعال تُسمى .........", opts: ["nouns", "verbs", "places", "people"], ans: "verbs" },
+    { q: "Sultan ......... on a farm.", ar: "سلطان ......... في مزرعة.", opts: ["live", "lives", "living", "is live"], ans: "lives" },
+    { q: "He ......... in Mardin.", ar: "هو ......... في ماردين.", opts: ["live", "lives", "living", "are live"], ans: "lives" },
+    { q: "Moeen Ali ......... with his son.", ar: "معين علي ......... مع ابنه.", opts: ["play", "plays", "playing", "is play"], ans: "plays" },
+    { q: "Sultan ......... two languages.", ar: "سلطان ......... لغتين.", opts: ["speak", "speaks", "speaking", "is speak"], ans: "speaks" },
+    { q: "Moeen Ali's grandfather is from .........", ar: "جَدُّ معين علي من .........", opts: ["Turkey", "Pakistan", "London", "Japan"], ans: "Pakistan" },
+    { q: "That is an ......... job! I have never heard of it.", ar: "إنها وظيفة .........! لم أسمع بها قط من قبل.", opts: ["normal", "unusual", "interested", "ordinary"], ans: "unusual" },
+    { q: "I am a student at an English ......... I live in London.", ar: "أنا طالب في ......... لغة إنجليزية. أعيش في لندن.", opts: ["school", "university", "farm", "shop"], ans: "university" },
+    { q: "I am a teacher. I ......... in a school.", ar: "أنا معلم. أنا ......... في مدرسة.", opts: ["live", "work", "play", "watch"], ans: "work" },
+    { q: "Andrea is ......... in languages. She wants to learn Japanese.", ar: "أندريا ......... باللغات. هي ترغب في تعلم اللغة اليابانية.", opts: ["interested", "unusual", "normal", "big"], ans: "interested" },
+    { q: "I like to listen to ......... I like the sound of the piano.", ar: "أحب الاستماع إلى ......... يُعجبني صوت آلة البيانو.", opts: ["cricket", "music", "TV", "sports"], ans: "music" },
+    { q: "I ......... TV at night. I watch cricket and other sports.", ar: "أنا ......... التلفاز ليلاً. أُشاهد الكريكيت ورياضات أخرى.", opts: ["look", "watch", "see", "meet"], ans: "watch" },
+    { q: "On a ......... day, I go to work. Then I come home and eat dinner with my family.", ar: "في يوم .........، أذهب إلى العمل. ثم أعود إلى المنزل وأتناول العشاء مع عائلتي.", opts: ["unusual", "normal", "interested", "big"], ans: "normal" },
+    { q: "My ......... is big. I have a mother, a father, four sisters and three brothers.", ar: "......... كبيرة. لديّ أم، وأب، وأربع أخوات، وثلاثة إخوة.", opts: ["family", "music", "work", "cricket"], ans: "family" },
+    { q: "A group of people related to each other, such as a mother, a father and their children = .........", ar: "مجموعة من الأشخاص تربطهم صلة قرابة ببعضهم البعض، كالأم والأب وأبنائهم = .........", opts: ["music", "family", "work", "sport"], ans: "family" },
+    { q: "Usual, ordinary and expected = .........", ar: "مألوف، اعتيادي، ومتوقع = .........", opts: ["unusual", "normal", "interested", "big"], ans: "normal" },
+    { q: "To have your home somewhere = .........", ar: "أن تتخذ لك مسكناً في مكان ما = .........", opts: ["work", "live", "watch", "play"], ans: "live" },
+    { q: "Wanting to learn more about something = .........", ar: "الرغبة في معرفة المزيد عن شيء ما = .........", opts: ["normal", "interested in", "unusual", "big"], ans: "interested in" },
+    { q: "Sounds that are made by playing instruments or singing = .........", ar: "أصوات تُصدر عبر العزف على الآلات أو الغناء = .........", opts: ["cricket", "music", "family", "work"], ans: "music" },
+    { q: "Different and not usual, often in a way which is interesting or exciting = .........", ar: "مختلف وغير معتاد، وغالباً بطريقة تلفت الانتباه أو تثير الاهتمام = .........", opts: ["normal", "unusual", "interested", "ordinary"], ans: "unusual" },
+    { q: "To do a job, especially the job you do to get money = .........", ar: "أن تمارس عملاً، لا سيما العمل الذي تتقاضى عليه أجراً = .........", opts: ["live", "work", "watch", "play"], ans: "work" },
+    { q: "To look at something for some time = .........", ar: "أن تُمعن النظر في شيء لبعض الوقت = .........", opts: ["see", "watch", "meet", "look"], ans: "watch" },
+    { q: "I do not like to ......... early. I get up around 10:00 am.", ar: "لا أحب أن ......... مبكراً. أنا أنهض من فراشي حوالي الساعة 10:00 صباحاً.", opts: ["wake up", "get up", "meet", "swim"], ans: "wake up" },
+    { q: "I like to ......... my food at home, but many of my friends eat at restaurants.", ar: "أُفضل أن ......... طعامي في المنزل، لكن العديد من أصدقائي يأكلون في المطاعم.", opts: ["swim", "cook", "meet", "travel"], ans: "cook" },
+    { q: "Before I go to work, I have coffee and toast for ......... every morning.", ar: "قبل ذهابي إلى العمل، أتناول القهوة والخبز المحمص كوجبة ......... كل صباح.", opts: ["lunch", "dinner", "breakfast", "meal"], ans: "breakfast" },
+    { q: "I usually eat ......... at my desk at work. I usually have a salad or soup.", ar: "عادةً ما أتناول وجبة ......... على مكتبي في العمل. في الغالب أتناول سلطة أو حساء.", opts: ["breakfast", "lunch", "dinner", "toast"], ans: "lunch" },
+    { q: "I eat ......... after work. Sometimes, I eat with friends at a restaurant.", ar: "أتناول وجبة ......... بعد العمل. في بعض الأحيان، آكل مع أصدقائي في أحد المطاعم.", opts: ["breakfast", "lunch", "dinner", "coffee"], ans: "dinner" },
+    { q: "I often ......... to China and Japan for my work.", ar: "غالباً ما ......... إلى الصين واليابان من أجل عملي.", opts: ["swim", "travel", "meet", "cook"], ans: "travel" },
+    { q: "I ......... a lot of people in my job. I really enjoy talking with new people.", ar: "أنا ......... الكثير من الناس في وظيفتي. أستمتع حقاً بالتحدث مع أشخاص جدد.", opts: ["swim", "meet", "cook", "travel"], ans: "meet" },
+    { q: "I ......... every Saturday. I have lessons at a pool near my house.", ar: "أنا ......... كل يوم سبت. أتلقى دروساً في مسبح قريب من منزلي.", opts: ["swim", "cook", "meet", "travel"], ans: "swim" },
+    { q: "The food you eat at the end of the day = .........", ar: "الطعام الذي تتناوله في نهاية اليوم = .........", opts: ["breakfast", "lunch", "dinner", "toast"], ans: "dinner" },
+    { q: "To leave your bed after sleeping = .........", ar: "أن تغادر فراشك بعد النوم = .........", opts: ["get up", "wake up", "meet", "swim"], ans: "get up" },
+    { q: "To see and speak to someone for the first time = .........", ar: "أن ترى شخصاً وتتحدث إليه للمرة الأولى = .........", opts: ["swim", "meet", "cook", "travel"], ans: "meet" },
+    { q: "The food you eat in the morning after you wake up = .........", ar: "الطعام الذي تتناوله في الصباح بعد استيقاظك = .........", opts: ["lunch", "dinner", "breakfast", "salad"], ans: "breakfast" },
+    { q: "To move through water by moving your body = .........", ar: "أن تتحرك عبر الماء بتحريك جسدك = .........", opts: ["cook", "swim", "meet", "travel"], ans: "swim" },
+    { q: "To prepare food by heating it = .........", ar: "أن تُعِدَّ الطعام عن طريق تسخينه = .........", opts: ["swim", "cook", "meet", "travel"], ans: "cook" },
+    { q: "The food you eat in the middle of the day = .........", ar: "الطعام الذي تتناوله في منتصف اليوم = .........", opts: ["breakfast", "lunch", "dinner", "toast"], ans: "lunch" },
+    { q: "To go from one place to another, usually over a long distance = .........", ar: "أن تنتقل من مكان إلى آخر، وعادةً ما يكون ذلك لمسافة طويلة = .........", opts: ["swim", "travel", "meet", "cook"], ans: "travel" },
+    
+    // --- Unit 2 Questions ---
+    { q: "After lunch, I like to go for a walk in the ...........", ar: "بعد الغداء، أُحب الذهاب للتمشي في .........", opts: ["morning", "afternoon", "evening", "weekend"], ans: "afternoon" },
+    { q: "The time between 12 pm and 6 pm = .........", ar: "الوقت بين الثانية عشرة ظهراً والسادسة مساءً = .........", opts: ["morning", "afternoon", "evening", "weekend"], ans: "afternoon" },
+    { q: "I am very ......... at university. I take many courses.", ar: "أنا ......... جداً في الجامعة. آخذ الكثير من المقررات الدراسية.", opts: ["relax", "busy", "calm", "free"], ans: "busy" },
+    { q: "Having a lot of things to do = .........", ar: "أن يكون لديك الكثير من المهام لتنجزها = .........", opts: ["relax", "busy", "calm", "comfortable"], ans: "busy" },
+    { q: "My ......... is the same every day. I work and then go to school.", ar: "......... الخاص بي هو نفسه كل يوم. أعمل ثم أذهب إلى المدرسة.", opts: ["timetable", "weekend", "afternoon", "morning"], ans: "timetable" },
+    { q: "A list or plan to show when you do things = .........", ar: "قائمة أو خطة توضح متى تفعل الأشياء = .........", opts: ["weekend", "timetable", "afternoon", "evening"], ans: "timetable" },
+    { q: "I get up at 6 am every ......... I make coffee and eat breakfast.", ar: "أستيقظ في السادسة صباحاً كل ......... أُعِد القهوة وأتناول الفطور.", opts: ["evening", "morning", "afternoon", "weekend"], ans: "morning" },
+    { q: "The time between 5 am and 12 pm = ...........", ar: "الوقت بين الخامسة صباحاً والثانية عشرة ظهراً = .........", opts: ["afternoon", "morning", "evening", "weekend"], ans: "morning" },
+    { q: "I ......... after work. I watch TV.", ar: "أنا ......... بعد العمل. أُشاهد التلفاز.", opts: ["relax", "busy", "work", "study"], ans: "relax" },
+    { q: "To become calm and comfortable = .......", ar: "أن تصبح هادئاً ومرتاحاً = .........", opts: ["busy", "relax", "study", "work"], ans: "relax" },
+    { q: "In the ........., I do my homework and read a book before bed.", ar: "في .........، أقوم بحل واجبي المدرسي وأقرأ كتاباً قبل النوم.", opts: ["morning", "afternoon", "evening", "weekend"], ans: "evening" },
+    { q: "The time between 6 pm and 11 pm = .........", ar: "الوقت بين السادسة مساءً والحادية عشرة ليلاً = .........", opts: ["morning", "afternoon", "evening", "weekend"], ans: "evening" },
+    { q: "I have school on ............ I have to get up early.", ar: "لدي مدرسة في ......... يجب أن أستيقظ مبكراً.", opts: ["weekends", "weekdays", "afternoons", "evenings"], ans: "weekdays" },
+    { q: "The five days of the week when many people work = .........", ar: "أيام الأسبوع الخمسة التي يعمل فيها معظم الناس = .........", opts: ["weekends", "weekdays", "afternoons", "evenings"], ans: "weekdays" },
+    { q: "At the ........., I go cycling. I have fun with friends.", ar: "في .........، أذهب لركوب الدراجة. أستمتع بوقتي مع الأصدقاء.", opts: ["weekdays", "weekend", "afternoon", "morning"], ans: "weekend" },
+    { q: "The two days of the week when many people do not work = .........", ar: "يوما الأسبوع اللذان لا يعمل فيهما معظم الناس = .........", opts: ["weekdays", "weekend", "afternoon", "evening"], ans: "weekend" },
+    { q: "Eun Jung studies ........", ar: "تدرس إيون جونغ .........", opts: ["Physics at Cambridge University", "coffee before work", "at 6 am", "to the gym every Saturday"], ans: "Physics at Cambridge University" },
+    { q: "Asif gets up ........", ar: "يستيقظ آصف .........", opts: ["at 6 am", "the bus every morning", "Physics at Cambridge University", "coffee before work"], ans: "at 6 am" },
+    { q: "Melody and Ginger take .........", ar: "تستقل ميلودي وجنجر .........", opts: ["the bus every morning", "coffee before work", "at 6 am", "to the gym every Saturday"], ans: "the bus every morning" },
+    { q: "In the morning, I have ..........", ar: "في الصباح، أتناول .........", opts: ["coffee before work", "at 6 am", "the bus every morning", "Physics at Cambridge University"], ans: "coffee before work" },
+    { q: "My friends go..........", ar: "أصدقائي يذهبون .........", opts: ["to the gym every Saturday", "at 6 am", "coffee before work", "the bus every morning"], ans: "to the gym every Saturday" },
+    { q: "Abdullah .......... with his study group on Sundays.", ar: "عبدالله ......... مع مجموعة دراسته أيام الأحد.", opts: ["meets", "take", "go", "have"], ans: "meets" },
+    { q: "I .......... the bus to university every morning.", ar: "أنا ......... الحافلة إلى الجامعة كل صباح.", opts: ["meets", "take", "go", "have"], ans: "take" },
+    { q: "You .......... to the gym every day.", ar: "أنت ......... إلى الصالة الرياضية كل يوم.", opts: ["meets", "take", "go", "have"], ans: "go" },
+    { q: "Melody and Ginger .......... breakfast at 7 am", ar: "ميلودي وجنجر ......... الفطور في السابعة صباحاً.", opts: ["meets", "take", "go", "have"], ans: "have" },
+    { q: "Li Mei .......... her lunch in the cafe.", ar: "لي مي ......... غداءها في المقهى.", opts: ["meets", "eats", "go", "have"], ans: "eats" },
+    { q: "Sandra and Andreia .......... with friends in the evening.", ar: "ساندرا وأندريا ......... مع الأصدقاء في المساء.", opts: ["meets", "take", "relax", "have"], ans: "relax" },
+    { q: "My sister .......... dinner for my family.", ar: "أختي ......... العشاء لعائلتي.", opts: ["meets", "take", "cooks", "have"], ans: "cooks" },
+    { q: "You .......... your homework in the evening.", ar: "أنت ......... واجبك المدرسي في المساء.", opts: ["meets", "take", "do", "have"], ans: "do" },
+    { q: "The Great Lakes in the US are very big, but the .......... by my house is small.", ar: "البحيرات العظمى في الولايات المتحدة كبيرة جداً، لكن ......... التي بجوار منزلي صغيرة.", opts: ["sea", "lake", "river", "ocean"], ans: "lake" },
+    { q: "An area of fresh water which has land all around it = .........", ar: "مساحة من المياه العذبة تحيط بها اليابسة من كل جانب = .........", opts: ["sea", "lake", "river", "ocean"], ans: "lake" },
+    { q: "Lakes have fresh water, but .........., like the Mediterranean, have salt water.", ar: "البحيرات مياهها عذبة، لكن .........، مثل البحر الأبيض المتوسط، مياهها مالحة.", opts: ["lakes", "seas", "rivers", "forests"], ans: "seas" },
+    { q: "Large areas of salt water = ...", ar: "مساحات شاسعة من المياه المالحة = .........", opts: ["lakes", "seas", "rivers", "forests"], ans: "seas" },
+    { q: "I do not like to climb ........ I do not like to be up high.", ar: "لا أُحب تسلق ......... لا أُحب التواجد في الأماكن المرتفعة.", opts: ["rivers", "mountains", "lakes", "forests"], ans: "mountains" },
+    { q: "Very high hills = .........", ar: "تلال مرتفعة جداً = .........", opts: ["rivers", "mountains", "lakes", "oceans"], ans: "mountains" },
+    { q: "There are many trees in a ....... They are homes for birds and other animals.", ar: "يوجد الكثير من الأشجار في ......... إنها موطن للطيور والحيوانات الأخرى.", opts: ["lake", "forest", "river", "ocean"], ans: "forest" },
+    { q: "A large area of trees growing closely together = .........", ar: "مساحة شاسعة من الأشجار التي تنمو متقاربة من بعضها = .........", opts: ["lake", "forest", "river", "sea"], ans: "forest" },
+    { q: "The Nile is the longest .......... in the world. It is 6,853 km long.", ar: "النيل هو أطول ......... في العالم. يبلغ طوله 6,853 كيلومتراً.", opts: ["lake", "river", "sea", "ocean"], ans: "river" },
+    { q: "Water which flows across the land to a bigger area of water = .........", ar: "مياه تتدفق عبر اليابسة لتصب في مساحة مائية أكبر = .........", opts: ["lake", "river", "sea", "ocean"], ans: "river" },
+    { q: "There are five ............ These are the biggest bodies of water in the world.", ar: "يوجد خمسة ......... إنها أكبر المسطحات المائية في العالم.", opts: ["lakes", "oceans", "rivers", "forests"], ans: "oceans" },
+    { q: "The five main areas of salt water on the Earth = .........", ar: "المساحات الخمس الرئيسية للمياه المالحة على وجه الأرض = .........", opts: ["lakes", "oceans", "rivers", "forests"], ans: "oceans" },
+    { q: "People use .......... to help them find places and understand an area", ar: "يستخدم الناس ......... لمساعدتهم في العثور على الأماكن وفهم أي منطقة.", opts: ["maps", "rivers", "lakes", "oceans"], ans: "maps" },
+    { q: "Pictures which show a place and the rivers, lakes and other areas in it = .........", ar: "رسومات توضح مكاناً ما وما يحتويه من أنهار وبحيرات ومناطق أخرى = .........", opts: ["rivers", "maps", "lakes", "oceans"], ans: "maps" }
+];
+
+// ==========================================
+// توليد التبويبات والأسئلة
+// ==========================================
+function renderQuestions() {
+    const tabsContainer = document.getElementById('tabs-buttons');
+    const contentsContainer = document.getElementById('tabs-contents');
+    
+    let htmlTabs = '';
+    let htmlContents = '';
+    
+    const chunkSize = 20; 
+    const chunks = [];
+    for (let i = 0; i < questionsData.length; i += chunkSize) {
+        chunks.push(questionsData.slice(i, i + chunkSize));
+    }
+    
+    const letters = ['A', 'B', 'C', 'D'];
+
+    chunks.forEach((chunk, chunkIndex) => {
+        const tabId = `tab${chunkIndex}`;
+        const isActive = chunkIndex === 0 ? 'active' : '';
+        
+        htmlTabs += `<button class="tab-btn ${isActive}" onclick="openTab(event, '${tabId}')">المجموعة ${chunkIndex + 1}</button>`;
+        
+        htmlContents += `
+        <div id="${tabId}" class="tab-content ${isActive}">
+            <div class="group-control-bar">
+                <button class="control-action-btn" onclick="showSectionResult('container${chunkIndex}', 'res${chunkIndex}')">📋 عرض النتيجة</button>
+                <span class="section-result" id="res${chunkIndex}"></span>
+                <button class="reset-shuffle-btn" onclick="resetAndShuffle('container${chunkIndex}', 'res${chunkIndex}')">🔄 تصفير وخلط المجموعة</button>
+            </div>
+            <div class="questions-container" id="container${chunkIndex}">
+        `;
+        
+        chunk.forEach((qItem, idx) => {
+            let globalNum = (chunkIndex * chunkSize) + idx + 1;
+            htmlContents += `<div class="question-row" data-ans="${qItem.ans}">`;
+            
+            htmlContents += `
+                <div class="q-header-wrapper">
+                    <button class="read-row-btn" onclick="readRowAloud(this)">🔊</button>
+                    <div class="q-text-container">
+                        <div class="q-text">
+                            <span class="q-number">${globalNum}- </span><span class="q-content">${qItem.q}</span>
+                        </div>
+                        <div class="q-translation" dir="rtl">${qItem.ar}</div>
+                    </div>
+                </div>
+            `;
+
+            htmlContents += `<div class="options-list">`;
+            
+            let shuffledOpts = [...qItem.opts];
+            shuffledOpts.sort(() => Math.random() - 0.5);
+            
+            shuffledOpts.forEach((opt, oIdx) => {
+                htmlContents += `
+                    <div class="opt-item" onclick="selectOption(this)">
+                        <div class="choice-badge">${letters[oIdx]}</div>
+                        <div class="choice-text">${opt}</div>
+                    </div>
+                `;
+            });
+            htmlContents += `</div></div>`;
+        });
+        
+        htmlContents += `</div></div>`;
+    });
+
+    tabsContainer.innerHTML = htmlTabs;
+    contentsContainer.innerHTML = htmlContents;
+}
+
+// ==========================================
+// منطق وضع الاختبار (Test Mode) الحاسم
+// ==========================================
+function toggleTestMode() {
+    const body = document.body;
+    const btn = document.getElementById('testModeBtn');
+    const helpText = document.getElementById('help-text');
+    
+    body.classList.toggle('test-mode-active');
+    
+    if (body.classList.contains('test-mode-active')) {
+        btn.innerHTML = '🛑 إنهاء وضع الاختبار (تشغيل المساعدات)';
+        btn.classList.add('active');
+        helpText.innerHTML = '⚠️ وضع الاختبار مفعل: المساعدات الصوتية والترجمة مغلقة تماماً.';
+        helpText.style.color = '#dc2626';
+        if(window.speechSynthesis) window.speechSynthesis.cancel(); 
+        document.querySelectorAll('.active-word, .active-word-manual').forEach(el => el.classList.remove('active-word', 'active-word-manual'));
+    } else {
+        btn.innerHTML = '🎯 تفعيل وضع الاختبار (إيقاف المساعدات)';
+        btn.classList.remove('active');
+        helpText.innerHTML = '💡 المساعدات مفعلة: الترجمة متاحة أسفل السؤال، ويمكنك الضغط على (🔊) للإملاء، أو النقر على أي كلمة لترجمتها ونطقها.';
+        helpText.style.color = '#475569';
+    }
+}
+
+function openTab(evt, tabId) {
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    document.querySelectorAll('.word.active-word-manual, .word.active-word').forEach(n => n.classList.remove('active-word-manual', 'active-word'));
+    
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    evt.currentTarget.classList.add('active');
+}
+
+// ==========================================
+// المترجم الذكي 
+// ==========================================
+function initializeTranslator() {
+    const phrasalKeys = Object.keys(multiWordPhrases).sort((a,b) => b.length - a.length);
+    const phrasalRegex = new RegExp('\\b(' + phrasalKeys.join('|') + ')\\b', 'gi');
+
+    document.querySelectorAll('.q-content, .choice-text').forEach(wrapper => {
+        if (wrapper.querySelector('.word')) return;
+        const walker = document.createTreeWalker(wrapper, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        let node;
+        while (node = walker.nextNode()) {
+            if (node.parentNode.tagName !== 'SCRIPT' && !node.parentNode.classList.contains('word-en') && !node.parentNode.classList.contains('word-ar')) {
+                textNodes.push(node);
+            }
+        }
+        textNodes.forEach(textNode => {
+            const text = textNode.nodeValue;
+            if (!text.trim()) return; 
+
+            let parts = [];
+            let lastIndex = 0;
+            
+            text.replace(phrasalRegex, (match, p1, offset) => {
+                if (offset > lastIndex) parts.push({text: text.slice(lastIndex, offset), isPhrasal: false});
+                parts.push({text: match, isPhrasal: true});
+                lastIndex = offset + match.length;
+            });
+            if (lastIndex < text.length) parts.push({text: text.slice(lastIndex), isPhrasal: false});
+
+            const fragment = document.createDocumentFragment();
+
+            parts.forEach(p => {
+                if (p.isPhrasal) {
+                    let cleanWord = p.text.toLowerCase();
+                    let span = document.createElement('span');
+                    span.className = 'word phrasal';
+                    span.innerHTML = `<span class="word-ar">${multiWordPhrases[cleanWord]}</span><span class="word-en">${p.text}</span>`;
+                    fragment.appendChild(span);
+                } else {
+                    let subParts = p.text.split(/([a-zA-Z0-9\-']+)/);
+                    subParts.forEach(sp => {
+                        const cleanWord = sp.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (cleanWord) { 
+                            let span = document.createElement('span');
+                            span.className = 'word';
+                            let arText = wordDictionary[cleanWord] || "";
+                            if(arText) span.innerHTML = `<span class="word-ar">${arText}</span><span class="word-en">${sp}</span>`;
+                            else span.innerHTML = `<span class="word-en">${sp}</span>`;
+                            fragment.appendChild(span);
+                        } else {
+                            fragment.appendChild(document.createTextNode(sp));
+                        }
+                    });
+                }
+            });
+            if(textNode.parentNode) textNode.parentNode.replaceChild(fragment, textNode);
+        });
+    });
+}
+
+// ==========================================
+// التصحيح والخلط الذكي
+// ==========================================
+function selectOption(optItem) {
+    let row = optItem.closest('.question-row');
+    row.querySelectorAll('.opt-item').forEach(i => i.classList.remove('selected'));
+    optItem.classList.add('selected');
+}
+
+function showSectionResult(containerId, resId) {
+    let container = document.getElementById(containerId);
+    let rows = container.querySelectorAll('.question-row');
+    let correctCount = 0;
+    let totalCount = rows.length;
+
+    rows.forEach(row => {
+        let targetAns = row.getAttribute('data-ans').replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toLowerCase();
+        let selectedItem = row.querySelector('.opt-item.selected');
+        let items = row.querySelectorAll('.opt-item');
+
+        items.forEach(item => {
+            item.classList.remove('correct', 'wrong');
+            let textEl = item.querySelector('.choice-text');
+            let enSpans = textEl.querySelectorAll('.word-en');
+            let cleanText = enSpans.length > 0 ? Array.from(enSpans).map(sp => sp.textContent).join(" ") : textEl.textContent;
+            if (cleanText.trim().toLowerCase() === targetAns) item.classList.add('correct');
+        });
+
+        if (selectedItem) {
+            let textEl = selectedItem.querySelector('.choice-text');
+            let enSpans = textEl.querySelectorAll('.word-en');
+            let cleanText = enSpans.length > 0 ? Array.from(enSpans).map(sp => sp.textContent).join(" ") : textEl.textContent;
+            if (cleanText.trim().toLowerCase() === targetAns) correctCount++;
+            else selectedItem.classList.add('wrong');
+        }
+    });
+    document.getElementById(resId).textContent = `النتيجة: ${correctCount} / ${totalCount}`;
+}
+
+function resetAndShuffle(containerId, resId) {
+    let container = document.getElementById(containerId);
+    document.getElementById(resId).textContent = '';
+    
+    let rows = Array.from(container.querySelectorAll('.question-row'));
+
+    rows.forEach(row => {
+        row.querySelectorAll('.opt-item').forEach(item => item.classList.remove('selected', 'correct', 'wrong'));
+        let optContainer = row.querySelector('.options-list');
+        if(optContainer) {
+            let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+            const letters = ["A", "B", "C", "D"];
+            opts.sort(() => Math.random() - 0.5); 
+            opts.forEach((opt, idx) => {
+                opt.querySelector('.choice-badge').textContent = letters[idx];
+                optContainer.appendChild(opt);
+            });
+        }
+    });
+
+    rows.sort(() => Math.random() - 0.5); 
+    
+    let tabIndex = parseInt(containerId.replace('container', ''));
+    let chunkSize = 20;
+    
+    rows.forEach((row, idx) => {
+        container.appendChild(row); 
+        let numSpan = row.querySelector('.q-number');
+        if(numSpan) {
+            let currentNum = (tabIndex * chunkSize) + idx + 1;
+            numSpan.textContent = currentNum + "- ";
+        }
+    });
+}
+
+// ==========================================
+// خوارزمية الإملاء المباشر (تجاهل الترجمة السفلية)
+// ==========================================
+let currentUtterance = null;
+
+function readRowAloud(btn) {
+    if (document.body.classList.contains('test-mode-active')) return;
+
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    document.querySelectorAll('.active-word').forEach(n => n.classList.remove('active-word'));
+    
+    let container = btn.closest('.question-row');
+    let blocksToRead = [];
+    
+    // سحب الإنجليزي فقط وتجاهل الترجمة السفلية
+    blocksToRead.push(container.querySelector('.q-content'));
+    container.querySelectorAll('.opt-item').forEach(opt => blocksToRead.push(opt));
+
+    let wordsQueue = [];
+
+    blocksToRead.forEach(block => {
+        if(!block) return;
+        let words = Array.from(block.querySelectorAll('.word'));
+        words.forEach(w => {
+            let enNode = w.querySelector('.word-en');
+            let text = enNode ? enNode.textContent.trim() : w.textContent.trim();
+            if(text) {
+                let cleanText = text.replace(/[\.\,\?\_]/g, '');
+                if(cleanText.length > 0) {
+                    wordsQueue.push({ el: w, text: cleanText });
+                }
+            }
+        });
+        wordsQueue.push({ el: null, text: "pause" });
+    });
+
+    let currentWordIndex = 0;
+
+    function playNextWord() {
+        if (currentWordIndex >= wordsQueue.length) {
+            document.querySelectorAll('.active-word').forEach(n => n.classList.remove('active-word'));
+            return;
+        }
+
+        let currentItem = wordsQueue[currentWordIndex];
+
+        if (currentItem.text === "pause") {
+            currentWordIndex++;
+            setTimeout(playNextWord, 400); 
+            return;
+        }
+
+        document.querySelectorAll('.active-word').forEach(n => n.classList.remove('active-word'));
+        currentItem.el.classList.add('active-word');
+
+        currentUtterance = new SpeechSynthesisUtterance(currentItem.text);
+        currentUtterance.lang = 'en-US';
+        currentUtterance.rate = 0.60; 
+
+        currentUtterance.onend = function() {
+            currentWordIndex++;
+            setTimeout(playNextWord, 50);
+        };
+
+        currentUtterance.onerror = function() {
+            currentWordIndex++;
+            playNextWord();
+        };
+
+        window.speechSynthesis.speak(currentUtterance);
+    }
+
+    playNextWord();
+}
+
+// ==========================================
+// النطق الفردي وإظهار الترجمة الحرة
+// ==========================================
+document.addEventListener('click', function(e) {
+    if (document.body.classList.contains('test-mode-active')) return;
+
+    const wordContainer = e.target.closest('.word');
+    if (wordContainer) {
+        e.stopPropagation(); 
+        
+        if(window.speechSynthesis) window.speechSynthesis.cancel();
+        
+        document.querySelectorAll('.word.active-word-manual, .word.active-word').forEach(w => w.classList.remove('active-word-manual', 'active-word'));
+        wordContainer.classList.add('active-word-manual'); 
+        
+        const enTextElement = wordContainer.querySelector('.word-en');
+        const textToSpeak = enTextElement ? enTextElement.textContent : wordContainer.textContent;
+        
+        let utterance = new SpeechSynthesisUtterance(textToSpeak);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.7; 
+        utterance.onend = () => wordContainer.classList.remove('active-word-manual');
+        window.speechSynthesis.speak(utterance);
+        
+        setTimeout(() => wordContainer.classList.remove('active-word-manual'), 3000);
+    } else {
+        document.querySelectorAll('.word.active-word-manual').forEach(w => w.classList.remove('active-word-manual'));
+    }
+});
+
+// التشغيل الأساسي
+document.addEventListener("DOMContentLoaded", function() {
+    renderQuestions();
+    initializeTranslator();
+});
+
+</script>
+
+</body>
+</html>
