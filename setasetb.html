@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Vocabulary Matching - 4 Groups</title>
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+    .header-controls { text-align: center; margin-bottom: 20px; position: sticky; top: 10px; z-index: 100; }
+    .test-mode-btn { background-color: #dc3545; color: white; border: none; padding: 12px 24px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .test-mode-btn:hover { background-color: #c82333; }
+    .test-mode-btn.active { background-color: #6c757d; }
+
+    .group-container { max-width: 1000px; margin: 0 auto 40px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .group-title { text-align: center; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-size: 1.5em; }
+
+    .match-row { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: stretch; }
+    .q-cell, .a-cell { width: 48%; display: flex; align-items: center; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 12px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); }
+    .q-cell.empty { background: transparent; border: none; box-shadow: none; }
+
+    .num, .letter { font-weight: bold; font-size: 1.2em; margin-left: 15px; color: #555; min-width: 25px; text-align: left; direction: ltr; align-self: flex-start; margin-top: 5px; }
+    .a-cell { direction: ltr; text-align: left; background: #fafafa; }
+    .q-cell { direction: ltr; text-align: left; background: #eef5f9; }
+
+    .dropzone { flex-grow: 1; min-height: 60px; display: flex; align-items: stretch; }
+
+    .draggable { flex-grow: 1; cursor: grab; background: #ffffff; border: 2px dashed #b0bec5; border-radius: 6px; padding: 12px; transition: background 0.2s; position: relative; user-select: none; display: flex; flex-direction: column; justify-content: center; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    .draggable:active { cursor: grabbing; }
+    .draggable.drag-over { background: #e3f2fd; border-color: #2196f3; }
+
+    .en-block { flex-grow: 1; cursor: pointer; position: relative; border-radius: 4px; padding: 5px; transition: background 0.2s; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;}
+    .en-text { font-size: 1.05em; font-weight: 600; color: #222; line-height: 1.5; pointer-events: none;}
+
+    .ar-sub { display: block; color: #d32f2f; font-size: 0.95em; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ffcdd2; direction: rtl; text-align: right; font-weight: bold; line-height: 1.4; pointer-events: none;}
+
+    /* Test Mode Styles */
+    body.test-mode .ar-sub { display: none !important; }
+    body.test-mode .en-block { cursor: default; }
+
+    /* Highlights & Tooltips */
+    .highlight { background-color: #fff59d !important; }
+    .tooltip { visibility: hidden; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: #d32f2f; color: white; text-align: center; padding: 8px 12px; border-radius: 6px; z-index: 10; font-size: 0.95em; direction: rtl; opacity: 0; transition: opacity 0.3s; margin-bottom: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); max-width: 300px; white-space: normal; line-height: 1.4; }
+    .tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #d32f2f transparent transparent transparent; }
+    .en-block.highlight .tooltip { visibility: visible; opacity: 1; }
+    body.test-mode .tooltip { display: none !important; }
+
+    .action-btns { text-align: center; margin-top: 25px; }
+    .action-btns button { padding: 10px 20px; font-size: 16px; margin: 0 10px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: 0.2s; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;}
+    .btn-check { background-color: #28a745; }
+    .btn-check:hover { background-color: #218838; }
+    .btn-reset { background-color: #17a2b8; }
+    .btn-reset:hover { background-color: #138496; }
+
+    .correct { background-color: #d4edda !important; border-color: #28a745 !important; border-style: solid; }
+    .incorrect { background-color: #f8d7da !important; border-color: #dc3545 !important; border-style: solid; }
+
+    @media(max-width: 768px) {
+        .match-row { flex-direction: column-reverse; } 
+        .q-cell, .a-cell { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+        .q-cell.empty { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<div class="header-controls">
+    <button id="testModeBtn" class="test-mode-btn">🔴 تفعيل وضع الاختبار (Test Mode)</button>
+</div>
+
+<div id="groups-container"></div>
+
+<script>
+const data = [
+    {
+        title: "المجموعة الأولى (Group 1)",
+        questions: [
+            { id: 1, text: "bonanza", ar: "ربح مفاجئ / مصدر ثروة" },
+            { id: 2, text: "churlish", ar: "وقح / يفتقر للأدب" },
+            { id: 3, text: "collaborate", ar: "يتعاون / يعمل معًا" },
+            { id: 4, text: "excerpt", ar: "مقتطف / يقتبس" },
+            { id: 5, text: "grope", ar: "يبحث بغير هدى / يتلمس" }
+        ],
+        answers: [
+            { match: 1, text: "a rich mass of ore in a mine; something very valuable, profitable, or rewarding; a source of wealth or prosperity; a very large amount; sudden profit or gain", ar: "كتلة غنية من الخام في منجم؛ شيء ذو قيمة كبيرة، مربح، أو مجزٍ؛ مصدر ثروة أو ازدهار؛ كمية كبيرة جداً؛ ربح أو مكسب مفاجئ" },
+            { match: 2, text: "lacking politeness or good manners; lacking sensitivity; difficult to work with or deal with; rude", ar: "يفتقر إلى الأدب أو الأخلاق الحميدة؛ يفتقر إلى الحساسية؛ يصعب العمل أو التعامل معه؛ وقح" },
+            { match: 3, text: "to work with, work together", ar: "يعمل مع، يعملان معاً" },
+            { match: 4, text: "a passage taken from a book, article, etc.; to take such a passage; to quote", ar: "مقطع مأخوذ من كتاب، مقال، إلخ؛ يأخذ مثل هذا المقطع؛ يقتبس" },
+            { match: 5, text: "to feel about hesitantly with the hands; to search blindly and uncertainly", ar: "يتلمس بتردد بيديه؛ يبحث بغير هدى وبشكل غير مؤكد" },
+            { match: 0, text: "to fall asleep quickly; to rest one's eyes for a short time", ar: "ينام بسرعة؛ يريح عينيه لفترة قصيرة" }
+        ]
+    },
+    {
+        title: "المجموعة الثانية (Group 2)",
+        questions: [
+            { id: 1, text: "jostle", ar: "يتدافع / يزاحم" },
+            { id: 2, text: "laggard", ar: "متخلف / بطيء" },
+            { id: 3, text: "plaudits", ar: "تصفيق / إشادة حماسية" },
+            { id: 4, text: "revert", ar: "يعود / يرجع" },
+            { id: 5, text: "vigil", ar: "مراقبة / سهر" }
+        ],
+        answers: [
+            { match: 1, text: "to make or force one's way by pushing or elbowing; to bump, brush against; to compete for", ar: "يشق طريقه بالقوة عن طريق الدفع أو استخدام المرفقين; يصطدم، يحتك بـ؛ يتنافس على" },
+            { match: 2, text: "a person who moves slowly or falls behind, falling behind, slow to move, act, or respond", ar: "الشخص الذي يتحرك ببطء أو يتخلف عن الركب، يتخلف، بطيء في الحركة أو التصرف أو الاستجابة" },
+            { match: 3, text: "applause; enthusiastic praise or approval", ar: "تصفيق؛ إشادة أو موافقة حماسية" },
+            { match: 4, text: "to return, go back", ar: "يعود، يرجع" },
+            { match: 5, text: "a watch, especially at night; any period of watchful attention", ar: "مراقبة، خاصة في الليل؛ أي فترة من الانتباه اليقظ" },
+            { match: 0, text: "a sudden feeling of fear, especially one that makes you freeze", ar: "شعور مفاجئ بالخوف، خاصة ذلك الذي يجعلك تتجمد" }
+        ]
+    },
+    {
+        title: "المجموعة الثالثة (Group 3)",
+        questions: [
+            { id: 1, text: "adage", ar: "مَثَل / قول مأثور" },
+            { id: 2, text: "citadel", ar: "قلعة / حصن" },
+            { id: 3, text: "decree", ar: "مرسوم / قرار" },
+            { id: 4, text: "discordant", ar: "متنافر / مزعج للصوت" },
+            { id: 5, text: "evolve", ar: "يتطور" }
+        ],
+        answers: [
+            { match: 1, text: "a proverb, wise saying", ar: "مَثَل، قول مأثور أو حكيم" },
+            { match: 2, text: "a fortress that overlooks and protects a city; any strong or commanding place", ar: "قلعة تطل على مدينة وتحميها؛ أي مكان قوي أو مسيطر" },
+            { match: 3, text: "an order having the force of law; to issue such an order; to command firmly or forcefully", ar: "أمر له قوة القانون؛ إصدار مثل هذا الأمر؛ الأمر بحزم أو بقوة" },
+            { match: 4, text: "disagreeable in sound, jarring; lacking in harmony", ar: "غير سار في الصوت، مزعج؛ يفتقر إلى الانسجام" },
+            { match: 5, text: "to develop gradually; to rise to a higher level", ar: "يتطور تدريجياً؛ يرتقي إلى مستوى أعلى" },
+            { match: 0, text: "a sudden feeling of joy or excitement", ar: "شعور مفاجئ بالفرح أو الإثارة" }
+        ]
+    },
+    {
+        title: "المجموعة الرابعة (Group 4)",
+        questions: [
+            { id: 1, text: "hover", ar: "يحوم / يرفرف" },
+            { id: 2, text: "preclude", ar: "يمنع / يحول دون" },
+            { id: 3, text: "rubble", ar: "أنقاض / حطام" },
+            { id: 4, text: "servile", ar: "خاضع / ذليل" },
+            { id: 5, text: "wrangle", ar: "يتشاجر / شجار" }
+        ],
+        answers: [
+            { match: 1, text: "to float or hang suspended over; to move back and forth uncertainly over or around", ar: "يطفو أو يبقى معلقاً فوق؛ يتحرك ذهاباً وإياباً بتردد فوق أو حول" },
+            { match: 2, text: "to make impossible, prevent, shut out", ar: "يجعله مستحيلاً، يمنع، يستبعد" },
+            { match: 3, text: "broken stone or bricks; ruins", ar: "حجر أو طوب مكسور؛ أنقاض" },
+            { match: 4, text: "of or relating to a slave; behaving like or suitable for a slave or a servant, menial; lacking spirit or independence, abjectly submissive", ar: "خاص أو متعلق بعبد؛ يتصرف كعبد أو خادم أو ما يناسبهما، وضيع؛ يفتقر للروح أو الاستقلال، خاضع بذل" },
+            { match: 5, text: "to quarrel or argue in a noisy, angry way; to obtain by argument; to herd; a noisy quarrel", ar: "يتشاجر أو يجادل بطريقة صاخبة وغاضبة؛ يحصل على شيء بالجدال؛ يجمع القطيع؛ شجار صاخب" },
+            { match: 0, text: "to run away quickly from danger", ar: "الهروب بسرعة من الخطر" }
+        ]
+    }
+];
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+}
+
+function renderGroups() {
+    const container = document.getElementById('groups-container');
+    container.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    data.forEach((group, gIndex) => {
+        let groupHtml = `<div class="group-container" id="group-${gIndex}">`;
+        groupHtml += `<h2 class="group-title">${group.title}</h2>`;
+
+        let shuffledAnswers = shuffle([...group.answers]);
+
+        for (let i = 0; i < 6; i++) {
+            let isDistractorRow = (i === 5);
+            let q = !isDistractorRow ? group.questions[i] : null;
+            let a = shuffledAnswers[i];
+
+            groupHtml += `<div class="match-row" data-index="${i}">`;
+
+            // وضع الإجابات (التعريفات) أولاً لتظهر في الجهة اليمنى
+            groupHtml += `
+            <div class="a-cell">
+                <span class="letter">${letters[i]}.</span>
+                <div class="dropzone">
+                    <div class="draggable en-block" draggable="true" data-match="${a.match}" onclick="playAudio(this, '${a.text.replace(/'/g, "\\'")}')" oncontextmenu="return false;">
+                        <span class="tooltip">${a.ar}</span>
+                        <span class="en-text">${a.text}</span>
+                        <span class="ar-sub">${a.ar}</span>
+                    </div>
+                </div>
+            </div>`;
+            
+            // ونضع الأسئلة (الكلمات) ثانياً لتظهر في الجهة اليسرى
+            if (q) {
+                groupHtml += `
+                <div class="q-cell">
+                    <span class="num">${i+1}.</span>
+                    <div class="en-block" onclick="playAudio(this, '${q.text.replace(/'/g, "\\'")}')" oncontextmenu="return false;">
+                        <span class="tooltip">${q.ar}</span>
+                        <span class="en-text">${q.text}</span>
+                        <span class="ar-sub">${q.ar}</span>
+                    </div>
+                </div>`;
+            } else {
+                groupHtml += `<div class="q-cell empty"></div>`;
+            }
+
+            groupHtml += `</div>`;
+        }
+
+        groupHtml += `
+        <div class="action-btns">
+            <button class="btn-check" onclick="checkAnswers(${gIndex})" oncontextmenu="return false;">✔️ تصحيح الإجابات</button>
+            <button class="btn-reset" onclick="resetGroup(${gIndex})" oncontextmenu="return false;">🔄 تصفير وخلط عشوائي</button>
+        </div>
+        </div>`;
+        container.innerHTML += groupHtml;
+    });
+
+    initDragAndDrop();
+}
+
+function playAudio(element, text) {
+    if (document.body.classList.contains('test-mode')) return;
+    if (element.classList.contains('highlight')) return; 
+
+    element.classList.add('highlight');
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.lang = 'en-US';
+    msg.rate = 0.9;
+    
+    msg.onend = () => { element.classList.remove('highlight'); };
+    window.speechSynthesis.speak(msg);
+
+    setTimeout(() => { element.classList.remove('highlight'); }, 3000);
+}
+
+let draggedItem = null;
+
+function initDragAndDrop() {
+    const draggables = document.querySelectorAll('.draggable');
+    const dropzones = document.querySelectorAll('.dropzone');
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            setTimeout(() => this.style.opacity = '0.4', 0);
+        });
+        draggable.addEventListener('dragend', function() {
+            setTimeout(() => this.style.opacity = '1', 0);
+            draggedItem = null;
+        });
+        // Prevent default touch behaviors that might trigger selection or context menus during drag
+        draggable.addEventListener('touchstart', function(e) {
+            // e.preventDefault(); // Don't prevent default here, it might break drag and drop library if used
+        }, {passive: false});
+    });
+
+    dropzones.forEach(zone => {
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+        zone.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            if (draggedItem && this !== draggedItem.parentNode) {
+                const sourceZone = draggedItem.parentNode;
+                const targetItem = this.querySelector('.draggable');
+
+                sourceZone.appendChild(targetItem);
+                this.appendChild(draggedItem);
+
+                clearStyles(document.getElementById('group-' + getGroupIndex(this)));
+            }
+        });
+    });
+}
+
+function getGroupIndex(el) {
+    return el.closest('.group-container').id.split('-')[1];
+}
+
+function clearStyles(groupEl) {
+    groupEl.querySelectorAll('.draggable').forEach(el => {
+        el.classList.remove('correct', 'incorrect');
+    });
+}
+
+function checkAnswers(gIndex) {
+    const groupEl = document.getElementById('group-' + gIndex);
+    const rows = groupEl.querySelectorAll('.match-row');
+    
+    rows.forEach((row, rowIndex) => {
+        const dropzone = row.querySelector('.dropzone');
+        const item = dropzone.querySelector('.draggable');
+        if (!item) return;
+
+        item.classList.remove('correct', 'incorrect');
+
+        const matchId = parseInt(item.getAttribute('data-match'));
+        const expectedId = rowIndex < 5 ? rowIndex + 1 : 0; 
+
+        if (matchId === expectedId) {
+            item.classList.add('correct');
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+}
+
+function resetGroup(gIndex) {
+    renderGroups(); 
+}
+
+document.getElementById('testModeBtn').addEventListener('click', function() {
+    document.body.classList.toggle('test-mode');
+    if (document.body.classList.contains('test-mode')) {
+        this.textContent = '🟢 إيقاف وضع الاختبار (العودة للتدريب)';
+        this.classList.add('active');
+        window.speechSynthesis.cancel(); 
+    } else {
+        this.textContent = '🔴 تفعيل وضع الاختبار (Test Mode)';
+        this.classList.remove('active');
+    }
+});
+
+window.onload = renderGroups;
+</script>
+</body>
+</html>
