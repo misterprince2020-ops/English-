@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Multiple Choice - Jumbo Single Line</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 2% 5%; 
+            color: #333;
+            transition: background-color 0.3s;
+        }
+
+        body.test-mode-active {
+            background-color: #fff3cd; 
+        }
+
+        .btn-read-all {
+            background-color: #6f42c1;
+            color: white;
+            width: 100%;
+            padding: 20px;
+            font-size: clamp(20px, 4vw, 32px); 
+            font-weight: 900;
+            border: none;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(111, 66, 193, 0.4);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .btn-read-all:hover { background-color: #59339d; transform: translateY(-3px); }
+        .btn-read-all.active-play { background-color: #fd7e14; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(253, 126, 20, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(253, 126, 20, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(253, 126, 20, 0); }
+        }
+
+        .header-controls {
+            display: flex; justify-content: space-between; align-items: center;
+            background: white; padding: 15px; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px;
+            flex-wrap: wrap; gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 20px; border: none; border-radius: 10px;
+            font-size: clamp(16px, 3vw, 22px); font-weight: bold;
+            cursor: pointer; transition: 0.2s; flex-grow: 1; 
+        }
+
+        .btn-test { background-color: #dc3545; color: white; }
+        .btn-test.active { background-color: #6c757d; box-shadow: 0 0 15px rgba(220, 53, 69, 0.6); }
+        .btn-shuffle { background-color: #ffc107; color: #000; }
+        .btn-check { background-color: #28a745; color: white; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; transition: 0.3s; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 12px 25px; background: #e9ecef; border: 3px solid transparent;
+            border-radius: 10px; cursor: pointer; font-size: clamp(18px, 4vw, 24px); 
+            font-weight: 800; color: #495057; flex-grow: 1; text-align: center;
+        }
+        .tab-btn.active { background: #007bff; color: white; border-color: #0056b3; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .question-block {
+            background: white; border-radius: 15px; 
+            padding: clamp(15px, 4vw, 35px); 
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); direction: ltr; text-align: left; position: relative;
+            transition: box-shadow 0.3s, transform 0.3s;
+            width: 100%;
+        }
+
+        body.focus-mode-active .tabs { display: none !important; }
+        body.focus-mode-active .question-block { display: none; }
+        body.focus-mode-active .question-block.active-reading {
+            display: block; 
+            box-shadow: 0 15px 40px rgba(23, 162, 184, 0.4); border: 4px solid #17a2b8;
+            transform: scale(1); margin: 5vh auto; width: 100%; max-width: 1000px;
+            padding: clamp(20px, 5vw, 40px); animation: fadeIn 0.6s ease-out; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-header { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
+        .btn-sound { 
+            background: #17a2b8; color: white; border: none; border-radius: 50%; 
+            width: clamp(45px, 8vw, 60px); height: clamp(45px, 8vw, 60px); 
+            font-size: clamp(20px, 4vw, 28px); cursor: pointer; flex-shrink: 0; 
+            display: flex; align-items: center; justify-content: center; transition: 0.3s; 
+        }
+        .btn-sound:hover { background: #138496; transform: scale(1.1); }
+        .q-number { 
+            background: #007bff; color: white; width: clamp(45px, 8vw, 60px); height: clamp(45px, 8vw, 60px); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: clamp(20px, 4vw, 28px); font-weight: 900; flex-shrink: 0; 
+        }
+        .q-text { 
+            font-size: clamp(22px, 5vw, 36px); font-weight: 800; line-height: 1.6; flex-grow: 1; color: #111;
+        }
+        .sub-translation { 
+            color: #dc3545; font-size: clamp(18px, 4vw, 26px); direction: rtl; text-align: right; 
+            border-top: 2px dashed #ccc; padding-top: 12px; margin-top: 15px; font-weight: 700; 
+        }
+
+        .options-grid { 
+            display: grid; 
+            /* السر هنا: إجبار الشبكة على إنشاء 4 أعمدة بالضبط في سطر واحد */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 6px; /* تقليل المسافة بين الاختيارات */
+            margin-top: 25px; 
+            padding-left: 0;
+            width: 100%;
+        }
+        
+        .option-item { 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; 
+            padding: 8px 5px; /* تقليل الحشوة لاستيعاب السطر الواحد */
+            border-radius: 10px; transition: 0.2s; border: 3px solid transparent; 
+        }
+        .option-item:hover { background-color: #f1f3f5; }
+        .option-item.selected { background-color: #e7f1ff; border-color: #007bff; }
+        
+        .letter-circle { 
+            width: clamp(26px, 4vw, 36px); height: clamp(26px, 4vw, 36px); 
+            border-radius: 50%; border: 3px solid #adb5bd; display: flex; 
+            align-items: center; justify-content: center; font-weight: 900; 
+            font-size: clamp(16px, 3vw, 22px); 
+            margin-right: 8px; /* تقليل المسافة بين الحرف والكلمة */
+            flex-shrink: 0; color: #495057; background: white; transition: 0.2s; 
+        }
+        .option-item.selected .letter-circle { background: #007bff; color: white; border-color: #007bff; }
+        
+        .option-text { 
+            font-size: clamp(16px, 3.5vw, 28px); /* الخط يتمدد وينكمش حسب مساحة السطر */
+            font-weight: 700; color: #222; text-align: center;
+        }
+
+        .option-item.correct-ans { background-color: #d4edda !important; border-color: #28a745 !important; }
+        .option-item.correct-ans .letter-circle { background-color: #28a745 !important; border-color: #28a745 !important; color: white; }
+        .option-item.wrong-ans { background-color: #f8d7da !important; border-color: #dc3545 !important; }
+        .option-item.wrong-ans .letter-circle { background-color: #dc3545 !important; border-color: #dc3545 !important; color: white; }
+
+        .clickable-word { cursor: pointer; position: relative; display: inline-block; margin: 2px 3px; transition: 0.2s; border-radius: 6px; padding: 0 2px;}
+        .clickable-word:hover { background-color: #e2e3e5; }
+        .clickable-word.highlighted { background-color: #ffc107 !important; color: black; box-shadow: 0 0 12px #ffc107;}
+        .phrasal-verb { border-bottom: 4px solid #dc3545; padding-bottom: 4px; }
+
+        .tooltip-translation { 
+            visibility: hidden; background-color: rgba(255,255,255,0.95); color: #dc3545; 
+            text-align: center; position: absolute; z-index: 10; bottom: 100%; left: 50%; 
+            transform: translateX(-50%); font-size: clamp(18px, 4vw, 26px); 
+            font-weight: 900; white-space: nowrap; opacity: 0; transition: opacity 0.3s; 
+            text-shadow: 0px 0px 8px white, 0px 0px 12px white; padding: 5px 10px; border-radius: 8px; pointer-events: none; 
+        }
+        .clickable-word:hover .tooltip-translation { visibility: visible; opacity: 1; bottom: 115%; }
+
+        .test-mode-active .sub-translation { display: none !important; }
+        .test-mode-active .btn-sound, .test-mode-active .btn-read-all { display: none !important; }
+        .test-mode-active .tooltip-translation { display: none !important; }
+        .test-mode-active .clickable-word { pointer-events: none; }
+        .test-mode-active .phrasal-verb { border-bottom: none; }
+
+        #score-display { font-size: clamp(20px, 5vw, 28px); font-weight: 900; color: #28a745; margin: 10px 0; text-align: center; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <button id="readAllBtn" class="btn-read-all" onclick="toggleReadAll()">
+        ▶️ استماع تلقائي (وضع التركيز لضعاف البصر)
+    </button>
+
+    <div class="header-controls">
+        <button id="testModeBtn" class="btn btn-test" onclick="toggleTestMode()">🎯 وضع الاختبار: معطل</button>
+        <button class="btn btn-check" onclick="checkAnswers()">✔️ عرض النتيجة</button>
+        <button class="btn btn-shuffle" onclick="initApp()">🔄 تصفير وخلط ذكي</button>
+        <div id="score-display"></div>
+    </div>
+
+    <div class="tabs" id="tabs-container"></div>
+    <div id="quiz-container"></div>
+
+    <script>
+        const quizData = [
+            {
+                tabName: "Unit 1",
+                questions: [
+                    { q: "........ she like chocolate ?", trans: "هل تحب الشوكولاتة ؟", options: [{t:"Do", c:false}, {t:"Does", c:true}, {t:"Have", c:false}, {t:"Has", c:false}] },
+                    { q: "They ........ play football yesterday.", trans: "هم لم يلعبوا كرة القدم أمس.", options: [{t:"don't", c:false}, {t:"doesn't", c:false}, {t:"didn't", c:true}, {t:"haven't", c:false}] },
+                    { q: "........ he done the homework ?", trans: "هل أدى واجبه المنزلي ؟", options: [{t:"Has", c:true}, {t:"Have", c:false}, {t:"Had", c:false}, {t:"Having", c:false}] },
+                    { q: "She hasn't ........ her room yet.", trans: "هي لم تنظف غرفتها بعد.", options: [{t:"clean", c:false}, {t:"cleans", c:false}, {t:"cleaned", c:true}, {t:"cleaning", c:false}] },
+                    { q: "We had ........ a movie before they came.", trans: "لقد شاهدنا فيلماً قبل مجيئهم.", options: [{t:"see", c:false}, {t:"saw", c:false}, {t:"seen", c:true}, {t:"seeing", c:false}] },
+                    { q: "........ they playing with a ball ?", trans: "هل كانوا يلعبون بالكرة ؟", options: [{t:"Was", c:false}, {t:"Were", c:true}, {t:"Do", c:false}, {t:"Does", c:false}] },
+                    { q: "He was ........ his lessons.", trans: "كان يذاكر دروسه.", options: [{t:"study", c:false}, {t:"studies", c:false}, {t:"studied", c:false}, {t:"studying", c:true}] },
+                    { q: "Dates ........ grown in Al-ahsa.", trans: "التمور تُزرع في الأحساء.", options: [{t:"am", c:false}, {t:"is", c:false}, {t:"are", c:true}, {t:"was", c:false}] },
+                    { q: "Saudi Arabia is ........ than Bahrain.", trans: "المملكة العربية السعودية أكبر من البحرين.", options: [{t:"big", c:false}, {t:"bigger", c:true}, {t:"biggest", c:false}, {t:"biger", c:false}] },
+                    { q: "Gold is ........ expensive than silver.", trans: "الذهب أغلى من الفضة.", options: [{t:"more", c:true}, {t:"most", c:false}, {t:"less", c:false}, {t:"least", c:false}] },
+                    { q: "Apple products are the ........ popular.", trans: "منتجات أبل هي الأكثر شعبية.", options: [{t:"more", c:false}, {t:"most", c:true}, {t:"least", c:false}, {t:"less", c:false}] },
+                    { q: "The TV needs to be ........", trans: "التلفاز بحاجة لأن يُصلح.", options: [{t:"fix", c:false}, {t:"fixes", c:false}, {t:"fixed", c:true}, {t:"fixing", c:false}] }
+                ]
+            },
+            {
+                tabName: "Unit 2",
+                questions: [
+                    { q: "The car was ........ yesterday.", trans: "السيارة تحطمت أمس.", options: [{t:"break", c:false}, {t:"broke", c:false}, {t:"broken", c:true}, {t:"breaking", c:false}] },
+                    { q: "The window has been ........", trans: "النافذة تم إغلاقها.", options: [{t:"close", c:false}, {t:"closed", c:true}, {t:"closing", c:false}, {t:"been closed", c:false}] },
+                    { q: "These books will ........ at the weekend.", trans: "هذه الكتب ستُنشر في نهاية الأسبوع.", options: [{t:"publish", c:false}, {t:"published", c:false}, {t:"be published", c:true}, {t:"been published", c:false}] },
+                    { q: "When she arrived, the bus had already ........", trans: "عندما وصلت، كان الحافلة قد غادرت بالفعل.", options: [{t:"leave", c:false}, {t:"leaves", c:false}, {t:"left", c:true}, {t:"leaving", c:false}] },
+                    { q: "He had been ........ in Makkah for 5 years when he moved to Jeddah.", trans: "كان يعيش في مكة لمدة 5 سنوات عندما انتقل إلى جدة.", options: [{t:"live", c:false}, {t:"lives", c:false}, {t:"lived", c:false}, {t:"living", c:true}] },
+                    { q: "I had been ........ for an hour when the doctor arrived the clinic.", trans: "كنت أنتظر لمدة ساعة عندما وصل الطبيب إلى العيادة.", options: [{t:"wait", c:false}, {t:"waits", c:false}, {t:"waited", c:false}, {t:"waiting", c:true}] },
+                    { q: "He ........ to the cinema yesterday.", trans: "هو ذهب إلى السينما أمس.", options: [{t:"go", c:false}, {t:"went", c:true}, {t:"gone", c:false}, {t:"going", c:false}] },
+                    { q: "I was ........ TV when the phone rang.", trans: "كنت أشاهد التلفاز عندما رن الهاتف.", options: [{t:"watch", c:false}, {t:"watch", c:false}, {t:"watched", c:false}, {t:"watching", c:true}] },
+                    { q: "It was raining hard when we ........ the house.", trans: "كانت تمطر بشدة عندما غادرنا المنزل.", options: [{t:"leave", c:false}, {t:"leaves", c:false}, {t:"leaving", c:false}, {t:"left", c:true}] },
+                    { q: "I used to {get up} late when I was a student.", trans: "اعتدت أن أستيقظ متأخراً عندما كنت طالباً.", options: [{t:"get up", c:true}, {t:"gets up", c:false}, {t:"getting up", c:false}, {t:"got up", c:false}] },
+                    { q: "My brother and I would ........ to the park when we were children.", trans: "أنا وأخي كنا نذهب إلى الحديقة عندما كنا أطفالاً.", options: [{t:"go", c:true}, {t:"goes", c:false}, {t:"going", c:false}, {t:"went", c:false}] },
+                    { q: "Where did they ........ last week?", trans: "أين لعبوا الأسبوع الماضي؟", options: [{t:"play", c:true}, {t:"plays", c:false}, {t:"played", c:false}, {t:"playing", c:false}] }
+                ]
+            }
+        ];
+
+        let isTestMode = false;
+        let currentActiveTab = 0;
+        let isReadingAll = false; 
+        let abortPlayback = false; 
+        const synth = window.speechSynthesis;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function processText(text) {
+            let processed = text.replace(/\{([^}]+)\}/g, (match, p1) => {
+                return `<span class="clickable-word phrasal-verb" onclick="speakSingleWord(this)">${p1}<span class="tooltip-translation">فعل مركب</span></span>`;
+            });
+            const words = processed.split(' ');
+            return words.map(w => {
+                if(w.includes('clickable-word')) return w; 
+                if(w === "........") return w; 
+                const cleanWord = w.replace(/[^a-zA-Z\']/g, ''); 
+                if(!cleanWord) return w; 
+                return `<span class="clickable-word" onclick="speakSingleWord(this)">${w}<span class="tooltip-translation">ترجمة</span></span>`;
+            }).join(' ');
+        }
+
+        function initApp() {
+            stopAllAudio(); 
+            document.getElementById('score-display').innerText = "";
+            const tabsContainer = document.getElementById('tabs-container');
+            const quizContainer = document.getElementById('quiz-container');
+            tabsContainer.innerHTML = ''; quizContainer.innerHTML = '';
+
+            quizData.forEach((unit, unitIdx) => {
+                const tabBtn = document.createElement('button');
+                tabBtn.className = `tab-btn ${unitIdx === currentActiveTab ? 'active' : ''}`;
+                tabBtn.innerText = unit.tabName;
+                tabBtn.onclick = () => switchTab(unitIdx);
+                tabsContainer.appendChild(tabBtn);
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = `tab-content ${unitIdx === currentActiveTab ? 'active' : ''}`;
+                contentDiv.id = `tab-content-${unitIdx}`;
+
+                const shuffledQuestions = shuffleArray([...unit.questions]);
+
+                shuffledQuestions.forEach((q, qIdx) => {
+                    const qBlock = document.createElement('div');
+                    qBlock.className = 'question-block';
+                    qBlock.id = `q-${unitIdx}-${qIdx}`;
+
+                    const qHeader = document.createElement('div');
+                    qHeader.className = 'q-header';
+                    qHeader.innerHTML = `
+                        <button class="btn-sound" onclick="playDictation(document.getElementById('q-${unitIdx}-${qIdx}'))" title="إملاء متزامن">🔊</button>
+                        <div class="q-number">${qIdx + 1}</div>
+                        <div class="q-text">${processText(q.q)}</div>
+                    `;
+                    qBlock.appendChild(qHeader);
+
+                    const subTrans = document.createElement('div');
+                    subTrans.className = 'sub-translation';
+                    subTrans.innerText = q.trans;
+                    qBlock.appendChild(subTrans);
+
+                    const shuffledOptions = shuffleArray([...q.options]);
+                    const letters = ['A', 'B', 'C', 'D'];
+                    const optionsGrid = document.createElement('div');
+                    optionsGrid.className = 'options-grid';
+
+                    shuffledOptions.forEach((opt, optIdx) => {
+                        const optDiv = document.createElement('div');
+                        optDiv.className = 'option-item';
+                        optDiv.dataset.correct = opt.c;
+                        optDiv.onclick = function() { selectOption(this, optionsGrid); };
+                        
+                        optDiv.innerHTML = `
+                            <div class="letter-circle">${letters[optIdx]}</div>
+                            <div class="option-text">${processText(opt.t)}</div>
+                        `;
+                        optionsGrid.appendChild(optDiv);
+                    });
+                    
+                    qBlock.appendChild(optionsGrid);
+                    contentDiv.appendChild(qBlock);
+                });
+                quizContainer.appendChild(contentDiv);
+            });
+        }
+
+        function selectOption(selectedElement, container) {
+            if (document.getElementById('score-display').innerText !== "") return; 
+            const items = container.querySelectorAll('.option-item');
+            items.forEach(item => item.classList.remove('selected'));
+            selectedElement.classList.add('selected');
+        }
+
+        function checkAnswers() {
+            const activeTabContent = document.getElementById(`tab-content-${currentActiveTab}`);
+            const questions = activeTabContent.querySelectorAll('.question-block');
+            let score = 0;
+            questions.forEach(q => {
+                const options = q.querySelectorAll('.option-item');
+                options.forEach(opt => {
+                    const isCorrect = opt.dataset.correct === "true";
+                    const isSelected = opt.classList.contains('selected');
+                    if (isCorrect) {
+                        opt.classList.add('correct-ans'); 
+                        if (isSelected) score++;
+                    } else if (isSelected && !isCorrect) {
+                        opt.classList.add('wrong-ans'); 
+                    }
+                });
+            });
+            document.getElementById('score-display').innerText = `النتيجة: ${score} / ${questions.length}`;
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
+
+        function switchTab(index) {
+            stopAllAudio(); 
+            currentActiveTab = index;
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === index));
+            document.querySelectorAll('.tab-content').forEach((content, i) => content.classList.toggle('active', i === index));
+            document.getElementById('score-display').innerText = ""; 
+        }
+
+        function toggleTestMode() {
+            stopAllAudio(); 
+            isTestMode = !isTestMode;
+            const btn = document.getElementById('testModeBtn');
+            if (isTestMode) {
+                document.body.classList.add('test-mode-active');
+                btn.classList.add('active');
+                btn.innerText = "🎯 وضع الاختبار: مفعل";
+            } else {
+                document.body.classList.remove('test-mode-active');
+                btn.classList.remove('active');
+                btn.innerText = "🎯 وضع الاختبار: معطل";
+            }
+        }
+
+        function speakTextSync(text, rate = 0.75) {
+            return new Promise((resolve) => {
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = rate;
+                utterance.onend = () => setTimeout(resolve, 200);
+                utterance.onerror = resolve;
+                synth.speak(utterance);
+            });
+        }
+
+        function speakSingleWord(element) {
+            if (isTestMode || isReadingAll) return; 
+            const text = element.innerText.replace(/[^a-zA-Z\s]/g, '').trim();
+            if(!text) return;
+            synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            synth.speak(utterance);
+        }
+
+        function stopAllAudio() {
+            abortPlayback = true;
+            isReadingAll = false;
+            synth.cancel();
+            document.body.classList.remove('focus-mode-active'); 
+            const btn = document.getElementById('readAllBtn');
+            btn.innerHTML = "▶️ استماع تلقائي (وضع التركيز لضعاف البصر)";
+            btn.classList.remove('active-play');
+            document.querySelectorAll('.question-block').forEach(qb => qb.classList.remove('active-reading'));
+            document.querySelectorAll('.clickable-word').forEach(w => w.classList.remove('highlighted'));
+        }
+
+        async function toggleReadAll() {
+            if (isTestMode) return alert("لا يمكن تشغيل القراءة التلقائية في وضع الاختبار.");
+            
+            if (isReadingAll) {
+                stopAllAudio();
+                return;
+            }
+
+            isReadingAll = true;
+            abortPlayback = false;
+            
+            document.body.classList.add('focus-mode-active');
+            
+            const btn = document.getElementById('readAllBtn');
+            btn.innerHTML = "⏹️ إيقاف القراءة التلقائية وإلغاء وضع التركيز";
+            btn.classList.add('active-play');
+
+            const activeTabContent = document.getElementById(`tab-content-${currentActiveTab}`);
+            const questions = activeTabContent.querySelectorAll('.question-block');
+
+            for (let i = 0; i < questions.length; i++) {
+                if (abortPlayback) break;
+
+                const qBlock = questions[i];
+                
+                document.querySelectorAll('.question-block').forEach(qb => qb.classList.remove('active-reading'));
+                qBlock.classList.add('active-reading');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                await new Promise(r => setTimeout(r, 600)); 
+                if (abortPlayback) break;
+
+                await speakTextSync(`Question number ${i + 1}`, 0.8);
+                if (abortPlayback) break;
+                
+                await playDictation(qBlock, true); 
+                if (abortPlayback) break;
+                
+                qBlock.classList.remove('active-reading');
+                await new Promise(r => setTimeout(r, 1200)); 
+            }
+
+            if (!abortPlayback) {
+                stopAllAudio();
+            }
+        }
+
+        async function playDictation(containerElement, isAutoCall = false) {
+            if (isTestMode) return; 
+            if (isReadingAll && !isAutoCall) return; 
+            
+            if (!isAutoCall) synth.cancel(); 
+            
+            const words = containerElement.querySelectorAll('.clickable-word');
+            if (words.length === 0) return;
+
+            const speakWordSync = (wordElement) => {
+                return new Promise((resolve) => {
+                    const cleanText = wordElement.innerText.replace(/[^a-zA-Z\s]/g, '').trim(); 
+                    if (!cleanText || abortPlayback) { resolve(); return; }
+
+                    const utterance = new SpeechSynthesisUtterance(cleanText);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.6; 
+                    
+                    utterance.onstart = () => {
+                        containerElement.querySelectorAll('.clickable-word').forEach(w => w.classList.remove('highlighted'));
+                        wordElement.classList.add('highlighted');
+                    };
+
+                    utterance.onend = () => {
+                        wordElement.classList.remove('highlighted');
+                        if (abortPlayback) synth.cancel();
+                        setTimeout(resolve, 150); 
+                    };
+                    utterance.onerror = () => { wordElement.classList.remove('highlighted'); resolve(); };
+
+                    synth.speak(utterance);
+                });
+            };
+
+            for (let i = 0; i < words.length; i++) {
+                if (abortPlayback) return;
+                if (words[i].closest('.options-grid') && i > 0 && !words[i-1].closest('.options-grid')) {
+                    await new Promise(r => setTimeout(r, 600)); 
+                }
+                await speakWordSync(words[i]);
+            }
+
+            if (abortPlayback) return;
+            await new Promise(r => setTimeout(r, 800));
+
+            if (abortPlayback) return;
+            await speakTextSync("The correct answer is", 0.75);
+
+            if (abortPlayback) return;
+            const correctOption = containerElement.querySelector('.option-item[data-correct="true"]');
+            if (correctOption) {
+                correctOption.classList.add('correct-ans'); 
+                const correctWords = correctOption.querySelectorAll('.clickable-word');
+                for (let i = 0; i < correctWords.length; i++) {
+                    if (abortPlayback) return;
+                    await speakWordSync(correctWords[i]);
+                }
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
