@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Matching Exercises</title>
+    <!-- تضمين مكتبة SortableJS للسحب والإفلات -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            direction: ltr; /* المحتوى الإنجليزي من اليسار لليمين */
+        }
+        
+        .header-controls {
+            text-align: center;
+            margin-bottom: 30px;
+            direction: rtl;
+        }
+
+        #testModeBtn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        #testModeBtn.active {
+            background-color: #6c757d;
+            box-shadow: 0 0 10px #dc3545;
+        }
+
+        .exercise-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .matching-table {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .item {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .left-col .item {
+            background: #e9ecef;
+        }
+
+        .right-col .item {
+            cursor: grab;
+            background: #fff;
+        }
+
+        .right-col .item:active {
+            cursor: grabbing;
+        }
+
+        .number-badge, .letter-badge {
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .letter-badge {
+            background: #28a745;
+        }
+
+        /* حاوية النص لتنظيم الكلمات الإنجليزية والترجمة */
+        .text-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .english-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+
+        .translation-sub {
+            color: #dc3545;
+            font-size: 14px;
+            border-top: 1px dashed #ccc;
+            padding-top: 5px;
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* التفاعل مع الكلمات */
+        .clickable-word {
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            margin-right: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .clickable-word:hover {
+            background-color: #ffeeba;
+        }
+
+        .clickable-word.highlighted {
+            background-color: #ffc107;
+        }
+
+        .tooltip-translation {
+            visibility: hidden;
+            background-color: #dc3545;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 2px 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .clickable-word:hover .tooltip-translation {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* وضع الاختبار */
+        .test-mode-active .translation-sub {
+            display: none !important;
+        }
+        .test-mode-active .tooltip-translation {
+            display: none !important;
+        }
+        .test-mode-active .clickable-word {
+            pointer-events: none;
+            background-color: transparent !important;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            direction: rtl;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-check {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-reset {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .correct {
+            border-color: #28a745 !important;
+            background-color: #d4edda !important;
+        }
+
+        .incorrect {
+            border-color: #dc3545 !important;
+            background-color: #f8d7da !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-controls">
+        <button id="testModeBtn" onclick="toggleTestMode()">وضع الاختبار (Test Mode) : معطل ❌</button>
+    </div>
+
+    <div id="exercises-container"></div>
+
+    <script>
+        const exercisesData = [
+            {
+                title: "1. Match the words with the meanings",
+                left: [
+                    { text: "hold on", trans: "انتظر لحظة", matchId: 1 },
+                    { text: "how on earth", trans: "كيف يعقل ذلك", matchId: 2 },
+                    { text: "get it", trans: "يفهم", matchId: 3 },
+                    { text: "extraordinary", trans: "رائع / استثنائي", matchId: 4 }
+                ],
+                right: [
+                    { text: "wait a moment", trans: "انتظر لحظة", matchId: 1 },
+                    { text: "how is it possible", trans: "كيف يعقل ذلك", matchId: 2 },
+                    { text: "understand", trans: "يفهم", matchId: 3 },
+                    { text: "wonderful", trans: "رائع", matchId: 4 },
+                    { text: "terrible", trans: "فظيع", matchId: 0 } // Distractor
+                ]
+            },
+            {
+                title: "2. Match to make proverbs",
+                left: [
+                    { text: "honesty", trans: "الصدق", matchId: 1 },
+                    { text: "Better late", trans: "أن تأتي متأخراً", matchId: 2 },
+                    { text: "silence", trans: "الصمت", matchId: 3 }
+                ],
+                right: [
+                    { text: "is the best policy", trans: "هو أفضل سياسة", matchId: 1 },
+                    { text: "than never", trans: "خير من ألا تأتي أبداً", matchId: 2 },
+                    { text: "is golden", trans: "من ذهب", matchId: 3 },
+                    { text: "is bad", trans: "سيء", matchId: 0 } // Distractor
+                ]
+            },
+            {
+                title: "3. Match the words with the opposites",
+                left: [
+                    { text: "disbelief", trans: "كفر / عدم إيمان", matchId: 1 },
+                    { text: "virtual", trans: "افتراضي", matchId: 2 },
+                    { text: "unique", trans: "فريد / مميز", matchId: 3 },
+                    { text: "double", trans: "مزدوج / مضاعف", matchId: 4 }
+                ],
+                right: [
+                    { text: "Belief - faith", trans: "إيمان - عقيدة", matchId: 1 },
+                    { text: "Actual - real", trans: "فعلي - حقيقي", matchId: 2 },
+                    { text: "common", trans: "شائع", matchId: 3 },
+                    { text: "single", trans: "مفرد", matchId: 4 },
+                    { text: "multiple", trans: "متعدد", matchId: 0 } // Distractor
+                ]
+            },
+            {
+                title: "4. Match the words with the meanings (Crimes)",
+                left: [
+                    { text: "nabbed", trans: "قُبض عليه / سُرق", matchId: 1 },
+                    { text: "decline", trans: "يرفض", matchId: 2 },
+                    { text: "misdemeanor", trans: "جنحة", matchId: 3 },
+                    { text: "inmate", trans: "سجين / نزيل", matchId: 4 }
+                ],
+                right: [
+                    { text: "stolen", trans: "مسروق", matchId: 1 },
+                    { text: "refuse", trans: "يرفض", matchId: 2 },
+                    { text: "a minor crime", trans: "جريمة بسيطة", matchId: 3 },
+                    { text: "a prisoner", trans: "سجين", matchId: 4 },
+                    { text: "a guard", trans: "حارس", matchId: 0 } // Distractor
+                ]
+            },
+            {
+                title: "5. Match the words with the opposites (Crimes)",
+                left: [
+                    { text: "unauthorized", trans: "غير مصرح به", matchId: 1 },
+                    { text: "victim", trans: "ضحية", matchId: 2 },
+                    { text: "suspect", trans: "مشتبه به", matchId: 3 },
+                    { text: "grim", trans: "عبوس / متجهّم", matchId: 4 }
+                ],
+                right: [
+                    { text: "authorized", trans: "مصرح به", matchId: 1 },
+                    { text: "criminal", trans: "مجرم", matchId: 2 },
+                    { text: "innocent", trans: "بريء", matchId: 3 },
+                    { text: "glad - pleased", trans: "مسرور - سعيد", matchId: 4 },
+                    { text: "angry", trans: "غاضب", matchId: 0 } // Distractor
+                ]
+            }
+        ];
+
+        let isTestMode = false;
+        const synth = window.speechSynthesis;
+
+        // دالة نطق الكلمة
+        function speakWord(word, element) {
+            if (isTestMode) return;
+            
+            // تظليل أصفر
+            document.querySelectorAll('.clickable-word').forEach(el => el.classList.remove('highlighted'));
+            element.classList.add('highlighted');
+            setTimeout(() => element.classList.remove('highlighted'), 1000);
+
+            // نطق
+            if (synth.speaking) synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            synth.speak(utterance);
+        }
+
+        // تحويل النص إلى كلمات قابلة للنقر مع الترجمة
+        function processText(text, fullTrans) {
+            const words = text.split(' ');
+            return words.map(w => {
+                const cleanWord = w.replace(/[^a-zA-Z]/g, '');
+                return `<span class="clickable-word" onclick="speakWord('${cleanWord}', this)">
+                            ${w}
+                            <span class="tooltip-translation">${fullTrans}</span>
+                        </span>`;
+            }).join(' ');
+        }
+
+        // خلط المصفوفة
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // بناء التمارين
+        function renderExercises() {
+            const container = document.getElementById('exercises-container');
+            container.innerHTML = '';
+
+            exercisesData.forEach((exercise, index) => {
+                const exDiv = document.createElement('div');
+                exDiv.className = 'exercise-container';
+                exDiv.id = `ex-${index}`;
+                
+                // رأس التمرين
+                exDiv.innerHTML = `<h2>${exercise.title}</h2>`;
+
+                const tableDiv = document.createElement('div');
+                tableDiv.className = 'matching-table';
+
+                // العمود الأيسر (الأسئلة)
+                const leftCol = document.createElement('div');
+                leftCol.className = 'column left-col';
+                exercise.left.forEach((item, i) => {
+                    leftCol.innerHTML += `
+                        <div class="item" data-match="${item.matchId}">
+                            <div class="number-badge">${i + 1}</div>
+                            <div class="text-content">
+                                <div class="english-text">${processText(item.text, item.trans)}</div>
+                                <div class="translation-sub">${item.trans}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // العمود الأيمن (الإجابات + المشتت)
+                const rightCol = document.createElement('div');
+                rightCol.className = 'column right-col';
+                rightCol.id = `sortable-${index}`;
+                
+                let shuffledRight = shuffleArray([...exercise.right]);
+                const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+                shuffledRight.forEach((item, i) => {
+                    rightCol.innerHTML += `
+                        <div class="item right-item" data-match="${item.matchId}">
+                            <div class="letter-badge">${letters[i]}</div>
+                            <div class="text-content">
+                                <div class="english-text">${processText(item.text, item.trans)}</div>
+                                <div class="translation-sub">${item.trans}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                tableDiv.appendChild(leftCol);
+                tableDiv.appendChild(rightCol);
+                exDiv.appendChild(tableDiv);
+
+                // أزرار التحكم
+                const controls = document.createElement('div');
+                controls.className = 'controls';
+                controls.innerHTML = `
+                    <button class="btn btn-check" onclick="checkAnswers(${index})">✔️ تصحيح الإجابات</button>
+                    <button class="btn btn-reset" onclick="resetExercise(${index})">🔄 تصفير وخلط عشوائي</button>
+                `;
+                exDiv.appendChild(controls);
+
+                container.appendChild(exDiv);
+
+                // تفعيل السحب والإفلات وتثبيت الحروف
+                new Sortable(document.getElementById(`sortable-${index}`), {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function (evt) {
+                        // إعادة توزيع الحروف الأبجدية لتبقى ثابتة الترتيب بعد السحب
+                        const items = document.getElementById(`sortable-${index}`).querySelectorAll('.right-item');
+                        items.forEach((el, idx) => {
+                            el.querySelector('.letter-badge').innerText = letters[idx];
+                            el.classList.remove('correct', 'incorrect');
+                        });
+                    },
+                    onChange: function() {
+                         const items = document.getElementById(`sortable-${index}`).querySelectorAll('.right-item');
+                         items.forEach(el => el.classList.remove('correct', 'incorrect'));
+                    }
+                });
+            });
+        }
+
+        // تصحيح الإجابات
+        function checkAnswers(exIndex) {
+            const exercise = exercisesData[exIndex];
+            const leftItems = document.querySelectorAll(`#ex-${exIndex} .left-col .item`);
+            const rightItems = document.querySelectorAll(`#ex-${exIndex} .right-col .item`);
+
+            leftItems.forEach((leftItem, i) => {
+                const correctMatchId = leftItem.getAttribute('data-match');
+                // نتجاهل المشتت الذي يكون في الأسفل إذا كانت الأسئلة أقل من الإجابات
+                if (i < rightItems.length) {
+                    const currentRightItem = rightItems[i];
+                    const currentRightMatchId = currentRightItem.getAttribute('data-match');
+                    
+                    currentRightItem.classList.remove('correct', 'incorrect');
+                    
+                    if (correctMatchId === currentRightMatchId) {
+                        currentRightItem.classList.add('correct');
+                    } else {
+                        currentRightItem.classList.add('incorrect');
+                    }
+                }
+            });
+        }
+
+        // تصفير وخلط
+        function resetExercise(exIndex) {
+            renderExercises(); // إعادة بناء الكل لضمان الخلط العشوائي النظيف
+            if(isTestMode) {
+                document.body.classList.add('test-mode-active');
+            }
+        }
+
+        // تفعيل / تعطيل وضع الاختبار
+        function toggleTestMode() {
+            isTestMode = !isTestMode;
+            const btn = document.getElementById('testModeBtn');
+            if (isTestMode) {
+                document.body.classList.add('test-mode-active');
+                btn.classList.add('active');
+                btn.innerText = "وضع الاختبار (Test Mode) : مفعل ✔️";
+            } else {
+                document.body.classList.remove('test-mode-active');
+                btn.classList.remove('active');
+                btn.innerText = "وضع الاختبار (Test Mode) : معطل ❌";
+            }
+        }
+
+        // تهيئة الصفحة
+        window.onload = renderExercises;
+    </script>
+</body>
+</html>
