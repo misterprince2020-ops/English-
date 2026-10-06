@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Matching Quizzes - أ. حمادة الديب</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-light: #f8fafc;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--secondary);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* 1. وضع الاختبار وزر التحكم */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-light);
+        }
+        .main-title { color: var(--primary); font-size: 1.8em; font-weight: 900; margin: 0; }
+        .btn-test-mode {
+            background-color: var(--danger); color: white; border: none; padding: 12px 25px;
+            font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+        .btn-test-mode.active { background-color: var(--primary); box-shadow: none; }
+
+        /* 2. التبويبات (Tabs) */
+        .tabs-container {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 25px;
+        }
+        .tab-btn {
+            background: var(--bg-light); border: 2px solid var(--border-color); padding: 10px 20px;
+            font-size: 1.1em; font-weight: bold; color: #475569; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn:hover { background: #e2e8f0; }
+        .tab-btn.active {
+            background: var(--secondary); color: white; border-color: var(--secondary);
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        /* 3. هيكل جدول التوصيل */
+        .matching-board {
+            display: flex;
+            gap: 20px;
+            direction: ltr; 
+            margin-bottom: 30px;
+        }
+        .column { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        
+        .question-box, .drop-zone {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            min-height: 80px;
+            display: flex;
+            align-items: stretch;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .fixed-number, .fixed-letter {
+            background: var(--secondary);
+            color: white;
+            font-weight: 900;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            flex-shrink: 0;
+        }
+        .fixed-letter { background: var(--primary); }
+
+        .content-area {
+            padding: 12px 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* 4. البطاقات القابلة للسحب */
+        .drop-zone { background: #f1f5f9; border: 2px dashed #94a3b8; transition: 0.3s; }
+        .drop-zone.drag-over { background: #e0f2fe; border-color: var(--secondary); border-style: solid; }
+        
+        .draggable-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: grab;
+            width: calc(100% - 15px);
+            margin-left: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: 0.2s;
+            position: relative;
+            z-index: 5;
+        }
+        .draggable-card:active { cursor: grabbing; transform: scale(0.98); }
+
+        /* 5. تصميم النصوص والترجمة */
+        .en-text { font-size: 1.25em; font-weight: 900; color: #1e293b; margin-bottom: 8px; line-height: 1.4; }
+        .divider { border-top: 2px dashed #cbd5e1; margin: 5px 0; }
+        .ar-trans { color: var(--danger); font-size: 1.1em; font-weight: bold; direction: rtl; text-align: right; }
+
+        /* 6. التفاعل والنطق */
+        .clickable-word { cursor: pointer; transition: 0.2s; border-radius: 4px; padding: 0 2px; display: inline-block;}
+        .clickable-word:hover { background-color: #fef08a; } 
+
+        #floating-tooltip {
+            position: absolute;
+            background: var(--danger);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.4);
+            direction: rtl;
+        }
+        #floating-tooltip::after {
+            content: ''; position: absolute; top: 100%; left: 50%; margin-left: -8px;
+            border-width: 8px; border-style: solid; border-color: var(--danger) transparent transparent transparent;
+        }
+
+        /* 7. أزرار التحكم والتصحيح */
+        .controls {
+            display: flex; justify-content: center; gap: 15px; margin-top: 20px;
+        }
+        .controls button {
+            padding: 12px 25px; border: none; border-radius: 8px; font-size: 1.2em; font-weight: bold;
+            color: white; cursor: pointer; transition: 0.3s;
+        }
+        .btn-check { background-color: var(--success); }
+        .btn-reset { background-color: var(--warning); }
+        .btn-check:hover { background-color: #059669; }
+        .btn-reset:hover { background-color: #d97706; }
+
+        .draggable-card.correct { border-color: var(--success); background-color: #dcfce7; }
+        .draggable-card.correct .en-text { color: #16a34a; }
+        .draggable-card.incorrect { border-color: var(--danger); background-color: #fee2e2; }
+        .draggable-card.incorrect .en-text { color: var(--danger); }
+
+        /* 8. وضع الاختبار */
+        body.test-mode-active .ar-trans { display: none !important; }
+        body.test-mode-active .divider { display: none !important; }
+        body.test-mode-active .clickable-word { pointer-events: none; cursor: default; }
+        body.test-mode-active .clickable-word:hover { background-color: transparent; }
+
+    </style>
+</head>
+<body>
+
+    <!-- النافذة العائمة للترجمة -->
+    <div id="floating-tooltip">ترجمة</div>
+
+    <div class="container">
+        
+        <div class="top-bar">
+            <h1 class="main-title">Standard Matching Exercises</h1>
+            <button id="testModeBtn" class="btn-test-mode" onclick="toggleTestMode()">🎯 تفعيل وضع الاختبار الحقيقي</button>
+        </div>
+
+        <div class="tabs-container" id="tabs-container"></div>
+
+        <div class="matching-board">
+            <div class="column" id="questions-column"></div>
+            <div class="column" id="answers-column"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-check" onclick="checkAnswers()">✔️ تصحيح الإجابات</button>
+            <button class="btn-reset" onclick="renderExercise(currentExIndex)">🔄 تصفير وخلط عشوائي</button>
+        </div>
+
+    </div>
+
+<script>
+// ==========================================
+// 1. القاموس الذكي للكلمات المفردة (Word Dictionary)
+// ==========================================
+const wordDictionary = {
+    // كلمات الجزء الأول
+    "someone": "شخص ما", "who": "الذي / من", "is": "يكون / هو", "relaxed": "مسترخي", 
+    "and": "و", "smiling": "مبتسم", "likes": "يحب", "to": "أن / إلى", "be": "يكون", 
+    "alone": "وحيداً", "practical": "عملي", "realistic": "واقعي", "do": "يفعل / يقوم بـ", 
+    "exciting": "مثيرة", "things": "أشياء", "doesn't": "لا", "like": "يحب", "plan": "يخطط",
+    "laid": "مسترخي", "back": "للخلف", "laid back": "هادئ ومسترخٍ", "loner": "منطوٍ / محب للعزلة",
+    "down-to-earth": "واقعي وعملي", "adventurous": "مغامر", "spontaneous": "عفوي", "stubborn": "عنيد",
+    
+    // كلمات الجزء الثاني
+    "how": "كيف", "on": "على", "earth": "الأرض (بحق السماء)", "hold": "امسك / انتظر", 
+    "get": "يحصل / يفهم", "it": "هو / هي (لغير العاقل)", "possible": "ممكن / يعقل", 
+    "wait": "انتظر", "a": "أداة نكرة", "moment": "لحظة", "understand": "يفهم", "give": "يعطي", "up": "لأعلى",
+    
+    // كلمات الجزء الثالث
+    "virtual": "افتراضي", "extraordinary": "استثنائي", "post": "ينشر", "unreal": "غير حقيقي", 
+    "imaginary": "خيالي", "special": "خاص", "unique": "فريد", "place": "يضع / مكان", 
+    "text": "نص", "images": "صور", "etc": "إلخ", "website": "موقع إلكتروني", "delete": "يحذف",
+    
+    // كلمات الجزء الرابع
+    "unauthorized": "غير مصرح به", "abandon": "يتخلى عن", "decline": "يرفض", "inmate": "نزيل / سجين", 
+    "misdemeanor": "جنحة", "without": "بدون", "permission": "إذن", "leave": "يترك", 
+    "something": "شيء ما", "refuse": "يرفض", "prisoner": "سجين", "minor": "بسيط / صغير", 
+    "crime": "جريمة", "reward": "مكافأة",
+    
+    // كلمات الجزء الخامس
+    "nabbed": "مقبوض عليه / مسروق", "i'm": "أنا", "positive": "متأكد / إيجابي", "come": "تعال", 
+    "stolen": "مسروق", "certain": "متأكد / متيقن", "please": "من فضلك", "serious": "جاد", "joking": "يمزح",
+    
+    // كلمات الجزء السادس
+    "suspect": "مشتبه به", "grim": "كئيب / مروع", "coincidence": "صدفة", "believed": "يُعتقد", 
+    "guilty": "مذنب", "very": "جداً", "unpleasant": "غير سار", "awful": "مروع", "two": "اثنان", 
+    "or": "أو", "more": "أكثر", "events": "أحداث", "happening": "تحدث", "at": "في", 
+    "the": "الـ", "same": "نفس", "time": "وقت", "evidence": "دليل"
+};
+
+// ==========================================
+// 2. قاعدة بيانات التمارين الستة
+// ==========================================
+const exercisesData = [
+    {
+        title: "Part 1: Personality",
+        questions: [
+            { id: 'q1', en: "Someone who is relaxed and smiling is", ar: "شخص مسترخي ومبتسم هو" },
+            { id: 'q2', en: "Someone who likes to be alone is", ar: "شخص يحب أن يكون وحيداً هو" },
+            { id: 'q3', en: "Someone who is practical and realistic is", ar: "شخص عملي وواقعي هو" },
+            { id: 'q4', en: "Someone who likes to do exciting things is", ar: "شخص يحب القيام بأشياء مثيرة هو" },
+            { id: 'q5', en: "Someone who doesn't like to plan things is", ar: "شخص لا يحب التخطيط للأشياء هو" }
+        ],
+        answers: [
+            { id: 'q1', en: "laid back", ar: "هادئ ومسترخٍ" },
+            { id: 'q2', en: "loner", ar: "منطوٍ (محب للعزلة)" },
+            { id: 'q3', en: "down-to-earth", ar: "واقعي وعملي" },
+            { id: 'q4', en: "adventurous", ar: "مغامر" },
+            { id: 'q5', en: "spontaneous", ar: "عفوي" },
+            { id: 'distractor', en: "stubborn", ar: "عنيد" } 
+        ]
+    },
+    {
+        title: "Part 2: Idioms",
+        questions: [
+            { id: 'q1', en: "How on earth?", ar: "كيف بحق السماء؟" },
+            { id: 'q2', en: "Hold on!", ar: "انتظر!" },
+            { id: 'q3', en: "Get it", ar: "يفهمها" }
+        ],
+        answers: [
+            { id: 'q1', en: "How is it possible?", ar: "كيف يعقل ذلك؟" },
+            { id: 'q2', en: "Wait a moment!", ar: "انتظر لحظة!" },
+            { id: 'q3', en: "understand", ar: "يفهم" },
+            { id: 'distractor', en: "give up", ar: "يستسلم" } 
+        ]
+    },
+    {
+        title: "Part 3: Vocab 1",
+        questions: [
+            { id: 'q1', en: "Virtual", ar: "افتراضي" },
+            { id: 'q2', en: "extraordinary", ar: "استثنائي" },
+            { id: 'q3', en: "post", ar: "ينشر" }
+        ],
+        answers: [
+            { id: 'q1', en: "unreal; imaginary", ar: "غير حقيقي؛ خيالي" },
+            { id: 'q2', en: "special; unique", ar: "خاص؛ فريد" },
+            { id: 'q3', en: "to place text, images...etc on a website", ar: "وضع نص، صور... إلخ على موقع ويب" },
+            { id: 'distractor', en: "delete", ar: "يحذف" } 
+        ]
+    },
+    {
+        title: "Part 4: Law & Crime",
+        questions: [
+            { id: 'q1', en: "unauthorized", ar: "غير مصرح به" },
+            { id: 'q2', en: "abandon", ar: "يتخلى عن" },
+            { id: 'q3', en: "decline", ar: "يرفض" },
+            { id: 'q4', en: "inmate", ar: "نزيل (سجين)" },
+            { id: 'q5', en: "misdemeanor", ar: "جنحة" }
+        ],
+        answers: [
+            { id: 'q1', en: "without permission", ar: "بدون إذن" },
+            { id: 'q2', en: "leave; give up something", ar: "يترك؛ يتخلى عن شيء ما" },
+            { id: 'q3', en: "refuse", ar: "يرفض" },
+            { id: 'q4', en: "prisoner", ar: "سجين" },
+            { id: 'q5', en: "A minor crime", ar: "جريمة بسيطة" },
+            { id: 'distractor', en: "reward", ar: "مكافأة" } 
+        ]
+    },
+    {
+        title: "Part 5: Conversation",
+        questions: [
+            { id: 'q1', en: "nabbed", ar: "مقبوض عليه / مسروق" },
+            { id: 'q2', en: "I'm positive.", ar: "أنا متأكد." },
+            { id: 'q3', en: "Come on!", ar: "هيا! (كفاك مزاحاً)" }
+        ],
+        answers: [
+            { id: 'q1', en: "stolen", ar: "مسروق" },
+            { id: 'q2', en: "I'm certain", ar: "أنا متيقن" },
+            { id: 'q3', en: "Please be serious", ar: "أرجوك كن جاداً" },
+            { id: 'distractor', en: "joking", ar: "يمزح" } 
+        ]
+    },
+    {
+        title: "Part 6: Vocab 2",
+        questions: [
+            { id: 'q1', en: "suspect", ar: "مشتبه به" },
+            { id: 'q2', en: "grim", ar: "كئيب / مروع" },
+            { id: 'q3', en: "Coincidence", ar: "صدفة" }
+        ],
+        answers: [
+            { id: 'q1', en: "someone believed to be guilty", ar: "شخص يُعتقد أنه مذنب" },
+            { id: 'q2', en: "very unpleasant and awful", ar: "غير سار ومروع جداً" },
+            { id: 'q3', en: "two or more events happening at the same time", ar: "حدثان أو أكثر يقعان في نفس الوقت" },
+            { id: 'distractor', en: "evidence", ar: "دليل" } 
+        ]
+    }
+];
+
+let currentExIndex = 0;
+let isTestMode = false;
+let draggedItem = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    buildTabs();
+    renderExercise(0);
+    
+    // منع القائمة المنسدلة الافتراضية
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    
+    // إخفاء نافذة الترجمة عند النقر بأي مكان فارغ
+    document.addEventListener('click', (e) => {
+        if(!e.target.classList.contains('clickable-word')) {
+            document.getElementById('floating-tooltip').style.opacity = '0';
+        }
+    });
+});
+
+function buildTabs() {
+    const tabsContainer = document.getElementById('tabs-container');
+    tabsContainer.innerHTML = '';
+    exercisesData.forEach((ex, index) => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+        btn.textContent = ex.title;
+        btn.onclick = () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderExercise(index);
+        };
+        tabsContainer.appendChild(btn);
+    });
+}
+
+// دالة تفكيك الجملة لتصبح كل كلمة قابلة للنقر بشكل مستقل
+function wrapWordsForInteraction(text) {
+    return text.split(' ').map(word => {
+        return `<span class="clickable-word" onclick="handleWordClick(event, this)">${word}</span>`;
+    }).join(' ');
+}
+
+function renderExercise(index) {
+    currentExIndex = index;
+    const ex = exercisesData[index];
+    const qCol = document.getElementById('questions-column');
+    const aCol = document.getElementById('answers-column');
+    
+    qCol.innerHTML = '';
+    aCol.innerHTML = '';
+    document.getElementById('floating-tooltip').style.opacity = '0';
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    ex.answers.forEach((ans, i) => { 
+        if (i < ex.questions.length) {
+            let q = ex.questions[i];
+            let qHTML = `
+                <div class="question-box">
+                    <div class="fixed-number">${i + 1}</div>
+                    <div class="content-area">
+                        <div class="en-text">${wrapWordsForInteraction(q.en)}</div>
+                        <div class="divider"></div>
+                        <div class="ar-trans">${q.ar}</div>
+                    </div>
+                </div>
+            `;
+            qCol.insertAdjacentHTML('beforeend', qHTML);
+        } else {
+            qCol.insertAdjacentHTML('beforeend', `<div style="min-height:80px; visibility:hidden;"></div>`);
+        }
+
+        let dropTargetId = (i < ex.questions.length) ? ex.questions[i].id : 'none';
+        let zoneHTML = `
+            <div class="drop-zone" data-target="${dropTargetId}" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event, this)">
+                <div class="fixed-letter">${alphabet[i]}</div>
+            </div>
+        `;
+        aCol.insertAdjacentHTML('beforeend', zoneHTML);
+    });
+
+    let shuffledAnswers = [...ex.answers].sort(() => Math.random() - 0.5);
+    const dropZones = aCol.querySelectorAll('.drop-zone');
+    
+    shuffledAnswers.forEach((ans, i) => {
+        let card = document.createElement('div');
+        card.className = 'draggable-card';
+        card.draggable = true;
+        card.setAttribute('data-id', ans.id);
+        card.ondragstart = dragStart;
+        
+        card.innerHTML = `
+            <div class="en-text">${wrapWordsForInteraction(ans.en)}</div>
+            <div class="divider"></div>
+            <div class="ar-trans">${ans.ar}</div>
+        `;
+        dropZones[i].appendChild(card);
+    });
+}
+
+function dragStart(e) {
+    if (isTestMode) return;
+    draggedItem = this;
+    e.dataTransfer.effectAllowed = "move";
+    setTimeout(() => this.style.opacity = '0.5', 0);
+}
+
+document.addEventListener('dragend', (e) => {
+    if(draggedItem) draggedItem.style.opacity = '1';
+});
+
+function allowDrop(e) {
+    e.preventDefault();
+    if(e.currentTarget.classList.contains('drop-zone')) {
+        e.currentTarget.classList.add('drag-over');
+    }
+}
+function dragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+}
+function drop(e, targetZone) {
+    e.preventDefault();
+    targetZone.classList.remove('drag-over');
+    
+    if (!draggedItem) return;
+
+    let existingCard = targetZone.querySelector('.draggable-card');
+    let sourceZone = draggedItem.parentElement;
+
+    if (existingCard) {
+        sourceZone.appendChild(existingCard);
+    }
+    targetZone.appendChild(draggedItem);
+    
+    document.querySelectorAll('.draggable-card').forEach(c => c.classList.remove('correct', 'incorrect'));
+}
+
+function checkAnswers() {
+    let dropZones = document.querySelectorAll('#answers-column .drop-zone');
+    
+    dropZones.forEach(zone => {
+        let card = zone.querySelector('.draggable-card');
+        if (card) {
+            card.classList.remove('correct', 'incorrect');
+            let targetId = zone.getAttribute('data-target');
+            let cardId = card.getAttribute('data-id');
+            
+            if (targetId !== 'none') {
+                if (targetId === cardId) {
+                    card.classList.add('correct');
+                } else {
+                    card.classList.add('incorrect');
+                }
+            }
+        }
+    });
+}
+
+// ==========================================
+// التفاعل والنطق والنافذة العائمة المحدثة (القاموس الذكي)
+// ==========================================
+function handleWordClick(event, element) {
+    if (isTestMode) return;
+
+    // استخراج الكلمة ونطقها
+    let wordText = element.textContent;
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        let utterance = new SpeechSynthesisUtterance(wordText);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // تنظيف الكلمة من علامات الترقيم للبحث في القاموس
+    let cleanWord = wordText.toLowerCase().replace(/[.,;:!?"]/g, '');
+    
+    // البحث في القاموس الذكي
+    let translation = wordDictionary[cleanWord] || "ترجمة غير متوفرة";
+
+    const tooltip = document.getElementById('floating-tooltip');
+    tooltip.textContent = translation;
+    tooltip.style.opacity = '1';
+    
+    const rect = element.getBoundingClientRect();
+    const tooltipWidth = tooltip.offsetWidth;
+    
+    // توسيط النافذة الحمراء فوق الكلمة تماماً
+    let leftPos = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+    let topPos = rect.top + window.scrollY - 45; 
+    
+    tooltip.style.left = `${leftPos}px`;
+    tooltip.style.top = `${topPos}px`;
+
+    // إخفاء المربع الأحمر بعد 3 ثوانٍ
+    setTimeout(() => { tooltip.style.opacity = '0'; }, 3000);
+}
+
+function toggleTestMode() {
+    isTestMode = !isTestMode;
+    const btn = document.getElementById('testModeBtn');
+    
+    if (isTestMode) {
+        document.body.classList.add('test-mode-active');
+        btn.classList.add('active');
+        btn.innerHTML = '🔴 وضع الاختبار مُفعّل (الترجمة والنطق متوقفان)';
+        document.getElementById('floating-tooltip').style.opacity = '0';
+        window.speechSynthesis.cancel();
+    } else {
+        document.body.classList.remove('test-mode-active');
+        btn.classList.remove('active');
+        btn.innerHTML = '🎯 تفعيل وضع الاختبار الحقيقي';
+    }
+}
+
+</script>
+</body>
+</html>
