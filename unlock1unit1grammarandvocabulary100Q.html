@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unlock 1 - 100 Questions Mastery</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-radius: 20px; border: 4px solid #f1c40f; 
+        }
+        
+        .main-title { text-align: center; color: #1e3c72; font-size: 2.8em; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .sub-title { text-align: center; color: #e67e22; font-size: 1.5em; margin-bottom: 30px; font-weight: bold; }
+
+        /* التبويبات */
+        .tab-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab-btn { background-color: #f8f9fa; border: 2px solid #bdc3c7; cursor: pointer; padding: 15px 30px; font-size: 1.3em; font-weight: 900; color: #2c3e50; border-radius: 12px; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);}
+        .tab-btn:hover { background-color: #e8f4f8; border-color: #3498db; color: #2980b9;}
+        .tab-btn.active { background-color: #1e3c72; color: #f1c40f; border-color: #1e3c72; box-shadow: 0 6px 12px rgba(30, 60, 114, 0.4); transform: scale(1.05);}
+        
+        .tab-content { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* لوحة التحكم الذكية */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 15px; border: 2px solid #cbd5e1; gap:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 10px; z-index: 100;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-study { background-color: #64748b; }
+        .btn-exam { background-color: #64748b; }
+        
+        .btn-study.active-mode { background-color: #3b82f6; box-shadow: 0 6px 15px rgba(59,130,246,0.4); transform: scale(1.03); border: 3px solid #1d4ed8;}
+        .btn-exam.active-mode { background-color: #dc2626; box-shadow: 0 6px 15px rgba(220,38,38,0.4); transform: scale(1.03); border: 3px solid #991b1b;}
+
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        .action-btn { color: white; border: none; padding: 12px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 450px;}
+        .btn-play-all { background-color: #10b981; } .btn-play-all:hover { background-color: #059669; }
+        .btn-result { background-color: #f59e0b; display: none; } .btn-result:hover { background-color: #d97706; }
+
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3c72; background: #e0e7ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        
+        .q-text { font-size: 1.4em; font-weight: bold; color: #0f172a; direction: ltr; text-align: left; width: 100%; line-height: 2.8; transition: 0.3s;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: flex; gap: 15px; direction: ltr; flex-wrap: wrap; align-items: stretch; width: 100%;}
+        .opt-item { flex: 1; min-width: 200px; display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 12px; font-weight: bold; font-size: 1.2em; border-right: 2px solid #cbd5e1; border-radius: 8px 0 0 8px; display: flex; align-items: center; justify-content: center;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #94a3b8; background: #f1f5f9;}
+        .choice-text { padding: 12px 15px; font-weight: bold; font-size: 1.2em; color: #334155; line-height: 1.8; display: flex; align-items: center; width:100%;}
+
+        /* التصحيح الفوري الآلي (يعمل في وضع التدريب ووضع الاختبار) */
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-text, .opt-item.correct .word-group .en { color: white !important; background: transparent !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-text, .opt-item.wrong .word-group .en { color: white !important; background: transparent !important; }
+
+        /* الكلمات التفاعلية */
+        .word-group { display: inline-flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; margin: 0 2px; }
+        .word-group .en { font-size: 24px; font-weight: bold; padding: 4px 6px; border-radius: 6px; transition: 0.2s; color: #1e293b; direction: ltr;}
+        .word-group .ar { color: #dc2626; font-size: 18px; font-family: 'Tajawal'; font-weight: 900; position: absolute; bottom: 100%; margin-bottom: 5px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: 0.2s; white-space: nowrap; pointer-events: none;}
+        
+        .word-group.highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .word-group.highlight .ar { opacity: 1; visibility: visible; transform: translateY(0px); }
+
+        .missing-letter { color: #dc2626 !important; border-bottom: 2px dashed #dc2626; padding-bottom: 2px;}
+
+        /* أزرار الصوت والشرح */
+        .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; direction: rtl; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; width: 100%;}
+        .btn-toggle { background-color: #10b981; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 15px; transition: 0.3s;}
+        .btn-toggle:hover { background-color: #059669; transform: translateY(-2px);}
+        .btn-toggle.playing { background-color: #f59e0b; }
+        
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-end; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s;}
+        .btn-answer:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        .correct-word-text { font-weight: bold; font-size: 20px; color: #1e293b; margin-bottom: 15px; line-height: 2.5;}
+        .en-ans { display: inline-flex; align-items: flex-end; gap: 5px; flex-wrap: wrap; direction: ltr; margin-right: 10px;}
+        .grammar-explanation { padding: 15px; background-color: #eff6ff; border-right: 4px solid #3b82f6; border-radius: 6px; color: #1e293b; font-size: 19px; line-height: 2.2; font-weight:bold; }
+
+        /* ================= وضع الاختبار الصارم (يخفي المساعدات ولكن يبقي التصحيح الفوري) ================= */
+        .exam-mode .full-sentence-translation { display: none !important; }
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .q-header { display: none !important; } 
+        .exam-mode .word-group .ar { display: none !important; } 
+        .exam-mode .word-group { pointer-events: none !important; } 
+        .exam-mode .q-text { line-height: 1.8 !important; }
+        .exam-mode .choice-text { line-height: 1.5 !important; }
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">Unlock 1 - General Review</div>
+    <div class="sub-title">المراجعة العامة الشاملة (100 سؤال) - إعداد: الأستاذ / حمادة الديب 🎓</div>
+
+    <div class="tab-buttons" id="tabs-container"></div>
+    <div id="units-container"></div>
+</div>
+
+<script>
+(function initGoldenApp() {
+    try {
+        const sectionsData = {
+            1: { title: "📚 قسم الكلمات (50 سؤال)", start: 1 },
+            2: { title: "✍️ قسم القواعد (50 سؤال)", start: 51 }
+        };
+
+        const db = [
+            // ==================== SECTION 1: VOCABULARY (1 - 50) ====================
+            {u:1, q:"My|ـي mother's|أمي son|ابن is|يكون my|ـي ........|........", o:["brother|أخ", "sister|أخت", "uncle|عم", "grandfather|جد"], c:0, t:"ابن أمي هو أخي.", e:"ابن الأم هو الأخ (brother)."},
+            {u:1, q:"My|ـي father's|والدي daughter|ابنة is|تكون my|ـي ........|........", o:["sister|أخت", "brother|أخ", "aunt|عمة", "grandmother|جدة"], c:0, t:"ابنة والدي هي أختي.", e:"ابنة الأب هي الأخت (sister)."},
+            {u:1, q:"My|ـي grandfather's|جدي son|ابن is|يكون my|ـي ........|........", o:["father|أب", "brother|أخ", "uncle|عم", "son|ابن"], c:0, t:"ابن جدي هو أبي.", e:"ابن الجد هو الأب (father) أو العم."},
+            {u:1, q:"My|ـي grandmother's|جدتي daughter|ابنة is|تكون my|ـي ........|........", o:["mother|أم", "sister|أخت", "aunt|خالة", "daughter|ابنة"], c:0, t:"ابنة جدتي هي أمي.", e:"ابنة الجدة هي الأم (mother) أو الخالة."},
+            {u:1, q:"My|ـي father's|والدي dad|أب is|يكون my|ـي ........|........", o:["grandfather|جد", "uncle|عم", "brother|أخ", "son|ابن"], c:0, t:"أبو والدي هو جدي.", e:"أبو الأب هو الجد (grandfather)."},
+            {u:1, q:"My|ـي mother's|أمي mom|أم is|تكون my|ـي ........|........", o:["grandmother|جدة", "aunt|خالة", "sister|أخت", "daughter|ابنة"], c:0, t:"أم أمي هي جدتي.", e:"أم الأم هي الجدة (grandmother)."},
+            {u:1, q:"I|أنا have|لدي a_baby|طفل boy.|رضيع He|هو is|يكون my|ـي ........|........", o:["son|ابن", "brother|أخ", "uncle|عم", "father|أب"], c:0, t:"لدي طفل رضيع. هو ابني.", e:"الطفل الذكر هو الابن (son)."},
+            {u:1, q:"She|هي has|لديها a_baby|طفلة girl.|رضيعة She|هي is|تكون her|ـها ........|........", o:["daughter|ابنة", "sister|أخت", "aunt|عمة", "mother|أم"], c:0, t:"لديها طفلة رضيعة. هي ابنتها.", e:"الطفلة الأنثى هي الابنة (daughter)."},
+            {u:1, q:"My|ـي father's|والدي sister|أخت is|تكون my|ـي ........|........", o:["aunt|عمة", "mother|أم", "grandmother|جدة", "daughter|ابنة"], c:0, t:"أخت والدي هي عمتي.", e:"أخت الأب هي العمة (aunt)."},
+            {u:1, q:"My|ـي mother's|أمي brother|أخ is|يكون my|ـي ........|........", o:["uncle|خال", "father|أب", "grandfather|جد", "son|ابن"], c:0, t:"أخو أمي هو خالي.", e:"أخو الأم هو الخال (uncle)."},
+            {u:1, q:"When|عندما I|أنا am|أكون sick,|مريضا I|أنا go|أذهب to|إلى the|الـ ........|........", o:["doctor|طبيب", "engineer|مهندس", "teacher|معلم", "writer|كاتب"], c:0, t:"عندما أكون مريضاً، أذهب إلى الطبيب.", e:"من يعالج المرضى هو الطبيب (doctor)."},
+            {u:1, q:"The|الـ ........|........ builds|يبني new|جديدة roads|طرق and|و bridges.|جسور", o:["engineer|مهندس", "chef|طاهٍ", "scientist|عالم", "farmer|مزارع"], c:0, t:"المهندس يبني طرقاً وجسوراً جديدة.", e:"من يصمم ويبني الجسور هو المهندس (engineer)."},
+            {u:1, q:"The|الـ ........|........ tells|يخبر the|الـ workers|عمال what|ماذا to|أن do.|يفعلوا", o:["manager|مدير", "student|طالب", "writer|كاتب", "doctor|طبيب"], c:0, t:"المدير يخبر العمال ماذا يفعلون.", e:"من يوجه العمال هو المدير (manager)."},
+            {u:1, q:"The|الـ ........|........ does|يقوم_بـ a_lot|الكثير of|من homework.|الواجبات", o:["student|طالب", "manager|مدير", "teacher|معلم", "businessman|رجل_أعمال"], c:0, t:"الطالب يقوم بالكثير من الواجبات.", e:"من يقوم بالواجبات المدرسية هو الطالب (student)."},
+            {u:1, q:"He|هو is|يكون a_rich|غني ........|........ with|بـ a_big|كبيرة company.|شركة", o:["businessman|رجل_أعمال", "farmer|مزارع", "chef|طاهٍ", "scientist|عالم"], c:0, t:"هو رجل أعمال غني لديه شركة كبيرة.", e:"صاحب الشركات والأموال هو رجل الأعمال (businessman)."},
+            {u:1, q:"She|هي is|تكون a_smart|ذكية ........|........ in|في a_big|كبير office.|مكتب", o:["businesswoman|سيدة_أعمال", "student|طالبة", "teacher|معلمة", "writer|كاتبة"], c:0, t:"هي سيدة أعمال ذكية في مكتب كبير.", e:"المرأة التي تعمل في الشركات هي سيدة أعمال (businesswoman)."},
+            {u:1, q:"The|الـ ........|........ makes|يصنع delicious|لذيذا food.|طعاما", o:["chef|طاهٍ", "engineer|مهندس", "manager|مدير", "doctor|طبيب"], c:0, t:"الطاهي يصنع طعاماً لذيذاً.", e:"من يطبخ الطعام بمهارة هو الطاهي (chef)."},
+            {u:1, q:"The|الـ ........|........ works|يعمل in|في a_laboratory.|مختبر", o:["scientist|عالم", "writer|كاتب", "farmer|مزارع", "teacher|معلم"], c:0, t:"العالم يعمل في المختبر.", e:"من يعمل بالمختبر والتجارب هو العالم (scientist)."},
+            {u:1, q:"The|الـ ........|........ writes|يكتب words|كلمات on|على the|الـ board.|سبورة", o:["teacher|معلم", "student|طالب", "manager|مدير", "businessman|رجل_أعمال"], c:0, t:"المعلم يكتب الكلمات على السبورة.", e:"من يكتب على السبورة للشرح هو المعلم (teacher)."},
+            {u:1, q:"The|الـ ........|........ wrote|كتب a_very|جدا good|جيدا book.|كتاب", o:["writer|كاتب", "chef|طاهٍ", "engineer|مهندس", "farmer|مزارع"], c:0, t:"الكاتب كتب كتاباً جيداً جداً.", e:"من يؤلف الكتب هو الكاتب (writer)."},
+            {u:1, q:"They|هم ........|........ new|جديدة clothes|ملابس for|لـ the|الـ fashion|أزياء show.|عرض", o:["design|يصممون", "relax|يسترخون", "live|يعيشون", "watch|يشاهدون"], c:0, t:"هم يصممون ملابس جديدة لعرض الأزياء.", e:"العمل المرتبط بالأزياء هو التصميم (design)."},
+            {u:1, q:"My|ـي mother|أم can|تستطيع ........|........ a_beautiful|جميل dress.|فستان", o:["sew|تخيط", "work|تعمل", "design|تصمم", "live|تعيش"], c:0, t:"أمي تستطيع أن تخيط فستاناً جميلاً.", e:"الفعل المناسب لصنع الفستان هو يخيط (sew)."},
+            {u:1, q:"This|هذا dress|فستان is|يكون made|مصنوع of|من soft|ناعم ........|........", o:["material|قماش", "equipment|معدات", "business|عمل", "height|ارتفاع"], c:0, t:"هذا الفستان مصنوع من قماش ناعم.", e:"الملابس تصنع من المواد والأقمشة (material)."},
+            {u:1, q:"He|هو started|بدأ a_new|جديد ........|........ selling|بيع cars.|سيارات", o:["business|عمل", "music|موسيقى", "hobby|هواية", "language|لغة"], c:0, t:"بدأ عملاً جديداً في بيع السيارات.", e:"بيع السيارات يعتبر عملاً تجارياً (business)."},
+            {u:1, q:"She|هي is|تكون very|جدا ........|........ She|هي makes|تجني a_lot|الكثير of|من money.|المال", o:["successful|ناجحة", "normal|طبيعي", "free|حر", "creative|مبدع"], c:0, t:"هي ناجحة جداً. هي تجني الكثير من المال.", e:"من يجني أموالاً كثيرة من عمله يعتبر ناجحاً (successful)."},
+            {u:1, q:"We|نحن need|نحتاج heavy|ثقيلة ........|........ to|لـ build|بناء the|الـ house.|منزل", o:["equipment|معدات", "material|مواد", "net|شبكة", "coast|ساحل"], c:0, t:"نحن نحتاج معدات ثقيلة لبناء المنزل.", e:"البناء يحتاج إلى معدات وآلات (equipment)."},
+            {u:1, q:"We|نحن walked|مشينا on|على the|الـ beach|شاطئ near|بالقرب_من the|الـ ........|........", o:["coast|ساحل", "city|مدينة", "country|دولة", "farm|مزرعة"], c:0, t:"مشينا على الشاطئ بالقرب من الساحل.", e:"الشاطئ يتواجد دائماً عند الساحل (coast)."},
+            {u:1, q:"The|الـ fisherman|صياد caught|اصطاد fish|السمك in|في his|ـه ........|........", o:["net|شبكة", "fishing rod|سنارة", "tractor|جرار", "equipment|معدات"], c:0, t:"الصياد اصطاد السمك في شبكته.", e:"الشبكة (net) أداة لجمع السمك."},
+            {u:1, q:"The|الـ ........|........ of|ـ the|الـ city|مدينة is|يكون 2|2 million|مليون people.|نسمة", o:["population|تعداد_سكاني", "family|عائلة", "business|عمل", "hobby|هواية"], c:0, t:"التعداد السكاني للمدينة هو 2 مليون نسمة.", e:"عدد الأفراد في مكان يسمى (population)."},
+            {u:1, q:"After|بعد work,|العمل I|أنا like|أحب to|أن ........|........ and|و watch|أشاهد TV.|التلفاز", o:["relax|أسترخي", "work|أعمل", "live|أعيش", "design|أصمم"], c:0, t:"بعد العمل، أحب أن أسترخي وأشاهد التلفاز.", e:"مشاهدة التلفاز هي نوع من الاسترخاء (relax)."},
+            {u:1, q:"He|هو caught|اصطاد a_big|كبيرة fish|سمكة with|بـ his|ـه ........|........", o:["fishing rod|سنارة", "net|شبكة", "tractor|جرار", "material|مادة"], c:0, t:"هو اصطاد سمكة كبيرة بسنارته.", e:"أداة صيد السمك الفردية هي السنارة (fishing rod)."},
+            {u:1, q:"The|الـ ........|........ grows|يزرع vegetables.|خضروات", o:["farmer|مزارع", "manager|مدير", "writer|كاتب", "doctor|طبيب"], c:0, t:"المزارع يزرع الخضروات.", e:"من يهتم بالزراعة هو المزارع (farmer)."},
+            {u:1, q:"Sultan|سلطان is|يكون very|جدا tall.|طويل His|ـه ........|........ is|يكون 251|251 cm.|سم", o:["height|طول", "date of birth|تاريخ_ميلاد", "hobby|هواية", "language|لغة"], c:0, t:"سلطان طويل جداً. طوله 251 سم.", e:"القياس بالسنتيمتر للشخص هو الطول (height)."},
+            {u:1, q:"The|الـ farmer|مزارع drives|يقود a_big|كبيرا green|أخضر ........|........", o:["tractor|جرار", "net|شبكة", "fishing rod|سنارة", "equipment|معدات"], c:0, t:"المزارع يقود جراراً أخضر كبيراً.", e:"المركبة الزراعية هي الجرار (tractor)."},
+            {u:1, q:"Arabic|العربية is|تكون a_beautiful|جميلة ........|........", o:["language|لغة", "music|موسيقى", "city|مدينة", "country|دولة"], c:0, t:"العربية هي لغة جميلة.", e:"العربية هي إحدى اللغات (language)."},
+            {u:1, q:"London|لندن is|تكون a_very|جدا big|كبيرة ........|........", o:["city|مدينة", "country|دولة", "farm|مزرعة", "coast|ساحل"], c:0, t:"لندن مدينة كبيرة جداً.", e:"لندن تصنف كمدينة كبرى (city)."},
+            {u:1, q:"Egypt|مصر is|تكون a_large|كبيرة ........|........ in|في Africa.|أفريقيا", o:["country|دولة", "city|مدينة", "farm|مزرعة", "coast|ساحل"], c:0, t:"مصر دولة كبيرة في أفريقيا.", e:"مصر تصنف كدولة (country)."},
+            {u:1, q:"My|ـي ........|........ is|يكون 14|14 May|مايو 1990.|1990", o:["date of birth|تاريخ_ميلاد", "height|طول", "language|لغة", "music|موسيقى"], c:0, t:"تاريخ ميلادي هو 14 مايو 1990.", e:"الزمن المكتوب يعبر عن تاريخ ميلاد (date of birth)."},
+            {u:1, q:"Reading|القراءة is|تكون my|ـي favorite|مفضلة ........|........", o:["hobby|هواية", "job|وظيفة", "business|عمل", "music|موسيقى"], c:0, t:"القراءة هي هوايتي المفضلة.", e:"القراءة نشاط ترفيهي يصنف كهواية (hobby)."},
+            {u:1, q:"It|إنه is|يكون a|ـ ........|........ day.|يوم Nothing|لا_شيء unusual|غير_عادي happened.|حدث", o:["normal|عادي", "unusual|غير_عادي", "creative|مبدع", "successful|ناجح"], c:0, t:"إنه يوم عادي. لم يحدث شيء غير عادي.", e:"غياب الأحداث الغريبة يجعل اليوم عادياً (normal)."},
+            {u:1, q:"I|أنا ........|........ in|في a_small|صغير house|منزل with|مع my|ـي family.|عائلة", o:["live|أعيش", "work|أعمل", "relax|أسترخي", "watch|أشاهد"], c:0, t:"أنا أعيش في منزل صغير مع عائلتي.", e:"الفعل المناسب للمنزل والإقامة هو يعيش (live)."},
+            {u:1, q:"He|هو is|يكون ........|........ learning|التعلم about|عن computers.|حواسيب", o:["interested in|مهتم_بـ", "normal|عادي", "successful|ناجح", "creative|مبدع"], c:0, t:"هو مهتم بالتعلم عن الحواسيب.", e:"التعبير عن الرغبة في التعلم يستخدم (interested in)."},
+            {u:1, q:"I|أنا love|أحب listening|الاستماع to|إلى pop|البوب ........|........", o:["music|موسيقى", "language|لغة", "hobby|هواية", "city|مدينة"], c:0, t:"أنا أحب الاستماع إلى موسيقى البوب.", e:"البوب هو نوع من الموسيقى (music)."},
+            {u:1, q:"I|أنا like|أحب to|أن ........|........ football|كرة_القدم on|على TV.|تلفاز", o:["watch|أشاهد", "live|أعيش", "relax|أسترخي", "sew|أخيط"], c:0, t:"أحب أن أشاهد كرة القدم على التلفاز.", e:"المباريات على التلفاز يتم مشاهدتها (watch)."},
+            {u:1, q:"I|أنا ........|........ in|في an|ـ office|مكتب from|من 9|9 to|إلى 5.|5", o:["work|أعمل", "relax|أسترخي", "live|أعيش", "watch|أشاهد"], c:0, t:"أنا أعمل في مكتب من 9 إلى 5.", e:"التواجد في المكتب بساعات محددة يعني العمل (work)."},
+            {u:1, q:"She|هي draws|ترسم well.|جيدا She|هي is|تكون very|جدا ........|........", o:["creative|مبدعة", "normal|عادي", "successful|ناجح", "free|حر"], c:0, t:"هي ترسم جيداً. هي مبدعة جداً.", e:"القدرة على الرسم الجيد تدل على الإبداع (creative)."},
+            {u:1, q:"This|هذه ticket|تذكرة costs|تكلف nothing.|لاشيء It|إنها is|تكون ........|........", o:["free|مجانية", "normal|عادي", "successful|ناجح", "creative|مبدع"], c:0, t:"هذه التذكرة لا تكلف شيئاً. إنها مجانية.", e:"الشيء الذي لا يكلف مالاً هو مجاني (free)."},
+            {u:1, q:"I|أنا love|أحب my|ـي mother,|أم father,|أب and|و sister.|أخت I|أنا love|أحب my|ـي ........|........", o:["family|عائلة", "population|تعداد", "business|عمل", "hobby|هواية"], c:0, t:"أنا أحب أمي وأبي وأختي. أنا أحب عائلتي.", e:"الأم والأب والأخت يشكلون العائلة (family)."},
+            {u:1, q:"The|الـ ........|........ painted|رسم a_beautiful|جميلة picture.|لوحة", o:["artist|فنان", "writer|كاتب", "chef|طاهٍ", "farmer|مزارع"], c:0, t:"الفنان رسم لوحة جميلة.", e:"من يرسم اللوحات الفنية هو الفنان (artist)."},
+            {u:1, q:"The|الـ ........|........ took|التقط a_photo|صورة of|لـ the|الـ family.|عائلة", o:["photographer|مصور", "manager|مدير", "doctor|طبيب", "engineer|مهندس"], c:0, t:"المصور التقط صورة للعائلة.", e:"من يلتقط الصور بالكاميرا هو المصور (photographer)."},
+
+            // ==================== SECTION 2: GRAMMAR (51 - 100) ====================
+            {u:2, q:"I|أنا ........|........ from|من Saudi|السعودية Arabia.|العربية", o:["am|أكون", "is|أكون", "are|أكون", "be|أكون"], c:0, t:"أنا من المملكة العربية السعودية.", e:"الضمير I يأخذ دائماً الفعل المساعد am."},
+            {u:2, q:"He|هو ........|........ a_very|جدا good|جيد student.|طالب", o:["is|يكون", "am|أكون", "are|يكون", "be|يكون"], c:0, t:"هو طالب جيد جداً.", e:"الضمير المفرد He يأخذ الفعل المساعد is."},
+            {u:2, q:"She|هي ........|........ a_doctor|طبيبة in|في the|الـ hospital.|مستشفى", o:["is|تكون", "are|تكون", "am|أكون", "be|تكون"], c:0, t:"هي طبيبة في المستشفى.", e:"الضمير المفرد She يأخذ الفعل المساعد is."},
+            {u:2, q:"It|إنها ........|........ a_big|كبيرة city.|مدينة", o:["is|تكون", "are|تكون", "am|أكون", "be|تكون"], c:0, t:"إنها مدينة كبيرة.", e:"الضمير لغير العاقل It يأخذ is."},
+            {u:2, q:"We|نحن ........|........ from|من the|الـ United|المتحدة Kingdom.|المملكة", o:["are|نكون", "is|نكون", "am|نكون", "be|نكون"], c:0, t:"نحن من المملكة المتحدة.", e:"الضمير للجمع We يأخذ الفعل المساعد are."},
+            {u:2, q:"You|أنت ........|........ my|ـي best|المفضل friend.|صديق", o:["are|تكون", "is|تكون", "am|أكون", "be|تكون"], c:0, t:"أنت صديقي المفضل.", e:"الضمير You يأخذ الفعل المساعد are."},
+            {u:2, q:"They|هم ........|........ farmers.|مزارعون", o:["are|يكونون", "is|يكونون", "am|يكونون", "be|يكونون"], c:0, t:"هم مزارعون.", e:"الضمير للجمع They يأخذ الفعل المساعد are."},
+            {u:2, q:"I|أنا ........|........ not|لست from|من China.|الصين", o:["am|أكون", "is|أكون", "are|أكون", "be|أكون"], c:0, t:"أنا لست من الصين.", e:"الضمير I في النفي يصبح I am not."},
+            {u:2, q:"She|هي ........|........ not|ليست a_teacher.|معلمة", o:["is|تكون", "are|تكون", "am|أكون", "be|تكون"], c:0, t:"هي ليست معلمة.", e:"المفرد She في النفي يأخذ is not."},
+            {u:2, q:"They|هم ........|........ not|ليسوا from|من Mexico.|المكسيك", o:["are|يكونون", "is|يكونون", "am|يكونون", "be|يكونون"], c:0, t:"هم ليسوا من المكسيك.", e:"الجمع They في النفي يأخذ are not."},
+            {u:2, q:"........|........ you|أنت from|من Brazil?|البرازيل", o:["Are|هل", "Is|هل", "Am|هل", "Be|هل"], c:0, t:"هل أنت من البرازيل؟", e:"في السؤال مع you نستخدم Are في البداية."},
+            {u:2, q:"........|........ he|هو a_manager?|مدير", o:["Is|هل", "Are|هل", "Am|هل", "Be|هل"], c:0, t:"هل هو مدير؟", e:"في السؤال مع he نستخدم Is في البداية."},
+            {u:2, q:"........|........ they|هم your|ـك brothers?|إخوة", o:["Are|هل", "Is|هل", "Am|هل", "Be|هل"], c:0, t:"هل هم إخوتك؟", e:"في السؤال مع they نستخدم Are في البداية."},
+            {u:2, q:"........|........ I|أنا in|في the|الـ right|الصحيح class?|فصل", o:["Am|هل", "Is|هل", "Are|هل", "Be|هل"], c:0, t:"هل أنا في الفصل الصحيح؟", e:"في السؤال عن النفس I نستخدم Am."},
+            {u:2, q:"Ahmed|أحمد ........|........ a_tall|طويل man.|رجل", o:["is|يكون", "are|يكون", "am|أكون", "be|يكون"], c:0, t:"أحمد رجل طويل.", e:"أحمد اسم مفرد يعامل كـ He ويأخذ is."},
+            {u:2, q:"........|........ name|اسم is|يكون Khalid.|خالد (I|أنا)", o:["My|ـي", "Your|ـك", "His|ـه", "Her|ـها"], c:0, t:"اسمي هو خالد.", e:"صفة الملكية العائدة على (أنا I) هي My."},
+            {u:2, q:"........|........ brother|أخ is|يكون a_student.|طالب (You|أنت)", o:["Your|ـك", "My|ـي", "His|ـه", "Her|ـها"], c:0, t:"أخوك طالب.", e:"صفة الملكية العائدة على (أنت You) هي Your."},
+            {u:2, q:"........|........ father|أب is|يكون a_doctor.|طبيب (He|هو)", o:["His|ـه", "Her|ـها", "My|ـي", "Your|ـك"], c:0, t:"أبوه طبيب.", e:"صفة الملكية العائدة على (هو He) هي His."},
+            {u:2, q:"........|........ hobby|هواية is|تكون reading.|القراءة (She|هي)", o:["Her|ـها", "His|ـه", "My|ـي", "Your|ـك"], c:0, t:"هوايتها هي القراءة.", e:"صفة الملكية العائدة على (هي She) هي Her."},
+            {u:2, q:"The|الـ dog|كلب is|يكون small.|صغير ........|........ name|اسم is|يكون Rex.|ريكس", o:["Its|ـه", "His|ـه", "Her|ـها", "My|ـي"], c:0, t:"الكلب صغير. اسمه ريكس.", e:"صفة الملكية لغير العاقل (الكلب) هي Its."},
+            {u:2, q:"........|........ family|عائلة is|تكون from|من Egypt.|مصر (We|نحن)", o:["Our|ـنا", "Their|ـهم", "My|ـي", "Your|ـك"], c:0, t:"عائلتنا من مصر.", e:"صفة الملكية العائدة على (نحن We) هي Our."},
+            {u:2, q:"........|........ parents|والدان are|يكونون teachers.|معلمين (They|هم)", o:["Their|ـهم", "Our|ـنا", "His|ـه", "Her|ـها"], c:0, t:"والداهم معلمين.", e:"صفة الملكية العائدة على (هم They) هي Their."},
+            {u:2, q:"He|هو is|يكون a_student.|طالب ........|........ name|اسم is|يكون Ali.|علي", o:["His|ـه", "Her|ـها", "My|ـي", "Your|ـك"], c:0, t:"هو طالب. اسمه علي.", e:"صفة الملكية للمذكر الغائب هي His."},
+            {u:2, q:"We|نحن are|نكون friends.|أصدقاء ........|........ school|مدرسة is|تكون big.|كبيرة", o:["Our|ـنا", "Their|ـهم", "Your|ـك", "My|ـي"], c:0, t:"نحن أصدقاء. مدرستنا كبيرة.", e:"بما أن الفاعل نحن (We)، فصفة الملكية هي Our."},
+            {u:2, q:"I|أنا am|أكون a_girl.|فتاة ........|........ name|اسم is|يكون Sara.|سارة", o:["My|ـي", "Your|ـك", "His|ـه", "Her|ـها"], c:0, t:"أنا فتاة. اسمي سارة.", e:"للتحدث عن اسمي أستخدم My name."},
+            {u:2, q:"Carlos|كارلوس is|يكون a_student.|طالب ........|........ wants|يريد to|أن study|يدرس Business.|الأعمال", o:["He|هو", "She|هي", "It|هو", "They|هم"], c:0, t:"كارلوس طالب. هو يريد أن يدرس إدارة الأعمال.", e:"كارلوس مذكر عاقل، نستبدله بالضمير He."},
+            {u:2, q:"Fatima|فاطمة is|تكون my|ـي friend.|صديقة ........|........ is|تكون from|من Turkey.|تركيا", o:["She|هي", "He|هو", "It|هي", "They|هم"], c:0, t:"فاطمة صديقتي. هي من تركيا.", e:"فاطمة مؤنث عاقل، نستبدلها بالضمير She."},
+            {u:2, q:"My|ـي brother|أخ and|و I|أنا are|نكون tall.|طوال ........|........ play|نلعب basketball.|كرة_السلة", o:["We|نحن", "They|هم", "He|هو", "She|هي"], c:0, t:"أخي وأنا طوال. نحن نلعب كرة السلة.", e:"شخص وأنا (My brother and I) يعادل الضمير (نحن We)."},
+            {u:2, q:"My|ـي friends|أصدقاء are|يكونون here.|هنا ........|........ are|يكونون in|في the|الـ class.|فصل", o:["They|هم", "We|نحن", "He|هو", "She|هي"], c:0, t:"أصدقائي هنا. هم في الفصل.", e:"الجمع الغائب العاقل نستبدله بالضمير They."},
+            {u:2, q:"The|الـ cat|قطة is|تكون black.|سوداء ........|........ is|تكون very|جدا small.|صغيرة", o:["It|إنها", "He|هو", "She|هي", "They|هم"], c:0, t:"القطة سوداء. إنها صغيرة جداً.", e:"الحيوان المفرد نستبدله بالضمير It."},
+            {u:2, q:"Are|هل you|أنت from|من Japan?|اليابان Yes,|نعم I|أنا ........|........", o:["am|أكون", "is|أكون", "are|أكون", "be|أكون"], c:0, t:"هل أنت من اليابان؟ نعم، أنا كذلك.", e:"الرد المثبت على Are you يكون بـ Yes, I am."},
+            {u:2, q:"Is|هل he|هو a_doctor?|طبيب No,|لا he|هو ........|........", o:["isn't|ليس", "aren't|ليس", "am not|لست", "not is|ليس"], c:0, t:"هل هو طبيب؟ لا، هو ليس كذلك.", e:"الرد المنفي لـ Is he يكون No, he isn't."},
+            {u:2, q:"Are|هل they|هم from|من London?|لندن Yes,|نعم they|هم ........|........", o:["are|يكونون", "is|يكونون", "am|يكونون", "be|يكونون"], c:0, t:"هل هم من لندن؟ نعم، هم كذلك.", e:"الرد المثبت لـ Are they يكون Yes, they are."},
+            {u:2, q:"Are|هل we|نحن late?|متأخرون No,|لا we|نحن ........|........", o:["aren't|لسنا", "isn't|لسنا", "am not|لست", "not are|لسنا"], c:0, t:"هل نحن متأخرون؟ لا، لسنا كذلك.", e:"الرد المنفي لـ Are we يكون No, we aren't."},
+            {u:2, q:"Is|هل she|هي your|ـك sister?|أخت Yes,|نعم she|هي ........|........", o:["is|تكون", "are|تكون", "am|تكون", "be|تكون"], c:0, t:"هل هي أختك؟ نعم، هي كذلك.", e:"الرد المثبت لـ Is she يكون Yes, she is."},
+            {u:2, q:"My|ـي father|أب ........|........ two|اثنان brothers.|إخوة", o:["has|لديه", "have|لديه", "is|يكون", "are|يكون"], c:0, t:"أبي لديه أخوان.", e:"المفرد الغائب (father) يأخذ فعل الملكية has."},
+            {u:2, q:"I|أنا ........|........ one|واحدة sister.|أخت", o:["have|لدي", "has|لدي", "am|أكون", "are|أكون"], c:0, t:"لدي أخت واحدة.", e:"الضمير I يأخذ فعل الملكية have."},
+            {u:2, q:"They|هم ........|........ a_big|كبير house.|منزل", o:["have|لديهم", "has|لديهم", "are|يكونون", "is|يكونون"], c:0, t:"هم لديهم منزل كبير.", e:"ضمير الجمع They يأخذ فعل الملكية have."},
+            {u:2, q:"She|هي ........|........ a_successful|ناجح business.|عمل", o:["has|لديها", "have|لديها", "is|تكون", "are|تكون"], c:0, t:"لديها عمل ناجح.", e:"المفرد She يأخذ فعل الملكية has."},
+            {u:2, q:"We|نحن ........|........ many|العديد_من friends.|أصدقاء", o:["have|لدينا", "has|لدينا", "are|نكون", "is|نكون"], c:0, t:"لدينا العديد من الأصدقاء.", e:"ضمير الجمع We يأخذ فعل الملكية have."},
+            {u:2, q:"Moeen_Ali|معين_علي ........|........ three|ثلاث languages.|لغات", o:["speaks|يتحدث", "speak|يتحدث", "is speak|يتحدث", "speaking|يتحدث"], c:0, t:"معين علي يتحدث ثلاث لغات.", e:"مضارع بسيط للمفرد الغائب نضيف s للفعل (speaks)."},
+            {u:2, q:"Sultan|سلطان ........|........ on|في a_farm.|مزرعة", o:["works|يعمل", "work|يعمل", "is work|يعمل", "working|يعمل"], c:0, t:"سلطان يعمل في مزرعة.", e:"مضارع بسيط للمفرد الغائب نضيف s للفعل (works)."},
+            {u:2, q:"I|أنا ........|........ watching|مشاهدة TV.|تلفاز", o:["like|أحب", "likes|أحب", "am like|أحب", "liking|أحب"], c:0, t:"أنا أحب مشاهدة التلفاز.", e:"مع الضمير I في المضارع البسيط الفعل يبقى كما هو المصدر (like)."},
+            {u:2, q:"They|هم ........|........ in|في Madrid.|مدريد", o:["live|يعيشون", "lives|يعيشون", "are live|يعيشون", "living|يعيشون"], c:0, t:"هم يعيشون في مدريد.", e:"مع ضمير الجمع They الفعل يكون في المصدر (live)."},
+            {u:2, q:"He|هو ........|........ up|ـ early.|مبكرا", o:["gets|يستيقظ", "get|يستيقظ", "is get|يستيقظ", "getting|يستيقظ"], c:0, t:"هو يستيقظ مبكراً.", e:"مع المفرد He نضيف s للفعل في المضارع البسيط (gets)."},
+            {u:2, q:"This|هذه is|تكون a_photo|صورة of|لـ my|ـي ........|........", o:["friend|صديق", "friends|أصدقاء", "friendly|ودود", "friendship|صداقة"], c:0, t:"هذه صورة لصديقي.", e:"كلمة photo of my تحتاج اسم بعدها، والأنسب للمفرد (صورة لـ) هو صديقي (friend)."},
+            {u:2, q:"I|أنا have|لدي three|ثلاث ........|........", o:["sisters|أخوات", "sister|أخت", "sister's|لأخت", "sisters'|للأخوات"], c:0, t:"لدي ثلاث أخوات.", e:"الرقم three يتطلب اسماً جمعاً (sisters)."},
+            {u:2, q:"There|هناك are|يوجد two|رجلان ........|........ in|في the|الـ room.|غرفة", o:["men|رجال", "man|رجل", "mans|رجال", "mens|رجال"], c:0, t:"يوجد رجلان في الغرفة.", e:"جمع كلمة man شاذ وهو men."},
+            {u:2, q:"She|هي has|لديها four|أربعة ........|........", o:["children|أطفال", "child|طفل", "childs|أطفال", "childrens|أطفال"], c:0, t:"لديها أربعة أطفال.", e:"جمع كلمة child شاذ وهو children."},
+            {u:2, q:"We|نحن are|نكون ........|........ in|في the|الـ same|نفس class.|فصل", o:["students|طلاب", "student|طالب", "student's|لطالب", "students'|للطلاب"], c:0, t:"نحن طلاب في نفس الفصل.", e:"الضمير We يجمع مع الاسم students."}
+        ];
+
+        let synth = window.speechSynthesis;
+        let activeQuestionId = null; 
+        let isPaused = false; 
+        let currentSequence = []; 
+        let currentSeqIndex = 0;
+        let cancelForPause = false;
+        let isAutoPlayingAll = false;
+        let autoPlayQueue = [];
+        let autoPlayCurrentIndex = 0;
+
+        function buildApp() {
+            const tabsContainer = document.getElementById('tabs-container');
+            const unitsContainer = document.getElementById('units-container');
+
+            Object.keys(sectionsData).forEach((key, index) => {
+                let sInfo = sectionsData[key];
+                
+                let tabBtn = document.createElement('button');
+                tabBtn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                tabBtn.innerText = sInfo.title;
+                tabBtn.onclick = (e) => openTab(e, `sec-${key}`);
+                tabsContainer.appendChild(tabBtn);
+
+                let secDiv = document.createElement('div');
+                secDiv.className = `tab-content ${index === 0 ? 'active' : ''}`;
+                secDiv.id = `sec-${key}`;
+
+                let controlBar = document.createElement('div');
+                controlBar.className = 'group-control-bar';
+                controlBar.innerHTML = `
+                    <div class="control-buttons-row">
+                        <button id="btn-study-${key}" class="mode-btn btn-study active-mode" onclick="setMode('${key}', 'train')">🎓 وضع التدريب (صوت وترجمة وشرح)</button>
+                        <button id="btn-exam-${key}" class="mode-btn btn-exam" onclick="setMode('${key}', 'exam')">🛑 وضع الاختبار (تحدي وبدون مساعدة)</button>
+                    </div>
+                    <div class="action-buttons-row">
+                        <button id="play-all-btn-${key}" class="action-btn btn-play-all" onclick="togglePlayAll('${key}')">▶ تشغيل تلقائي</button>
+                        <button id="btn-result-${key}" class="action-btn btn-result" onclick="showSectionResult('${key}')">📋 إظهار النتيجة</button>
+                    </div>
+                    <div class="section-result" id="res-${key}"></div>
+                `;
+                secDiv.appendChild(controlBar);
+
+                let qContainer = document.createElement('div');
+                qContainer.className = 'questions-container train-mode';
+                qContainer.id = `q-container-${key}`;
+
+                let sectionData = db.filter(row => row.u == key);
+                sectionData.forEach((qObj) => {
+                    qObj.globalId = qObj.q.split('-')[0].trim() + '-' + key + '-' + Math.random().toString(36).substr(2, 5); 
+                    qContainer.appendChild(createQuestionBlock(qObj));
+                });
+                
+                secDiv.appendChild(qContainer);
+                unitsContainer.appendChild(secDiv);
+                
+                // خلط وترقيم فوري عند التحميل
+                doShuffle(qContainer, sInfo.start);
+            });
+        }
+
+        function createQuestionBlock(qObj) {
+            let block = document.createElement('div');
+            block.className = 'question-row';
+            block.id = `q-${qObj.globalId}`;
+            block.setAttribute('data-ans', qObj.o[qObj.c].split('|')[0].replace(/_/g, ' ').trim());
+            block.setAttribute('data-base-id', qObj.globalId);
+
+            let pairs = qObj.q.split(' ').map(p => p.trim()).filter(p => p !== '');
+            let wordsHtml = `<span class="q-number-span" style="font-size: 26px; font-weight: 900; color: #e67e22; margin-right: 12px;"></span>`;
+            
+            wordsHtml += pairs.map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; let arW = pSplit[1] || enW; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, ''); 
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;'); 
+                let missingHtml = enW.replace(/_/g, '<span class="missing-letter">_</span>');
+                return `<span class="word-group" data-speak="${safeWord}"><span class="en">${missingHtml}</span><span class="ar">${arW.replace(/_/g, ' ')}</span></span>`;
+            }).join(' ');
+
+            let letters = ["A", "B", "C", "D"];
+            let optsHtml = `<div class="options-inline" id="opts-area-${qObj.globalId}">` + qObj.o.map((opt, i) => {
+                let optPairs = opt.trim().split(' ').filter(p => p !== '');
+                let optWordsHtml = optPairs.map(op => {
+                    let pSplit = op.split('|');
+                    let enO = pSplit[0]; let arO = pSplit[1] || ''; 
+                    let cw = enO.replace(/[^a-zA-Z0-9'-]/g, '');
+                    let safeWord = cw.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                    return `<span class="word-group" data-speak="${safeWord}"><span class="en">${enO.replace(/_/g, ' ')}</span><span class="ar">${arO.replace(/_/g, ' ')}</span></span>`;
+                }).join(' ');
+                
+                return `<div class="opt-item" onclick="selectOption(this, event)"><div class="choice-badge">${letters[i]}</div><div class="choice-text">${optWordsHtml}</div></div>`;
+            }).join('') + `</div>`;
+
+            let correctOpt = qObj.o[qObj.c];
+            let correctAnsHtml = correctOpt.split(' ').filter(p=>p!=='').map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; let arW = pSplit[1] || ''; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, '');
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                return `<span class="word-group explanation-word" data-speak="${safeWord}"><span class="en">${enW.replace(/_/g, ' ')}</span><span class="ar">${arW.replace(/_/g, ' ')}</span></span>`;
+            }).join(' ');
+
+            let explanationHtml = qObj.e.replace(/([a-zA-Z0-9\-']+)\|([\u0600-\u06FF_]+)/g, function(match, en, ar) {
+                let safeWord = en.replace(/'/g, '&apos;');
+                return `<span class="word-group explanation-word" data-speak="${safeWord}"><span class="en">${en.replace(/_/g, ' ')}</span><span class="ar">${ar.replace(/_/g, ' ')}</span></span>`;
+            });
+            
+            let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+            let btnPlayHtml = `<button id="toggle-btn-${qObj.globalId}" class="btn-toggle" onclick="window.togglePlayQuestion('${qObj.globalId}')">▶ تشغيل الصوت</button>`;
+            
+            block.innerHTML = `
+                <div class="q-header">${btnPlayHtml}</div>
+                <div class="q-text" id="sent-area-${qObj.globalId}">${wordsHtml}</div>
+                ${translationHtml}
+                ${optsHtml}
+                <div class="answer-action-container">
+                    <button class="btn-answer" id="btn-ans-${qObj.globalId}" onclick="window.revealAnswer('${qObj.globalId}')">👁️ إظهار الإجابة والشرح</button>
+                </div>
+                <div class="answer-box" id="ans-box-${qObj.globalId}">
+                    <div class="correct-word-text">الإجابة الصحيحة هي: <span class="en-ans">${correctAnsHtml}</span></div>
+                    <div class="grammar-explanation">💡 <strong>الشرح:</strong> <span dir="rtl">${explanationHtml}</span></div>
+                </div>
+            `;
+            return block;
+        }
+
+        window.setMode = function(tabId, mode) {
+            let container = document.getElementById(`q-container-${tabId}`);
+            let btnStudy = document.getElementById(`btn-study-${tabId}`);
+            let btnExam = document.getElementById(`btn-exam-${tabId}`);
+            let btnPlayAll = document.getElementById(`play-all-btn-${tabId}`);
+            let btnResult = document.getElementById(`btn-result-${tabId}`);
+            
+            if(synth) synth.cancel();
+            isAutoPlayingAll = false;
+            activeQuestionId = null;
+            btnPlayAll.innerHTML = '▶ تشغيل تلقائي';
+            btnPlayAll.style.backgroundColor = '#10b981';
+            document.getElementById(`res-${tabId}`).style.display = 'none';
+
+            if (mode === 'exam') {
+                container.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+                btnPlayAll.style.display = 'none';
+                btnResult.style.display = 'block'; 
+            } else {
+                container.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+                btnPlayAll.style.display = 'block';
+                btnResult.style.display = 'none'; 
+            }
+            
+            let startIdx = sectionsData[tabId].start;
+            doShuffle(container, startIdx);
+        };
+
+        function doShuffle(container, startIdx) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            // تصفير الخيارات
+            rows.forEach(row => {
+                row.classList.remove('answered');
+                row.querySelectorAll('.opt-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'wrong');
+                });
+                let ansBox = row.querySelector('.answer-box');
+                if (ansBox) ansBox.style.display = 'none';
+                let btnAns = row.querySelector('.btn-answer');
+                if (btnAns) btnAns.innerHTML = '👁️ إظهار الإجابة والشرح';
+            });
+
+            // خلط الخيارات A B C D داخلياً
+            rows.forEach(row => {
+                let optContainer = row.querySelector('.options-inline');
+                let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                let letters = ["A", "B", "C", "D"];
+                for (let i = opts.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    optContainer.appendChild(opts[j]);
+                    let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                }
+                let shuffledOpts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                shuffledOpts.forEach((opt, idx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[idx];
+                });
+            });
+
+            // خلط الأسئلة
+            for (let i = rows.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                container.appendChild(rows[j]);
+                let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+            }
+            
+            // الترقيم الثابت بناءً على بداية القسم (1 أو 51)
+            updateQuestionNumbers(container, startIdx);
+        }
+
+        function updateQuestionNumbers(container, startIdx) {
+            let rows = container.querySelectorAll('.question-row');
+            rows.forEach((row, index) => {
+                let qNumSpan = row.querySelector('.q-number-span');
+                if (qNumSpan) qNumSpan.textContent = (startIdx + index) + "- ";
+            });
+        }
+
+        window.selectOption = function(optItem, event) {
+            let container = optItem.closest('.questions-container');
+            let isExamMode = container.classList.contains('exam-mode');
+
+            if (event && event.target.closest('.word-group')) {
+                if(isExamMode) return; // منع نطق الكلمات في الاختبار
+            }
+            
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let targetAns = row.getAttribute('data-ans').toLowerCase().replace(/[^a-z0-9]/g, '');
+            let selectedTextEl = optItem.querySelector('.choice-text');
+            let selectedText = selectedTextEl.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+            // التصحيح الفوري الآلي يعمل في الوضعين
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                let text = item.querySelector('.choice-text').textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, ''); 
+                if (text === targetAns) item.classList.add('correct');
+            });
+            
+            if (selectedText !== targetAns) optItem.classList.add('wrong');
+        };
+
+        function speakSmartText(text) {
+            if (!synth) return;
+            synth.cancel();
+            let cleanText = text.replace(/[\._]/g, '').trim(); 
+            if(!cleanText) return;
+            let utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'en-US';
+            synth.speak(utterance);
+        }
+
+        document.addEventListener('click', function(e) {
+            let container = e.target.closest('.questions-container');
+            if(container && container.classList.contains('exam-mode')) return; // كتم الصوت في الاختبار
+
+            let wg = e.target.closest('.word-group');
+            if (wg) {
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && synth) {
+                    if(activeQuestionId !== null && !isPaused) return; 
+                    synth.cancel();
+                    document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                    wg.classList.add('highlight');
+                    
+                    let txt = speakTextAttr.replace(/[\._]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; u.rate = 0.85;
+                        u.onend = function() { wg.classList.remove('highlight'); };
+                        u.onerror = function() { wg.classList.remove('highlight'); };
+                        synth.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), Math.max(1000, txt.length * 100));
+                    } else {
+                        wg.classList.remove('highlight');
+                    }
+                }
+            }
+        });
+
+        window.togglePlayAll = function(tabId) {
+            let btn = document.getElementById(`play-all-btn-${tabId}`);
+            let container = document.getElementById(`q-container-${tabId}`);
+            
+            if (isAutoPlayingAll && currentContainerId === tabId) {
+                isAutoPlayingAll = false;
+                synth.cancel();
+                btn.innerHTML = '▶ تشغيل تلقائي';
+                btn.style.backgroundColor = '#10b981';
+                
+                if (activeQuestionId) {
+                    let activeBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                    if (activeBtn) {
+                        activeBtn.innerText = '▶ تشغيل الصوت';
+                        activeBtn.classList.remove('playing', 'paused');
+                    }
+                    activeQuestionId = null;
+                }
+            } else {
+                if (isAutoPlayingAll) {
+                     let prevBtn = document.getElementById(`play-all-btn-${currentContainerId}`);
+                     if(prevBtn) {
+                         prevBtn.innerHTML = '▶ تشغيل تلقائي';
+                         prevBtn.style.backgroundColor = '#10b981';
+                     }
+                     synth.cancel();
+                }
+                
+                let rows = Array.from(container.querySelectorAll('.question-row'));
+                autoPlayQueue = rows.map(r => r.getAttribute('data-base-id'));
+                autoPlayCurrentIndex = 0;
+                isAutoPlayingAll = true;
+                currentContainerId = tabId;
+                
+                btn.innerHTML = '⏹ إيقاف التشغيل';
+                btn.style.backgroundColor = '#f59e0b';
+                
+                playQuestionFromQueue();
+            }
+        };
+
+        function playQuestionFromQueue() {
+            if(!isAutoPlayingAll || autoPlayCurrentIndex >= autoPlayQueue.length) {
+                isAutoPlayingAll = false;
+                let btn = document.getElementById(`play-all-btn-${currentContainerId}`);
+                if(btn) {
+                    btn.innerHTML = '▶ تشغيل تلقائي';
+                    btn.style.backgroundColor = '#10b981';
+                }
+                return;
+            }
+            
+            let nextId = autoPlayQueue[autoPlayCurrentIndex];
+            let row = document.getElementById(`q-${nextId}`);
+            if(row) row.scrollIntoView({behavior: 'smooth', block: 'center'});
+            
+            if (activeQuestionId && activeQuestionId !== nextId) {
+                synth.cancel();
+                let prevBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(prevBtn) {
+                    prevBtn.innerText = '▶ تشغيل الصوت';
+                    prevBtn.classList.remove('playing', 'paused');
+                }
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+            }
+            
+            activeQuestionId = nextId; 
+            isPaused = false;
+            cancelForPause = false;
+            
+            let btn = document.getElementById(`toggle-btn-${nextId}`);
+            if(btn) {
+                btn.innerText = '⏸ إيقاف مؤقت'; 
+                btn.classList.add('playing');
+            }
+            
+            buildSequenceForQuestion(nextId);
+            currentSeqIndex = 0;
+            playNextInSequence();
+        }
+
+        window.togglePlayQuestion = function(id) {
+            if(!synth) return;
+            let btn = document.getElementById(`toggle-btn-${id}`);
+            
+            if (activeQuestionId === id) {
+                if (isPaused) { 
+                    isPaused = false; 
+                    btn.innerText = '⏸ إيقاف مؤقت'; 
+                    btn.classList.remove('paused');
+                    btn.classList.add('playing'); 
+                    playNextInSequence(); 
+                } else { 
+                    isPaused = true; 
+                    btn.innerText = '▶ استئناف'; 
+                    btn.classList.remove('playing'); 
+                    btn.classList.add('paused');
+                    cancelForPause = true; 
+                    synth.cancel(); 
+                }
+                return;
+            }
+            
+            if (activeQuestionId !== null) { 
+                synth.cancel(); 
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight')); 
+                let prevBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(prevBtn) {
+                    prevBtn.innerText = '▶ تشغيل الصوت';
+                    prevBtn.classList.remove('playing', 'paused');
+                }
+            }
+            
+            activeQuestionId = id; 
+            isPaused = false;
+            btn.innerText = '⏸ إيقاف مؤقت'; 
+            btn.classList.add('playing');
+            cancelForPause = false;
+            
+            buildSequenceForQuestion(id);
+            currentSeqIndex = 0;
+            playNextInSequence();
+        };
+
+        window.buildSequenceForQuestion = function(id) {
+            currentSequence = [];
+            let sentArea = document.getElementById(`sent-area-${id}`);
+            let optsArea = document.getElementById(`opts-area-${id}`);
+            let isExamMode = document.getElementById(`q-container-${id.split('-')[1]}`).classList.contains('exam-mode');
+            let correctOptItem = null;
+            let correctSpeakText = "";
+            let targetAnsText = document.getElementById(`q-${id}`).getAttribute('data-ans');
+
+            if(sentArea) {
+                sentArea.querySelectorAll('.word-group').forEach(w => {
+                    let speakText = w.getAttribute('data-speak');
+                    if (speakText) speakText = speakText.replace(/[\._]/g, '').trim();
+                    if(speakText) currentSequence.push({type: 'word', text: speakText, element: w});
+                });
+            }
+
+            if(optsArea) {
+                optsArea.querySelectorAll('.opt-item').forEach((optItem) => {
+                    let textEl = optItem.querySelector('.choice-text');
+                    let cleanText = textEl.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, ''); 
+                    let isCorrect = (cleanText === targetAnsText);
+                    let optWords = [];
+
+                    optItem.querySelectorAll('.word-group').forEach(w => {
+                        let speakText = w.getAttribute('data-speak');
+                        if (speakText) {
+                            speakText = speakText.replace(/[\._]/g, '').trim();
+                            if(speakText) {
+                                currentSequence.push({type: 'word', text: speakText, element: w, container: optItem});
+                                optWords.push(speakText);
+                            }
+                        }
+                    });
+
+                    if (isCorrect) {
+                        correctOptItem = optItem;
+                        correctSpeakText = optWords.join(' ');
+                    }
+                });
+            }
+
+            if (!isExamMode && correctOptItem) {
+                currentSequence.push({ type: 'delay', delayMs: 2500, text: null });
+                currentSequence.push({ type: 'reveal_correct', text: "The correct answer is, " + correctSpeakText, element: correctOptItem });
+            }
+        };
+
+        window.playNextInSequence = function() {
+            if(!synth || isPaused || activeQuestionId === null) return; 
+
+            if (currentSeqIndex >= currentSequence.length) { 
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                let btn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(btn) { 
+                    btn.innerText = '▶ تشغيل الصوت';
+                    btn.classList.remove('playing', 'paused'); 
+                }
+                activeQuestionId = null;
+                
+                if (isAutoPlayingAll) {
+                    autoPlayCurrentIndex++;
+                    setTimeout(() => { playQuestionFromQueue(); }, 2000); 
+                }
+                return; 
+            }
+
+            let item = currentSequence[currentSeqIndex];
+
+            if (item.type === 'delay') {
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                setTimeout(() => {
+                    if (cancelForPause) { cancelForPause = false; return; }
+                    currentSeqIndex++;
+                    if(!isPaused) playNextInSequence();
+                }, item.delayMs);
+                return;
+            }
+
+            if (!item.text) {
+                currentSeqIndex++;
+                playNextInSequence();
+                return;
+            }
+
+            document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+
+            if (item.type === 'reveal_correct') {
+                if (item.element) {
+                    item.element.classList.add('selected', 'correct');
+                    let row = item.element.closest('.question-row');
+                    if(row) {
+                        row.classList.add('answered');
+                        let ansBox = row.querySelector('.answer-box');
+                        let btnAns = row.querySelector('.btn-answer');
+                        if (ansBox) ansBox.style.display = 'block';
+                        if (btnAns) btnAns.innerHTML = '🙈 إخفاء الإجابة والشرح';
+                    }
+                }
+            } else if (item.element) {
+                item.element.classList.add('highlight'); 
+            }
+
+            let u = new SpeechSynthesisUtterance(item.text); u.lang = 'en-US'; u.rate = 0.85;
+            
+            u.onend = function() {
+                if (cancelForPause) { cancelForPause = false; return; }
+                if (item.element && item.type !== 'reveal_correct') item.element.classList.remove('highlight');
+                currentSeqIndex++; 
+                if(!isPaused) playNextInSequence();
+            };
+            u.onerror = function() { 
+                if (cancelForPause) { cancelForPause = false; return; }
+                if (item.element && item.type !== 'reveal_correct') item.element.classList.remove('highlight');
+                currentSeqIndex++; 
+                if(!isPaused) playNextInSequence(); 
+            };
+            synth.speak(u);
+        };
+
+        window.openTab = function(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        };
+
+        window.revealAnswer = function(id) {
+            let box = document.getElementById(`ans-box-${id}`); 
+            let btn = document.getElementById(`btn-ans-${id}`);
+            
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الإجابة والشرح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الإجابة والشرح'; 
+            }
+        };
+
+        window.showSectionResult = function(tabId) {
+            let container = document.getElementById(`q-container-${tabId}`);
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById(`res-${tabId}`);
+            if (answeredCount < totalCount) {
+                resEl.innerHTML = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> النتيجة: ${correctCount} / ${totalCount}`;
+            } else {
+                let msg = `النتيجة: ${correctCount} / ${totalCount}`;
+                if(correctCount === totalCount) msg += " 🏆 أسطورة!";
+                else if(correctCount >= totalCount/2) msg += " 🌟 بطل!";
+                else msg += " 📚 حاول مجدداً!";
+                resEl.textContent = msg;
+            }
+            resEl.style.display = "block";
+        };
+
+        buildApp();
+        document.querySelector('.tab-btn').click();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px; font-family:monospace; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+        console.error(e);
+    }
+})();
+</script>
+
+</body>
+</html>
