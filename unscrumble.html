@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحدي ترتيب الجمل الإنجليزية | Sentence Unscramble Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4338ca;
+      --primary-light: #6366f1;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --error: #ef4444;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --slot-bg: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* رأس الصفحة */
+    header {
+      background: var(--card-bg);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .title-box h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-box span {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .badge {
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* شريط أرقام الجمل */
+    .navigator-wrapper {
+      background: var(--card-bg);
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .navigator-header {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .nav-grid {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) transparent;
+    }
+
+    .nav-grid::-webkit-scrollbar {
+      height: 6px;
+    }
+    .nav-grid::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+
+    .nav-btn {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-btn.active {
+      background: var(--primary-light);
+      border-color: #818cf8;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .nav-btn.completed {
+      background: #064e3b;
+      border-color: var(--success);
+      color: #a7f3d0;
+    }
+
+    /* منطقة اللعبة الرئيسية */
+    .game-card {
+      background: var(--card-bg);
+      border: 2px solid #334155;
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.5);
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+
+    .game-card.success-border {
+      border-color: var(--success);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+    }
+
+    .target-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sentence-label {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #cbd5e1;
+    }
+
+    .audio-btn {
+      background: #334155;
+      border: none;
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .audio-btn:hover {
+      background: var(--primary-light);
+    }
+
+    /* مسار بناء الجملة (الخانات) */
+    .slots-container {
+      background: #0b1120;
+      border: 2px dashed #475569;
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 85px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+      direction: ltr; /* ترتيب الجملة الإنجليزية من اليسار إلى اليمين */
+      transition: all 0.3s ease;
+    }
+
+    .slots-container.completed-box {
+      border-style: solid;
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .slot-word {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--success);
+      color: #ffffff;
+      padding: 8px 18px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .slot-placeholder {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px dashed #475569;
+      color: #64748b;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* بنك الكلمات المبعثرة */
+    .bank-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bank-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .words-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      direction: ltr;
+      justify-content: center;
+      background: #0f172a;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid #334155;
+      min-height: 80px;
+    }
+
+    .word-chip {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: #1e293b;
+      color: #f1f5f9;
+      border: 2px solid #475569;
+      padding: 10px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s, border-color 0.15s;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .word-chip:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary-light);
+      background: #273549;
+    }
+
+    .word-chip:active {
+      transform: scale(0.95);
+    }
+
+    /* تأثير الرفض (عند الضغط على الكلمة الخطأ) */
+    .word-chip.rejected {
+      background: var(--error) !important;
+      border-color: #f87171 !important;
+      color: #fff !important;
+      animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* بطاقة الترجمة العربية بعد الحل */
+    .translation-box {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.2));
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .translation-box.show {
+      display: flex;
+    }
+
+    .translation-badge {
+      background: var(--success);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .translation-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #a7f3d0;
+    }
+
+    /* أزرار التحكم السفلية */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-reset {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .btn-reset:hover {
+      background: #475569;
+    }
+
+    .btn-next {
+      background: var(--primary-light);
+      color: #fff;
+    }
+    .btn-next:hover {
+      background: var(--primary);
+    }
+
+    .btn-prev {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: var(--text-muted);
+    }
+    .btn-prev:hover {
+      color: #fff;
+      background: #334155;
+    }
+
+    /* الحركات Animations */
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-3px, 0, 0); }
+      20%, 80% { transform: translate3d(5px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .word-chip {
+        font-size: 1.05rem;
+        padding: 8px 14px;
+      }
+      .slot-word {
+        font-size: 1.1rem;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- رأس الصفحة والبيانات -->
+  <header>
+    <div class="title-box">
+      <h1>🧩 تحدي ترتيب الجمل (Unscramble)</h1>
+      <span>تعلّم الترتيب الصحيح (فاعل + فعل + مفعول / تكملة)</span>
+    </div>
+    <div class="stats">
+      <div class="badge" id="progressBadge">المكتمل: 0 / 39</div>
+    </div>
+  </header>
+
+  <!-- شريط أرقام الجمل 1 إلى 39 -->
+  <div class="navigator-wrapper">
+    <div class="navigator-header">
+      <span>اختر رقم الجملة:</span>
+      <span id="currentStatusText">جاري الحل...</span>
+    </div>
+    <div class="nav-grid" id="navGrid"></div>
+  </div>
+
+  <!-- لوحة التفاعل الأساسية -->
+  <div class="game-card" id="gameCard">
+    <div class="target-header">
+      <span class="sentence-label" id="sentenceIndexLabel">الجملة (1 من 39)</span>
+      <button class="audio-btn" id="listenBtn" onclick="speakCurrentSentence()">
+        🔊 استمع للجملة
+      </button>
+    </div>
+
+    <!-- مكان وضع الكلمات الصحيحة -->
+    <div class="slots-container" id="slotsContainer"></div>
+
+    <!-- بنك الكلمات المبعثرة -->
+    <div class="bank-wrapper">
+      <div class="bank-label">اضغط على الكلمة المناسبة لموقعها التالي في الجملة:</div>
+      <div class="words-bank" id="wordsBank"></div>
+    </div>
+
+    <!-- بطاقة الترجمة باللغة العربية -->
+    <div class="translation-box" id="translationBox">
+      <span class="translation-badge">الترجمة العربية</span>
+      <span class="translation-text" id="translationText"></span>
+    </div>
+
+    <!-- أزرار التنقل والتحكم -->
+    <div class="controls">
+      <button class="action-btn btn-prev" onclick="prevSentence()">السابقة ❮</button>
+      <button class="action-btn btn-reset" onclick="resetCurrentSentence()">🔄 إعادة المحاولة</button>
+      <button class="action-btn btn-next" onclick="nextSentence()">التالية ❯</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // مصفوفة الجمل الـ 39 كاملة مع الترجمة الصحيحة
+  const sentencesData = [
+    { id: 1, en: "Ali wakes up early every morning.", ar: "علي يستيقظ مبكراً كل صباح." },
+    { id: 2, en: "They play football every week.", ar: "هم يلعبون كرة القدم كل أسبوع." },
+    { id: 3, en: "He doesn't brush his teeth.", ar: "هو لا ينظف أسنانه بالفرشاة." },
+    { id: 4, en: "It is raining right now.", ar: "إنها تمطر في هذه اللحظة." },
+    { id: 5, en: "I am living in London at the moment.", ar: "أنا أعيش في لندن في الوقت الحالي." },
+    { id: 6, en: "She cleaned her house yesterday.", ar: "هي نظفت منزلها أمس." },
+    { id: 7, en: "We saw a nice movie last night.", ar: "شاهدنا فيلماً جميلاً الليلة الماضية." },
+    { id: 8, en: "They have played tennis three times.", ar: "لقد لعبوا التنس ثلاث مرات." },
+    { id: 9, en: "He has studied for one hour.", ar: "هو درس لمدة ساعة واحدة." },
+    { id: 10, en: "She prays five times a day.", ar: "هي تصلي خمس مرات في اليوم." },
+    { id: 11, en: "He doesn't drink milk every day.", ar: "هو لا يشرب الحليب كل يوم." },
+    { id: 12, en: "I visited Jeddah last year.", ar: "زرت جدة العام الماضي." },
+    { id: 13, en: "I have seen this movie three times.", ar: "لقد شاهدت هذا الفيلم ثلاث مرات." },
+    { id: 14, en: "I was walking home when it started to rain.", ar: "كنت أسير عائدًا إلى المنزل عندما بدأت تمطر." },
+    { id: 15, en: "No, they weren't.", ar: "لا، لم يكونوا كذلك." },
+    { id: 16, en: "Yes, he was.", ar: "نعم، هو كان كذلك." },
+    { id: 17, en: "Who is she?", ar: "من هي؟" },
+    { id: 18, en: "Where do they live?", ar: "أين يعيشون؟" },
+    { id: 19, en: "Ahmed has eaten three burgers.", ar: "أحمد أكل ثلاث شطائر برجر." },
+    { id: 20, en: "They have been playing football since morning.", ar: "هم يلعبون كرة القدم منذ الصباح." },
+    { id: 21, en: "I have traveled to Dubai three times.", ar: "لقد سافرت إلى دبي ثلاث مرات." },
+    { id: 22, motives: "", en: "How long have you been working there?", ar: "منذ متى وأنت تعمل هناك؟" },
+    { id: 23, en: "How many lessons has she explained?", ar: "كم عدد الدروس التي شرحتها؟" },
+    { id: 24, en: "He is good at repairing cars.", ar: "هو بارع في تصليح السيارات." },
+    { id: 25, en: "She is interested in cooking Pasta.", ar: "هي مهتمة بطهي المكرونة." },
+    { id: 26, en: "He is interested in reading novels.", ar: "هو مهتم بقراءة الروايات." },
+    { id: 27, en: "He is good at speaking English.", ar: "هو بارع في التحدث باللغة الإنجليزية." },
+    { id: 28, en: "This is the shirt which I bought yesterday.", ar: "هذا هو القميص الذي اشتريته أمس." },
+    { id: 29, en: "This is the boy who had an accident.", ar: "هذا هو الولد الذي تعرض لحادث." },
+    { id: 30, en: "I have been teaching this class for one hour.", ar: "أنا أدرّس هذا الفصل منذ ساعة واحدة." },
+    { id: 31, en: "She has cleaned three rooms.", ar: "هي نظفت ثلاث غرف." },
+    { id: 32, en: "How many friends have you got?", ar: "كم عدد الأصدقاء لديك؟" },
+    { id: 33, en: "How long has she been living there?", ar: "منذ متى وهي تعيش هناك؟" },
+    { id: 34, en: "Where does she work?", ar: "أين تعمل هي؟" },
+    { id: 35, en: "He works at the hospital from Sunday to Thursday.", ar: "هو يعمل في المستشفى من الأحد إلى الخميس." },
+    { id: 36, en: "This is the stadium which our team plays in.", ar: "هذا هو الملعب الذي يلعب فيه فريقنا." },
+    { id: 37, en: "This is the taxi driver who brought us to the hotel yesterday.", ar: "هذا هو سائق الأجرة الذي أوصلنا إلى الفندق أمس." },
+    { id: 38, en: "The baby was crying while Sara was talking on the phone.", ar: "كان الطفل يبكي بينما كانت سارة تتحدث في الهاتف." },
+    { id: 39, en: "It was raining while we were playing football.", ar: "كانت تمطر بينما كنا نلعب كرة القدم." }
+  ];
+
+  let currentIndex = 0;
+  let completedSet = new Set();
+  let currentTargetTokens = [];
+  let placedTokens = [];
+  let availableTokens = [];
+
+  // نظام المؤثرات الصوتية المدمج (Web Audio API - يعمل دون إنترنت)
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playTone(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'correct') {
+      // نغمة رنين إيجابية خفيفة
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.2);
+    } else if (type === 'wrong') {
+      // نغمة رفض منخفضة ومزعجة قليلاً
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(110, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.25);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    } else if (type === 'complete') {
+      // لحن الإنجاز النهائي
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+      notes.forEach((freq, idx) => {
+        const noteOsc = audioCtx.createOscillator();
+        const noteGain = audioCtx.createGain();
+        noteOsc.connect(noteGain);
+        noteGain.connect(audioCtx.destination);
+        noteOsc.frequency.value = freq;
+        noteGain.gain.setValueAtTime(0.25, audioCtx.currentTime + idx * 0.1);
+        noteGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + idx * 0.1 + 0.25);
+        noteOsc.start(audioCtx.currentTime + idx * 0.1);
+        noteOsc.stop(audioCtx.currentTime + idx * 0.1 + 0.25);
+      });
+    }
+  }
+
+  // نطق الجملة باللغة الإنجليزية عبر Speech Synthesis
+  function speakCurrentSentence() {
+    const text = sentencesData[currentIndex].en;
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9; // سرعة واضحة للطلاب
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  // خوارزمية بعثرة الكلمات (Fisher-Yates)
+  function shuffleArray(arr) {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    // التأكد من أنها ليست بنفس الترتيب الأصلي إذا كانت أكثر من كلمة
+    if (copy.length > 1 && copy.every((val, idx) => val === arr[idx])) {
+      return shuffleArray(arr);
+    }
+    return copy;
+  }
+
+  // تهيئة شريط الأرقام (1 - 39)
+  function initNavGrid() {
+    const grid = document.getElementById('navGrid');
+    grid.innerHTML = '';
+    sentencesData.forEach((s, idx) => {
+      const btn = document.createElement('button');
+      btn.className = `nav-btn ${idx === currentIndex ? 'active' : ''}`;
+      btn.id = `nav-item-${idx}`;
+      btn.innerText = idx + 1;
+      btn.onclick = () => loadSentence(idx);
+      grid.appendChild(btn);
+    });
+  }
+
+  // تحميل الجملة وبناء حالتها
+  function loadSentence(index) {
+    currentIndex = index;
+    const current = sentencesData[index];
+
+    // تقسيم الكلمات
+    currentTargetTokens = current.en.trim().split(/\s+/);
+    placedTokens = [];
+
+    // إنشاء بنك الكلمات مع معرّف فريد لكل كلمة
+    const tokenObjects = currentTargetTokens.map((word, i) => ({ id: i, word: word }));
+    availableTokens = shuffleArray(tokenObjects);
+
+    // تحديث واجهة المستخدم
+    document.getElementById('sentenceIndexLabel').innerText = `الجملة رقم (${current.id} من ${sentencesData.length})`;
+    document.getElementById('translationBox').classList.remove('show');
+    document.getElementById('gameCard').classList.remove('success-border');
+    document.getElementById('slotsContainer').classList.remove('completed-box');
+    document.getElementById('currentStatusText').innerText = completedSet.has(index) ? "✅ تم حلها مسبقاً" : "جاري الحل...";
+
+    // تحديث شريط التنقل
+    document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+      btn.classList.toggle('active', idx === currentIndex);
+      btn.classList.toggle('completed', completedSet.has(idx));
+    });
+
+    renderSlots();
+    renderBank();
+
+    // التمرير التلقائي للزر في الشريط
+    const activeBtn = document.getElementById(`nav-item-${index}`);
+    if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  // رسم خانات التركيب
+  function renderSlots() {
+    const container = document.getElementById('slotsContainer');
+    container.innerHTML = '';
+
+    // الكلمات التي تم تثبيتها في مكانها الصحيح
+    placedTokens.forEach(token => {
+      const el = document.createElement('div');
+      el.className = 'slot-word';
+      el.innerText = token.word;
+      container.appendChild(el);
+    });
+
+    // خانات شاغرة دلالية لمساعدة الطالب
+    const remainingCount = currentTargetTokens.length - placedTokens.length;
+    for (let i = 0; i < remainingCount; i++) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'slot-placeholder';
+      placeholder.innerText = (i === 0) ? '👇 التالي هنا' : '____';
+      container.appendChild(placeholder);
+    }
+  }
+
+  // رسم الكلمات المبعثرة في البنك
+  function renderBank() {
+    const bank = document.getElementById('wordsBank');
+    bank.innerHTML = '';
+
+    availableTokens.forEach(tokenObj => {
+      const chip = document.createElement('button');
+      chip.className = 'word-chip';
+      chip.innerText = tokenObj.word;
+      chip.onclick = () => handleWordClick(tokenObj, chip);
+      bank.appendChild(chip);
+    });
+  }
+
+  // آلية التحقق الصارمة: الكلمة ترفض المكان إذا لم تكن في موقعها الصحيح
+  function handleWordClick(tokenObj, element) {
+    const nextRequiredIndex = placedTokens.length;
+    const requiredWord = currentTargetTokens[nextRequiredIndex];
+
+    if (tokenObj.word === requiredWord) {
+      // موقع صحيح! قبول وتثبيت
+      playTone('correct');
+      placedTokens.push(tokenObj);
+      availableTokens = availableTokens.filter(t => t.id !== tokenObj.id);
+
+      renderSlots();
+      renderBank();
+
+      // التحقق من اكتمال الجملة
+      if (placedTokens.length === currentTargetTokens.length) {
+        onSentenceComplete();
+      }
+    } else {
+      // موقع خاطئ! رفض واهتزاز باللون الأحمر
+      playTone('wrong');
+      element.classList.add('rejected');
+      setTimeout(() => {
+        element.classList.remove('rejected');
+      }, 450);
+    }
+  }
+
+  // عند اكتمال الجملة بنجاح
+  function onSentenceComplete() {
+    playTone('complete');
+
+    // إبراز البطاقة باللون الأخضر المتوهج
+    document.getElementById('gameCard').classList.add('success-border');
+    document.getElementById('slotsContainer').classList.add('completed-box');
+
+    // إظهار الترجمة العربية
+    const current = sentencesData[currentIndex];
+    const transBox = document.getElementById('translationBox');
+    document.getElementById('translationText').innerText = current.ar;
+    transBox.classList.add('show');
+
+    // نطق الجملة بصوت إنجليزي واضح
+    speakCurrentSentence();
+
+    // تسجيل الإنجاز
+    completedSet.add(currentIndex);
+    document.getElementById(`nav-item-${currentIndex}`).classList.add('completed');
+    document.getElementById('progressBadge').innerText = `المكتمل: ${completedSet.size} / ${sentencesData.length}`;
+    document.getElementById('currentStatusText').innerText = "🎉 أحسنت! اكتملت الجملة بنجاح";
+  }
+
+  // إعادة ضبط الجملة الحالية
+  function resetCurrentSentence() {
+    loadSentence(currentIndex);
+  }
+
+  // التنقل
+  function nextSentence() {
+    if (currentIndex < sentencesData.length - 1) {
+      loadSentence(currentIndex + 1);
+    } else {
+      loadSentence(0);
+    }
+  }
+
+  function prevSentence() {
+    if (currentIndex > 0) {
+      loadSentence(currentIndex - 1);
+    }
+  }
+
+  // بدء التشغيل
+  window.addEventListener('DOMContentLoaded', () => {
+    initNavGrid();
+    loadSentence(0);
+  });
+</script>
+</body>
+</html>
