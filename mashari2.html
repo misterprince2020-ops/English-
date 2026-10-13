@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vocabulary Matching - Meanings</title>
+    <!-- مكتبة SortableJS المعتمدة للسحب والترتيب الحر -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        /* منع ظهور القائمة المنبثقة ومنع التحديد غير المرغوب به على شاشات اللمس */
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .mode-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            font-size: 1.15rem;
+            color: #27ae60;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            border-top: 6px solid #27ae60;
+        }
+
+        .columns-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 25px;
+        }
+
+        .column {
+            width: 48%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* تنسيق الصناديق */
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #2c3e50;
+            position: relative;
+            min-height: 95px;
+            transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* العمود الأيمن القابل للسحب والترتيب الحر */
+        .col-sortable .item {
+            cursor: grab;
+            touch-action: none;
+            background-color: #fafbfc;
+        }
+        .col-sortable .item:active {
+            cursor: grabbing;
+        }
+
+        .sortable-ghost {
+            opacity: 0.35;
+            background-color: #d6eaf8 !important;
+            border: 2px dashed #3498db !important;
+        }
+        .sortable-chosen {
+            background-color: #ebf5fb;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+        }
+
+        /* التقييم والتصحيح */
+        .item.correct {
+            background-color: #d5f5e3 !important;
+            border-color: #2ecc71 !important;
+        }
+        .item.wrong {
+            background-color: #fadbd8 !important;
+            border-color: #e74c3c !important;
+        }
+
+        .item-prefix {
+            margin-right: 15px;
+            color: #2c3e50;
+            font-weight: 900;
+            font-size: 1.25rem;
+            background: rgba(0,0,0,0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            align-self: flex-start;
+        }
+
+        /* الحاوية البصرية للرموز التوضيحية */
+        .icon-badge {
+            width: 52px;
+            height: 52px;
+            min-width: 52px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #edf2f7;
+            border-radius: 10px;
+            padding: 6px;
+        }
+        .icon-badge svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* الترجمة الاحترافية الثابتة أسفل تعبيرات اليسار */
+        .fixed-trans-left {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            font-weight: normal;
+            margin-top: 6px;
+            direction: rtl;
+            border-top: 1px dashed #d5dbdb;
+            padding-top: 4px;
+        }
+
+        /* الكلمات التفاعلية للنطق والترجمة المنبثقة */
+        .clickable-word {
+            position: relative;
+            display: inline-block;
+            margin: 0 2px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .clickable-word.highlighted {
+            background-color: #ffeb3b;
+        }
+
+        /* الترجمة الحمراء العائمة فوق الكلمة */
+        .translation-text {
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e74c3c;
+            font-size: 0.92rem;
+            font-weight: bold;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .clickable-word.highlighted .translation-text {
+            opacity: 1;
+        }
+
+        /* الأزرار */
+        .buttons-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 12px 26px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.96); }
+        .btn-check { background-color: #27ae60; }
+        .btn-check:hover { background-color: #219653; }
+        .btn-show { background-color: #f39c12; }
+        .btn-show:hover { background-color: #d68910; }
+        .btn-reset { background-color: #e74c3c; }
+        .btn-reset:hover { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="vocab-game">
+        <h2>Match each word with its meaning</h2>
+        <div class="mode-title">PRACTICE MODE (Drag & Drop + Audio + Translation)</div>
+        <div class="columns-wrapper">
+            <div class="column col-left" id="col-vocab-left"></div>
+            <div class="column col-right col-sortable" id="col-vocab-right"></div>
+        </div>
+        <div class="buttons-group">
+            <button class="action-btn btn-check" onclick="checkAnswers('vocab-game')">Check Answer</button>
+            <button class="action-btn btn-show" onclick="showAnswers('vocab-game')">Show Answer</button>
+            <button class="action-btn btn-reset" onclick="resetGame('vocab-game')">Reset (Shuffle)</button>
+        </div>
+    </div>
+
+    <script>
+        // إلغاء قائمة السياق المنبثقة عند الضغط المطول
+        window.addEventListener('contextmenu', e => e.preventDefault());
+
+        // قاموس ترجمة الكلمات الفردية للنقر الصوتي والترجمة الفورية
+        const dictionary = {
+            "to": "أن / لـ",
+            "affect": "يؤثر على",
+            "produce": "يُحدث / ينتج",
+            "a": "أداة نكرة",
+            "change": "تغييراً",
+            "launch": "يُطلق",
+            "send": "يرسل",
+            "into": "إلى داخل",
+            "space": "الفضاء",
+            "take": "يأخذ / يعتبر",
+            "for": "لـ / كـ",
+            "granted": "مُسلّم به",
+            "accept": "يقبل",
+            "as": "كـ",
+            "part": "جزء",
+            "of": "من",
+            "life": "الحياة",
+            "establish": "يؤسس",
+            "set": "يُنشئ / يُقيم",
+            "up": "تأسيس / لأعلى",
+            "start": "يبدأ",
+            "host": "يستضيف",
+            "provide": "يُوفّر / يقدّم",
+            "place": "مكان"
+        };
+
+        // رموز SVG توضيحية معبّرة لكل كلمة
+        const svgIcons = {
+            "impact": `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#3498db" opacity="0.2"/><path d="M16,32 Q24,18 32,32 T48,32" stroke="#2980b9" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="32" cy="32" r="6" fill="#e74c3c"/></svg>`,
+            "rocket": `<svg viewBox="0 0 64 64"><path d="M32,8 Q44,20 42,40 L32,48 L22,40 Q20,20 32,8 Z" fill="#e74c3c"/><circle cx="32" cy="24" r="5" fill="#ffffff"/><polygon points="22,40 12,46 18,34" fill="#34495e"/><polygon points="42,40 52,46 46,34" fill="#34495e"/><polygon points="28,48 32,58 36,48" fill="#f39c12"/></svg>`,
+            "granted": `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#f1c40f"/><path d="M20,32 L28,40 L44,24" stroke="#2c3e50" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+            "building": `<svg viewBox="0 0 64 64"><rect x="14" y="20" width="36" height="34" fill="#95a5a6"/><polygon points="32,8 10,22 54,22" fill="#7f8c8d"/><rect x="22" y="28" width="6" height="8" fill="#ffffff"/><rect x="36" y="28" width="6" height="8" fill="#ffffff"/><rect x="28" y="42" width="8" height="12" fill="#34495e"/></svg>`,
+            "welcome": `<svg viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="38" rx="4" fill="#2ecc71"/><polygon points="32,6 8,24 56,24" fill="#27ae60"/><rect x="26" y="32" width="12" height="22" fill="#ffffff"/><circle cx="35" cy="43" r="2" fill="#e67e22"/></svg>`
+        };
+
+        // بيانات التمرين من الصورة
+        const vocabData = [
+            { id: "1", en: "to affect", ar: "يؤثر على / يُحدث أثراً", def: "to produce a change", icon: "impact" },
+            { id: "2", en: "to launch", ar: "يُطلق (صاروخاً أو قمراً للفضاء)", def: "to send into space", icon: "rocket" },
+            { id: "3", en: "to take for granted", ar: "يعتبره أمراً مسلّماً به / مفروغاً منه", def: "to accept as part of life", icon: "granted" },
+            { id: "4", en: "to establish", ar: "يؤسس / يُنشئ / يبدأ", def: "to set up, start", icon: "building" },
+            { id: "5", en: "to host", ar: "يستضيف / يوفّر مكاناً لـ", def: "to provide a place for", icon: "welcome" }
+        ];
+
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let cleanWord = word.replace(/[^a-zA-Z]/g, "");
+                let utterance = new SpeechSynthesisUtterance(cleanWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function processText(text) {
+            let words = text.split(" ");
+            let html = "";
+            words.forEach(word => {
+                let cleanWord = word.replace(/[^a-zA-Z]/g, "").toLowerCase();
+                let trans = dictionary[cleanWord] || "";
+                html += `<span class="clickable-word" onclick="handleWordClick(event, this, '${word}')">
+                            ${word}
+                            ${trans ? `<span class="translation-text">${trans}</span>` : ""}
+                         </span> `;
+            });
+            return html;
+        }
+
+        window.handleWordClick = function(event, element, word) {
+            event.stopPropagation();
+            document.querySelectorAll('.clickable-word').forEach(el => el.classList.remove('highlighted'));
+            element.classList.add('highlighted');
+            speakWord(word);
+        };
+
+        function buildGame(containerId) {
+            const leftCol = document.getElementById('col-vocab-left');
+            const rightCol = document.getElementById('col-vocab-right');
+
+            leftCol.innerHTML = "";
+            rightCol.innerHTML = "";
+
+            // بناء العمود الأيسر (الأفعال/المصطلحات ثابتة بالترتيب)
+            vocabData.forEach((item, index) => {
+                let div = document.createElement('div');
+                div.className = 'item';
+                div.dataset.id = item.id;
+
+                div.innerHTML = `<span class="item-prefix">${index + 1}.</span>
+                                 <div class="icon-badge">${svgIcons[item.icon]}</div>
+                                 <div style="flex-grow: 1;">
+                                     <div>${processText(item.en)}</div>
+                                     <div class="fixed-trans-left">${item.ar}</div>
+                                 </div>`;
+                leftCol.appendChild(div);
+            });
+
+            // بناء العمود الأيمن (التعريفات الإنجليزية مبعثرة وقابلة للسحب)
+            let shuffled = [...vocabData].sort(() => Math.random() - 0.5);
+            shuffled.forEach((item) => {
+                let div = document.createElement('div');
+                div.className = 'item';
+                div.dataset.match = item.id;
+
+                div.innerHTML = `<div style="flex-grow: 1;">
+                                     <div>${processText(item.def)}</div>
+                                 </div>`;
+                rightCol.appendChild(div);
+            });
+
+            // تفعيل السحب الحر عبر SortableJS
+            new Sortable(rightCol, {
+                animation: 200,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                filter: '.clickable-word',
+                preventOnFilter: false,
+                onEnd: () => clearStatus(containerId)
+            });
+        }
+
+        function clearStatus(containerId) {
+            const leftItems = document.querySelectorAll('#col-vocab-left .item');
+            const rightItems = document.querySelectorAll('#col-vocab-right .item');
+            [...leftItems, ...rightItems].forEach(el => el.classList.remove('correct', 'wrong'));
+        }
+
+        window.checkAnswers = function(containerId) {
+            const leftItems = document.getElementById('col-vocab-left').children;
+            const rightItems = document.getElementById('col-vocab-right').children;
+
+            for (let i = 0; i < leftItems.length; i++) {
+                let lItem = leftItems[i];
+                let rItem = rightItems[i];
+                if (!rItem) continue;
+
+                if (lItem.dataset.id === rItem.dataset.match) {
+                    lItem.classList.add('correct');
+                    lItem.classList.remove('wrong');
+                    rItem.classList.add('correct');
+                    rItem.classList.remove('wrong');
+                } else {
+                    lItem.classList.add('wrong');
+                    lItem.classList.remove('correct');
+                    rItem.classList.add('wrong');
+                    rItem.classList.remove('correct');
+                }
+            }
+        };
+
+        window.showAnswers = function(containerId) {
+            const leftItems = Array.from(document.getElementById('col-vocab-left').children);
+            const rightCol = document.getElementById('col-vocab-right');
+            const rightItems = Array.from(rightCol.children);
+
+            leftItems.forEach(lItem => {
+                let matchId = lItem.dataset.id;
+                let targetR = rightItems.find(r => r.dataset.match === matchId);
+                if (targetR) {
+                    rightCol.appendChild(targetR);
+                    lItem.classList.add('correct');
+                    lItem.classList.remove('wrong');
+                    targetR.classList.add('correct');
+                    targetR.classList.remove('wrong');
+                }
+            });
+        };
+
+        window.resetGame = function(containerId) {
+            clearStatus(containerId);
+            const rightCol = document.getElementById('col-vocab-right');
+            const items = Array.from(rightCol.children);
+            items.sort(() => Math.random() - 0.5);
+            items.forEach(item => rightCol.appendChild(item));
+        };
+
+        window.onload = function() {
+            buildGame('vocab-game');
+        };
+    </script>
+</body>
+</html>
