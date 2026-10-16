@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقارنة بين برج خليفة ومركز المملكة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+            direction: ltr;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            direction: rtl;
+            margin-bottom: 10px;
+        }
+        p.instruction {
+            text-align: center;
+            color: #7f8c8d;
+            direction: rtl;
+            font-size: 16px;
+            margin-bottom: 35px;
+        }
+        .sentence-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px 25px 25px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 5px solid #2980b9;
+        }
+        .english-sentence {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 2.8; /* مساحة كافية لتظهر الترجمة فوق الكلمة بوضوح */
+        }
+        /* حاوية الكلمة لترتيب الترجمة فوقها مباشرة بدون صندوق */
+        .word-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin: 0 4px;
+            cursor: pointer;
+            vertical-align: bottom;
+        }
+        /* نص الترجمة بلون أحمر غامق ثقيل جداً وبدون إطار */
+        .word-translation {
+            display: none;
+            font-size: 15px;
+            font-weight: 900; /* خط ثقيل جداً */
+            color: #8B0000; /* أحمر غامق وثقيل (Dark Red) */
+            white-space: nowrap;
+            margin-bottom: 2px;
+            direction: rtl;
+        }
+        .word-container.active .word-translation {
+            display: block;
+        }
+        .word {
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .word:hover {
+            background-color: #fde8e8;
+            color: #8B0000;
+        }
+        .arabic-translation {
+            font-size: 17px;
+            color: #34495e;
+            direction: rtl;
+            font-weight: 600;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 12px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 dir="rtl">مقارنة بين برج خليفة ومركز المملكة</h1>
+    <p class="instruction">اضغط على أي كلمة إنجليزية لنطقها وظهر ترجمتها باللون الأحمر الغامق والثقيل فوقها مباشرة بدون صناديق!</p>
+
+    <div id="sentences-container"></div>
+
+    <script>
+        // قاموس الترجمات الاحترافية والدقيقة
+        const dictionary = {
+            "the": "الـ",
+            "kingdom": "المملكة",
+            "centre": "مركز",
+            "is": "يقع",
+            "in": "في",
+            "riyadh": "الرياض",
+            "and": "و",
+            "burj": "برج",
+            "khalifa": "خليفة",
+            "dubai": "دبي",
+            "taller": "أطول",
+            "at": "بارتفاع",
+            "828": "828",
+            "meters": "متراً",
+            "than": "مقارنة بـ",
+            "302": "302",
+            "has": "يضم",
+            "more": "أكثر",
+            "floors": "طابقاً",
+            "163": "163",
+            "99": "99",
+            "opened": "افتُحَ",
+            "2003": "عام 2003",
+            "making": "مما يجعله",
+            "it": "هو",
+            "older": "أقدم",
+            "2010": "عام 2010",
+            "so": "لذلك",
+            "newer": "أحدث",
+            "both": "كلاهما",
+            "are": "يعتبران",
+            "amazing": "مذهلان",
+            "very": "في غاية",
+            "tall": "الشاهق",
+            "buildings": "مبنيان"
+        };
+
+        const data = [
+            {
+                en: "The Kingdom Centre is in Riyadh, and Burj Khalifa is in Dubai.",
+                ar: "يقع مركز المملكة في الرياض، بينما يقع برج خليفة في دبي."
+            },
+            {
+                en: "Burj Khalifa is taller at 828 meters than the Kingdom Centre at 302 meters.",
+                ar: "برج خليفة أطول بـ 828 متراً مقارنة بمركز المملكة الذي يبلغ ارتفاعه 302 متر."
+            },
+            {
+                en: "Burj Khalifa has more floors with 163 floors than the Kingdom Centre with 99 floors.",
+                ar: "يحتوي برج خليفة على طوابق أكثر بـ 163 طابقاً مقارنة بمركز المملكة ذي الـ 99 طابقاً."
+            },
+            {
+                en: "The Kingdom Centre opened in 2003, making it older than Burj Khalifa.",
+                ar: "افتُحِتَ مركز المملكة في عام 2003، مما يجعله أقدم من برج خليفة."
+            },
+            {
+                en: "Burj Khalifa opened in 2010, so it is newer.",
+                ar: "افتُحِتَ برج خليفة في عام 2010، ولذلك فهو أحدث."
+            },
+            {
+                en: "Both are amazing and very tall buildings!",
+                ar: "كلاهما مبنيان مذهلان وشديدا الطول!"
+            }
+        ];
+
+        const container = document.getElementById("sentences-container");
+
+        data.forEach((item) => {
+            const box = document.createElement("div");
+            box.className = "sentence-box";
+
+            const engDiv = document.createElement("div");
+            engDiv.className = "english-sentence";
+
+            const words = item.en.split(" ");
+
+            words.forEach(word => {
+                const pureWord = word.replace(/[.,!]/g, "").toLowerCase();
+                const meaning = dictionary[pureWord] || "كلمة";
+
+                const wordContainer = document.createElement("span");
+                wordContainer.className = "word-container";
+
+                // وضع الترجمة فوق الكلمة مباشرة بدون صندوق
+                const transSpan = document.createElement("span");
+                transSpan.className = "word-translation";
+                transSpan.textContent = meaning;
+
+                const wordSpan = document.createElement("span");
+                wordSpan.className = "word";
+                wordSpan.textContent = word + " ";
+
+                wordContainer.appendChild(transSpan);
+                wordContainer.appendChild(wordSpan);
+
+                // عند الضغط على الكلمة
+                wordContainer.onclick = (e) => {
+                    e.stopPropagation();
+                    // إغلاق أي ترجمة أخرى مفتوحة
+                    document.querySelectorAll('.word-container').forEach(el => {
+                        if (el !== wordContainer) el.classList.remove('active');
+                    });
+
+                    // تبديل ظهور الترجمة فوق الكلمة مباشرة
+                    wordContainer.classList.toggle('active');
+
+                    // نطق الكلمة صوتياً
+                    speakWord(pureWord);
+                };
+
+                engDiv.appendChild(wordContainer);
+            });
+
+            // إخفاء الترجمة عند النقر في أي مكان فارغ بالصفحة
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.word-container').forEach(el => el.classList.remove('active'));
+            });
+
+            const arDiv = document.createElement("div");
+            arDiv.className = "arabic-translation";
+            arDiv.textContent = item.ar;
+
+            box.appendChild(engDiv);
+            box.appendChild(arDiv);
+            container.appendChild(box);
+        });
+
+        // دالة نطق الكلمات عبر المتصفح
+        function speakWord(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8; // سرعة بطيئة ومناسبة للأطفال
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+
+</body>
+</html>
