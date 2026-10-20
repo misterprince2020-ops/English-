@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مراجعة الطالب سعود - Team Together 5</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #111827;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-radius: 12px; border: 4px solid #facc15; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.5em; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .sub-title { text-align: center; color: #475569; font-size: 1.4em; margin-bottom: 30px; font-weight: bold; }
+        .creator-info { text-align: center; color: #facc15; background-color: #1e3a8a; font-size: 1.2em; font-weight: bold; margin-bottom: 30px; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+
+        /* التبويبات */
+        .tab-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab-btn { background-color: #ffffff; border: 2px solid #cbd5e1; cursor: pointer; padding: 10px 18px; font-size: 1.1em; font-weight: 900; color: #475569; border-radius: 12px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+        .tab-btn:hover { background-color: #f1f5f9; border-color: #94a3b8; }
+        .tab-btn.active { background-color: #1e3a8a; color: #facc15; border-color: #1e3a8a; box-shadow: 0 6px 12px rgba(30, 58, 138, 0.4); transform: scale(1.05);}
+        
+        .tab-content { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* لوحة التحكم الذكية */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 15px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+        .btn-exam.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        .action-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 915px;}
+        .btn-play-all { background-color: #10b981; } .btn-play-all:hover { background-color: #059669; }
+        .btn-result { background-color: #f59e0b; display: none; } .btn-result:hover { background-color: #d97706; }
+
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s; position: relative;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-toggle { background-color: #10b981; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-toggle:hover { background-color: #059669; transform: translateY(-2px);}
+        .btn-toggle.playing { background-color: #f59e0b; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-span { font-size: 26px; font-weight: 900; color: #dc2626; flex-shrink: 0; padding-top: 25px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        
+        .q-text { font-size: 1.4em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 2.8; transition: 0.3s; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; direction: ltr; width: 100%; margin-top: 10px;}
+        
+        /* تعديل الخيارات لتسمح بظهور الترجمة بوضوح */
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; overflow: visible !important; min-height: 80px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.2em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 50px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        .choice-text { padding: 20px 15px 15px 15px; font-weight: bold; font-size: 1.2em; color: #334155; display: flex; align-items: center; width:100%; flex-wrap: wrap; gap: 10px;}
+
+        /* التصحيح الفوري الآلي */
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-text, .opt-item.correct .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.correct .word-group .ar { color: #fef08a !important; } 
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-text, .opt-item.wrong .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.wrong .word-group .ar { color: #fef08a !important; }
+
+        /* الكلمات التفاعلية - توسيط دقيق 100% للكلمة وترجمتها */
+        .word-group { display: inline-flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-end !important; cursor: pointer; margin: 0 4px; position: relative; vertical-align: bottom; }
+        .word-group .ar { color: #b91c1c; font-size: 16px; font-family: 'Tajawal', sans-serif; font-weight: 900; white-space: nowrap; pointer-events: none; margin-bottom: 3px; min-height: 20px; width: 100%; text-align: center !important; direction: rtl; }
+        .word-group .en { font-size: 22px; font-weight: bold; padding: 4px 6px; border-radius: 6px; transition: 0.2s; color: #1e293b; direction: ltr; font-family: Arial, sans-serif; width: 100%; text-align: center !important; }
+        
+        .word-group.highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        .missing-letter { color: #dc2626 !important; border-bottom: 2px dashed #dc2626; padding-bottom: 2px;}
+        .blank-space { letter-spacing: 2px; color: #000; }
+
+        /* أزرار الشرح */
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        .correct-word-text { font-weight: bold; font-size: 20px; color: #1e293b; margin-bottom: 15px; line-height: 2.5;}
+        .en-ans { display: inline-flex; align-items: flex-end; gap: 5px; flex-wrap: wrap; direction: ltr; margin-right: 10px;}
+        .grammar-explanation { padding: 15px; background-color: #eff6ff; border-right: 4px solid #3b82f6; border-radius: 6px; color: #1e293b; font-size: 18px; line-height: 2.2; font-weight:bold; }
+
+        /* ================= وضع الاختبار الصارم ================= */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5;}
+        .exam-mode .full-sentence-translation { display: none !important; }
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .q-header { display: none !important; } 
+        .exam-mode .word-group .ar { display: none !important; } 
+        .exam-mode .word-group { pointer-events: none !important; } 
+        .exam-mode .q-text { line-height: 1.8 !important; }
+        .exam-mode .choice-text { line-height: 1.5 !important; }
+        .exam-mode .q-number-span { padding-top: 5px; }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">مراجعة الطالب سعود</div>
+    <div class="sub-title">Team Together 5 - Unit 1</div>
+    <div class="creator-info">إعداد الأستاذ الفاضل: حمادة الديب</div>
+
+    <div class="tab-buttons" id="tabs-container"></div>
+    <div id="units-container"></div>
+</div>
+
+<script>
+(function initImperialApp() {
+    try {
+        const sectionsData = {
+            vocab1: { title: "Part 1: Vocabulary (1-10)", startNum: 1 },
+            vocab2: { title: "Part 1: Vocabulary (11-25)", startNum: 11 },
+            grammar1: { title: "Part 2: Grammar (1-13)", startNum: 1 },
+            grammar2: { title: "Part 2: Grammar (14-25)", startNum: 14 }
+        };
+
+        const db = {
+            vocab1: [
+            {u:'vocab', q:"We|نحن usually|عادة ........|........ volleyball|الطائرة in|في the|الـ school|مدرسة gym|صالة on|في Mondays.|الاثنين", o:["play|نلعب", "go|نذهب", "do|نفعل"], c:0, t:"نحن عادة نلعب كرة الطائرة في صالة المدرسة الرياضية أيام الاثنين.", e:"نستخدم الفعل play مع الألعاب التي تستخدم الكرة مثل volleyball."},
+            {u:'vocab', q:"My|أختي sister|أختي loves|تحب winter|الشتاء sports,|رياضات so|لذلك she|هي often|غالباً goes|تذهب ........|........ in|في the|الـ mountains.|الجبال", o:["skiing|للتزلج", "athletics|ألعاب_القوى", "table|طاولة tennis|تنس"], c:0, t:"أختي تحب الرياضات الشتوية، لذلك هي غالباً تذهب للتزلج في الجبال.", e:"كلمة skiing تعني التزلج وهي رياضة شتوية تأتي بعد goes."},
+            {u:'vocab', q:"How|كم often|غالبا do|هل you|أنت ........|........ gymnastics|جمباز after|بعد school?|المدرسة", o:["do|تمارس", "play|تلعب", "go|تذهب"], c:0, t:"كم مرة تمارس الجمباز بعد المدرسة؟", e:"نستخدم الفعل do مع الرياضات الفردية مثل gymnastics."},
+            {u:'vocab', q:"Arlo|آرلو takes|يأخذ his|له scooter|سكوتر to|إلى the|الـ park|حديقة to|لكي ........|........ scooting|يتزلج with|مع his|له friends.|أصدقاء", o:["go|يذهب", "play|يلعب", "do|يفعل"], c:0, t:"آرلو يأخذ السكوتر الخاص به إلى الحديقة ليذهب للتزلج مع أصدقائه.", e:"الأنشطة التي تنتهي بـ ing تأخذ الفعل go."},
+            {u:'vocab', q:"You|أنت need|تحتاج a|ـ small|صغيرة white|بيضاء ball|كرة and|و two|اثنان bats|مضارب to|لكي play|تلعب ........|........", o:["table|طاولة tennis|تنس", "cycling|دراجات", "puzzles|ألغاز"], c:0, t:"تحتاج إلى كرة بيضاء صغيرة ومضربين لتلعب تنس الطاولة.", e:"تنس الطاولة (table tennis) هي التي تحتاج إلى مضارب وكرة."},
+            {u:'vocab', q:"My|جدتي grandma|جدتي likes|تحب flowers|أزهار and|و trees.|أشجار She|هي does|تفعل the|الـ ........|........ every|كل weekend.|عطلة", o:["gardening|بستنة", "yoga|يوجا", "concerts|حفلات"], c:0, t:"جدتي تحب الأزهار والأشجار. هي تقوم بالبستنة كل عطلة نهاية أسبوع.", e:"كلمة gardening تعني العناية بالحديقة والبستنة."},
+            {u:'vocab', q:"Ting|تينج has|لديها a|ـ great|رائع voice.|صوت She|هي ........|........ in|في the|الـ school|مدرسة choir|جوقة every|كل Tuesday.|ثلاثاء", o:["sings|تغني", "plays|تلعب", "shows|عروض"], c:0, t:"تينج تمتلك صوتاً رائعاً. هي تغني في جوقة المدرسة كل يوم ثلاثاء.", e:"بما أن لديها صوتاً رائعاً، إذن هي تغني (sings) في الجوقة."},
+            {u:'vocab', q:"I|أنا have|لدي a|ـ new|جديدة camera|كاميرا because|لأن I|أنا want|أريد to|أن do|أمارس ........|........ in|في my|ـي free|فراغ time.|وقت", o:["photography|تصوير", "badminton|تنس_الريشة", "hockey|هوكي"], c:0, t:"لدي كاميرا جديدة لأنني أريد ممارسة التصوير في وقت فراغي.", e:"الكاميرا تستخدم في التصوير (photography)."},
+            {u:'vocab', q:"When|عندما it|الجو is|يكون rainy|ممطر and|و cold,|بارد we|نحن stay|نبقى inside|بالداخل and|و do|نحل ........|........ on|على the|الـ table.|طاولة", o:["puzzles|ألغاز", "cycling|دراجات", "go|نذهب"], c:0, t:"عندما يكون الجو ممطراً وبارداً، نبقى بالداخل ونحل الألغاز على الطاولة.", e:"الألغاز (puzzles) هي نشاط داخلي يمارس على الطاولة."},
+            {u:'vocab', q:"The|الـ drama|دراما club|نادي students|طلاب ........|........ on|ـ shows|عروض at|في the|الـ end|نهاية of|من the|الـ school|مدرسة year.|عام", o:["put|يقدمون", "makes|يصنعون", "do|يفعلون"], c:0, t:"طلاب نادي الدراما يقدمون عروضاً في نهاية العام الدراسي.", e:"التعبير الصحيح لتقديم عرض مسرحي هو put on shows."}
+            ],
+            
+            vocab2: [
+            {u:'vocab', q:"Can|هل_تستطيع you|أنت play|تعزف a|ـ musical|موسيقي ........|........ like|مثل the|الـ piano,|بيانو guitar,|جيتار or|أو violin?|كمان", o:["instrument|آلة", "game|لعبة", "model|نموذج"], c:0, t:"هل تستطيع أن تعزف على آلة موسيقية مثل البيانو، الجيتار، أو الكمان؟", e:"كلمة instrument تعني آلة موسيقية."},
+            {u:'vocab', q:"In|في PE|بدنية lessons,|حصص we|نحن run,|نجري jump,|نقفز and|و throw|نرمي when|عندما we|نحن do|نمارس ........|........", o:["athletics|ألعاب_قوى", "go|نذهب", "play|نلعب"], c:0, t:"في حصص الرياضة البدنية، نحن نجري ونقفز ونرمي عندما نمارس ألعاب القوى.", e:"الجري والقفز والرمي من ألعاب القوى (athletics)."},
+            {u:'vocab', q:"Don't|لا forget|تنسى to|أن wear|ترتدي your|ـك helmet|خوذة when|عندما you|أنت go|تذهب ........|........ on|على the|الـ road.|طريق", o:["cycling|ركوب_دراجة", "singing|غناء", "gardening|بستنة"], c:0, t:"لا تنس ارتداء خوذتك عندما تذهب لركوب الدراجة على الطريق.", e:"ركوب الدراجات (cycling) يتطلب ارتداء خوذة للحماية."},
+            {u:'vocab', q:"We|نحن hit|نضرب a|ـ shuttlecock|كرة_ريشية over|فوق a|ـ high|عالية net|شبكة when|عندما we|نحن play|نلعب ........|........", o:["badminton|تنس_الريشة", "hockey|هوكي", "basketball|كرة_سلة"], c:0, t:"نحن نضرب الكرة الريشية فوق شبكة عالية عندما نلعب تنس الريشة.", e:"تنس الريشة (badminton) تستخدم فيها الكرة الريشية."},
+            {u:'vocab', q:"My|والداي parents|والداي love|يحبان music,|موسيقى so|لذلك they|هما often|غالبا ........|........ to|إلى concerts|حفلات_موسيقية on|في Saturdays.|السبت", o:["go|يذهبان", "play|يلعبان", "make|يصنعان"], c:0, t:"والداي يحبان الموسيقى، لذا هما غالباً يذهبان إلى الحفلات الموسيقية أيام السبت.", e:"نستخدم الفعل go بمعنى يذهب إلى الحفلات."},
+            {u:'vocab', q:"In|في winter,|شتاء the|الـ lake|بحيرة is|تكون frozen|متجمدة and|و people|الناس go|يذهبون ........|........ on|على the|الـ ice.|جليد", o:["ice_skating|تزلج_على_الجليد", "swimming|سباحة", "scooting|تزلج_بالسكوتر"], c:0, t:"في الشتاء، تتجمد البحيرة ويذهب الناس للتزلج على الجليد.", e:"التزلج على الجليد هو (ice skating)."},
+            {u:'vocab', q:"Bobby|بوبي uses|يستخدم his|له smartphone|هاتف_ذكي to|لكي ........|........ funny|مضحكة videos|مقاطع_فيديو with|مع his|له friends.|أصدقاء", o:["make|يصنع", "do|يفعل", "play|يلعب"], c:0, t:"يستخدم بوبي هاتفه الذكي لصنع مقاطع فيديو مضحكة مع أصدقائه.", e:"نستخدم الفعل make بمعنى يصنع فيديو."},
+            {u:'vocab', q:"Players|لاعبون use|يستخدمون long|طويلة curved|منحنية sticks|عصي and|و a|ـ ball|كرة or|أو puck|قرص to|لكي play|يلعبوا ........|........", o:["hockey|هوكي", "yoga|يوجا", "athletics|ألعاب_قوى"], c:0, t:"يستخدم اللاعبون عصياً طويلة منحنية وكرة أو قرصاً للعب الهوكي.", e:"الهوكي (hockey) هي الرياضة التي تستخدم العصا المنحنية."},
+            {u:'vocab', q:"My|أخي brother|أخي likes|يحب to|أن ........|........ models|نماذج of|من airplanes|طائرات and|و cars|سيارات using|باستخدام glue.|صمغ", o:["make|يصنع", "go|يذهب", "sing|يغني"], c:0, t:"أخي يحب صنع نماذج للطائرات والسيارات باستخدام الصمغ.", e:"نستخدم الفعل make بمعنى يصنع نماذج."},
+            {u:'vocab', q:"My|أمي mum|أمي does|تمارس ........|........ every|كل morning|صباح because|لأن it|إنه is|يكون quiet|هادئ and|و relaxing.|مريح", o:["yoga|يوجا", "hockey|هوكي", "concerts|حفلات"], c:0, t:"أمي تمارس اليوجا كل صباح لأنها هادئة ومريحة.", e:"اليوجا (yoga) نشاط هادئ ومريح ويأخذ الفعل does."},
+            {u:'vocab', q:"My|عائلتي family|عائلتي loves|تحب to|أن play|تلعب ........|........ games|ألعاب like|مثل chess|شطرنج and|و Monopoly|مونوبولي together.|معا", o:["board|لوحية", "choir|جوقة", "snow|ثلج"], c:0, t:"عائلتي تحب لعب الألعاب اللوحية مثل الشطرنج والمونوبولي معاً.", e:"الشطرنج والمونوبولي هي ألعاب لوحية (board games)."},
+            {u:'vocab', q:"Lara|لارا goes|تذهب ........|........ down|أسفل the|الـ snowy|ثلجي hill|تل on|على a|ـ wide|عريض board.|لوح", o:["snowboarding|تزلج_على_الثلج_باللوح", "gardening|بستنة", "photography|تصوير"], c:0, t:"لارا تذهب للتزلج على الجليد أسفل التل الثلجي على لوح عريض.", e:"التزلج على الثلج باستخدام لوح يسمى snowboarding."},
+            {u:'vocab', q:"My|أختي little|صغيرة sister|أختي likes|تحب to|أن watch|تشاهد ........|........ on|على TV|تلفاز after|بعد she|هي finishes|تنهي school.|مدرسة", o:["cartoons|رسوم_متحركة", "puzzles|ألغاز", "instruments|آلات"], c:0, t:"أختي الصغيرة تحب مشاهدة الرسوم المتحركة على التلفاز بعد إنهاء المدرسة.", e:"الرسوم المتحركة هي (cartoons)."},
+            {u:'vocab', q:"I|أنا always|دائما ........|........ my|ـي homework|واجب_منزلي before|قبل I|أنا play|ألعب video|فيديو games|ألعاب in|في the|الـ evening.|مساء", o:["do|أؤدي", "go|أذهب", "make|أصنع"], c:0, t:"أنا دائماً أؤدي واجبي المنزلي قبل أن ألعب ألعاب الفيديو في المساء.", e:"الواجب المنزلي يأخذ الفعل do (do homework)."},
+            {u:'vocab', q:"Samir|سمير is|يكون wearing|يرتدي his|له karate|كاراتيه belt|حزام because|لأنه he|هو ........|........ karate|كاراتيه on|في Thursdays.|الخميس", o:["does|يمارس", "goes|يذهب", "plays|يلعب"], c:0, t:"سمير يرتدي حزام الكاراتيه لأنه يمارس الكاراتيه أيام الخميس.", e:"الرياضات القتالية مثل الكاراتيه تأخذ الفعل does."}
+            ],
+
+            grammar1: [
+            {u:'grammar', q:"Look!|انظر! The|الـ children|أطفال ........|........ basketball|سلة in|في the|الـ playground|ملعب right|الآن now.|الآن", o:["are_playing|يلعبون", "plays|يلعب", "play|يلعبون"], c:0, t:"انظر! الأطفال يلعبون كرة السلة في الملعب الآن.", e:"كلمتي Look و right now تدلان على المضارع المستمر (are + v-ing)."},
+            {u:'grammar', q:"My|أخي brother|أخي usually|عادة ........|........ cycling|دراجات in|في the|الـ park|حديقة on|في Saturday|سبت mornings.|صباح", o:["goes|يذهب", "go|يذهب", "is_going|هو_يذهب"], c:0, t:"أخي عادة يذهب لركوب الدراجة في الحديقة صباح أيام السبت.", e:"كلمة usually تدل على المضارع البسيط، ومع المفرد نضع s للفعل (goes)."},
+            {u:'grammar', q:"Listen!|استمع! Ting|تينج ........|........ a|ـ beautiful|جميلة song|أغنية with|مع the|الـ school|مدرسة choir|جوقة at|في the|الـ moment.|لحظة", o:["is_singing|تغني", "sings|تغني", "sing|يغني"], c:0, t:"استمع! تينج تغني أغنية جميلة مع جوقة المدرسة في هذه اللحظة.", e:"كلمتا Listen و at the moment تدلان على المضارع المستمر (is + v-ing)."},
+            {u:'grammar', q:"I|أنا ........|........ ice|جليد skating|تزلج very|جدا often|غالبا because|لأن it|الجو is|يكون warm|دافئ in|في my|ـي city.|مدينة", o:["don't_go|لا_أذهب", "am_not_going|لست_أذهب", "doesn't_go|لا_يذهب"], c:0, t:"أنا لا أذهب للتزلج على الجليد غالباً لأن الجو دافئ في مدينتي.", e:"الروتين والعادات ننفيها في المضارع البسيط، والضمير I يأخذ don't."},
+            {u:'grammar', q:"........|........ Arlo|آرلو doing|يمارس athletics|ألعاب_قوى on|على the|الـ school|مدرسة field|ملعب right|الآن now?|الآن", o:["Is|هل", "Does|هل", "Do|هل"], c:0, t:"هل يمارس آرلو ألعاب القوى في ملعب المدرسة الآن؟", e:"بسبب وجود الفعل مضافاً له ing وكلمة right now، نستخدم Is للمفرد."},
+            {u:'grammar', q:"What|ما sports|رياضات ........|........ you|أنت usually|عادة play|تلعب after|بعد school|مدرسة with|مع your|ـك friends?|أصدقاء", o:["do|هل", "are|هل", "does|هل"], c:0, t:"ما الرياضات التي تلعبها عادة بعد المدرسة مع أصدقائك؟", e:"كلمة usually والفعل في المصدر play يتطلبان الفعل المساعد do مع الضمير you."},
+            {u:'grammar', q:"Sara|سارة ........|........ puzzles|ألغاز very|جداً much;|كثيراً she|هي thinks|تعتقد they|أنها are|تكون really|حقا fun.|ممتعة", o:["likes|تحب", "like|تحب", "is_liking|هي_تحب"], c:0, t:"سارة تحب الألغاز كثيراً؛ هي تعتقد أنها ممتعة حقاً.", e:"أفعال الشعور مثل like لا تأتي في المستمر، وبما أن سارة مفرد نختار likes."},
+            {u:'grammar', q:"We|نحن ........|........ our|لنا sports|رياضة clothes|ملابس today|اليوم because|لأن we|نحن don't|لا have|لدينا PE.|بدنية", o:["aren't_wearing|لسنا_نرتدي", "don't_wear|لا_نرتدي", "doesn't_wear|لا_يرتدي"], c:0, t:"نحن لا نرتدي ملابسنا الرياضية اليوم لأنه ليس لدينا حصة بدنية.", e:"كلمة today تدل على حدث مؤقت، فنستخدم المضارع المستمر المنفي aren't wearing."},
+            {u:'grammar', q:"........|........ your|ـك sister|أخت play|تعزف the|الـ piano|بيانو every|كل day|يوم at|في home?|منزل", o:["Does|هل", "Is|هل", "Do|هل"], c:0, t:"هل تعزف أختك على البيانو كل يوم في المنزل؟", e:"كلمة every day تعني مضارع بسيط، والفاعل مفرد (your sister) لذا نسأل بـ Does."},
+            {u:'grammar', q:"I|أنا ........|........ the|الـ answer|إجابة to|على this|هذا question|سؤال right|الآن now!|الآن", o:["know|أعرف", "am_knowing|أعرف", "knows|يعرف"], c:0, t:"أنا أعرف الإجابة على هذا السؤال الآن!", e:"الفعل know من أفعال الحالة (State verbs) ولا يأخذ ing أبداً."},
+            {u:'grammar', q:"Mark|مارك isn't|ليس watching|يشاهد TV.|تلفاز He|هو ........|........ his|له homework|واجب_منزلي in|في his|له bedroom|غرفة_نوم now.|الآن", o:["is_doing|يقوم", "does|يفعل", "do|يفعل"], c:0, t:"مارك لا يشاهد التلفاز. هو يقوم بواجبه المنزلي في غرفة نومه الآن.", e:"كلمة now تدل على المضارع المستمر، لذا نختار is doing."},
+            {u:'grammar', q:"My|أصدقائي friends|أصدقائي and|و I|أنا ........|........ table|طاولة tennis|تنس at|في the|الـ sports|رياضي club|نادي every|كل Friday.|جمعة", o:["play|نلعب", "plays|يلعب", "are_playing|نلعب"], c:0, t:"أنا وأصدقائي نلعب تنس الطاولة في النادي الرياضي كل يوم جمعة.", e:"كلمة every تدل على مضارع بسيط، والفاعل جمع لذا نختار المصدر play."},
+            {u:'grammar', q:"Omar|عمر ........|........ a|ـ new|جديد skateboard|لوح_تزلج for|من_أجل his|له birthday.|عيد_ميلاد", o:["wants|يريد", "is_wanting|يريد", "want|يريد"], c:0, t:"عمر يريد لوح تزلج جديد لعيد ميلاده.", e:"الفعل want لا يأتي في المستمر أبداً، وعمر مفرد فنضيف s للفعل (wants)."}
+            ],
+
+            grammar2: [
+            {u:'grammar', q:"Why|لماذا ........|........ you|أنت wearing|ترتدي your|ـك heavy|ثقيل winter|شتاء jacket|جاكيت inside|داخل the|الـ classroom|فصل now?|الآن", o:["are|هل", "do|هل", "is|هل"], c:0, t:"لماذا ترتدي سترتك الشتوية الثقيلة داخل الفصل الآن؟", e:"لوجود الفعل مضافاً له ing، نستخدم الفعل المساعد are مع الضمير you."},
+            {u:'grammar', q:"Mum|أمي ........|........ the|الـ gardening|بستنة on|في Mondays|الإثنين because|لأن she|هي works|تعمل at|في the|الـ hospital.|مستشفى", o:["doesn't_do|لا_تفعل", "don't_do|لا_تفعل", "isn't_doing|لا_تفعل"], c:0, t:"أمي لا تقوم بالبستنة أيام الإثنين لأنها تعمل في المستشفى.", e:"عادة أسبوعية (on Mondays) منفية للمفرد تأخذ doesn't + المصدر do."},
+            {u:'grammar', q:"We|نحن can't|لا_نستطيع go|نذهب scooting|تزلج outside|بالخارج because|لأن it|الجو ........|........ heavily|بغزارة at|في the|الـ moment.|لحظة", o:["is_raining|تمطر", "rain|تمطر", "rains|تمطر"], c:0, t:"لا يمكننا الذهاب للتزلج بالخارج لأنها تمطر بغزارة في هذه اللحظة.", e:"عبارة at the moment تدل على حدث يقع الآن (مضارع مستمر)."},
+            {u:'grammar', q:"How|كم often|غالبا ........|........ Lara|لارا go|تذهب swimming|سباحة at|في the|الـ sports|رياضي centre?|مركز", o:["does|هل", "is|هل", "do|هل"], c:0, t:"كم مرة تذهب لارا للسباحة في المركز الرياضي؟", e:"السؤال بـ How often عن العادات يحتاج إلى do أو does، ولأن لارا مفرد نستخدم does."},
+            {u:'grammar', q:"I|أنا ........|........ badminton|تنس_ريشة to|على hockey|هوكي because|لأن it|إنها is|تكون much|بكثير easier|أسهل to|أن play.|تلعب", o:["prefer|أفضل", "am_preferring|أفضل", "prefers|يفضل"], c:0, t:"أنا أفضل تنس الريشة على الهوكي لأن لعبها أسهل بكثير.", e:"الفعل prefer من أفعال الشعور ولا يأخذ ing أبداً."},
+            {u:'grammar', q:"They|هم ........|........ a|ـ funny|مضحك video|فيديو for|من_أجل their|لهم school|مدرسة project|مشروع right|الآن now.|الآن", o:["are_making|يصنعون", "make|يصنعون", "makes|يصنع"], c:0, t:"هم يصنعون فيديو مضحك لمشروعهم المدرسي الآن.", e:"وجود right now يتطلب استخدام المضارع المستمر (are making)."},
+            {u:'grammar', q:"My|أبي dad|أبي ........|........ goes|يذهب skiing|تزلج because|لأنه he|هو hates|يكره cold|بارد weather|طقس and|و snow.|ثلج", o:["never|أبدا", "today|اليوم", "now|الآن"], c:0, t:"أبي لا يذهب أبداً للتزلج لأنه يكره الطقس البارد والثلج.", e:"بما أنه يكره الثلج، فهو (أبداً) لا يذهب للتزلج (never)."},
+            {u:'grammar', q:"........|........ you|أنت need|تحتاج any|أي help|مساعدة with|في your|ـك model|نموذج airplane|طائرة right|الآن now?|الآن", o:["Do|هل", "Are|هل", "Does|هل"], c:0, t:"هل تحتاج إلى أي مساعدة في نموذج طائرتك الآن؟", e:"الفعل need لا يأتي في المستمر، فنسأل بـ Do مع الضمير you."},
+            {u:'grammar', q:"Look|انظر at|إلى Bobby!|بوبي He|هو ........|........ very|جدا fast|سريع on|على his|له new|جديد blue|أزرق scooter!|سكوتر", o:["is_going|ينطلق", "goes|ينطلق", "go|ينطلق"], c:0, t:"انظر إلى بوبي! إنه ينطلق بسرعة كبيرة على سكوتره الأزرق الجديد!", e:"عبارة Look at تدل على شيء يحدث أمامنا الآن (مضارع مستمر)."},
+            {u:'grammar', q:"She|هي ........|........ that|أن doing|ممارسة gymnastics|جمباز is|يكون exciting|مثير and|و healthy.|صحي", o:["thinks|تعتقد", "is_thinking|تعتقد", "think|تعتقد"], c:0, t:"هي تعتقد أن ممارسة الجمباز أمر مثير وصحي.", e:"الفعل think عندما يعني (يعتقد/يرى) لا يأخذ ing، وللمفرد نختار thinks."},
+            {u:'grammar', q:"What|ماذا ........|........ you|أنت doing|تفعل in|في the|الـ living|معيشة room|غرفة at|في the|الـ moment?|لحظة", o:["are|هل", "do|هل", "does|هل"], c:0, t:"ماذا تفعل في غرفة المعيشة في هذه اللحظة؟", e:"الفعل doing يحتوي على ing، لذا نستخدم الفعل المساعد are مع you."},
+            {u:'grammar', q:"Most|معظم children|أطفال ........|........ playing|لعب board|لوحية games|ألعاب with|مع their|هم friends|أصدقاء on|في holidays.|عطلات", o:["love|يحبون", "are_loving|يحبون", "loves|يحب"], c:0, t:"معظم الأطفال يحبون لعب الألعاب اللوحية مع أصدقائهم في العطلات.", e:"الفعل love من أفعال الشعور ولا يأخذ ing، و children جمع فنختار المصدر love."}
+            ]
+        };
+
+        let synth = window.speechSynthesis;
+        let activeQuestionId = null; 
+        let isPaused = false; 
+        let currentSequence = []; 
+        let currentSeqIndex = 0;
+        let cancelForPause = false;
+        let isAutoPlayingAll = false;
+        let autoPlayQueue = [];
+        let autoPlayCurrentIndex = 0;
+        let currentContainerId = null;
+
+        function buildApp() {
+            const tabsContainer = document.getElementById('tabs-container');
+            const unitsContainer = document.getElementById('units-container');
+
+            Object.keys(sectionsData).forEach((key, index) => {
+                let sInfo = sectionsData[key];
+                
+                let tabBtn = document.createElement('button');
+                tabBtn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                tabBtn.innerText = sInfo.title;
+                tabBtn.onclick = (e) => openTab(e, `sec-${key}`);
+                tabsContainer.appendChild(tabBtn);
+
+                let secDiv = document.createElement('div');
+                secDiv.className = `tab-content ${index === 0 ? 'active' : ''}`;
+                secDiv.id = `sec-${key}`;
+
+                let controlBar = document.createElement('div');
+                controlBar.className = 'group-control-bar';
+                controlBar.innerHTML = `
+                    <div class="control-buttons-row">
+                        <button id="btn-study-${key}" class="mode-btn btn-study active-mode" onclick="setMode('${key}', 'train')">🎓 وضع التدريب (ترتيب كالملف + مساعدة)</button>
+                        <button id="btn-exam-${key}" class="mode-btn btn-exam" onclick="setMode('${key}', 'exam')"><span style="color:#ef4444;">🔴</span> وضع الاختبار (ترتيب عشوائي + بدون مساعدة)</button>
+                    </div>
+                    <div class="action-buttons-row">
+                        <button id="play-all-btn-${key}" class="action-btn btn-play-all" onclick="togglePlayAll('${key}')">▶ تشغيل جميع الأسئلة تلقائياً</button>
+                        <button id="btn-result-${key}" class="action-btn btn-result" onclick="showSectionResult('${key}')">📋 إظهار النتيجة</button>
+                    </div>
+                    <div class="section-result" id="res-${key}"></div>
+                `;
+                secDiv.appendChild(controlBar);
+
+                let qContainer = document.createElement('div');
+                qContainer.className = 'questions-container train-mode';
+                qContainer.id = `q-container-${key}`;
+
+                let sectionDataArray = db[key];
+                if(sectionDataArray) {
+                    sectionDataArray.forEach((qObj, idx) => {
+                        qObj.originalIndex = idx; 
+                        qObj.globalId = key + '-' + Math.random().toString(36).substr(2, 5); 
+                        qContainer.appendChild(createQuestionBlock(qObj));
+                    });
+                }
+                
+                secDiv.appendChild(qContainer);
+                unitsContainer.appendChild(secDiv);
+                
+                refreshNumberingAndLetters(qContainer, sInfo.startNum);
+            });
+        }
+
+        function createQuestionBlock(qObj) {
+            let block = document.createElement('div');
+            block.className = 'question-row';
+            block.id = `q-${qObj.globalId}`;
+            block.setAttribute('data-ans', qObj.o[qObj.c].split('|')[0].replace(/_/g, ' ').trim());
+            block.setAttribute('data-base-id', qObj.globalId);
+            block.setAttribute('data-original-index', qObj.originalIndex); 
+
+            let pairs = qObj.q.split(' ').map(p => p.trim()).filter(p => p !== '');
+            
+            let wordsHtml = pairs.map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; let arW = pSplit[1] || '&nbsp;'; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, ''); 
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;'); 
+                
+                if(enW === '........') {
+                    return `<span class="word-group" data-speak=""><span class="ar">&nbsp;</span><span class="en blank-space">........</span></span>`;
+                }
+                let missingHtml = enW.replace(/_/g, '<span class="missing-letter">_</span>');
+                return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arW.replace(/_/g, ' ')}</span><span class="en">${missingHtml}</span></span>`;
+            }).join(' ');
+
+            let letters = ["A", "B", "C", "D"];
+            let optsHtml = `<div class="options-inline" id="opts-area-${qObj.globalId}">` + qObj.o.map((opt, i) => {
+                let optPairs = opt.trim().split(' ').filter(p => p !== '');
+                let optWordsHtml = optPairs.map(op => {
+                    let pSplit = op.split('|');
+                    let enO = pSplit[0]; let arO = pSplit[1] || '&nbsp;'; 
+                    let cw = enO.replace(/[^a-zA-Z0-9'-]/g, '');
+                    let safeWord = cw.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                    return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arO.replace(/_/g, ' ')}</span><span class="en">${enO.replace(/_/g, ' ')}</span></span>`;
+                }).join(' ');
+                
+                return `<div class="opt-item" data-original-index="${i}" onclick="selectOption(this, event)"><div class="choice-badge">${letters[i]}</div><div class="choice-text">${optWordsHtml}</div></div>`;
+            }).join('') + `</div>`;
+
+            let correctOpt = qObj.o[qObj.c];
+            let correctAnsHtml = correctOpt.split(' ').filter(p=>p!=='').map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; let arW = pSplit[1] || '&nbsp;'; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, '');
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                return `<span class="word-group explanation-word" data-speak="${safeWord}"><span class="ar">${arW.replace(/_/g, ' ')}</span><span class="en">${enW.replace(/_/g, ' ')}</span></span>`;
+            }).join(' ');
+
+            let explanationHtml = qObj.e.replace(/([a-zA-Z0-9\-']+)\|([\u0600-\u06FF_]+)/g, function(match, en, ar) {
+                let safeWord = en.replace(/'/g, '&apos;');
+                return `<span class="word-group explanation-word" data-speak="${safeWord}"><span class="ar">${ar.replace(/_/g, ' ')}</span><span class="en">${en.replace(/_/g, ' ')}</span></span>`;
+            });
+            
+            let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+            let btnPlayHtml = `<button id="toggle-btn-${qObj.globalId}" class="btn-toggle" onclick="window.togglePlayQuestion('${qObj.globalId}')">▶ تشغيل الصوت (مع الترجمة)</button>`;
+            
+            block.innerHTML = `
+                <div class="q-header">${btnPlayHtml}</div>
+                <div class="q-text-container">
+                    <span class="q-number-span" id="num-${qObj.globalId}"></span>
+                    <div class="q-text" id="sent-area-${qObj.globalId}">${wordsHtml}</div>
+                </div>
+                ${translationHtml}
+                ${optsHtml}
+                <div class="answer-action-container">
+                    <button class="btn-answer" id="btn-ans-${qObj.globalId}" onclick="window.revealAnswer('${qObj.globalId}')">👁️ إظهار الإجابة والشرح</button>
+                </div>
+                <div class="answer-box" id="ans-box-${qObj.globalId}">
+                    <div class="correct-word-text">إجابتك صحيحة! <span class="en-ans">${correctAnsHtml}</span></div>
+                    <div class="grammar-explanation">💡 <strong>الشرح:</strong> <span dir="rtl">${explanationHtml}</span></div>
+                </div>
+            `;
+            return block;
+        }
+
+        window.openTab = function(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+            
+            if(synth) synth.cancel();
+            isAutoPlayingAll = false;
+        };
+
+        window.setMode = function(tabId, mode) {
+            let container = document.getElementById(`q-container-${tabId}`);
+            let btnStudy = document.getElementById(`btn-study-${tabId}`);
+            let btnExam = document.getElementById(`btn-exam-${tabId}`);
+            let btnPlayAll = document.getElementById(`play-all-btn-${tabId}`);
+            let btnResult = document.getElementById(`btn-result-${tabId}`);
+            
+            if(synth) synth.cancel();
+            isAutoPlayingAll = false;
+            activeQuestionId = null;
+            btnPlayAll.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+            btnPlayAll.style.backgroundColor = '#10b981';
+            document.getElementById(`res-${tabId}`).style.display = 'none';
+
+            if (mode === 'exam') {
+                container.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+                btnPlayAll.style.display = 'none';
+                btnResult.style.display = 'block'; 
+            } else {
+                container.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+                btnPlayAll.style.display = 'block';
+                btnResult.style.display = 'none'; 
+            }
+            
+            let startNum = 1;
+            if(tabId === 'vocab1') startNum = 1;
+            else if(tabId === 'vocab2') startNum = 11;
+            else if(tabId === 'grammar1') startNum = 1;
+            else if(tabId === 'grammar2') startNum = 14;
+
+            reorderQuestions(container, mode, startNum);
+        };
+
+        function reorderQuestions(container, mode, startNum) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            rows.forEach(row => {
+                row.classList.remove('answered');
+                row.querySelectorAll('.opt-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'wrong');
+                });
+                let ansBox = row.querySelector('.answer-box');
+                if (ansBox) ansBox.style.display = 'none';
+                let btnAns = row.querySelector('.btn-answer');
+                if (btnAns) btnAns.innerHTML = '👁️ إظهار الإجابة والشرح';
+            });
+
+            if (mode === 'exam') {
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+            } else {
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container, startNum);
+        }
+
+        function refreshNumberingAndLetters(container, startNum) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumSpan = row.querySelector('.q-number-span');
+                if (qNumSpan) qNumSpan.textContent = (startNum + index) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.selectOption = function(optItem, event) {
+            if (event && event.target.closest('.word-group')) {
+                return; 
+            }
+            
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let targetAns = row.getAttribute('data-ans').toLowerCase().replace(/[^a-z0-9]/g, '');
+            let selectedTextEl = optItem.querySelector('.choice-text');
+            let selectedText = selectedTextEl.textContent.trim().toLowerCase().replace(/_/g, ' ').replace(/[^a-z0-9]/g, '');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                let text = item.querySelector('.choice-text').textContent.trim().toLowerCase().replace(/_/g, ' ').replace(/[^a-z0-9]/g, ''); 
+                if (text === targetAns) item.classList.add('correct');
+            });
+            
+            if (selectedText !== targetAns) optItem.classList.add('wrong');
+        };
+
+        document.addEventListener('click', function(e) {
+            let container = e.target.closest('.questions-container');
+            if(container && container.classList.contains('exam-mode')) return;
+
+            let wg = e.target.closest('.word-group');
+            if (wg) {
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && synth) {
+                    if(activeQuestionId !== null && !isPaused) return; 
+                    synth.cancel();
+                    document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                    wg.classList.add('highlight');
+                    
+                    let txt = speakTextAttr.replace(/[\._]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; u.rate = 0.85;
+                        u.onend = function() { wg.classList.remove('highlight'); };
+                        u.onerror = function() { wg.classList.remove('highlight'); };
+                        synth.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), Math.max(1000, txt.length * 100));
+                    } else {
+                        wg.classList.remove('highlight');
+                    }
+                }
+            }
+        });
+
+        window.togglePlayAll = function(tabId) {
+            let btn = document.getElementById(`play-all-btn-${tabId}`);
+            let container = document.getElementById(`q-container-${tabId}`);
+            
+            if (isAutoPlayingAll && currentContainerId === tabId) {
+                isAutoPlayingAll = false;
+                synth.cancel();
+                btn.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+                btn.style.backgroundColor = '#10b981';
+                
+                if (activeQuestionId) {
+                    let activeBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                    if (activeBtn) {
+                        activeBtn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                        activeBtn.classList.remove('playing', 'paused');
+                    }
+                    activeQuestionId = null;
+                }
+            } else {
+                if (isAutoPlayingAll) {
+                     let prevBtn = document.getElementById(`play-all-btn-${currentContainerId}`);
+                     if(prevBtn) {
+                         prevBtn.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+                         prevBtn.style.backgroundColor = '#10b981';
+                     }
+                     synth.cancel();
+                }
+                
+                let rows = Array.from(container.querySelectorAll('.question-row'));
+                autoPlayQueue = rows.map(r => r.getAttribute('data-base-id'));
+                autoPlayCurrentIndex = 0;
+                isAutoPlayingAll = true;
+                currentContainerId = tabId;
+                
+                btn.innerHTML = '⏹ إيقاف التشغيل';
+                btn.style.backgroundColor = '#f59e0b';
+                
+                playQuestionFromQueue();
+            }
+        };
+
+        function playQuestionFromQueue() {
+            if(!isAutoPlayingAll || autoPlayCurrentIndex >= autoPlayQueue.length) {
+                isAutoPlayingAll = false;
+                let btn = document.getElementById(`play-all-btn-${currentContainerId}`);
+                if(btn) {
+                    btn.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+                    btn.style.backgroundColor = '#10b981';
+                }
+                return;
+            }
+            
+            let nextId = autoPlayQueue[autoPlayCurrentIndex];
+            let row = document.getElementById(`q-${nextId}`);
+            if(row) row.scrollIntoView({behavior: 'smooth', block: 'center'});
+            
+            if (activeQuestionId && activeQuestionId !== nextId) {
+                synth.cancel();
+                let prevBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(prevBtn) {
+                    prevBtn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                    prevBtn.classList.remove('playing', 'paused');
+                }
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+            }
+            
+            activeQuestionId = nextId; 
+            isPaused = false;
+            cancelForPause = false;
+            
+            let btn = document.getElementById(`toggle-btn-${nextId}`);
+            if(btn) {
+                btn.innerHTML = '⏸ إيقاف مؤقت'; 
+                btn.classList.add('playing');
+            }
+            
+            buildSequenceForQuestion(nextId);
+            currentSeqIndex = 0;
+            playNextInSequence();
+        }
+
+        window.togglePlayQuestion = function(id) {
+            if(!synth) return;
+            let btn = document.getElementById(`toggle-btn-${id}`);
+            
+            if (activeQuestionId === id) {
+                if (isPaused) { 
+                    isPaused = false; 
+                    btn.innerHTML = '⏸ إيقاف مؤقت'; 
+                    btn.classList.remove('paused');
+                    btn.classList.add('playing'); 
+                    playNextInSequence(); 
+                } else { 
+                    isPaused = true; 
+                    btn.innerHTML = '▶ استئناف'; 
+                    btn.classList.remove('playing'); 
+                    btn.classList.add('paused');
+                    cancelForPause = true; 
+                    synth.cancel(); 
+                }
+                return;
+            }
+            
+            if (activeQuestionId !== null) { 
+                synth.cancel(); 
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight')); 
+                let prevBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(prevBtn) {
+                    prevBtn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                    prevBtn.classList.remove('playing', 'paused');
+                }
+            }
+            
+            activeQuestionId = id; 
+            isPaused = false;
+            btn.innerHTML = '⏸ إيقاف مؤقت'; 
+            btn.classList.add('playing');
+            cancelForPause = false;
+            
+            buildSequenceForQuestion(id);
+            currentSeqIndex = 0;
+            playNextInSequence();
+        }
+
+        window.buildSequenceForQuestion = function(id) {
+            currentSequence = [];
+            let sentArea = document.getElementById(`sent-area-${id}`);
+            let optsArea = document.getElementById(`opts-area-${id}`);
+            let isExamMode = document.getElementById(`q-container-${id.split('-')[0]}`).classList.contains('exam-mode');
+            let correctOptItem = null;
+            let correctSpeakText = "";
+            let targetAnsText = document.getElementById(`q-${id}`).getAttribute('data-ans');
+
+            if(sentArea) {
+                sentArea.querySelectorAll('.word-group').forEach(w => {
+                    let speakText = w.getAttribute('data-speak');
+                    if (speakText) speakText = speakText.replace(/[\._]/g, '').trim();
+                    if(speakText) currentSequence.push({type: 'word', text: speakText, element: w});
+                });
+            }
+
+            if(optsArea) {
+                optsArea.querySelectorAll('.opt-item').forEach((optItem) => {
+                    let textEl = optItem.querySelector('.choice-text');
+                    let cleanText = textEl.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, ''); 
+                    let isCorrect = (cleanText === targetAnsText);
+                    let optWords = [];
+
+                    optItem.querySelectorAll('.word-group').forEach(w => {
+                        let speakText = w.getAttribute('data-speak');
+                        if (speakText) {
+                            speakText = speakText.replace(/[\._]/g, '').trim();
+                            if(speakText) {
+                                currentSequence.push({type: 'word', text: speakText, element: w, container: optItem});
+                                optWords.push(speakText);
+                            }
+                        }
+                    });
+
+                    if (isCorrect) {
+                        correctOptItem = optItem;
+                        correctSpeakText = optWords.join(' ');
+                    }
+                });
+            }
+
+            if (!isExamMode && correctOptItem) {
+                currentSequence.push({ type: 'delay', delayMs: 2500, text: null });
+                currentSequence.push({ type: 'reveal_correct', text: "The correct answer is, " + correctSpeakText, element: correctOptItem });
+            }
+        };
+
+        window.playNextInSequence = function() {
+            if(!synth || isPaused || activeQuestionId === null) return; 
+
+            if (currentSeqIndex >= currentSequence.length) { 
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                let btn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(btn) { 
+                    btn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                    btn.classList.remove('playing', 'paused'); 
+                }
+                activeQuestionId = null;
+                
+                if (isAutoPlayingAll) {
+                    autoPlayCurrentIndex++;
+                    setTimeout(() => { playQuestionFromQueue(); }, 2000); 
+                }
+                return; 
+            }
+
+            let item = currentSequence[currentSeqIndex];
+
+            if (item.type === 'delay') {
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                setTimeout(() => {
+                    if (cancelForPause) { cancelForPause = false; return; }
+                    currentSeqIndex++;
+                    if(!isPaused) playNextInSequence();
+                }, item.delayMs);
+                return;
+            }
+
+            if (!item.text) {
+                currentSeqIndex++;
+                playNextInSequence();
+                return;
+            }
+
+            document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+
+            if (item.type === 'reveal_correct') {
+                if (item.element) {
+                    item.element.classList.add('selected', 'correct');
+                    let row = item.element.closest('.question-row');
+                    if(row) {
+                        row.classList.add('answered');
+                        let ansBox = row.querySelector('.answer-box');
+                        let btnAns = row.querySelector('.btn-answer');
+                        if (ansBox) ansBox.style.display = 'block';
+                        if (btnAns) btnAns.innerHTML = '🙈 إخفاء الإجابة والشرح';
+                    }
+                }
+            } else if (item.element) {
+                item.element.classList.add('highlight'); 
+            }
+
+            let u = new SpeechSynthesisUtterance(item.text); u.lang = 'en-US'; u.rate = 0.85;
+            
+            u.onend = function() {
+                if (cancelForPause) { cancelForPause = false; return; }
+                if (item.element && item.type !== 'reveal_correct') item.element.classList.remove('highlight');
+                currentSeqIndex++; 
+                if(!isPaused) playNextInSequence();
+            };
+            u.onerror = function() { 
+                if (cancelForPause) { cancelForPause = false; return; }
+                if (item.element && item.type !== 'reveal_correct') item.element.classList.remove('highlight');
+                currentSeqIndex++; 
+                if(!isPaused) playNextInSequence(); 
+            };
+            synth.speak(u);
+        };
+
+        window.revealAnswer = function(id) {
+            let box = document.getElementById(`ans-box-${id}`); 
+            let btn = document.getElementById(`btn-ans-${id}`);
+            
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الإجابة والشرح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الإجابة والشرح'; 
+            }
+        };
+
+        window.showSectionResult = function(tabId) {
+            let container = document.getElementById(`q-container-${tabId}`);
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById(`res-${tabId}`);
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> النتيجة: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا سعود! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 بطل يا سعود! مستوى رائع!";
+                else msg += "💪 حاول مجدداً يا بطل، أنت قادر!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+        console.error(e);
+    }
+})();
+</script>
+
+</body>
+</html>
