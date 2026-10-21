@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELIS 110 - Official Listening Master (10 Passages)</title>
+    <style>
+        :root {
+            --primary-color: #0284c7;
+            --primary-hover: #0369a1;
+            --success-color: #059669;
+            --success-hover: #047857;
+            --success-bg: #d1fae5;
+            --success-border: #047857;
+            --translate-color: #dc2626;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --btn-reset-bg: #64748b;
+            --btn-reset-hover: #475569;
+            --exam-mode-bg: #fff1f2;
+            --exam-border: #e11d48;
+            --highlight-answer: #fef08a;
+            --audio-btn-bg: #0ea5e9;
+            --audio-btn-hover: #0284c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Top Bar Mode Switcher */
+        .mode-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .mode-btn {
+            background-color: #e2e8f0;
+            border: 2px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #334155;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active-practice {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .mode-btn.active-exam {
+            background-color: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+
+        /* Tabs Navigation for 10 Listening Passages */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #e2e8f0;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #475569;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            transition: border-color 0.3s;
+        }
+
+        .exam-mode-active .section-box {
+            border: 2px solid var(--exam-border);
+            background-color: var(--exam-mode-bg);
+        }
+
+        h2 {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            color: #1e293b;
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+
+        /* Audio Player Bar */
+        .audio-bar {
+            background: #e0f2fe;
+            border: 2px solid #bae6fd;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .audio-title {
+            font-weight: bold;
+            color: #0369a1;
+            font-size: 1.05rem;
+        }
+
+        button.audio-btn {
+            background-color: var(--audio-btn-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            box-shadow: 0 2px 5px rgba(2, 132, 199, 0.2);
+        }
+
+        button.audio-btn:hover {
+            background-color: var(--audio-btn-hover);
+        }
+
+        /* Reading Passage Box */
+        .passage-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .passage-paragraph {
+            margin: 10px 0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .passage-paragraph.highlight-target {
+            background-color: var(--highlight-answer);
+            border: 2px dashed #ca8a04;
+        }
+
+        .paragraph-ar {
+            color: var(--translate-color);
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--translate-color);
+            background-color: #fef2f2;
+            border: 2px dashed #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button.btn-action {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--success-hover);
+        }
+
+        button.btn-reset {
+            background-color: var(--btn-reset-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.btn-reset:hover {
+            background-color: var(--btn-reset-hover);
+        }
+
+        /* Clickable Words & Translation without Box */
+        .word-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0 2px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .word-wrapper:hover {
+            background-color: #e2e8f0;
+        }
+
+        .word-wrapper.active-word {
+            background-color: #fef08a !important;
+        }
+
+        .word-trans {
+            display: none;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--translate-color);
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* Multiple Choice Styles */
+        .mc-question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            transition: box-shadow 0.2s;
+        }
+
+        .exam-mode-active .mc-question-card {
+            background: #ffffff;
+            border-color: #fda4af;
+        }
+
+        .mc-question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mc-option {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .mc-option:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .mc-option.correct-choice {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .mc-option.wrong-choice {
+            background-color: #fee2e2 !important;
+            border-color: var(--translate-color) !important;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <h1>ELIS 110 - Official Listening Master</h1>
+    <div class="subtitle">10 نماذج اختبارات استماع تفاعلية (مع زر تشغيل وإيقاف الصوت بضغطة واحدة)</div>
+
+    <!-- أزرار تبديل الوضع -->
+    <div class="mode-switcher">
+        <button id="btn-practice-mode" class="mode-btn active-practice" onclick="setExamMode(false)">وضع التدريب (مع نطق وترجمة)</button>
+        <button id="btn-exam-mode" class="mode-btn" onclick="setExamMode(true)">وضع الاختبار الصارم (بدون نطق أو ترجمة)</button>
+    </div>
+
+    <!-- شريط التبويبات لقطع الاستماع العشرة -->
+    <div class="tabs-nav" id="listening-nav"></div>
+
+    <!-- حاويات قطع الاستماع -->
+    <div id="tabs-container"></div>
+
+</div>
+
+<script>
+    const dictionary = {
+        "listening": "استماع", "audio": "صوتي", "routine": "روتين", "daily": "يومي", "morning": "صباح", "evening": "مساء",
+        "family": "عائلة", "job": "وظيفة", "work": "عمل", "study": "دراسة", "university": "جامعة", "hospital": "مستشفى",
+        "busy": "مشغول", "free": "حر", "time": "وقت", "weekend": "عطلة نهاية الأسبوع", "weekdays": "أيام العمل",
+        "breakfast": "فطور", "lunch": "غداء", "dinner": "عشاء", "coffee": "قهوة", "tea": "شاي",
+        "bus": "حافلة", "car": "سيارة", "train": "قطار", "gym": "صالة رياضية", "library": "مكتبة",
+        "park": "منتزه", "market": "سوق", "shop": "محل", "cook": "يطبخ", "eat": "يأكل", "meet": "يقابل",
+        "friends": "أصدقاء", "relax": "يسترخي", "play": "يلعب", "sport": "رياضة", "football": "كرة قدم",
+        "weather": "طقس", "hot": "حار", "cold": "بارد", "rain": "مطر", "city": "مدينة", "town": "بلدة"
+    };
+
+    let isExamMode = false;
+
+    function setExamMode(examState) {
+        isExamMode = examState;
+        const mainContainer = document.getElementById('main-container');
+        const btnPrac = document.getElementById('btn-practice-mode');
+        const btnExam = document.getElementById('btn-exam-mode');
+
+        if (isExamMode) {
+            mainContainer.classList.add('exam-mode-active');
+            btnPrac.classList.remove('active-practice');
+            btnExam.classList.add('active-exam');
+            window.speechSynthesis.cancel();
+            resetAllAudioButtons();
+            alert("تم تفعيل وضع الاختبار الصارم: تم إيقاف الصوت والترجمة نهائياً.");
+        } else {
+            mainContainer.classList.remove('exam-mode-active');
+            btnPrac.classList.add('active-practice');
+            btnExam.classList.remove('active-exam');
+        }
+        buildAllListeningPassages();
+    }
+
+    function getWordTranslation(word) {
+        let clean = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        if (!clean) return '';
+        if (dictionary[clean]) return dictionary[clean];
+        if (clean.endsWith('s') && dictionary[clean.slice(0, -1)]) return dictionary[clean.slice(0, -1)];
+        if (clean.endsWith('ed') && dictionary[clean.slice(0, -2)]) return dictionary[clean.slice(0, -2)];
+        if (clean.endsWith('ing') && dictionary[clean.slice(0, -3)]) return dictionary[clean.slice(0, -3)];
+        return clean;
+    }
+
+    function speakText(text) {
+        if (isExamMode) return;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function renderClickableText(text) {
+        if (isExamMode) return text;
+        const words = text.split(' ');
+        return words.map(word => {
+            const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+            const translation = getWordTranslation(word);
+            return `<span class="word-wrapper" onclick="handleWordClick(event, this, '${word}', '${translation}')">
+                <span class="word-trans">${translation}</span>${word}
+            </span>`;
+        }).join(' ');
+    }
+
+    function handleWordClick(event, element, word, translation) {
+        if (isExamMode) return;
+        event.stopPropagation();
+        const container = element.closest('.tab-content');
+        if (container) {
+            container.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+            container.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+        }
+        element.classList.add('active-word');
+        const transSpan = element.querySelector('.word-trans');
+        if (transSpan) transSpan.style.display = 'block';
+
+        const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+        if (cleanWord) speakText(cleanWord);
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+    });
+
+    function switchTab(index) {
+        window.speechSynthesis.cancel();
+        resetAllAudioButtons();
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === index);
+        });
+        document.querySelectorAll('.tab-content').forEach((content, idx) => {
+            content.classList.toggle('active', idx === index);
+        });
+    }
+
+    const listeningData = [
+        {
+            title: "Listening Passage 1: Ahmed's Daily Routine",
+            audioText: "Ahmed wakes up at 6 am every morning. He eats breakfast with his family at 7 am. Then, he takes the bus to university. He studies computer science and meets his friends at the library in the afternoon.",
+            paragraphs: [
+                { en: "1. Ahmed wakes up at 6 am every morning. He eats breakfast with his family at 7 am.", ar: "1. يستيقظ أحمد في الساعة 6 صباحاً كل يوم. يتناول الإفطار مع عائلته في الساعة 7 صباحاً." },
+                { en: "2. Then, he takes the bus to university.", ar: "2. بعد ذلك، يستقل الحافلة إلى الجامعة." },
+                { en: "3. He studies computer science and meets his friends at the library in the afternoon.", ar: "3. يدرس علوم الحاسب ويقابل أصدقاءه في المكتبة فترة بعد الظهر." }
+            ],
+            questions: [
+                { q: "What time does Ahmed wake up in the morning?", options: ["6 am", "7 am", "8 am"], correct: 0, targetPara: 0 },
+                { q: "Who does Ahmed eat breakfast with?", options: ["His family", "His colleagues", "His neighbors"], correct: 0, targetPara: 0 },
+                { q: "How does Ahmed get to university?", options: ["By bus", "By car", "On foot"], correct: 0, targetPara: 1 },
+                { q: "What does Ahmed study?", options: ["Computer science", "Engineering", "Medicine"], correct: 0, targetPara: 2 },
+                { q: "Where does Ahmed meet his friends in the afternoon?", options: ["At the library", "At the gym", "At a cafe"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Ahmed's morning routine and breakfast.", "Ahmed's university bus.", "Afternoon library studies."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Traveling to university by bus.", "Eating breakfast at 7 am.", "Studying computer science."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["University studies and meeting friends.", "Morning wake up time.", "Family breakfast."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 2: Fatima's Family and Job",
+            audioText: "Fatima is a nurse. She works in a large hospital in Jeddah and helps sick patients every day. She lives with her parents and two brothers in a comfortable apartment near the city center. On weekends, Fatima likes to relax at home and cook delicious meals for her family.",
+            paragraphs: [
+                { en: "1. Fatima is a nurse. She works in a large hospital in Jeddah and helps sick patients every day.", ar: "1. فاطمة ممرضة. تعمل في مستشفى كبير في جدة وتساعد المرضى كل يوم." },
+                { en: "2. She lives with her parents and two brothers in a comfortable apartment near the city center.", ar: "2. تعيش مع والديها وشقيقيها في شقة مريحة بالقرب من وسط المدينة." },
+                { en: "3. On weekends, Fatima likes to relax at home and cook delicious meals for her family.", ar: "3. في عطلة نهاية الأسبوع، تحب فاطمة الاسترخاء في المنزل وتطبوخ وجبات لذيذة لعائلتها." }
+            ],
+            questions: [
+                { q: "What is Fatima's job?", options: ["A nurse", "A teacher", "An engineer"], correct: 0, targetPara: 0 },
+                { q: "Where does Fatima work?", options: ["In a hospital in Jeddah", "In a school in Riyadh", "In a bank in Dubai"], correct: 0, targetPara: 0 },
+                { q: "Who does Fatima live with?", options: ["Her parents and two brothers", "Alone in a house", "With university friends"], correct: 0, targetPara: 1 },
+                { q: "Where is her apartment located?", options: ["Near the city center", "In the mountains", "In a small village"], correct: 0, targetPara: 1 },
+                { q: "What does Fatima like to do on weekends?", options: ["Relax and cook meals for her family", "Travel abroad", "Work extra hours"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Fatima's job as a hospital nurse.", "Fatima's family apartment.", "Weekend cooking."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Fatima's home and family members.", "Working in Jeddah.", "Hospital patients."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Weekend relaxation and cooking.", "Nursing duties.", "City center apartments."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 3: Omar's Weekend Activities",
+            audioText: "Omar is very busy during weekdays with his English classes at King Abdulaziz University. However, on Saturdays, he goes to the sports gym with his friend Ali to lift weights and swim. In the evening, they usually play video games or watch football matches on TV.",
+            paragraphs: [
+                { en: "1. Omar is very busy during weekdays with his English classes at King Abdulaziz University.", ar: "1. عمر مشغول جداً خلال أيام العمل بحصصه الإنجليزية في جامعة الملك عبدالعزيز." },
+                { en: "2. However, on Saturdays, he goes to the sports gym with his friend Ali to lift weights and swim.", ar: "2. ومع ذلك، في أيام السبت، يذهب إلى صالة الألعاب الرياضية مع صديقه علي لرفع الأوزان والسباحة." },
+                { en: "3. In the evening, they usually play video games or watch football matches on TV.", ar: "3. في المساء، عادة ما يلعبون ألعاب الفيديو أو يشاهدون مباريات كرة القدم على التلفزيون." }
+            ],
+            questions: [
+                { q: "Why is Omar busy during weekdays?", options: ["With his university classes", "With his farm work", "With business travel"], correct: 0, targetPara: 0 },
+                { q: "Which university does Omar attend?", options: ["King Abdulaziz University", "Cambridge University", "Cairo University"], correct: 0, targetPara: 0 },
+                { q: "Where does Omar go on Saturdays?", options: ["To the sports gym", "To the local market", "To the library"], correct: 0, targetPara: 1 },
+                { q: "Who goes with Omar to the gym?", options: ["His friend Ali", "His brother Ahmed", "His teacher"], correct: 0, targetPara: 1 },
+                { q: "What do they usually do in the evening?", options: ["Play video games or watch football", "Study physics", "Sleep early"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Omar's busy university schedule.", "Saturday gym workouts.", "Evening video games."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Saturday sports activities at the gym.", "English classes.", "University exams."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Evening entertainment and games.", "Weekday studies.", "Swimming lessons."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 4: Weather and Cities",
+            audioText: "Jeddah has a hot and humid climate during summer, but winters are very pleasant and mild. On the other hand, Taif is a mountain city that stays cool even in August when other cities are very hot. Many families travel from Jeddah to Taif in summer to enjoy the fresh air and beautiful parks.",
+            paragraphs: [
+                { en: "1. Jeddah has a hot and humid climate during summer, but winters are very pleasant and mild.", ar: "1. جدة لها مناخ حار ورطب خلال الصيف، لكن الشتاء لطيف وممتع للغاية." },
+                { en: "2. On the other hand, Taif is a mountain city that stays cool even in August when other cities are very hot.", ar: "2. من ناحية أخرى، طائف مدينة جبلية تظل باردة حتى في أغسطس عندما تكون المدن الأخرى حارة جداً." },
+                { en: "3. Many families travel from Jeddah to Taif in summer to enjoy the fresh air and beautiful parks.", ar: "3. تسافر العديد من العائلات من جدة إلى الطائف في الصيف للاستمتاع بالهواء النقي والحدائق الجميلة." }
+            ],
+            questions: [
+                { q: "What is Jeddah's summer weather like?", options: ["Hot and humid", "Freezing cold", "Snowy"], correct: 0, targetPara: 0 },
+                { q: "What is Jeddah's winter weather like?", options: ["Very pleasant and mild", "Extremely stormy", "Very icy"], correct: 0, targetPara: 0 },
+                { q: "What kind of city is Taif?", options: ["A mountain city", "An island city", "A desert port"], correct: 0, targetPara: 1 },
+                { q: "Why do people visit Taif in August?", options: ["Because it stays cool", "Because it is very hot", "Because of heavy snow"], correct: 0, targetPara: 1 },
+                { q: "What do families enjoy in Taif?", options: ["Fresh air and beautiful parks", "Scuba diving", "Shopping malls"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Jeddah's summer and winter weather.", "Taif mountain parks.", "Family summer travel."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Taif's cool mountain climate.", "Jeddah humidity.", "August temperatures."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Family travel to Taif for fresh air.", "Winter weather in Jeddah.", "Mountain climbing."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 5: University Life",
+            audioText: "University life is different from school. Students have their own timetables and choose their study hours. Between classes, students like to meet in the campus cafe to drink coffee and discuss their homework. The university library is open until late at night, providing a quiet place for research and reading.",
+            paragraphs: [
+                { en: "1. University life is different from school. Students have their own timetables and choose their study hours.", ar: "1. حياة الجامعة تختلف عن المدرسة. لدى الطلاب جداول مواعيدهم الخاصة ويختارون ساعات دراستهم." },
+                { en: "2. Between classes, students like to meet in the campus cafe to drink coffee and discuss their homework.", ar: "2. بين الحصص، يحب الطلاب الاجتماع في مقهى الحرم الجامعي لتناول القهوة ومناقشة واجباتهم." },
+                { en: "3. The university library is open until late at night, providing a quiet place for research and reading.", ar: "3. مكتبة الجامعة مفتوحة حتى وقت متأخر من الليل، مما يوفر مكاناً هادئاً للبحث والقراءة." }
+            ],
+            questions: [
+                { q: "How is university life compared to school?", options: ["Different", "Identical", "Much easier"], correct: 0, targetPara: 0 },
+                { q: "What do university students have?", options: ["Their own timetables", "No homework at all", "Uniforms"], correct: 0, targetPara: 0 },
+                { q: "Where do students meet between classes?", options: ["In the campus cafe", "At the bus stop", "In the gym"], correct: 0, targetPara: 1 },
+                { q: "What do they discuss in the cafe?", options: ["Their homework", "Movie tickets", "Shopping lists"], correct: 0, targetPara: 1 },
+                { q: "How long is the university library open?", options: ["Until late at night", "Only till noon", "Closed on weekdays"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Differences between university and school.", "Campus cafe meetings.", "Library research hours."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Students meeting in the campus cafe.", "Study timetables.", "Quiet reading places."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["University library hours and quiet study.", "Cafe coffee drinks.", "School classrooms."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 6: Shopping and Markets",
+            audioText: "Buying groceries and fresh food is an important part of daily life in our city. Traditional local markets offer fresh vegetables, fruits, spices, and homemade bread. Supermarkets are modern and convenient, allowing shoppers to buy everything in one place easily.",
+            paragraphs: [
+                { en: "1. Buying groceries and fresh food is an important part of daily life in our city.", ar: "1. شراء البقالة والطعام الطازج هو جزء مهم من الحياة اليومية في مدينتنا." },
+                { en: "2. Traditional local markets offer fresh vegetables, fruits, spices, and homemade bread.", ar: "2. تقدم الأسواق المحلية التقليدية الخضار الطازجة، والفواكه، والتوابل، والخبز المنزلي." },
+                { en: "3. Supermarkets are modern and convenient, allowing shoppers to buy everything in one place easily.", ar: "3. السوبرماركت حديث ومريح، مما يتيح للمتسوقين شراء كل شيء في مكان واحد بسهولة." }
+            ],
+            questions: [
+                { q: "What is an important part of daily life?", options: ["Buying groceries and fresh food", "Watching movies", "Playing video games"], correct: 0, targetPara: 0 },
+                { q: "What do traditional local markets offer?", options: ["Vegetables, fruits, and spices", "Computer equipment", "Car spare parts"], correct: 0, targetPara: 1 },
+                { q: "How are supermarkets described?", options: ["Modern and convenient", "Old and dark", "Far away and expensive"], correct: 0, targetPara: 2 },
+                { q: "Where can shoppers buy everything in one place?", options: ["In supermarkets", "At bus stations", "In libraries"], correct: 0, targetPara: 2 },
+                { q: "What kind of bread is found in local markets?", options: ["Homemade bread", "Frozen bread", "Imported cakes"], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Importance of buying food daily.", "Traditional market spices.", "Supermarket parking."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Goods sold in traditional local markets.", "Convenient supermarkets.", "Daily city routines."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Convenience of modern supermarkets.", "Fresh vegetable farming.", "Local bakery prices."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 7: Travel and Transport",
+            audioText: "Travelling around a big city like Riyadh requires reliable public transport systems. Buses and trains help reduce traffic congestion and make commuting faster for thousands of workers. Many people also prefer driving private cars because they offer flexibility and comfort.",
+            paragraphs: [
+                { en: "1. Travelling around a big city like Riyadh requires reliable public transport systems.", ar: "1. السفر حول مدينة كبيرة مثل الرياض يتطلب نظام نقل عام موثوقاً." },
+                { en: "2. Buses and trains help reduce traffic congestion and make commuting faster for thousands of workers.", ar: "2. تساعد الحافلات والقطارات في تقليل ازدحام المرور وجعل التنقل أسرع لآلاف العمال." },
+                { en: "3. Many people also prefer driving private cars because they offer flexibility and comfort.", ar: "3. يفضل العديد من الناس أيضاً قيادة السيارات الخاصة لأنها توفر المرونة والراحة." }
+            ],
+            questions: [
+                { q: "What does traveling around a big city require?", options: ["Reliable public transport", "Bicycles only", "Walking shoes"], correct: 0, targetPara: 0 },
+                { q: "What do buses and trains help reduce?", options: ["Traffic congestion", "Fuel prices", "City park sizes"], correct: 0, targetPara: 1 },
+                { q: "Who benefits from faster commuting?", options: ["Thousands of workers", "Only children", "Tourists only"], correct: 0, targetPara: 1 },
+                { q: "Why do people prefer private cars?", options: ["They offer flexibility and comfort", "They are free of cost", "They fly in the sky"], correct: 0, targetPara: 2 },
+                { q: "Which city is mentioned as an example?", options: ["Riyadh", "London", "Tokyo"], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Need for public transport in big cities.", "Traffic reduction benefits.", "Private car comfort."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["How buses and trains ease traffic.", "Reliable Riyadh roads.", "Driver flexibility."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Advantages of driving private cars.", "Train ticket prices.", "Worker commuting hours."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 8: Free Time and Hobbies",
+            audioText: "Having enjoyable hobbies is essential for maintaining a healthy and balanced lifestyle. Some people enjoy reading books or photography, while others prefer outdoor sports like swimming and cycling. Sharing hobbies with friends makes free time much more fun and creates wonderful memories.",
+            paragraphs: [
+                { en: "1. Having enjoyable hobbies is essential for maintaining a healthy and balanced lifestyle.", ar: "1. امتلاك هوايات ممتعة أمر أساسي للحفاظ على نمط حياة صحي ومتوازن." },
+                { en: "2. Some people enjoy reading books or photography, while others prefer outdoor sports like swimming and cycling.", ar: "2. يستمتع بعض الناس بقراءة الكتب أو التصوير الفوتوغرافي، بينما يفضل آخرون الرياضات الخارجية مثل السباحة وركوب الدراجات." },
+                { en: "3. Sharing hobbies with friends makes free time much more fun and creates wonderful memories.", ar: "3. مشاركة الهوايات مع الأصدقاء تجعل وقت الفراغ أكثر متعة وتخلق ذكريات رائعة." }
+            ],
+            questions: [
+                { q: "What is essential for a balanced lifestyle?", options: ["Enjoyable hobbies", "Working 24 hours", "Sleeping all day"], correct: 0, targetPara: 0 },
+                { q: "What indoor hobby is mentioned?", options: ["Reading books or photography", "Swimming", "Cycling"], correct: 0, targetPara: 1 },
+                { q: "What outdoor sports are mentioned?", options: ["Swimming and cycling", "Chess and painting", "Watching TV"], correct: 0, targetPara: 1 },
+                { q: "What happens when you share hobbies with friends?", options: ["Free time becomes more fun", "It wastes valuable time", "It causes arguments"], correct: 0, targetPara: 2 },
+                { q: "What do hobbies help maintain?", options: ["A healthy and balanced lifestyle", "High business profits", "Heavy traffic flow"], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Importance of hobbies for a balanced life.", "Outdoor swimming sports.", "Making friends."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Examples of indoor and outdoor hobbies.", "Healthy lifestyles.", "Sharing memories."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Enjoying free time with friends.", "Reading book genres.", "Cycling safety rules."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 9: Healthy Eating",
+            audioText: "Eating healthy food gives our bodies the energy needed for daily activities and study. Fresh fruits, vegetables, and whole grains should be a major part of every meal. Drinking enough water throughout the day is also vital for good health and concentration.",
+            paragraphs: [
+                { en: "1. Eating healthy food gives our bodies the energy needed for daily activities and study.", ar: "1. تناول الطعام الصحي يمنح أجسامنا الطاقة اللازمة للأنشطة اليومية والدراسة." },
+                { en: "2. Fresh fruits, vegetables, and whole grains should be a major part of every meal.", ar: "2. يجب أن تكون الفواكه الطازجة والخضروات والحبوب الكاملة جزءاً أساسياً من كل وجبة." },
+                { en: "3. Drinking enough water throughout the day is also vital for good health and concentration.", ar: "3. شرب كمية كافية من الماء طوال اليوم يعد أمراً حيويأً أيضاً للصحة الجيدة والتركيز." }
+            ],
+            questions: [
+                { q: "What does healthy food give our bodies?", options: ["Energy for daily activities", "Headaches and fatigue", "Sleepiness"], correct: 0, targetPara: 0 },
+                { q: "What should be part of every meal?", options: ["Fruits, vegetables, and whole grains", "Fast food and soda", "Candy and chips"], correct: 0, targetPara: 1 },
+                { q: "What is vital for good health and concentration?", options: ["Drinking enough water", "Drinking hot chocolate", "Avoiding exercise"], correct: 0, targetPara: 2 },
+                { q: "Why is energy important?", options: ["For study and daily activities", "For sleeping soundly", "For watching TV"], correct: 0, targetPara: 0 },
+                { q: "How often should we drink water?", options: ["Throughout the day", "Once a week", "Only at night"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Energy benefits of healthy eating.", "Fresh fruit markets.", "Water consumption."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Important food groups for meals.", "Daily study energy.", "Health concentration."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Importance of drinking water daily.", "Eating whole grains.", "Avoiding fast food."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Listening Passage 10: Modern Technology",
+            audioText: "Modern technology has completely changed how we communicate and learn languages. Students can use smartphones and laptops to access online dictionaries and educational videos instantly. Technology makes education more accessible and exciting for learners around the world.",
+            paragraphs: [
+                { en: "1. Modern technology has completely changed how we communicate and learn languages.", ar: "1. لقد غيرت التكنولوجيا الحديثة تماماً طريقة تواصلنا وتعلمنا للغات." },
+                { en: "2. Students can use smartphones and laptops to access online dictionaries and educational videos instantly.", ar: "2. يمكن للطلاب استخدام الهواتف الذكية وأجهزة المحمول للوصول إلى القواميس عبر الإنترنت ومقاطع الفيديو التعليمية فوراً." },
+                { en: "3. Technology makes education more accessible and exciting for learners around the world.", ar: "3. تجعل التكنولوجيا التعليم أكثر سهولة وإثارة للمتعلمين في جميع أنحاء العالم." }
+            ],
+            questions: [
+                { q: "What has modern technology changed?", options: ["How we communicate and learn", "The weather seasons", "City traffic laws"], correct: 0, targetPara: 0 },
+                { q: "What devices do students use?", options: ["Smartphones and laptops", "Radios only", "Traditional books only"], correct: 0, targetPara: 1 },
+                { q: "What can students access instantly online?", options: ["Dictionaries and educational videos", "Flight tickets", "Restaurant menus"], correct: 0, targetPara: 1 },
+                { q: "How does technology affect education?", options: ["Makes it more accessible and exciting", "Makes it impossible", "Makes it boring"], correct: 0, targetPara: 2 },
+                { q: "Who benefits from educational technology?", options: ["Learners around the world", "Only teachers", "Factory workers"], correct: 0, targetPara: 2 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Impact of technology on communication and learning.", "Smartphones and laptops.", "Global education accessibility."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["Using devices for dictionaries and videos.", "Changing language rules.", "Exciting learners."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Making education accessible globally.", "Communication methods.", "Online video streaming."], correct: 0, targetPara: 2 }
+            ]
+        }
+    ];
+
+    function buildAllListeningPassages() {
+        const nav = document.getElementById('listening-nav');
+        const container = document.getElementById('tabs-container');
+        nav.innerHTML = '';
+        container.innerHTML = '';
+
+        listeningData.forEach((passage, pIndex) => {
+            const modelNum = pIndex + 1;
+
+            const tabBtn = document.createElement('button');
+            tabBtn.className = `tab-btn ${pIndex === 0 ? 'active' : ''}`;
+            tabBtn.innerText = `قطعة الاستماع ${modelNum}`;
+            tabBtn.onclick = () => switchTab(pIndex);
+            nav.appendChild(tabBtn);
+
+            const tabDiv = document.createElement('div');
+            tabDiv.id = `tab-${pIndex}`;
+            tabDiv.className = `tab-content ${pIndex === 0 ? 'active' : ''}`;
+
+            tabDiv.innerHTML = `
+                <div class="section-box">
+                    <h2>${passage.title}</h2>
+                    
+                    <!-- شريط الصوت وزر التشغيل والإيقاف المدمج -->
+                    <div class="audio-bar">
+                        <div class="audio-title">🎧 استمع إلى القطعة الصوتية للإجابة على الأسئلة</div>
+                        <button class="audio-btn" id="audio-btn-${pIndex}" onclick="toggleListeningAudio(${pIndex}, this)">
+                            🔊 تشغيل الصوت (Play Audio)
+                        </button>
+                    </div>
+
+                    <div class="score-board" id="score-top-${modelNum}"></div>
+
+                    <div class="controls">
+                        <button class="btn-action" onclick="showListeningAnswer(${pIndex})">عرض النتيجة</button>
+                        <button class="btn-reset" onclick="initListening(${pIndex})">إعادة ترتيب الأسئلة</button>
+                    </div>
+
+                    <div id="questions-container-${pIndex}"></div>
+
+                    <div class="controls" style="margin-top: 30px;">
+                        <button class="btn-action" onclick="showListeningAnswer(${pIndex})">عرض النتيجة</button>
+                        <button class="btn-reset" onclick="initListening(${pIndex})">إعادة ترتيب الأسئلة</button>
+                    </div>
+
+                    <div class="score-board" id="score-bottom-${modelNum}"></div>
+                </div>
+            `;
+            container.appendChild(tabDiv);
+
+            initListening(pIndex);
+        });
+    }
+
+    function toggleListeningAudio(pIndex, btn) {
+        if (isExamMode) {
+            alert("عذراً، وضع الاختبار الصارم مفعل ولا يمكن تشغيل الصوت.");
+            return;
+        }
+
+        if ('speechSynthesis' in window) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                resetAllAudioButtons();
+                return;
+            }
+
+            resetAllAudioButtons();
+            const textToSpeech = listeningData[pIndex].audioText;
+            const utterance = new SpeechSynthesisUtterance(textToSpeech);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+
+            btn.innerHTML = "⏹️ إيقاف الصوت (Stop Audio)";
+            btn.style.backgroundColor = "#e11d48";
+
+            utterance.onend = function() {
+                btn.innerHTML = "🔊 تشغيل الصوت (Play Audio)";
+                btn.style.backgroundColor = "";
+            };
+
+            utterance.onerror = function() {
+                btn.innerHTML = "🔊 تشغيل الصوت (Play Audio)";
+                btn.style.backgroundColor = "";
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function resetAllAudioButtons() {
+        document.querySelectorAll('.audio-btn').forEach(b => {
+            b.innerHTML = "🔊 تشغيل الصوت (Play Audio)";
+            b.style.backgroundColor = "";
+        });
+    }
+
+    function initListening(pIndex) {
+        const modelNum = pIndex + 1;
+        const qContainer = document.getElementById(`questions-container-${pIndex}`);
+        qContainer.innerHTML = '';
+
+        document.getElementById(`score-top-${modelNum}`).style.display = 'none';
+        document.getElementById(`score-bottom-${modelNum}`).style.display = 'none';
+
+        const passage = listeningData[pIndex];
+        const shuffledQ = [...passage.questions].sort(() => Math.random() - 0.5);
+
+        shuffledQ.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'mc-question-card';
+            card.dataset.userCorrect = "false";
+
+            const origCorrect = item.options[item.correct];
+            const shuffledOpts = [...item.options].sort(() => Math.random() - 0.5);
+            const newCorrIdx = shuffledOpts.indexOf(origCorrect);
+            card.dataset.correctIndex = newCorrIdx;
+
+            let optsHtml = '';
+            shuffledOpts.forEach((opt, optIdx) => {
+                const renderedOpt = renderClickableText(opt);
+                optsHtml += `<div class="mc-option" onclick="checkChoice(this, event, ${optIdx}, ${newCorrIdx})">${renderedOpt}</div>`;
+            });
+
+            const dispNum = index + 1;
+            const qText = renderClickableText(`${dispNum}. ${item.q}`);
+
+            let passageHtml = '';
+            passage.paragraphs.forEach((p, pIdx) => {
+                const isHighlight = (pIdx === item.targetPara) ? 'highlight-target' : '';
+                passageHtml += `
+                    <div class="passage-paragraph ${isHighlight}">
+                        <div class="paragraph-en">${renderClickableText(p.en)}</div>
+                        <div class="paragraph-ar">${p.ar}</div>
+                    </div>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="passage-box" style="margin-bottom: 15px;">
+                    <strong>📖 Listening Script Reference (الفقرة المميزة بالأصفر توضح مكان الإجابة):</strong>
+                    ${passageHtml}
+                </div>
+                <div class="mc-question-text">${qText}</div>
+                <div class="mc-options">${optsHtml}</div>
+            `;
+            qContainer.appendChild(card);
+        });
+    }
+
+    function checkChoice(element, event, selectedIndex, correctIndex) {
+        if (!isExamMode && event && event.target.closest('.word-wrapper')) {
+            return;
+        }
+
+        const parentCard = element.closest('.mc-question-card');
+        const options = parentCard.querySelectorAll('.mc-option');
+        if (parentCard.dataset.answered === "true") return;
+
+        parentCard.dataset.userSelected = selectedIndex;
+
+        if (selectedIndex === correctIndex) {
+            element.classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "true";
+        } else {
+            element.classList.add('wrong-choice');
+            options[correctIndex].classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "false";
+        }
+        parentCard.dataset.answered = "true";
+    }
+
+    function showListeningAnswer(pIndex) {
+        const modelNum = pIndex + 1;
+        const tabDiv = document.getElementById(`tab-${pIndex}`);
+        const cards = tabDiv.querySelectorAll('.mc-question-card');
+        let score = 0;
+
+        cards.forEach(card => {
+            const options = card.querySelectorAll('.mc-option');
+            const correctIdx = parseInt(card.dataset.correctIndex);
+
+            options.forEach((opt, idx) => {
+                if (idx === correctIdx) {
+                    opt.classList.add('correct-choice');
+                }
+            });
+
+            if (card.dataset.userCorrect === "true") {
+                score++;
+            }
+            card.dataset.answered = "true";
+        });
+
+        const scoreMessage = `النتيجة النهائية لاختبار الاستماع ${modelNum}: ${score} من 8`;
+        
+        const topScore = document.getElementById(`score-top-${modelNum}`);
+        const bottomScore = document.getElementById(`score-bottom-${modelNum}`);
+        
+        topScore.innerText = scoreMessage;
+        topScore.style.display = 'block';
+        
+        bottomScore.innerText = scoreMessage;
+        bottomScore.style.display = 'block';
+    }
+
+    window.onload = function() {
+        buildAllListeningPassages();
+    };
+</script>
+
+</body>
+</html>

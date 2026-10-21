@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELIS 110 - Official Reading Master (10 Passages)</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #059669;
+            --success-hover: #047857;
+            --success-bg: #d1fae5;
+            --success-border: #047857;
+            --translate-color: #dc2626;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --btn-reset-bg: #64748b;
+            --btn-reset-hover: #475569;
+            --exam-mode-bg: #fff1f2;
+            --exam-border: #e11d48;
+            --highlight-answer: #fef08a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Top Bar Mode Switcher */
+        .mode-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .mode-btn {
+            background-color: #e2e8f0;
+            border: 2px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #334155;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active-practice {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .mode-btn.active-exam {
+            background-color: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+
+        /* Tabs Navigation for 10 Passages */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #e2e8f0;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #475569;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            transition: border-color 0.3s;
+        }
+
+        .exam-mode-active .section-box {
+            border: 2px solid var(--exam-border);
+            background-color: var(--exam-mode-bg);
+        }
+
+        h2 {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            color: #1e293b;
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+
+        /* Reading Passage Box */
+        .passage-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .passage-paragraph {
+            margin: 10px 0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .passage-paragraph.highlight-target {
+            background-color: var(--highlight-answer);
+            border: 2px dashed #ca8a04;
+        }
+
+        .paragraph-ar {
+            color: var(--translate-color);
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--translate-color);
+            background-color: #fef2f2;
+            border: 2px dashed #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button.btn-action {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--success-hover);
+        }
+
+        button.btn-reset {
+            background-color: var(--btn-reset-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.btn-reset:hover {
+            background-color: var(--btn-reset-hover);
+        }
+
+        /* Clickable Words & Translation without Box */
+        .word-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0 2px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .word-wrapper:hover {
+            background-color: #e2e8f0;
+        }
+
+        .word-wrapper.active-word {
+            background-color: #fef08a !important;
+        }
+
+        .word-trans {
+            display: none;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--translate-color);
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* Multiple Choice Styles */
+        .mc-question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            transition: box-shadow 0.2s;
+        }
+
+        .exam-mode-active .mc-question-card {
+            background: #ffffff;
+            border-color: #fda4af;
+        }
+
+        .mc-question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mc-option {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .mc-option:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .mc-option.correct-choice {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .mc-option.wrong-choice {
+            background-color: #fee2e2 !important;
+            border-color: var(--translate-color) !important;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <h1>ELIS 110 - Official Reading Master</h1>
+    <div class="subtitle">10 نماذج قطع قراءة مطابقة لنموذج Inuit والقطع السابقة (مع التحديد والترجمة الثابتة)</div>
+
+    <!-- أزرار تبديل الوضع -->
+    <div class="mode-switcher">
+        <button id="btn-practice-mode" class="mode-btn active-practice" onclick="setExamMode(false)">وضع التدريب (مع نطق وترجمة)</button>
+        <button id="btn-exam-mode" class="mode-btn" onclick="setExamMode(true)">وضع الاختبار الصارم (بدون نطق أو ترجمة)</button>
+    </div>
+
+    <!-- شريط التبويبات للقطع العشرة -->
+    <div class="tabs-nav" id="passages-nav"></div>
+
+    <!-- حاويات القطع -->
+    <div id="tabs-container"></div>
+
+</div>
+
+<script>
+    const dictionary = {
+        "living": "يعيش", "snow": "الثلج", "describes": "يصف", "lives": "حياة", "inuit": "الإسكيمو", "group": "مجموعة", "people": "ناس",
+        "arctic": "قطبي", "northern": "شمالي", "canada": "كندا", "alaska": "ألاسكا", "greenland": "جرينلاند", "came": "جاء",
+        "north": "شمال", "america": "أمريكا", "far": "بعيد", "east": "شرق", "extreme": "قارس", "cold": "برد",
+        "build": "يبني", "houses": "منازل", "igloos": "كوخ ثلجي", "make": "يصنع", "clothes": "ملابس", "animal": "حيوان",
+        "skins": "جلود", "use": "يستخدم", "dog": "كلب", "sleds": "زلاجات", "travel": "يسفر", "around": "حول",
+        "traditional": "تقليدي", "lifestyle": "نمط حياة", "grandparents": "أجداد", "nowadays": "في الوقت الحاضر",
+        "modern": "حديث", "rooms": "غرف", "heating": "تدفئة", "special": "خاص", "kinds": "أنواع", "cars": "سيارات",
+        "work": "يعمل", "government": "حكومة", "helped": "ساعد", "built": "بنى", "hospitals": "مستشفيات",
+        "schools": "مدارس", "small": "صغير", "villages": "قرى", "away": "بعيد", "cities": "مدن", "buy": "يشتري",
+        "food": "طعام", "local": "محلي", "shops": "محلات", "expensive": "غالي الثمن", "why": "لماذا", "hunt": "يصيد",
+        "meat": "لحم", "seals": "فقمات", "caribou": "حيوان الرنة", "polar": "قطبي", "bears": "دببة", "whales": "حيتان",
+        "catch": "يصيد", "fish": "سمك", "eat": "يأكل", "tokyo": "طوكيو", "capital": "عاصمة", "japan": "اليابان",
+        "biggest": "الأكبر", "city": "مدينة", "population": "سكان", "million": "مليون", "weather": "طقس", "hot": "حار",
+        "summer": "صيف", "winter": "شتاء", "rain": "مطر", "tourist": "سياحي", "activities": "أنشطة", "famous": "مشهور",
+        "temples": "معابد", "parks": "منتزهات", "visit": "يزور", "speak": "يتحدث", "languages": "لغات", "english": "إنجليزية"
+    };
+
+    let isExamMode = false;
+
+    function setExamMode(examState) {
+        isExamMode = examState;
+        const mainContainer = document.getElementById('main-container');
+        const btnPrac = document.getElementById('btn-practice-mode');
+        const btnExam = document.getElementById('btn-exam-mode');
+
+        if (isExamMode) {
+            mainContainer.classList.add('exam-mode-active');
+            btnPrac.classList.remove('active-practice');
+            btnExam.classList.add('active-exam');
+            alert("تم تفعيل وضع الاختبار الصارم: تم إيقاف النطق الصوتي والترجمة نهائياً.");
+        } else {
+            mainContainer.classList.remove('exam-mode-active');
+            btnPrac.classList.add('active-practice');
+            btnExam.classList.remove('active-exam');
+        }
+        buildAllPassages();
+    }
+
+    function getWordTranslation(word) {
+        let clean = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        if (!clean) return '';
+        if (dictionary[clean]) return dictionary[clean];
+        if (clean.endsWith('s') && dictionary[clean.slice(0, -1)]) return dictionary[clean.slice(0, -1)];
+        if (clean.endsWith('ed') && dictionary[clean.slice(0, -2)]) return dictionary[clean.slice(0, -2)];
+        if (clean.endsWith('ing') && dictionary[clean.slice(0, -3)]) return dictionary[clean.slice(0, -3)];
+        return clean;
+    }
+
+    function speakText(text) {
+        if (isExamMode) return;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function renderClickableText(text) {
+        if (isExamMode) return text;
+        const words = text.split(' ');
+        return words.map(word => {
+            const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+            const translation = getWordTranslation(word);
+            return `<span class="word-wrapper" onclick="handleWordClick(event, this, '${word}', '${translation}')">
+                <span class="word-trans">${translation}</span>${word}
+            </span>`;
+        }).join(' ');
+    }
+
+    function handleWordClick(event, element, word, translation) {
+        if (isExamMode) return;
+        event.stopPropagation();
+        const container = element.closest('.tab-content');
+        if (container) {
+            container.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+            container.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+        }
+        element.classList.add('active-word');
+        const transSpan = element.querySelector('.word-trans');
+        if (transSpan) transSpan.style.display = 'block';
+
+        const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+        if (cleanWord) speakText(cleanWord);
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+    });
+
+    function switchTab(index) {
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === index);
+        });
+        document.querySelectorAll('.tab-content').forEach((content, idx) => {
+            content.classList.toggle('active', idx === index);
+        });
+    }
+
+    // 10 قطع قراءة متكاملة (5 على نمط Inuit و5 على النمط الحضاري السابق)
+    const passagesData = [
+        {
+            title: "Passage 1: Living in the Snow (Inuit)",
+            paragraphs: [
+                { en: "1. Peter Lang’s recent travel diary, Living in the Snow, describes the lives of the Inuit people. The Inuit are a group of people who live in the Arctic parts of Canada, Alaska, and Greenland.", ar: "1. يوميات سفر بيتر لانغ الحديثة، العيش في الثلج، تصف حياة شعب الإسكيمو. الإسكيمو هم مجموعة من الناس يعيشون في الأجزاء القطبية من كندا وألاسكا وجرينلاند." },
+                { en: "2. Nowadays, most Inuit live in modern houses with many rooms and heating. The government has helped the Inuit people a lot by building houses, hospitals, and schools.", ar: "2. في الوقت الحاضر، يعيش معظم الإسكيمو في منازل حديثة بها غرف عديدة وتدفئة. لقد ساعدت الحكومة شعب الإسكيمو كثيراً بناء المنازل والمستشفيات والمدارس." },
+                { en: "3. The Inuit can now buy their food in local shops. Most of the food comes from the south because local food is expensive. That's why many Inuit hunt seals, caribou, and whales.", ar: "3. يمكن للإسكيمو الآن شراء طعامهم من المحلات المحلية. معظم الطعام يأتي من الجنوب لأنه مكلف، ولهذا يصيد الكثير منهم الفقمات والرنة والحيتان." }
+            ],
+            questions: [
+                { q: "In the past, the Inuit travelled by _____.", options: ["dog sled", "car", "plane"], correct: 0, targetPara: 0 },
+                { q: "Where do the Inuit live?", options: ["In the Arctic parts of Canada and Alaska", "In southern deserts", "In tropical islands"], correct: 0, targetPara: 0 },
+                { q: "What kind of houses do most Inuit live in today?", options: ["Modern houses with heating", "Igloos only", "Tents made of stone"], correct: 0, targetPara: 1 },
+                { q: "Who helped the Inuit build houses and hospitals?", options: ["The government", "Foreign tourists", "Local merchants"], correct: 0, targetPara: 1 },
+                { q: "Why do many Inuit still hunt seals and whales?", options: ["Because food from the south is expensive", "Because they hate shops", "Because government ordered it"], correct: 0, targetPara: 2 },
+                { q: "Choose the correct topic for Paragraph 1.", options: ["The Inuit used to have a very different lifestyle.", "Today, the Inuit have more choices.", "Food for the Inuit is expensive."], correct: 0, targetPara: 0 },
+                { q: "Choose the correct topic for Paragraph 2.", options: ["The Inuit have better housing today and more help.", "The Inuit enjoy catching fish.", "The Inuit live in northern Canada."], correct: 0, targetPara: 1 },
+                { q: "Choose the correct topic for Paragraph 3.", options: ["Food for the Inuit is very expensive.", "The Inuit travel by dog sled.", "Modern houses in the Arctic."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 2: Life in the Desert (Bedouin)",
+            paragraphs: [
+                { en: "1. The Bedouin are Arab nomadic groups who traditionally live in the desert regions of the Middle East, including Saudi Arabia and Jordan.", ar: "1. البدو هم مجموعات عربية رحل تعيش تقليدياً في مناطق الصحراء في الشرق الأوسط، بما في ذلك المملكة العربية السعودية والأردن." },
+                { en: "2. In the past, Bedouin lived in tents made from goat hair and moved across the desert with camels and sheep searching for water and grass.", ar: "2. في الماضي، عاش البدو في خيام مصنوعة من شعر المعز وتجولوا عبر الصحراء مع الإبل والأغنام بحثاً عن الماء والعشب." },
+                { en: "3. Today, many Bedouin live in modern towns with electricity and schools, while preserving their rich cultural heritage and hospitality.", ar: "3. اليوم، يعيش العديد من البدو في مدن حديثة بها كهرباء ومدارس، مع الحفاظ على تراثهم الثقافي الغني وضيافتهم." }
+            ],
+            questions: [
+                { q: "Where do the Bedouin traditionally live?", options: ["In desert regions of the Middle East", "In cold Arctic snow", "On tropical islands"], correct: 0, targetPara: 0 },
+                { q: "What were traditional Bedouin tents made of?", options: ["Goat hair", "Plastic sheets", "Glass panels"], correct: 0, targetPara: 1 },
+                { q: "What animals did they travel with in the past?", options: ["Camels and sheep", "Dogs and cats", "Horses only"], correct: 0, targetPara: 1 },
+                { q: "Where do many Bedouin live today?", options: ["In modern towns with electricity", "In deep caves", "On ships at sea"], correct: 0, targetPara: 2 },
+                { q: "What do they preserve today?", options: ["Their cultural heritage and hospitality", "Only ancient weapons", "Foreign languages"], correct: 0, targetPara: 2 },
+                { q: "Choose the correct topic for Paragraph 1.", options: ["The Bedouin live in Middle Eastern deserts.", "Bedouin tents and camels.", "Modern towns in Saudi Arabia."], correct: 0, targetPara: 0 },
+                { q: "Choose the correct topic for Paragraph 2.", options: ["Traditional Bedouin lifestyle and movement.", "Modern schools and electricity.", "Desert weather conditions."], correct: 0, targetPara: 1 },
+                { q: "Choose the correct topic for Paragraph 3.", options: ["Bedouin life in modern times.", "Goat hair tents.", "Water and grass in Jordan."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 3: Mountain Life (Sherpa)",
+            paragraphs: [
+                { en: "1. The Sherpa people live in the high mountain regions of Nepal near Mount Everest. They are famous for their mountaineering skills.", ar: "1. يعيش شعب الشيربا في مناطق الجبال العالية في نبال بالقرب من جبل إيفرست. وهم مشهورون بمهاراتهم في تسلق الجبال." },
+                { en: "2. Sherpas have strong bodies that can breathe easily in high altitudes where the air has very little oxygen.", ar: "2. لدى الشيربا أجسام قوية تستطيع التنفس بسهولة في الارتفاعات العالية حيث يحتوي الهواء على القليل جداً من الأكسجين." },
+                { en: "3. Today, many Sherpas work as professional mountain guides and lead international tourists to the top of Everest.", ar: "3. اليوم، يعمل العديد من الشيربا كمرشدين محليين للجبال ويقودون السياح الدوليين إلى قمة إيفرست." }
+            ],
+            questions: [
+                { q: "Where do the Sherpa people live?", options: ["In the high mountain regions of Nepal", "In the Amazon rainforest", "On Mediterranean beaches"], correct: 0, targetPara: 0 },
+                { q: "What are Sherpas famous for?", options: ["Mountaineering skills", "Deep sea diving", "Desert farming"], correct: 0, targetPara: 0 },
+                { q: "Why can Sherpas breathe easily in high altitudes?", options: ["They have strong bodies adapted to thin air", "They carry oxygen tanks always", "They wear special masks"], correct: 0, targetPara: 1 },
+                { q: "What do many Sherpas work as today?", options: ["Professional mountain guides", "Taxi drivers", "Computer programmers"], correct: 0, targetPara: 2 },
+                { q: "Where do they guide international tourists?", options: ["To the top of Everest", "To local shopping malls", "Across desert dunes"], correct: 0, targetPara: 2 },
+                { q: "Choose the correct topic for Paragraph 1.", options: ["The home and fame of the Sherpa people.", "Breathing in high altitudes.", "Guiding tourists on Everest."], correct: 0, targetPara: 0 },
+                { q: "Choose the correct topic for Paragraph 2.", options: ["Physical adaptation to high altitudes.", "Mountain climbing equipment.", "Nepalese village markets."], correct: 0, targetPara: 1 },
+                { q: "Choose the correct topic for Paragraph 3.", options: ["Modern jobs as mountain guides.", "Traditional Sherpa clothing.", "Mount Everest history."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 4: Island Life (Maldives)",
+            paragraphs: [
+                { en: "1. The Maldives is an island nation in the Indian Ocean consisting of thousands of tiny coral islands surrounded by turquoise water.", ar: "1. جزر المالديف هي دولة جزيرة في المحيط الهندي تتكون من آلاف الجزر المرجانية الصغيرة المحاطة بالمياه الفيروزية." },
+                { en: "2. The economy of the Maldives depends heavily on fishing and international tourism, with luxury resorts on private islands.", ar: "2. يعتمد اقتصاد جزر المالديف بشكل كبير على صيد الأسماك والسياحة الدولية، مع منتجعات فاخرة على جزر خاصة." },
+                { en: "3. Visitors love swimming, scuba diving, and watching colorful marine life in the warm ocean waters.", ar: "3. يحب الزوار السباحة، والغوص، ومشاهدة الحياة البحرية الملونة في مياه المحيط الدافئة." }
+            ],
+            questions: [
+                { q: "Where is the Maldives located?", options: ["In the Indian Ocean", "In northern Canada", "In western Europe"], correct: 0, targetPara: 0 },
+                { q: "What are the islands made of?", options: ["Coral", "Solid granite", "Volcanic ash"], correct: 0, targetPara: 0 },
+                { q: "What are the two main parts of the Maldivian economy?", options: ["Fishing and international tourism", "Manufacturing and mining", "Farming and oil drilling"], correct: 0, targetPara: 1 },
+                { q: "Where are luxury resorts located?", options: ["On private islands", "Inside capital cities", "High in the mountains"], correct: 0, targetPara: 1 },
+                { q: "What do visitors love doing in the ocean?", options: ["Swimming and scuba diving", "Ice skating", "Rock climbing"], correct: 0, targetPara: 2 },
+                { q: "Choose the correct topic for Paragraph 1.", options: ["The geography and location of the Maldives.", "Luxury resort tourism.", "Fishing industries."], correct: 0, targetPara: 0 },
+                { q: "Choose the correct topic for Paragraph 2.", options: ["The economy based on fishing and tourism.", "Coral island formation.", "Scuba diving equipment."], correct: 0, targetPara: 1 },
+                { q: "Choose the correct topic for Paragraph 3.", options: ["Water sports and marine life for visitors.", "Island government policies.", "Climate change in Asia."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 5: Rainforest Life (Amazon)",
+            paragraphs: [
+                { en: "1. The Amazon rainforest in South America is home to millions of plant and animal species, many of which exist nowhere else on Earth.", ar: "1. غابات الأمازون المطيرة في أمريكا الجنوبية هي موطن لملايين أنواع النباتات والحيوانات، وكثير منها غير موجود في أي مكان آخر على الأرض." },
+                { en: "2. Indigenous communities have lived in the Amazon for centuries, using plants for medicine and hunting for food.", ar: "2. عاشت المجتمعات الأصلية في الأمازون لقرون، مستخدمة النباتات كدواء والصيد من أجل الطعام." },
+                { en: "3. Protecting the rainforest is crucial because trees produce oxygen and help regulate the global climate.", ar: "3. حماية الغابات المطيرة أمر بالغ الأهمية لأن الأشجار تنتج الأكسجين وتساعد في تنظيم المناخ العالمي." }
+            ],
+            questions: [
+                { q: "Where is the Amazon rainforest located?", options: ["In South America", "In northern Europe", "In central Australia"], correct: 0, targetPara: 0 },
+                { q: "What is special about Amazon species?", options: ["Many exist nowhere else on Earth", "They are all domesticated pets", "They only live in winter"], correct: 0, targetPara: 0 },
+                { q: "How long have indigenous communities lived there?", options: ["For centuries", "Only since last year", "For a few decades"], correct: 0, targetPara: 1 },
+                { q: "What do indigenous people use plants for?", options: ["Medicine", "Building sports cars", "Electronic devices"], correct: 0, targetPara: 1 },
+                { q: "Why is protecting the rainforest crucial?", options: ["Trees produce oxygen and regulate climate", "It provides parking spaces", "It stops ocean waves"], correct: 0, targetPara: 2 },
+                { q: "Choose the correct topic for Paragraph 1.", options: ["Biodiversity in the Amazon rainforest.", "Indigenous medicine.", "Global climate change."], correct: 0, targetPara: 0 },
+                { q: "Choose the correct topic for Paragraph 2.", options: ["Indigenous communities and their traditional life.", "Tree oxygen production.", "South American geography."], correct: 0, targetPara: 1 },
+                { q: "Choose the correct topic for Paragraph 3.", options: ["The importance of protecting rainforest trees.", "Hunting wild animals.", "Peruvian river travel."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 6: Tokyo",
+            paragraphs: [
+                { en: "1. Tokyo, the capital of Japan, is one of the biggest and busiest cities in the world. It has a population of over 14 million people.", ar: "1. طوكيو، عاصمة اليابان، هي واحدة من أكبر المدن وأكثرها ازدحاماً في العالم. يبلغ عدد سكانها أكثر من 14 مليون نسمة." },
+                { en: "2. Tokyo has four distinct seasons. Summer is usually very hot and humid, while winter is generally cold with occasional snow.", ar: "2. طوكيو لها أربعة مواسم مميزة. الصيف عادة حار ورطب جداً، بينما الشتاء بارد بشكل عام مع تساقط ثلوج عرضية." },
+                { en: "3. There are many tourist activities in Tokyo. Visitors can explore ancient temples, modern shopping centers, and beautiful public parks.", ar: "3. هناك العديد من الأنشطة السياحية في طوكيو. يمكن للزوار استكشاف المعابد القديمة ومراكز التسوق الحديثة والحدائق العامة الجميلة." }
+            ],
+            questions: [
+                { q: "What does the reading say about the population of Tokyo?", options: ["It is over 14 million.", "It is under 5 million.", "It is decreasing rapidly."], correct: 0, targetPara: 0 },
+                { q: "How is the weather described in summer?", options: ["Hot and humid.", "Cold and snowy.", "Very dry."], correct: 0, targetPara: 1 },
+                { q: "What can visitors explore in Tokyo?", options: ["Ancient temples and parks.", "Only modern skyscrapers.", "Deserts and beaches."], correct: 0, targetPara: 2 },
+                { q: "Which language is widely understood in hotels?", options: ["English", "Spanish", "French"], correct: 0, targetPara: 0 },
+                { q: "When did Tokyo host the Olympic Games?", options: ["1964 and 2020", "1928 and 1984", "2000 and 2012"], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["The size and population of Tokyo.", "The weather in Tokyo.", "Shopping centers."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["The weather in Tokyo.", "Ancient temples.", "English language."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Things to do in Tokyo.", "Summer humidity.", "Population statistics."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 7: London",
+            paragraphs: [
+                { en: "1. London, the capital of the UK, is located on the River Thames. It is a historic city with a population of nearly 9 million.", ar: "1. لندن، عاصمة المملكة المتحدة، تقع على نهر التيمز. إنها مدينة تاريخية يبلغ عدد سكانها يقرب من 9 ملايين نسمة." },
+                { en: "2. The weather in London changes frequently. It often rains throughout the year, and summers are usually mild.", ar: "2. الطقس في لندن يتغير بشكل متكرر. غالباً ما تمطر طوال العام، والصيف عادة ما يكون معتدلاً." },
+                { en: "3. London offers great tourist attractions like the Big Ben, the Tower of London, and Hyde Park.", ar: "3. توفر لندن مناطق جذب سياحي رائعة مثل ساعة بيغ بن، برج لندن، وحديقة هايد بارك." }
+            ],
+            questions: [
+                { q: "Where is London located?", options: ["On the River Thames", "On the Red Sea", "Near mountains"], correct: 0, targetPara: 0 },
+                { q: "What is said about the weather in London?", options: ["It often rains throughout the year.", "It is always extremely hot.", "It never rains."], correct: 0, targetPara: 1 },
+                { q: "Which attraction is mentioned in London?", options: ["Big Ben", "Burj Khalifa", "The Eiffel Tower"], correct: 0, targetPara: 2 },
+                { q: "What makes London a multicultural hub?", options: ["People from all over the globe live there.", "Everyone speaks one language.", "No tourists."], correct: 0, targetPara: 0 },
+                { q: "What is London famous for?", options: ["Red double-decker buses", "Yellow taxis", "Blue trains"], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Location and population of London.", "Weather and rain.", "Tourist attractions."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["The weather in London.", "Big Ben tower.", "Multicultural people."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Things to do and see in London.", "River Thames flow.", "Bus transport."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 8: Sydney",
+            paragraphs: [
+                { en: "1. Sydney is the biggest city in Australia, located on the beautiful east coast with a magnificent natural harbor.", ar: "1. سيدني هي أكبر مدينة في أستراليا، تقع على الساحل الشرقي الجميل مع ميناء طبيعي رائع." },
+                { en: "2. Sydney has a warm climate with lots of sunshine. Summers are warm and winters are very mild.", ar: "2. تتمتع سيدني بمناخ دافئ مع الكثير من أشعة الشمس. الصيف دافئ والشتاء معتدل جداً." },
+                { en: "3. Famous landmarks include the Sydney Opera House and Harbour Bridge. Visitors love surfing at Bondi Beach.", ar: "3. تشمل المعالم الشهيرة دار الأوبرا في سيدني وجسر الميناء. يحب الزوار ركوب الأمواج في شاطئ بوندي." }
+            ],
+            questions: [
+                { q: "Where is Sydney located?", options: ["On the east coast of Australia", "In western Europe", "In northern Canada"], correct: 0, targetPara: 0 },
+                { q: "What is the climate like in Sydney?", options: ["Warm climate with lots of sunshine", "Freezing cold", "Very rainy"], correct: 0, targetPara: 1 },
+                { q: "What do visitors love doing at Bondi Beach?", options: ["Surfing", "Skiing", "Climbing mountains"], correct: 0, targetPara: 2 },
+                { q: "What is the population of Sydney?", options: ["Around 5 million", "Over 20 million", "Under 1 million"], correct: 0, targetPara: 0 },
+                { q: "When did Sydney host the Olympics?", options: ["2000", "1992", "2016"], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Sydney's location and harbor.", "Sydney's warm climate.", "Bondi Beach surfing."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["The climate and sunshine in Sydney.", "Opera House architecture.", "Australian population."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Landmarks and beach activities in Sydney.", "Harbor water depth.", "Winter snowstorms."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 9: New York",
+            paragraphs: [
+                { en: "1. New York City, located in the USA, is famous for Manhattan Island and its incredible skyline of tall skyscrapers.", ar: "1. مدينة نيويورك، الواقعة في الولايات المتحدة الأمريكية، تشتهر بجزيرة مانهاتن وأفقها المذهل من ناطحات السحاب الطويلة." },
+                { en: "2. New York experiences hot summers and very cold, snowy winters. January is usually the coldest month.", ar: "2. تشهد نيويورك صيفاً حاراً وشتاءً بارداً جداً ومثلجاً. عادة ما يكون شهر يناير هو الأبرد." },
+                { en: "3. Tourists can visit Central Park, Times Square, and world-class art museums like the Metropolitan Museum.", ar: "3. يمكن للسياح زيارة سنترال بارك، تايمز سكوير، ومفاخر الفن العالمية مثل متحف متروبوليتان." }
+            ],
+            questions: [
+                { q: "What is New York famous for?", options: ["Manhattan Island and skyscrapers", "Ancient temples", "Quiet villages"], correct: 0, targetPara: 0 },
+                { q: "Which month is usually the coldest in New York?", options: ["January", "August", "July"], correct: 0, targetPara: 1 },
+                { q: "What can tourists visit in New York?", options: ["Central Park and Times Square", "Bondi Beach", "Big Ben"], correct: 0, targetPara: 2 },
+                { q: "Which languages are common in NY?", options: ["English and Spanish", "French", "Japanese"], correct: 0, targetPara: 0 },
+                { q: "What is New York a global center for?", options: ["Finance and business", "Farming", "Mining"], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["New York location and skyscrapers.", "Winter snow in January.", "Central Park museums."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["The weather and cold winters in New York.", "Manhattan island size.", "Times Square lights."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Tourist spots and museums in New York.", "Global financial markets.", "Spanish language."], correct: 0, targetPara: 2 }
+            ]
+        },
+        {
+            title: "Passage 10: Singapore",
+            paragraphs: [
+                { en: "1. Singapore is an island city-state in Southeast Asia. It is known worldwide as one of the cleanest and safest cities.", ar: "1. سنغافورة هي مدينة وولة جزيرية في جنوب شرق آسيا. تُعرف عالمياً بأنها واحدة من أنظف المدن وأكثرها أماناً." },
+                { en: "2. Singapore has a tropical rainforest climate, meaning it is warm and humid throughout the year with frequent rain.", ar: "2. تتمتع سنغافورة بمناخ الغابات الاستوائية المطيرة، مما يعني أنها دافئة ورطبة طوال العام مع هطول أمطار متكررة." },
+                { en: "3. Popular activities include shopping on Orchard Road, visiting Marina Bay Sands, and trying delicious street food.", ar: "3. تشمل الأنشطة الشعبية التسوق في طريق أوتشارد، زيارة مارينا باي ساندز، وتجربة طعام الشارع اللذيذ." }
+            ],
+            questions: [
+                { q: "What is Singapore known for worldwide?", options: ["Being clean and safe", "Being cold", "Having deserts"], correct: 0, targetPara: 0 },
+                { q: "What kind of climate does Singapore have?", options: ["Tropical rainforest climate", "Desert climate", "Polar climate"], correct: 0, targetPara: 1 },
+                { q: "Where can people go shopping in Singapore?", options: ["Orchard Road", "Central Park", "Times Square"], correct: 0, targetPara: 2 },
+                { q: "How many official languages does Singapore have?", options: ["Four", "One", "Ten"], correct: 0, targetPara: 0 },
+                { q: "What is said about Singapore's size?", options: ["It has a small geographic size.", "Biggest country.", "No land."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 1: Choose the correct idea.", options: ["Singapore status as a safe island city.", "Tropical rainforest weather.", "Orchard Road shopping."], correct: 0, targetPara: 0 },
+                { q: "Main Idea - Paragraph 2: Choose the correct idea.", options: ["The tropical rainforest climate in Singapore.", "Marina Bay Sands resort.", "Official languages count."], correct: 0, targetPara: 1 },
+                { q: "Main Idea - Paragraph 3: Choose the correct idea.", options: ["Shopping and food activities in Singapore.", "Economic powerhouse status.", "Clean street rules."], correct: 0, targetPara: 2 }
+            ]
+        }
+    ];
+
+    function buildAllPassages() {
+        const nav = document.getElementById('passages-nav');
+        const container = document.getElementById('tabs-container');
+        nav.innerHTML = '';
+        container.innerHTML = '';
+
+        passagesData.forEach((passage, pIndex) => {
+            const modelNum = pIndex + 1;
+
+            const tabBtn = document.createElement('button');
+            tabBtn.className = `tab-btn ${pIndex === 0 ? 'active' : ''}`;
+            tabBtn.innerText = `القطعة ${modelNum}`;
+            tabBtn.onclick = () => switchTab(pIndex);
+            nav.appendChild(tabBtn);
+
+            const tabDiv = document.createElement('div');
+            tabDiv.id = `tab-${pIndex}`;
+            tabDiv.className = `tab-content ${pIndex === 0 ? 'active' : ''}`;
+
+            tabDiv.innerHTML = `
+                <div class="section-box">
+                    <h2>${passage.title}</h2>
+                    
+                    <div class="score-board" id="score-top-${modelNum}"></div>
+
+                    <div class="controls">
+                        <button class="btn-action" onclick="showPassageAnswer(${pIndex})">عرض النتيجة</button>
+                        <button class="btn-reset" onclick="initPassage(${pIndex})">إعادة ترتيب الأسئلة</button>
+                    </div>
+
+                    <div id="questions-container-${pIndex}"></div>
+
+                    <div class="controls" style="margin-top: 30px;">
+                        <button class="btn-action" onclick="showPassageAnswer(${pIndex})">عرض النتيجة</button>
+                        <button class="btn-reset" onclick="initPassage(${pIndex})">إعادة ترتيب الأسئلة</button>
+                    </div>
+
+                    <div class="score-board" id="score-bottom-${modelNum}"></div>
+                </div>
+            `;
+            container.appendChild(tabDiv);
+
+            initPassage(pIndex);
+        });
+    }
+
+    function initPassage(pIndex) {
+        const modelNum = pIndex + 1;
+        const qContainer = document.getElementById(`questions-container-${pIndex}`);
+        qContainer.innerHTML = '';
+
+        document.getElementById(`score-top-${modelNum}`).style.display = 'none';
+        document.getElementById(`score-bottom-${modelNum}`).style.display = 'none';
+
+        const passage = passagesData[pIndex];
+        const shuffledQ = [...passage.questions].sort(() => Math.random() - 0.5);
+
+        shuffledQ.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'mc-question-card';
+            card.dataset.userCorrect = "false";
+
+            const origCorrect = item.options[item.correct];
+            const shuffledOpts = [...item.options].sort(() => Math.random() - 0.5);
+            const newCorrIdx = shuffledOpts.indexOf(origCorrect);
+            card.dataset.correctIndex = newCorrIdx;
+
+            let optsHtml = '';
+            shuffledOpts.forEach((opt, optIdx) => {
+                const renderedOpt = renderClickableText(opt);
+                optsHtml += `<div class="mc-option" onclick="checkChoice(this, event, ${optIdx}, ${newCorrIdx})">${renderedOpt}</div>`;
+            });
+
+            const dispNum = index + 1;
+            const qText = renderClickableText(`${dispNum}. ${item.q}`);
+
+            let passageHtml = '';
+            passage.paragraphs.forEach((p, pIdx) => {
+                const isHighlight = (pIdx === item.targetPara) ? 'highlight-target' : '';
+                passageHtml += `
+                    <div class="passage-paragraph ${isHighlight}">
+                        <div class="paragraph-en">${renderClickableText(p.en)}</div>
+                        <div class="paragraph-ar">${p.ar}</div>
+                    </div>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="passage-box" style="margin-bottom: 15px;">
+                    <strong>📖 Passage Reference (الفقرة المميزة بالأصفر توضح مكان الإجابة):</strong>
+                    ${passageHtml}
+                </div>
+                <div class="mc-question-text">${qText}</div>
+                <div class="mc-options">${optsHtml}</div>
+            `;
+            qContainer.appendChild(card);
+        });
+    }
+
+    function checkChoice(element, event, selectedIndex, correctIndex) {
+        if (!isExamMode && event && event.target.closest('.word-wrapper')) {
+            return;
+        }
+
+        const parentCard = element.closest('.mc-question-card');
+        const options = parentCard.querySelectorAll('.mc-option');
+        if (parentCard.dataset.answered === "true") return;
+
+        parentCard.dataset.userSelected = selectedIndex;
+
+        if (selectedIndex === correctIndex) {
+            element.classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "true";
+        } else {
+            element.classList.add('wrong-choice');
+            options[correctIndex].classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "false";
+        }
+        parentCard.dataset.answered = "true";
+    }
+
+    function showPassageAnswer(pIndex) {
+        const modelNum = pIndex + 1;
+        const tabDiv = document.getElementById(`tab-${pIndex}`);
+        const cards = tabDiv.querySelectorAll('.mc-question-card');
+        let score = 0;
+
+        cards.forEach(card => {
+            const options = card.querySelectorAll('.mc-option');
+            const correctIdx = parseInt(card.dataset.correctIndex);
+
+            options.forEach((opt, idx) => {
+                if (idx === correctIdx) {
+                    opt.classList.add('correct-choice');
+                }
+            });
+
+            if (card.dataset.userCorrect === "true") {
+                score++;
+            }
+            card.dataset.answered = "true";
+        });
+
+        const scoreMessage = `النتيجة النهائية للقطعة ${modelNum}: ${score} من 8`;
+        
+        const topScore = document.getElementById(`score-top-${modelNum}`);
+        const bottomScore = document.getElementById(`score-bottom-${modelNum}`);
+        
+        topScore.innerText = scoreMessage;
+        topScore.style.display = 'block';
+        
+        bottomScore.innerText = scoreMessage;
+        bottomScore.style.display = 'block';
+    }
+
+    window.onload = function() {
+        buildAllPassages();
+    };
+</script>
+
+</body>
+</html>

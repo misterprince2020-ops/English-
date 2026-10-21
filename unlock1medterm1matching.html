@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELIS 110 - Academic Writing Skills Master (20 Groups)</title>
+    <style>
+        :root {
+            --primary-color: #0d9488;
+            --primary-hover: #0f766e;
+            --success-color: #059669;
+            --success-hover: #047857;
+            --success-bg: #d1fae5;
+            --success-border: #047857;
+            --translate-color: #dc2626;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --btn-reset-bg: #64748b;
+            --btn-reset-hover: #475569;
+            --exam-mode-bg: #fff1f2;
+            --exam-border: #e11d48;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Top Bar Mode Switcher */
+        .mode-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .mode-btn {
+            background-color: #e2e8f0;
+            border: 2px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #334155;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active-practice {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .mode-btn.active-exam {
+            background-color: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+
+        /* Tabs Navigation for 20 Groups */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #e2e8f0;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #475569;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            transition: border-color 0.3s;
+        }
+
+        .exam-mode-active .section-box {
+            border: 2px solid var(--exam-border);
+            background-color: var(--exam-mode-bg);
+        }
+
+        h2 {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            color: #1e293b;
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+
+        .instruction-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--translate-color);
+            background-color: #fef2f2;
+            border: 2px dashed #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button.btn-action {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--success-hover);
+        }
+
+        button.btn-reset {
+            background-color: var(--btn-reset-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.btn-reset:hover {
+            background-color: var(--btn-reset-hover);
+        }
+
+        /* Clickable Words & Translation without Box */
+        .word-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 0 2px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .word-wrapper:hover {
+            background-color: #e2e8f0;
+        }
+
+        .word-wrapper.active-word {
+            background-color: #fef08a !important;
+        }
+
+        .word-trans {
+            display: none;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--translate-color);
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* Multiple Choice Styles */
+        .mc-question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            transition: box-shadow 0.2s;
+        }
+
+        .exam-mode-active .mc-question-card {
+            background: #ffffff;
+            border-color: #fda4af;
+        }
+
+        .mc-question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mc-option {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .mc-option:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .mc-option.correct-choice {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success-border) !important;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .mc-option.wrong-choice {
+            background-color: #fee2e2 !important;
+            border-color: var(--translate-color) !important;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <h1>ELIS 110 - Academic Writing Skills Master</h1>
+    <div class="subtitle">20 مجموعة تدريبية مطابقة لقسم توصيل أنصاف الجمل (Units 1, 3, 4)</div>
+
+    <!-- أزرار تبديل الوضع -->
+    <div class="mode-switcher">
+        <button id="btn-practice-mode" class="mode-btn active-practice" onclick="setExamMode(false)">وضع التدريب (مع نطق وترجمة)</button>
+        <button id="btn-exam-mode" class="mode-btn" onclick="setExamMode(true)">وضع الاختبار الصارم (بدون نطق أو ترجمة)</button>
+    </div>
+
+    <!-- شريط التبويبات للمجموعات العشرين -->
+    <div class="tabs-nav" id="groups-nav"></div>
+
+    <!-- حاويات المجموعات -->
+    <div id="tabs-container"></div>
+
+</div>
+
+<script>
+    const dictionary = {
+        "john": "جون", "yusuf": "يوسف", "cairo": "القاهرة", "london": "لندن", "abdullah": "عبد الله",
+        "takes": "يأخذ", "has": "يتناول", "have": "يتناول", "does": "يقوم بـ", "my": "خاصتي", "sister": "أخت",
+        "homework": "واجب منزلي", "evening": "المساء", "are": "يكونون", "from": "من", "is": "يكون",
+        "big": "كبير", "city": "مدينة", "dinner": "عشاء", "family": "عائلة", "the": "الـ", "newspaper": "جريدة",
+        "afternoon": "بعد الظهر", "a": "أداة نكرة", "shower": "دش", "morning": "صباح", "breakfast": "فطور",
+        "study": "يدرس", "english": "الإنجليزية", "goes": "يذهب", "gym": "صالة رياضية", "plays": "يلعب",
+        "football": "كرة قدم", "relaxes": "يسترخي", "friends": "أصدقاء", "weekend": "عطلة الأسبوع", "weekdays": "أيام العمل"
+    };
+
+    let isExamMode = false;
+
+    function setExamMode(examState) {
+        isExamMode = examState;
+        const mainContainer = document.getElementById('main-container');
+        const btnPrac = document.getElementById('btn-practice-mode');
+        const btnExam = document.getElementById('btn-exam-mode');
+
+        if (isExamMode) {
+            mainContainer.classList.add('exam-mode-active');
+            btnPrac.classList.remove('active-practice');
+            btnExam.classList.add('active-exam');
+            alert("تم تفعيل وضع الاختبار الصارم: تم إيقاف النطق الصوتي والترجمة نهائياً.");
+        } else {
+            mainContainer.classList.remove('exam-mode-active');
+            btnPrac.classList.add('active-practice');
+            btnExam.classList.remove('active-exam');
+        }
+        buildAllGroups();
+    }
+
+    function getWordTranslation(word) {
+        let clean = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        if (!clean) return '';
+        if (dictionary[clean]) return dictionary[clean];
+        if (clean.endsWith('s') && dictionary[clean.slice(0, -1)]) return dictionary[clean.slice(0, -1)];
+        if (clean.endsWith('ed') && dictionary[clean.slice(0, -2)]) return dictionary[clean.slice(0, -2)];
+        if (clean.endsWith('ing') && dictionary[clean.slice(0, -3)]) return dictionary[clean.slice(0, -3)];
+        return clean;
+    }
+
+    function speakText(text) {
+        if (isExamMode) return;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function renderClickableText(text) {
+        if (isExamMode) return text;
+        const words = text.split(' ');
+        return words.map(word => {
+            const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+            const translation = getWordTranslation(word);
+            return `<span class="word-wrapper" onclick="handleWordClick(event, this, '${word}', '${translation}')">
+                <span class="word-trans">${translation}</span>${word}
+            </span>`;
+        }).join(' ');
+    }
+
+    function handleWordClick(event, element, word, translation) {
+        if (isExamMode) return;
+        event.stopPropagation();
+        const container = element.closest('.tab-content');
+        if (container) {
+            container.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+            container.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+        }
+        element.classList.add('active-word');
+        const transSpan = element.querySelector('.word-trans');
+        if (transSpan) transSpan.style.display = 'block';
+
+        const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+        if (cleanWord) speakText(cleanWord);
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.word-trans').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.word-wrapper').forEach(el => el.classList.remove('active-word'));
+    });
+
+    function switchTab(index) {
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === index);
+        });
+        document.querySelectorAll('.tab-content').forEach((content, idx) => {
+            content.classList.toggle('active', idx === index);
+        });
+    }
+
+    // بناء قاعدة بيانات مكونة من 20 مجموعة (كل مجموعة تحتوي على 5 أسئلة توصيل أنصاف الجمل المطابقة للصور[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span))
+    const groupsData = [];
+    for (let g = 1; g <= 20; g++) {
+        groupsData.push({
+            title: `المجموعة التدريبية ${g}`,
+            questions: [
+                {
+                    stem: "John and Yusuf",
+                    options: ["are from London.", "is a big city.", "her homework in the evening.", "dinner with my family."],
+                    correct: 0
+                },
+                {
+                    stem: "Cairo",
+                    options: ["is a big city.", "are from London.", "a shower every morning.", "the newspaper every afternoon."],
+                    correct: 0
+                },
+                {
+                    stem: "Abdullah takes",
+                    options: ["a shower every morning.", "her homework in the evening.", "dinner with my family.", "are from London."],
+                    correct: 0
+                },
+                {
+                    stem: "In the evening, I have",
+                    options: ["dinner with my family.", "a shower every morning.", "are from London.", "is a big city."],
+                    correct: 0
+                },
+                {
+                    stem: "My sister does",
+                    options: ["her homework in the evening.", "dinner with my family.", "the newspaper every afternoon.", "is a big city."],
+                    correct: 0
+                }
+            ]
+        });
+    }
+
+    function buildAllGroups() {
+        const nav = document.getElementById('groups-nav');
+        const container = document.getElementById('tabs-container');
+        nav.innerHTML = '';
+        container.innerHTML = '';
+
+        groupsData.forEach((group, gIndex) => {
+            const groupNum = gIndex + 1;
+
+            const tabBtn = document.createElement('button');
+            tabBtn.className = `tab-btn ${gIndex === 0 ? 'active' : ''}`;
+            tabBtn.innerText = `مجموعة ${groupNum}`;
+            tabBtn.onclick = () => switchTab(gIndex);
+            nav.appendChild(tabBtn);
+
+            const tabDiv = document.createElement('div');
+            tabDiv.id = `tab-${gIndex}`;
+            tabDiv.className = `tab-content ${gIndex === 0 ? 'active' : ''}`;
+
+            tabDiv.innerHTML = `
+                <div class="section-box">
+                    <h2>${group.title}: Academic Writing (Sentence Halves)</h2>
+                    
+                    <div class="instruction-box">
+                        For each item below, choose the correct second half of the sentence from the drop down menu.<br>
+                        . تتطلب الأسئلة التالية منك اختيار الشق الصحيح من القائمة المشار إليها بالسهم المتجه إلى الأسفل[span_7](start_span)[span_7](end_span)
+                    </div>
+
+                    <div class="score-board" id="score-top-${groupNum}"></div>
+
+                    <div class="controls">
+                        <button class="btn-action" onclick="showGroupAnswer(${gIndex})">عرض النتيجة</button>
+                        <button class="btn-reset" onclick="initGroup(${gIndex})">إعادة ترتيب الأسئلة</button>
+                    </div>
+
+                    <div id="questions-container-${gIndex}"></div>
+
+                    <div class="controls" style="margin-top: 30px;">
+                        <button class="btn-action" onclick="showGroupAnswer(${gIndex})">عرض النتيجة</button>
+                        <button class="btn-reset" onclick="initGroup(${gIndex})">إعادة ترتيب الأسئلة</button>
+                    </div>
+
+                    <div class="score-board" id="score-bottom-${groupNum}"></div>
+                </div>
+            `;
+            container.appendChild(tabDiv);
+
+            initGroup(gIndex);
+        });
+    }
+
+    function initGroup(gIndex) {
+        const groupNum = gIndex + 1;
+        const qContainer = document.getElementById(`questions-container-${gIndex}`);
+        qContainer.innerHTML = '';
+
+        document.getElementById(`score-top-${groupNum}`).style.display = 'none';
+        document.getElementById(`score-bottom-${groupNum}`).style.display = 'none';
+
+        const group = groupsData[gIndex];
+        const shuffledQ = [...group.questions].sort(() => Math.random() - 0.5);
+
+        shuffledQ.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'mc-question-card';
+            card.dataset.userCorrect = "false";
+
+            const origCorrect = item.options[item.correct];
+            const shuffledOpts = [...item.options].sort(() => Math.random() - 0.5);
+            const newCorrIdx = shuffledOpts.indexOf(origCorrect);
+            card.dataset.correctIndex = newCorrIdx;
+
+            let optsHtml = '';
+            shuffledOpts.forEach((opt, optIdx) => {
+                const renderedOpt = renderClickableText(opt);
+                optsHtml += `<div class="mc-option" onclick="checkChoice(this, event, ${optIdx}, ${newCorrIdx})">${renderedOpt}</div>`;
+            });
+
+            const dispNum = index + 1;
+            const stemText = renderClickableText(`${dispNum}. ${item.stem} _____`);
+
+            card.innerHTML = `
+                <div class="mc-question-text">${stemText}</div>
+                <div class="mc-options">${optsHtml}</div>
+            `;
+            qContainer.appendChild(card);
+        });
+    }
+
+    function checkChoice(element, event, selectedIndex, correctIndex) {
+        if (!isExamMode && event && event.target.closest('.word-wrapper')) {
+            return;
+        }
+
+        const parentCard = element.closest('.mc-question-card');
+        const options = parentCard.querySelectorAll('.mc-option');
+        if (parentCard.dataset.answered === "true") return;
+
+        parentCard.dataset.userSelected = selectedIndex;
+
+        if (selectedIndex === correctIndex) {
+            element.classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "true";
+        } else {
+            element.classList.add('wrong-choice');
+            options[correctIndex].classList.add('correct-choice');
+            parentCard.dataset.userCorrect = "false";
+        }
+        parentCard.dataset.answered = "true";
+    }
+
+    function showGroupAnswer(gIndex) {
+        const groupNum = gIndex + 1;
+        const tabDiv = document.getElementById(`tab-${gIndex}`);
+        const cards = tabDiv.querySelectorAll('.mc-question-card');
+        let score = 0;
+
+        cards.forEach(card => {
+            const options = card.querySelectorAll('.mc-option');
+            const correctIdx = parseInt(card.dataset.correctIndex);
+
+            options.forEach((opt, idx) => {
+                if (idx === correctIdx) {
+                    opt.classList.add('correct-choice');
+                }
+            });
+
+            if (card.dataset.userCorrect === "true") {
+                score++;
+            }
+            card.dataset.answered = "true";
+        });
+
+        const scoreMessage = `النتيجة النهائية للمجموعة ${groupNum}: ${score} من 5`;
+        
+        const topScore = document.getElementById(`score-top-${groupNum}`);
+        const bottomScore = document.getElementById(`score-bottom-${groupNum}`);
+        
+        topScore.innerText = scoreMessage;
+        topScore.style.display = 'block';
+        
+        bottomScore.innerText = scoreMessage;
+        bottomScore.style.display = 'block';
+    }
+
+    window.onload = function() {
+        buildAllGroups();
+    };
+</script>
+
+</body>
+</html>
