@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELIS 110 - Mid CBT Comprehensive Exam</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); border-radius: 16px; border: 4px solid #facc15; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.5em; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 20px; font-weight: bold; }
+        .creator-info { text-align: center; color: #facc15; background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); font-size: 1.2em; font-weight: bold; margin-bottom: 30px; padding: 14px; border-radius: 10px; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);}
+
+        /* لوحة التحكم الذكية */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 15px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+        .btn-exam.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        .action-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 915px;}
+        .btn-result { background-color: #f59e0b; } .btn-result:hover { background-color: #d97706; }
+
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: block; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* عناوين الأقسام */
+        .exam-section-title { background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); color: #facc15; padding: 12px 20px; border-radius: 8px; margin: 35px 0 20px 0; font-size: 1.5em; font-weight: 900; text-align: right; border-right: 6px solid #facc15; }
+        
+        .passage-box { background: #f8fafc; border-left: 5px solid #3b82f6; padding: 20px; border-radius: 10px; margin-bottom: 25px; font-size: 1.1em; border: 1px solid #e2e8f0; line-height: 2.2; direction: ltr; text-align: left;}
+        .passage-paragraph { margin: 10px 0; padding: 8px 12px; border-radius: 6px; }
+        .paragraph-ar { color: #dc2626; font-size: 0.95em; font-weight: bold; margin-top: 4px; direction: rtl; text-align: right; }
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s; position: relative;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        
+        .audio-bar { background: #e0f2fe; border: 2px solid #bae6fd; padding: 15px 20px; border-radius: 10px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;}
+        .dialogue-box { background: #ffffff; padding: 15px; border-radius: 8px; border: 1px dashed #7dd3fc; margin-top: 8px; font-size: 1.1em; line-height: 2.2; direction: ltr; text-align: left; }
+        .dialogue-line { margin-bottom: 8px; direction: ltr; text-align: left; }
+        .speaker-1 { color: #1e3a8a; font-weight: bold; }
+        .speaker-2 { color: #059669; font-weight: bold; }
+        
+        .btn-toggle { background-color: #0ea5e9; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 8px; width: fit-content;}
+        .btn-toggle:hover { background-color: #0284c7; transform: translateY(-2px);}
+        .btn-toggle.playing { background-color: #e11d48; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-span { font-size: 26px; font-weight: 900; color: #dc2626; flex-shrink: 0; padding-top: 15px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.35em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 2.8; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.2em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        /* خيارات في سطر واحد أفقي متناسق */
+        .options-inline { display: flex; gap: 15px; direction: ltr; width: 100%; margin-top: 10px; flex-wrap: nowrap; overflow-x: auto;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 75px; flex: 1; min-width: 220px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.2em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 50px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        .choice-text { padding: 15px; font-weight: bold; font-size: 1.15em; color: #334155; display: flex; align-items: center; width:100%; flex-wrap: wrap; gap: 8px; white-space: nowrap;}
+
+        /* التصحيح الفوري الآلي */
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-text, .opt-item.correct .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.correct .word-group .ar { color: #fef08a !important; } 
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-text, .opt-item.wrong .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.wrong .word-group .ar { color: #fef08a !important; }
+
+        /* الكلمات التفاعلية - الترجمة الدقيقة */
+        .word-group { display: inline-flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-end !important; cursor: pointer; margin: 0 4px; position: relative; vertical-align: bottom; min-height: 40px; }
+        .word-group .ar { color: #dc2626; font-size: 15px; font-family: 'Tajawal', sans-serif; font-weight: 900; white-space: nowrap; pointer-events: none; margin-bottom: -4px; width: 100%; text-align: center !important; direction: rtl; line-height: 1;}
+        .word-group .en { font-size: 21px; font-weight: bold; padding: 2px 6px 4px 6px; border-radius: 6px; transition: 0.2s; color: #1e293b; direction: ltr; font-family: Arial, sans-serif; width: 100%; text-align: center !important; line-height: 1;}
+        
+        .word-group.highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        /* أزرار الشرح */
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        .correct-word-text { font-weight: bold; font-size: 18px; color: #1e293b; margin-bottom: 10px; line-height: 2.2;}
+        .grammar-explanation { padding: 12px; background-color: #eff6ff; border-right: 4px solid #3b82f6; border-radius: 6px; color: #1e293b; font-size: 17px; line-height: 2; font-weight:bold; }
+
+        /* وضع الاختبار الصارم: إخفاء الترجمات والشروحات وإبقاء الأزرار الصوتية تعمل */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5;}
+        .exam-mode .full-sentence-translation { display: none !important; }
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .audio-bar { display: flex !important; } 
+        .exam-mode .btn-toggle { display: flex !important; } 
+        .exam-mode .word-group .ar { display: none !important; } 
+        .exam-mode .word-group { pointer-events: none !important; } 
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">ELIS 110 - Mid CBT Comprehensive Exam</div>
+    <div class="sub-title">النموذج الثاني (Model 2) - ترجمة دقيقة وكاملة 100% لجميع الكلمات</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع التدريب (ترجمة دقيقة ونطق صوتي)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')"><span style="color:#ef4444;">🔴</span> وضع الاختبار (الاستماع بالصوت بدون مساعدة)</button>
+        </div>
+        <div class="action-buttons-row">
+            <button class="action-btn btn-result" onclick="showExamResult()">📋 إظهار النتيجة النهائية من 45</button>
+        </div>
+        <div class="section-result" id="res-box" style="display:none;"></div>
+    </div>
+
+    <div id="exam-container"></div>
+</div>
+
+<script>
+(function initCompleteExamModel2() {
+    try {
+        // تم تزويد القاموس الشامل ليغطي جميع الكلمات الجديدة التي ظهرت في الفيديو بدقة
+        const dictionary = {
+            "hello": "مرحباً", "david": "ديفيد", "sara": "سارة", "what": "ماذا", "do": "يفعل", "you": "أنت", "usually": "عادة",
+            "on": "على / في", "weekends": "عطلات", "hi": "أهلاً", "i": "أنا", "visit": "أزور", "my": "خاصتي", "grandparents": "أجداد",
+            "the": "الـ", "countryside": "الريف", "saturdays": "أيام السبت", "saturday": "السبت", "that": "ذلك", "sounds": "يبدو", "relaxing": "مريح",
+            "help": "يساعد", "them": "هم", "farm": "مزرعة", "yes": "نعم", "grandfather": "جد", "feed": "يطعم", "animals": "حيوانات",
+            "and": "و", "pick": "يقطف", "fresh": "طازج", "fruit": "فاكهة", "every": "كل", "afternoon": "بعد الظهر",
+            "excuse": "عذراً", "me": "أنا / ني", "how": "كيف", "get": "يصل", "to": "إلى", "university": "جامعة", "library": "مكتبة",
+            "from": "من", "here": "هنا", "noura": "نورة", "can": "يستطيع", "take": "يأخذ", "bus": "حافلة", "number": "رقم", "10": "عشرة",
+            "or": "أو", "walk": "يمشي", "straight": "مباشرة", "down": "أسفل / بطول", "main": "رئيسي", "street": "شارع",
+            "is": "يكون", "it": "هو", "far": "بعيد", "away": "بعيداً", "no": "لا", "takes": "يستغرق", "about": "حوالي",
+            "ten": "عشرة", "minutes": "دقائق", "foot": "قدم", "five": "خمسة", "if": "إذا",
+            "mark": "مارك", "your": "خاصتك", "favorite": "مفضل", "favourite": "مفضل", "season": "فصل", "of": "من / لـ", "year": "سنة", "emma": "إيما",
+            "love": "يحب", "autumn": "الخريف", "because": "لأن", "weather": "طقس", "cool": "معتدل", "leaves": "أوراق",
+            "turn": "يتحول", "orange": "برتقالي", "red": "أحمر", "really": "حقاً", "prefer": "يفضل", "summer": "الصيف",
+            "swimming": "سباحة", "sea": "بحر", "sunny": "مشمس", "days": "أيام", "too": "جداً", "hot": "حار", "for": "لأجل",
+            "peaceful": "هادئ", "tokyo": "طوكيو", "capital": "عاصمة", "largest": "الأكبر", "city": "مدينة", "japan": "اليابان",
+            "a": "أداة نكرة", "very": "جداً", "busy": "مزدحم", "modern": "حديث", "where": "حيث / أين", "millions": "ملايين",
+            "people": "الناس", "live": "يعيش", "work": "يعمل", "there": "هناك", "are": "يكونون", "tall": "طويل", "glass": "زجاج",
+            "buildings": "مباني", "wide": "واسع", "roads": "طرق", "fast": "سريع", "trains": "قطارات", "running": "تجري",
+            "varies": "يختلف", "across": "عبر", "seasons": "فصول", "spring": "الربيع", "brings": "يجلب", "pink": "وردي",
+            "cherry": "كرز", "blossoms": "أزهار", "while": "بينما", "decorates": "يزين", "trees": "أشجار", "with": "بـ / مع",
+            "visitors": "زوار", "students": "طلاب", "enjoy": "يستمتع", "exploring": "استكشاف", "local": "محلي", "markets": "أسواق",
+            "historical": "تاريخي", "landmarks": "معالم", "public": "عام", "parks": "منتزهات", "camping": "التخييم", "popular": "شائع",
+            "outdoor": "خارجي", "activity": "نشاط", "during": "خلال", "weekend": "عطلة الأسبوع", "many": "العديد", "friends": "أصدقاء",
+            "families": "عائلات", "pack": "يحزم", "tents": "خيام", "sleeping": "نوم", "bags": "حقائب", "delicious": "لذيذ",
+            "food": "طعام", "drive": "يقود", "nearby": "قريب", "rivers": "أنهار", "spend": "يقضي", "quality": "جودة", "time": "وقت",
+            "nature": "طبيعة", "breathing": "تنفس", "air": "هواء", "noisy": "صاخب", "life": "حياة", "day": "يوم", "they": "هم",
+            "hike": "يتنزه", "along": "على طول", "green": "أخضر", "trails": "مسارات", "swim": "يسبح", "clean": "نظيف", "night": "ليل",
+            "everyone": "الجميع", "sits": "يجلس", "around": "حول", "warm": "دافئ", "fire": "نار", "talking": "تحدث", "laughing": "ضحك",
+            "under": "تحت", "bright": "ساطع", "shining": "لامع", "stars": "نجوم", "before": "قبل", "going": "الذهاب", "sleep": "ينام",
+            "their": "خاصتهم", "teacher": "معلم", "school": "مدرسة", "riyadh": "الرياض", "am": "أكون", "english": "إنجليزي",
+            "student": "طالب", "king": "الملك", "courses": "دورات", "khalid": "خالد", "engineer": "مهندس", "parents": "والدين",
+            "he": "هو", "not": "ليس", "doctor": "طبيب", "we": "نحن", "advanced": "متقدم", "study": "دراسة", "group": "مجموعة",
+            "abdullah": "عبدالله", "12": "اثنا عشر", "his": "خاصته", "brother": "أخ", "father": "أب", "mother": "أم",
+            "naguib": "نجيب", "mahfouz": "محفوظ", "egyptian": "مصري", "writer": "كاتب", "her": "لها", "books": "كتب",
+            "famous": "مشهور", "singer": "مغني", "omar": "عمر", "meets": "يجتمع", "travels": "يسافر", "goes": "يذهب",
+            "wednesdays": "أيام الأربعاء", "sundays": "أيام الأحد", "works": "يعمل", "cooks": "يطبخ", "layla": "ليلى",
+            "shows": "عروض", "netflix": "نتفليكس", "evening": "المساء", "watches": "يشاهد", "does": "يفعل", "relaxes": "يسترخي",
+            "businessman": "رجل أعمال", "big": "كبير", "office": "مكتب", "jeddah": "جدة", "cairo": "القاهرة", "tariq": "طارق",
+            "but": "لكن", "has": "يملك", "relax": "يسترخي", "have": "يملك", "michael": "مايكل", "robert": "روبرت", "shower": "دش",
+            "dinner": "عشاء", "yousef": "يوسف", "homework": "واجب منزلي", "sister": "أخت", "newspaper": "جريدة",
+            "different": "مختلف", "countries": "دول", "europe": "أوروبا", "abdulaziz": "عبدالعزيز", "great": "عظيم",
+            "professors": "أساتذة", "good": "جيد", "takes": "يأخذ", "was": "كان", "were": "كانوا", "did": "فعل", "done": "تم",
+            "an": "أداة نكرة", "stay": "يبقى", "home": "منزل", "shopping": "تسوق", "london": "لندن", "fridays": "أيام الجمعة",
+            "airport": "مطار", "hospital": "مستشفى", "suggest": "تقترح", "15": "خمسة عشر", "5": "خمسة", "long": "مدة",
+            "twenty": "عشرون", "half": "نصف", "hour": "ساعة", "winter": "الشتاء", "skiing": "تزلج", "playing": "لعب",
+            "manmade": "مصنوع بشرياً", "known": "معروف", "as": "كـ", "text": "نص", "quiet": "هادئ", "small": "صغير",
+            "village": "قرية", "empty": "فارغ", "desert": "صحراء", "bring": "يجلب", "heavy": "كثيف", "snowstorms": "عواصف ثلجية",
+            "yellow": "أصفر", "sand": "رمل", "explore": "يستكشف", "underground": "تحت الأرض", "caves": "كهوف", "volcanic": "بركاني",
+            "mountains": "جبال", "described": "موصوف", "mud": "طين", "houses": "منازل", "wooden": "خشبي", "tents": "خيام",
+            "happens": "يحدث", "die": "تموت", "completely": "تماماً", "general": "عام", "overview": "نظرة عامة", "scale": "نطاق",
+            "snowfall": "تساقط الثلوج", "seasonal": "موسمي", "changes": "تغيرات", "friendly": "ودود", "residents": "سكان",
+            "tourist": "سياحي", "activities": "أنشطة", "places": "أماكن", "heatwaves": "موجات حر", "apartments": "شقق",
+            "items": "أغراض", "computers": "حواسيب", "chairs": "كراسي", "desks": "مكاتب", "centers": "مراكز", "centres": "مراكز",
+            "parking": "مواقف", "television": "تلفاز", "build": "يبني", "breathe": "يتنفس", "air": "هواء", "buy": "يشتري",
+            "expensive": "غالي", "clothes": "ملابس", "extra": "إضافي", "hours": "ساعات", "preparation": "تحضير", "equipment": "معدات",
+            "daytime": "النهار", "enjoying": "استمتاع", "nighttime": "الليل", "relaxation": "استرخاء", "breakfast": "فطور",
+            "driving": "قيادة", "cars": "سيارات", "choose": "اختر", "correct": "الصحيح", "topic": "موضوع", "paragraph": "فقرة"
+        };
+
+        function getTranslation(word) {
+            let clean = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(!clean) return '';
+            if(dictionary[clean]) return dictionary[clean];
+            if(clean.endsWith('ies') && dictionary[clean.slice(0,-3) + 'y']) return dictionary[clean.slice(0,-3) + 'y'];
+            if(clean.endsWith('es') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('s') && dictionary[clean.slice(0,-1)]) return dictionary[clean.slice(0,-1)];
+            if(clean.endsWith('ed') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('ing') && dictionary[clean.slice(0,-3)]) return dictionary[clean.slice(0,-3)];
+            
+            // هذه الجملة تضمن عدم ظهور كلمة "معنى" إطلاقاً؛ الكلمة غير المعروفة تبقى فارغة فتختفي
+            return ""; 
+        }
+
+        let synth = window.speechSynthesis;
+
+        // بنك أسئلة (النموذج الثاني) - مستقل كلياً بدون تكرار
+        const examData = {
+            listening: [
+                {
+                    title: "Short Listening 1 (3 Questions)",
+                    dialogue: [
+                        { speaker: "David", text: "Hello, Sara! What do you usually do on weekends?" },
+                        { speaker: "Sara", text: "Hi, David! I usually visit my grandparents in the countryside on Saturdays." },
+                        { speaker: "David", text: "That sounds relaxing. Do you help them on the farm?" },
+                        { speaker: "Sara", text: "Yes, I help my grandfather feed the animals and pick fresh fruit every Saturday afternoon." }
+                    ],
+                    audioText: "Hello, Sara! What do you usually do on weekends? Hi, David! I usually visit my grandparents in the countryside on Saturdays. That sounds relaxing. Do you help them on the farm? Yes, I help my grandfather feed the animals and pick fresh fruit every Saturday afternoon.",
+                    questions: [
+                        { q: "What does Sara usually do on weekends?", o: ["visit her grandparents in the countryside|تزور أجدادها في الريف", "go shopping in London|تذهب للتسوق في لندن", "stay at home and watch TV|تجلس في البيت"], correctIdx: 0, t: "ماذا تفعل سارة عادة في عطلة نهاية الأسبوع؟", e: "الحوار يوضح أنها تزور أجدادها في الريف." },
+                        { q: "When does she visit them?", o: ["on Saturdays|أيام السبت", "on Fridays|أيام الجمعة", "on Sundays|أيام الأحد"], correctIdx: 0, t: "متى تزورهم؟", e: "مذكور في الحوار (on Saturdays)." },
+                        { q: "What does she help her grandfather do?", o: ["feed animals and pick fresh fruit|إطعام الحيوانات قطف الفاكهة", "clean the house|تنظيف المنزل", "drive the car|قيادة السيارة"], correctIdx: 0, t: "ماذا تساعد جهاها في فعله؟", e: "مذكور في الحوار (feed the animals and pick fresh fruit)." }
+                    ]
+                },
+                {
+                    title: "Short Listening 2 (3 Questions)",
+                    dialogue: [
+                        { speaker: "Khalid", text: "Excuse me, how do you get to the university library from here?" },
+                        { speaker: "Noura", text: "You can take bus number 10 or walk straight down the main street." },
+                        { speaker: "Khalid", text: "Is it far away?" },
+                        { speaker: "Noura", text: "No, it takes about ten minutes on foot, or five minutes if you take the bus." }
+                    ],
+                    audioText: "Excuse me, how do you get to the university library from here? You can take bus number 10 or walk straight down the main street. Is it far away? No, it takes about ten minutes on foot, or five minutes if you take the bus.",
+                    questions: [
+                        { q: "Where does Khalid want to go?", o: ["to the university library|إلى مكتبة الجامعة", "to the hospital|إلى المستشفى", "to the airport|إلى المطار"], correctIdx: 0, t: "إلى أين يريد خالد الذهاب؟", e: "يريد الذهاب إلى مكتبة الجامعة." },
+                        { q: "What bus number does Noura suggest?", o: ["bus number 10|الحافلة رقم 10", "bus number 15|الحافلة 15", "bus number 5|الحافلة 5"], correctIdx: 0, t: "ما رقم الحافلة التي تقترحها نورة؟", e: "الحافلة رقم 10 (bus number 10)." },
+                        { q: "How long does it take on foot?", o: ["about ten minutes|حوالي عشر دقائق", "twenty minutes|عشرون دقيقة", "half an hour|نصف ساعة"], correctIdx: 0, t: "كم تستغرق الرحلة سيراً على الأقدام؟", e: "حوالي عشر دقائق (about ten minutes)." }
+                    ]
+                },
+                {
+                    title: "Short Listening 3 (3 Questions)",
+                    dialogue: [
+                        { speaker: "Mark", text: "What is your favorite season of the year, Emma?" },
+                        { speaker: "Emma", text: "I love autumn because the weather is cool and the leaves turn orange and red." },
+                        { speaker: "Mark", text: "Really? I prefer summer because I love swimming in the sea and sunny days." },
+                        { speaker: "Emma", text: "Summer is too hot for me. I like peaceful autumn days." }
+                    ],
+                    audioText: "What is your favorite season of the year, Emma? I love autumn because the weather is cool and the leaves turn orange and red. Really? I prefer summer because I love swimming in the sea and sunny days. Summer is too hot for me. I like peaceful autumn days.",
+                    questions: [
+                        { q: "What is Emma's favorite season?", o: ["autumn|الخريف", "summer|الصيف", "winter|الشتاء"], correctIdx: 0, t: "ما هو الفصل المفضل لدى إيما؟", e: "فصل الخريف (autumn)." },
+                        { q: "Why does Emma like this season?", o: ["weather is cool and leaves turn orange and red|الطقس بارد والأوراق تتغير", "it is very hot and sunny|حار ومشمش", "she likes skiing|تحب التزلج"], correctIdx: 0, t: "لماذا تحب إيما هذا الفصل؟", e: "لأن الطقس لطيف والأوراق تتغير إلى البرتقالي والأحمر." },
+                        { q: "Why does Mark prefer summer?", o: ["he loves swimming in the sea and sunny days|يحب السباحة في البحر والأيام المشمسة", "he likes cold rain|يحب المطر البارد", "he likes snow|يحب الثلج"], correctIdx: 0, t: "لماذا يفضل مارك الصيف؟", e: "لأنه يحب السباحة في البحر والأيام المشمسة." }
+                    ]
+                }
+            ],
+            reading: [
+                {
+                    title: "Reading Passage 1: Exploring Tokyo",
+                    paragraphs: [
+                        { en: "1. Tokyo is the capital and largest city of Japan. It is a very busy, modern city where millions of people live and work. There are tall glass buildings, wide roads, and very fast trains running every day.", ar: "1. طوكيو هي عاصمة وأكبر مدينة في اليابان. مدينة مزدحمة وحديثة يعيش فيها ملايين الناس." },
+                        { en: "2. The weather in Tokyo varies across seasons. Spring brings pink cherry blossoms, while autumn decorates the trees with red and orange leaves.", ar: "2. الطقس في طوكيو يتنوع عبر الفصول. الربيع يجلب أزهار الكز والأسياب تزين الأشجار." },
+                        { en: "3. Visitors and students in Tokyo enjoy exploring local markets, historical landmarks, public parks, and university libraries.", ar: "3. يستمتع الزوار والطلاب في طوكيو باستكشاف الأسواق المحلية، المعالم التاريخية، والمنتزهات ومكتبات الجامعات." }
+                    ],
+                    questions: [
+                        { type: 'detail', q: "What is Tokyo known as in the text?", o: ["the capital and largest city of Japan|عاصمة وأكبر مدينة في اليابان", "a quiet small village|قرية صغيرة هادئة", "an empty desert|صحراء قاحلة"], correctIdx: 0, t: "ماذا تُعرف طوكيو في النص؟", e: "عاصمة وأكبر مدينة في اليابان." },
+                        { type: 'detail', q: "What does spring bring to Tokyo?", o: ["pink cherry blossoms|أزهار الكرز الوردي", "heavy snowstorms|عواصف ثلجية", "yellow desert sand|رمال صحراوية"], correctIdx: 0, t: "ماذا يجلب الربيع إلى طوكيو؟", e: "أزهار الكرز الوردي (pink cherry blossoms)." },
+                        { type: 'detail', q: "What can visitors explore in Tokyo?", o: ["local markets and historical landmarks|الأسواق المحلية والمعالم التاريخية", "underground caves|كهوف تحت الأرض", "volcanic mountains|جبال بركانية"], correctIdx: 0, t: "ماذا يمكن للزوار استكشافه في طوكيو؟", e: "الأسواق المحلية والمعالم التاريخية." },
+                        { type: 'detail', q: "How are the buildings described in Tokyo?", o: ["tall glass buildings|مباني زجاجية طوال", "old mud houses|بيوت طينية قديمة", "wooden tents|خيم خشبية"], correctIdx: 0, t: "كيف توصف المباني في طوكيو؟", e: "مباني زجاجية عالية (tall glass buildings)." },
+                        { type: 'detail', q: "What happens to the trees in autumn?", o: ["leaves turn red and orange|الأوراق تصبح حمراء وبرتقالية", "trees die completely|تموت الأشجار تماماً", "leaves turn bright blue|تصبح زرقاء"], correctIdx: 0, t: "ماذا يحدث للأشجار في الخريف؟", e: "الأوراق تصبح حمراء وبرتقالية." },
+                        { type: 'mainIdea', q: "Choose the correct topic for Paragraph 1.", o: ["General overview and scale of Tokyo|نظرة عامة وحجم طوكيو", "Winter snowfall|تساقط الثلوج", "University library books|كتب المكتبة"], correctIdx: 0, t: "الفكرة الرئيسية للفقرة 1", e: "نظرة عامة وحجم طوكيو." },
+                        { type: 'mainIdea', q: "Choose the correct topic for Paragraph 2.", o: ["Seasonal weather changes in Tokyo|التغيرات الفصلية للطقس في طوكيو", "Local markets|الأسواق المحلية", "Friendly residents|السكان الودودون"], correctIdx: 0, t: "الفكرة الرئيسية للفقرة 2", e: "التغيرات الفصلية للطقس." },
+                        { type: 'mainIdea', q: "Choose the correct topic for Paragraph 3.", o: ["Tourist activities and places to explore|أنشطة سياحية وأماكن للاستكشاف", "Summer heatwaves|موجات الحر", "Modern apartments|شقق حديثة"], correctIdx: 0, t: "الفكرة الرئيسية للفقرة 3", e: "أنشطة سياحية وأماكن للاستكشاف." }
+                    ]
+                },
+                {
+                    title: "Reading Passage 2: The Joy of Camping",
+                    paragraphs: [
+                        { en: "1. Camping is a very popular outdoor activity during the weekend. Many friends and families pack tents, sleeping bags, and delicious food to drive away to nearby mountains and rivers.", ar: "1. التخييم هو نشاط خارجي شائع جداً خلال عطلة نهاية الأسبوع. تحزم العائلات الخيام وحقائب النوم." },
+                        { en: "2. People spend quality time in nature, breathing fresh air away from noisy city life. During the day, they hike along green trails and swim in clean rivers.", ar: "2. يقضون وقتاً ممتعاً في الطبيعة وتنفس الهواء النقي بعيداً عن صخب المدينة." },
+                        { en: "3. At night, everyone sits around a warm fire, talking and laughing under bright shining stars before going to sleep in their tents.", ar: "3. في الليل، يجلس الجميع حول نار دافئة، يتحدثون ويضحكون تحت النجوم الساطعة." }
+                    ],
+                    questions: [
+                        { type: 'detail', q: "What items do people pack for camping?", o: ["tents, sleeping bags, and food|خيام، حقائب نوم، وطعام", "computers and books|حواسيب وكتب", "office chairs and desks|كراسي مكاتب"], correctIdx: 0, t: "ما هي الأغراض التي يحزمها الناس للتخييم؟", e: "الخيام، وحقائب النوم، والطعام." },
+                        { type: 'detail', q: "Where do people usually drive for camping?", o: ["nearby mountains and rivers|الجبال والأنهار القريبة", "busy city centers|وسط المدينة المزدحم", "underground parking|مواقف تحت الأرض"], correctIdx: 0, t: "إلى أين يقود الناس عادة للتخييم؟", e: "الجبال والأنهار القريبة." },
+                        { type: 'detail', q: "What do people do during the day while camping?", o: ["hike along green trails and swim|المشي لمسافات طويلة والسباحة", "work in offices|العمل في المكاتب", "sleep all day long|النوم طوال اليوم"], correctIdx: 0, t: "ماذا يفعل الناس خلال النهار أثناء التخييم؟", e: "المشي لمسافات طويلة والسباحة." },
+                        { type: 'detail', q: "What do people do at night around the fire?", o: ["talk and laugh under the stars|يتحدثون ويضحكون تحت النجوم", "watch television|مشاهدة التلفزيون", "build tall buildings|بناء مبانٍ عالية"], correctIdx: 0, t: "ماذا يفعل الناس ليلاً حول النار؟", e: "يتحدثون ويضحكون تحت النجوم." },
+                        { type: 'detail', q: "Why do people go camping in nature?", o: ["to breathe fresh air away from city life|لتنفس الهواء النقي بعيداً عن المدينة", "to buy expensive clothes|لشراء ملابس باهظة", "to work extra hours|للعمل ساعات إضافية"], correctIdx: 0, t: "لماذا يذهب الناس للتخييم في الطبيعة؟", e: "لتنفس الهواء النقي بعيداً عن صخب المدينة." },
+                        { type: 'mainIdea', q: "Choose the correct topic for Paragraph 1.", o: ["Preparation and equipment for camping|التحضير والتجهيز للتخييم", "Office work|العمل المكتبي", "University exams|اختبارات الجامعة"], correctIdx: 0, t: "الفكرة الرئيسية للفقرة 1", e: "التحضير والتجهيز للتخييم." },
+                        { type: 'mainIdea', q: "Choose the correct topic for Paragraph 2.", o: ["Daytime activities and enjoying nature|أنشطة النهار والاستمتاع بالطبيعة", "Night sleep|النوم ليلاً", "Cooking fish|صيد السمك"], correctIdx: 0, t: "الفكرة الرئيسية للفقرة 2", e: "أنشطة النهار والاستمتاع بالطبيعة." },
+                        { type: 'mainIdea', q: "Choose the correct topic for Paragraph 3.", o: ["Nighttime relaxation around the fire|الاسترخاء ليلاً حول النار", "Morning breakfast|فطور الصباح", "Driving cars|قيادة السيارات"], correctIdx: 0, t: "الفكرة الرئيسية للفقرة 3", e: "الاسترخاء ليلاً حول النار." }
+                    ]
+                }
+            ],
+            grammar: [
+                {q:"David|ديفيد ........|يكون a|teacher|معلم at|في a|school|مدرسة in|في Riyadh|الرياض", o:["is|يكون", "am|أكون", "are|يكونون"], correctIdx: 0, t:"ديفيد معلم في مدرسة في الرياض.", e:"المفرد الغائب David يأخذ is."},
+                {q:"I|أنا ........|أكون an|English|إنجليزية student|طالب at|في King|الملك University|جامعة", o:["am|أكون", "is|يكون", "are|يكونون"], correctIdx: 0, t:"أنا طالب لغة إنجليزية في جامعة الملك.", e:"الضمير I يأخذ am."},
+                {q:"You|أنت ........|تكون very|جداً busy|مشغول with|مع your|خاصتك university|جامعة courses|دورات", o:["are|تكونون", "is|يكون", "am|أكون"], correctIdx: 0, t:"أنت مشغول جداً بدوراتك الجامعية.", e:"الضمير You يأخذ are."},
+                {q:"Sara|سارة and|و Khalid|خالد ........|يكونان from|من London|لندن", o:["are|يكونون", "is|يكون", "am|أكون"], correctIdx: 0, t:"سارة وخالد من لندن.", e:"المثنى والجمع يأخذ are."},
+                {q:"........|هل you|أنت a|student|طالب or|أو a|engineer|مهندس", o:["Are|هل", "Is|هل", "Am|هل"], correctIdx: 0, t:"هل أنت طالب أم مهندس؟", e:"السؤال مع you يبدأ بـ Are."},
+                {q:"Where|Where ........|يكون your|خاصتك parents|والدين from|من", o:["are|يكونون", "is|يكون", "am|أكون"], correctIdx: 0, t:"من أين والداك؟", e:"كلمة parents جمع تأخذ are."},
+                {q:"He|He ........|يكون not|ليس a|doctor;طبيب he|هو is|يكون a|teacher|معلم", o:["is|يكون", "am|أكون", "are|يكونون"], correctIdx: 0, t:"هو ليس طبيباً؛ إنه معلم.", e:"الضمير He يأخذ is."},
+                {q:"We|We ........|نكون in|في an|advanced|متقدم English|إنجليزية group|مجموعة", o:["are|نكون", "is|يكون", "am|أكون"], correctIdx: 0, t:"نحن في مجموعة إنجليزية متقدمة.", e:"الضمير We يأخذ are."}
+            ],
+            vocab: [
+                {q:"Khalid|خالد is|يكون 12|اثنا_عشر and|و his|ـه ........|........ is|يكون 10.|عشرة", o:["brother|أخ", "father|أب", "mother|أم"], correctIdx: 0, t:"خالد عمره 12 وأخوه عمره 10.", e:"كلمة brother تعني أخ."},
+                {q:"Naguib|نجيب Mahfouz|محفوظ is|تكون an|Egyptian|مصري ........|كاتب His|لها books|كتب are|تكون famous.|مشهورة", o:["writer|كاتب", "student|طالب", "singer|مغني"], correctIdx: 0, t:"نجيب محفوظ كاتب مصري مشهورة كتبه.", e:"وجود كتب (books) يدل على writer."},
+                {q:"Omar|عمر ........|........ with|مع his|له study|دراسة group|مجموعة on|في Sundays|الأحد", o:["meets|يجتمع", "travels|يسافر", "goes|يذهب"], correctIdx: 0, t:"عمر يجتمع مع مجموعة دراسته أيام الأحد.", e:"meets with بمعنى يجتمع مع."},
+                {q:"My|أبي father|أبي is|يكون a|ـ doctor.|طبيب He|هو ........|........ in|في a|ـ hospital|مستشفى", o:["works|يعمل", "cooks|يطبخ", "travels|يسافر"], correctIdx: 0, t:"أبي طبيب وهو يعمل في مستشفى.", e:"الطبيب يعمل works في المستشفى."},
+                {q:"Layla|ليلى ........|........ TV|تلفاز shows|برامج on|على Netflix|نتفليكس in|في the|الـ evening.|مساء", o:["watches|تشاهد", "does|تفعل", "relaxes|تسترخي"], correctIdx: 0, t:"ليلى تشاهد برامج التلفاز على نتفليكس في المساء.", e:"نستخدم watches مع البرامج والتلفاز."},
+                {q:"My|صديقي friend|صديقي is|يكون a|ـ engineer.|مهندس He|هو works|يعمل in|في a|ـ big|كبير office|مكتب in|في ........|........", o:["Cairo|القاهرة", "school|مدرسة", "library|مكتبة"], correctIdx: 0, t:"صديقي مهندس وهو يعمل في مكتب كبير في القاهرة.", e:"القاهرة تناسب السياق."},
+                {q:"Tariq|طارق is|يكون busy|مشغول at|في university,|الجامعة but|لكن he|هو has|لديه time|وقت to|لكي ........|........ with|مع his|له friends|أصدقاء", o:["relax|يسترخي", "take|يأخذ", "have|يملك"], correctIdx: 0, t:"طارق مشغول في الجامعة، لكن لديه وقت ليسترخي مع أصدقائه.", e:"relax with friends تعني يسترخي مع الأصدقاء."}
+            ],
+            writing: [
+                {q:"Michael|مايكل and|و Robert|روببرت ........|يكونون ........|........", o:["are from London.|من لندن", "is a big city.|مدينة كبيرة", "a shower every morning.|دش"], correctIdx: 0, t:"مايكل وروببرت من لندن.", e:"مايكل وروببرت جمع يأخذان are from London."},
+                {q:"London|لندن ........|تكون ........|........", o:["is a big city.|مدينة كبيرة", "are from London.|من لندن", "dinner with my family.|عشاء"], correctIdx: 0, t:"لندن مدينة كبيرة.", e:"لندن مفرد تأخذ is a big city."},
+                {q:"Yousef|يوسف takes|يأخذ ........|........", o:["a shower every morning.|دش كل صباح", "her homework in the evening.|واجبها", "is a big city.|مدينة كبيرة"], correctIdx: 0, t:"يوسف يأخذ دُشاً كل صباح.", e:"المترافق اللفظي الصحيح takes a shower every morning."},
+                {q:"In|في the|الـ evening,|المساء I|أنا have|أتناول ........|........", o:["dinner with my family.|عشاء مع عائلتي", "a shower every morning.|دش", "are from London.|من لندن"], correctIdx: 0, t: "في المساء، أتناول العشاء مع عائلتي.", e:"التعبير الصحيح have dinner with my family."},
+                {q:"My|خاصتي brother|أخ does|تقوم_بـ ........|........", o:["her homework in the evening.|واجبها في المساء", "dinner with my family.|عشاء", "the newspaper every afternoon.|جريدة"], correctIdx: 0, t:"أخي يقوم بواجباته المنزلية في المساء.", e:"المترافق اللفظي الصحيح does her homework."}
+            ]
+        };
+
+        function buildExamApp() {
+            let container = document.getElementById('exam-container');
+            container.innerHTML = '';
+
+            let allQs = [];
+
+            // 1. قسم الاستماع
+            let lHeader = document.createElement('div');
+            lHeader.className = 'exam-section-title';
+            lHeader.innerText = "Listening Section (9 Questions) - الاستماع (حوارات ثنائية جديدة)";
+            container.appendChild(lHeader);
+
+            examData.listening.forEach((pass, pIdx) => {
+                let audioBar = document.createElement('div');
+                audioBar.className = 'audio-bar';
+                let audioId = `audio-m2-${pIdx}`;
+                
+                let dialogueHtml = `<div class="dialogue-box">`;
+                pass.dialogue.forEach(line => {
+                    let speakerClass = line.speaker === pass.dialogue[0].speaker ? 'speaker-1' : 'speaker-2';
+                    dialogueHtml += `<div class="dialogue-line"><span class="${speakerClass}">${line.speaker}:</span> ${renderClickableHtml(line.text)}</div>`;
+                });
+                dialogueHtml += `</div>`;
+
+                audioBar.innerHTML = `
+                    <div style="font-weight:bold; color:#0369a1; margin-bottom:5px;">🎧 ${pass.title}</div>
+                    <button class="audio-btn btn-toggle" id="audio-btn-${audioId}" onclick="toggleAudio('${audioId}', \`${pass.audioText}\`)">🔊 تشغيل الحوار صوتياً (Play Audio)</button>
+                    ${dialogueHtml}
+                `;
+                container.appendChild(audioBar);
+
+                pass.questions.forEach((q, qIdx) => {
+                    let globalId = `l-m2-${pIdx}-${qIdx}-${Math.random().toString(36).substr(2,4)}`;
+                    q.globalId = globalId;
+                    container.appendChild(createQuestionCard(q, qIdx));
+                    allQs.push(q);
+                });
+            });
+
+            // 2. قسم القراءة
+            let rHeader = document.createElement('div');
+            rHeader.className = 'exam-section-title';
+            rHeader.innerText = "Reading Section (16 Questions) - القراءة (قطع جديدة)";
+            container.appendChild(rHeader);
+
+            examData.reading.forEach((pass, pIdx) => {
+                let pBox = document.createElement('div');
+                pBox.className = 'passage-box';
+                let pHtml = `<strong>📖 ${pass.title} (نص القراءة):</strong>`;
+                pass.paragraphs.forEach(p => {
+                    pHtml += `<div class="passage-paragraph"><div class="paragraph-en">${renderClickableHtml(p.en)}</div><div class="paragraph-ar">${p.ar}</div></div>`;
+                });
+                pBox.innerHTML = pHtml;
+                container.appendChild(pBox);
+
+                let detailQs = pass.questions.filter(q => q.type === 'detail');
+                let mainIdeaQs = pass.questions.filter(q => q.type === 'mainIdea');
+
+                let subHeaderD = document.createElement('div');
+                subHeaderD.style.cssText = "font-weight:bold; color:#1e3a8a; margin:15px 0 5px 0; font-size:1.2em;";
+                subHeaderD.innerText = "• Detail Questions (أسئلة التفاصيل):";
+                container.appendChild(subHeaderD);
+
+                detailQs.forEach((q, qIdx) => {
+                    let globalId = `r-d-m2-${pIdx}-${qIdx}-${Math.random().toString(36).substr(2,4)}`;
+                    q.globalId = globalId;
+                    container.appendChild(createQuestionCard(q, qIdx));
+                    allQs.push(q);
+                });
+
+                let subHeaderM = document.createElement('div');
+                subHeaderM.style.cssText = "font-weight:bold; color:#1e3a8a; margin:20px 0 5px 0; font-size:1.2em;";
+                subHeaderM.innerText = "• Paragraph Main Ideas (أفكار الفقرات الرئيسية):";
+                container.appendChild(subHeaderM);
+
+                mainIdeaQs.forEach((q, qIdx) => {
+                    let globalId = `r-m-m2-${pIdx}-${qIdx}-${Math.random().toString(36).substr(2,4)}`;
+                    q.globalId = globalId;
+                    container.appendChild(createQuestionCard(q, qIdx));
+                    allQs.push(q);
+                });
+            });
+
+            // 3. قسم القواعد
+            let gHeader = document.createElement('div');
+            gHeader.className = 'exam-section-title';
+            gHeader.innerText = "Grammar Section (8 Questions) - قواعد اللغة";
+            container.appendChild(gHeader);
+
+            examData.grammar.forEach((q, idx) => {
+                let globalId = `g-m2-${idx}-${Math.random().toString(36).substr(2,4)}`;
+                q.globalId = globalId;
+                container.appendChild(createQuestionCard(q, idx));
+                allQs.push(q);
+            });
+
+            // 4. قسم المفردات
+            let vHeader = document.createElement('div');
+            vHeader.className = 'exam-section-title';
+            vHeader.innerText = "Vocabulary Section (7 Questions) - المفردات والكلمات";
+            container.appendChild(vHeader);
+
+            examData.vocab.forEach((q, idx) => {
+                let globalId = `v-m2-${idx}-${Math.random().toString(36).substr(2,4)}`;
+                q.globalId = globalId;
+                container.appendChild(createQuestionCard(q, idx));
+                allQs.push(q);
+            });
+
+            // 5. قسم مهارات الكتابة الأكاديمية
+            let wHeader = document.createElement('div');
+            wHeader.className = 'exam-section-title';
+            wHeader.innerText = "Academic Writing Skills (5 Questions) - توصيل أنصاف الجمل";
+            container.appendChild(wHeader);
+
+            examData.writing.forEach((q, idx) => {
+                let globalId = `w-m2-${idx}-${Math.random().toString(36).substr(2,4)}`;
+                q.globalId = globalId;
+                container.appendChild(createQuestionCard(q, idx));
+                allQs.push(q);
+            });
+        }
+
+        function renderClickableHtml(text) {
+            let pairs = text.split(' ').map(p => p.trim()).filter(p => p !== '');
+            return pairs.map(pair => {
+                let cleanW = pair.replace(/[^a-zA-Z0-9'-]/g, '');
+                let arW = getTranslation(cleanW);
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arW}</span><span class="en">${pair}</span></span>`;
+            }).join(' ');
+        }
+
+        function createQuestionCard(qObj, index) {
+            let block = document.createElement('div');
+            block.className = 'question-row';
+            block.id = `q-${qObj.globalId}`;
+            
+            let originalCorrectOptStr = qObj.o[qObj.correctIdx].split('|')[0].replace(/_/g, ' ').trim();
+            block.setAttribute('data-ans', originalCorrectOptStr);
+
+            let pairs = qObj.q.split(' ').map(p => p.trim()).filter(p => p !== '');
+            let wordsHtml = pairs.map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, ''); 
+                let arW = getTranslation(cleanW); 
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;'); 
+                
+                if(enW === '........' || enW === '........|........') {
+                    return `<span class="word-group" data-speak=""><span class="ar">&nbsp;</span><span class="en blank-space">........</span></span>`;
+                }
+                let missingHtml = enW.replace(/_/g, '<span class="missing-letter">_</span>');
+                return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arW}</span><span class="en">${missingHtml}</span></span>`;
+            }).join(' ');
+
+            let indexedOpts = qObj.o.map((opt, idx) => ({ optStr: opt, isCorrect: (idx === qObj.correctIdx) }));
+            indexedOpts.sort(() => Math.random() - 0.5);
+
+            let letters = ["A", "B", "C", "D"];
+            let optsHtml = `<div class="options-inline" id="opts-area-${qObj.globalId}">` + indexedOpts.map((item, i) => {
+                let optPairs = item.optStr.trim().split('|')[0].split(' ').filter(p => p !== '');
+                let optWordsHtml = optPairs.map(op => {
+                    let cw = op.replace(/[^a-zA-Z0-9'-]/g, '');
+                    let arTrans = getTranslation(cw);
+                    let safeWord = cw.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                    return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arTrans}</span><span class="en">${op.replace(/_/g, ' ')}</span></span>`;
+                }).join(' ');
+                
+                let isCorrAttr = item.isCorrect ? 'true' : 'false';
+                let cleanOptVal = item.optStr.split('|')[0].replace(/_/g, ' ').trim();
+                return `<div class="opt-item" data-correct="${isCorrAttr}" data-opt-val="${cleanOptVal}" onclick="selectOption(this, event)"><div class="choice-badge">${letters[i]}</div><div class="choice-text">${optWordsHtml}</div></div>`;
+            }).join('') + `</div>`;
+
+            let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+            
+            block.innerHTML = `
+                <div class="q-text-container">
+                    <span class="q-number-span" id="num-${qObj.globalId}">${index + 1}. </span>
+                    <div class="q-text">${wordsHtml}</div>
+                </div>
+                ${translationHtml}
+                ${optsHtml}
+                <div class="answer-action-container">
+                    <button class="btn-answer" id="btn-ans-${qObj.globalId}" onclick="window.revealAnswer('${qObj.globalId}')">👁️ إظهار الإجابة والشرح</button>
+                </div>
+                <div class="answer-box" id="ans-box-${qObj.globalId}">
+                    <div class="correct-word-text">الإجابة الصحيحة: <span class="en-ans" style="color:#059669; font-weight:bold;">${originalCorrectOptStr}</span></div>
+                    <div class="grammar-explanation">💡 <strong>الشرح:</strong> <span dir="rtl">${qObj.e}</span></div>
+                </div>
+            `;
+            return block;
+        }
+
+        window.toggleAudio = function(audioId, text) {
+            if(!synth) return;
+            let btn = document.getElementById(`audio-btn-${audioId}`);
+            if (synth.speaking) {
+                synth.cancel();
+                btn.innerHTML = '🔊 تشغيل الحوار صوتياً (Play Audio)';
+                btn.classList.remove('playing');
+                return;
+            }
+            synth.cancel();
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US'; u.rate = 0.85;
+            btn.innerHTML = '⏹ إيقاف الحوار (Stop)';
+            btn.classList.add('playing');
+            u.onend = () => { btn.innerHTML = '🔊 تشغيل الحوار صوتياً (Play Audio)'; btn.classList.remove('playing'); };
+            u.onerror = () => { btn.innerHTML = '🔊 تشغيل الحوار صوتياً (Play Audio)'; btn.classList.remove('playing'); };
+            synth.speak(u);
+        };
+
+        window.setMode = function(mode) {
+            let pageEl = document.querySelector('.page');
+            let btnStudy = document.getElementById('btn-study');
+            let btnExam = document.getElementById('btn-exam');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            if (mode === 'exam') {
+                pageEl.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+            } else {
+                pageEl.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            if (event && event.target.closest('.word-group')) return;
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let isCorrectChoice = (optItem.getAttribute('data-correct') === 'true');
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            row.querySelectorAll('.opt-item').forEach(item => {
+                if (item.getAttribute('data-correct') === 'true') item.classList.add('correct');
+            });
+            if (!isCorrectChoice) optItem.classList.add('wrong');
+        };
+
+        document.addEventListener('click', function(e) {
+            if(document.querySelector('.page').classList.contains('exam-mode')) return;
+            let wg = e.target.closest('.word-group');
+            if (wg) {
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && synth) {
+                    synth.cancel();
+                    document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                    wg.classList.add('highlight');
+                    let txt = speakTextAttr.replace(/[\._]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; u.rate = 0.85;
+                        u.onend = () => wg.classList.remove('highlight');
+                        synth.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), 1200);
+                    }
+                }
+            }
+        });
+
+        window.revealAnswer = function(id) {
+            let box = document.getElementById(`ans-box-${id}`); 
+            let btn = document.getElementById(`btn-ans-${id}`);
+            if (box.style.display === 'none' || !box.style.display) { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الإجابة والشرح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الإجابة والشرح'; 
+            }
+        };
+
+        window.showExamResult = function() {
+            let rows = document.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.getAttribute('data-correct') === 'true') correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = `النتيجة النهائية: ${correctCount} من ${totalCount}<br>`;
+            if(correctCount === totalCount) msg += "🏆 أداء مذهل! امتياز كامل!";
+            else if(correctCount >= totalCount/2) msg += "🌟 أداء ممتاز! استمر هكذا!";
+            else msg += "💪 حاول مجدداً لرفع درجتك!";
+            
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            resEl.scrollIntoView({behavior: 'smooth'});
+        };
+
+        buildExamApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>
