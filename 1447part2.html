@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تجميعات ١٤٤٧ الجزء الثالث (٧٨ سؤال)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #f8fafc;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1100px; padding: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; border-top: 6px solid #3b82f6; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.2em; font-weight: 900; margin-bottom: 5px; }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 25px; font-weight: bold; }
+        .creator-info { text-align: center; color: #ffffff; background-color: #3b82f6; font-size: 1.2em; font-weight: bold; margin-bottom: 35px; padding: 12px; border-radius: 8px;}
+
+        /* لوحة التحكم */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; min-width: 250px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        .btn-review { background-color: #10b981; }
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; transform: scale(1.02); background-color: #1d4ed8;}
+        .btn-exam.active-mode { outline: 3px solid #ef4444; outline-offset: 2px; transform: scale(1.02); background-color: #334155;}
+        .btn-review.active-mode { outline: 3px solid #4ade80; outline-offset: 2px; transform: scale(1.02); background-color: #059669;}
+        
+        .btn-result { background-color: #f59e0b; color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: none; width: 100%; max-width: 915px;}
+        .btn-result:hover { background-color: #d97706; }
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-audio { background-color: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 6px;}
+        .btn-audio:hover { background-color: #059669; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-lbl { font-size: 26px; font-weight: 900; color: #3b82f6; flex-shrink: 0; padding-top: 5px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.5em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 1.8; font-family: Arial, sans-serif;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: flex; flex-direction: column; gap: 12px; direction: ltr; width: 100%; margin-top: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 70px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.3em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 60px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        
+        .choice-content { display: flex; flex-direction: column; justify-content: center; padding: 12px 15px; width: 100%; gap: 6px;}
+        .choice-en { font-weight: bold; font-size: 1.2em; color: #334155; font-family: Arial, sans-serif;}
+        .choice-ar { font-size: 1.05em; font-weight: bold; color: #b91c1c; font-family: 'Tajawal', sans-serif;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-en, .opt-item.correct .choice-ar { color: white !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-en, .opt-item.wrong .choice-ar { color: white !important; }
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed;}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .grammar-explanation { color: #1e293b; font-size: 18px; line-height: 2.0; font-weight:bold; }
+        .box-hint { display: block; background-color: #fca5a5; color: #7f1d1d; padding: 6px 12px; border-radius: 6px; font-size: 1em; margin-bottom: 10px; font-weight: 900;}
+
+        /* أزرار التنقل (التالي يمين - السابق يسار) */
+        .exam-nav-buttons { display: none; justify-content: space-between; margin-top: 20px; width: 100%; border-top: 2px solid #e2e8f0; padding-top: 15px;}
+        .exam-mode .exam-nav-buttons, .review-mode .exam-nav-buttons { display: flex; }
+        .btn-nav { background-color: #3b82f6; color: white; border: none; padding: 10px 25px; font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-family: 'Tajawal';}
+        .btn-nav:hover { background-color: #2563eb; }
+
+        /* وضع الاختبار الصارم (سؤال واحد) */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5; padding: 15px; border-radius: 12px;}
+        .exam-mode .full-sentence-translation, .exam-mode .answer-action-container, .exam-mode .answer-box, .exam-mode .choice-ar, .exam-mode .btn-audio { display: none !important; }
+        .exam-mode .question-row { display: none !important; }
+        .exam-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        /* وضع المراجعة الذكي (سؤال وجواب واحد فقط) */
+        .review-mode { background-color: #f0fdf4; border-color: #4ade80; padding: 15px; border-radius: 12px;}
+        .review-mode .question-row { display: none !important; }
+        .review-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(30px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">تجميعات ١٤٤٧ الجزء الثالث (٧٨ سؤال)</div>
+    <div class="sub-title">تجميعات اللغة الإنجليزية - ١٤٤٧هـ - الفترتان الثانية والثالثة (مترجمة الخيارات بالكامل وخالية من أي Span)</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+    
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع المذاكرة (مرتب + الكل)</button>
+            <button id="btn-review" class="mode-btn btn-review" onclick="setMode('review')">✅ وضع المراجعة (محلول + تنقل)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')">🔴 وضع الاختبار (عشوائي + تنقل)</button>
+        </div>
+        <button id="btn-result" class="btn-result" onclick="showResult()">📋 إنهاء الاختبار وإظهار النتيجة</button>
+        <div class="section-result" id="res-box"></div>
+    </div>
+
+    <div id="q-container" class="questions-container train-mode"></div>
+</div>
+
+<script>
+(function initApp() {
+    try {
+        const db = [
+            {q:"Metaphors and figures of speech are used more in ..................... writing", o:["A) descriptive | الكتابة الوصفية", "B) reflective | الكتابة التأملية", "C) narrative | الكتابة السردية (القصصية)", "D) expository | الكتابة التفسيرية (التوضيحية)"], c:0, t:"تُستخدم الاستعارات والصور البلاغية بشكل أكثر في الكتابة .....................", e:"<div class='box-hint'>A) descriptive<br>الكتابة الوصفية (descriptive writing) تستخدم الاستعارات والعبارات البلاغية لتصوير الأشخاص، الأماكن، والأشياء بطريقة حية تجعل القارئ يتخيل المشهد بوضوح.</div>"},
+            {q:"A teacher notices that students struggle in face-to-face conversations, so he teaches them formulaic phrases, such as asking for repetition and asking for help. These phrases are examples of:", o:["A) Affective strategies | الاستراتيجيات الوجدانية", "B) Repair strategies | استراتيجيات الإصلاح (معالجة صعوبات التواصل)", "C) Memory strategies | استراتيجيات الذاكرة", "D) Communication strategies | استراتيجيات التواصل العامة"], c:1, t:"لاحظ معلم أن الطلاب يواجهون صعوبة في المحادثات وجهاً لوجه، فعلمهم عبارات جاهزة مثل طلب الإعادة وطلب المساعدة. هذه العبارات أمثلة على:", e:"<div class='box-hint'>B) Repair strategies<br>Repair strategies = طرق يستخدمها المتعلم لتصحيح أو معالجة صعوبات التواصل أثناء الكلام، مثل:<br>asking for repetition → طلب إعادة الكلام<br>asking for help → طلب المساعدة</div>"},
+            {q:"..........refers to the use of language from the point of view of users, especially of the choices they make, the constraints they encounter in using language in social interaction and the effects their use of language has on other participants in the act of communication.", o:["A) Linguistic Competence | الكفاءة اللغوية", "B) Pragmatic Competence | الكفاءة التداولية (استخدام اللغة حسب السياق والموقف الاجتماعي)", "C) Interpersonal Competence | الكفاءة الاجتماعية بين الأفراد", "D) Intrapersonal Competence | الكفاءة الذاتية داخل الفرد"], c:1, t:".......... يشير إلى استخدام اللغة من وجهة نظر المستخدمين، خاصة الخيارات التي يتخذونها والقيود التي يواجهونها في التفاعل الاجتماعي وتأثير استخدامهم للغة على المشاركين الآخرين.", e:"<div class='box-hint'>B) Pragmatic Competence<br>Pragmatic competence تعني استخدام اللغة بشكل مناسب حسب الموقف الاجتماعي.</div>"},
+            {q:"The stage in which L2 learners incorporate peer suggestions is known as.............", o:["A) Pre-writing | مرحلة ما قبل الكتابة (التخطيط)", "B) Publishing | مرحلة النشر", "C) Drafting | مرحلة كتابة المسودة", "D) Revising | مرحلة المراجعة والتنقيح"], c:3, t:"المرحلة التي يقوم فيها متعلمو اللغة الثانية بدمج وتطبيق مقترحات أقرانهم تُعرف بـ .............", e:"<div class='box-hint'>D. Revising<br>في مرحلة Revising، يتلقى الطلاب اقتراحات من زملائهم ويقومون بتعديل وتحسين كتاباتهم بناءً عليها قبل النسخة النهائية.</div>"},
+            {q:"How many morphemes in the word 'unreliability'?", o:["A) 2 | مورفيمان", "B) 3 | 3 مورفيمات", "C) 4 | 4 مورفيمات (un + rely + able + ity)", "D) 5 | 5 مورفيمات"], c:2, t:"كم عدد المورفيمات (الوحدات الصرفية) في كلمة 'unreliability'؟", e:"<div class='box-hint'>C) 4<br>un + rely + able + ity<br>un- = morpheme (prefix)<br>rely = morpheme (root)<br>-able = morpheme (suffix)<br>-ity = morpheme (suffix)<br>المجموع = 4 morphemes</div>"},
+            {q:"Which of the following stages of a lesson encourages students to use their preexisting knowledge?", o:["A) Production | مرحلة الإنتاج", "B) Evaluation | مرحلة التقييم", "C) Warm up | مرحلة التهيئة والإحماء", "D) Practice | مرحلة الممارسة والتدريب"], c:2, t:"أي من مراحل الدرس التالية تشجع الطلاب على استخدام معرفتهم السابقة؟", e:"<div class='box-hint'>C. Warm up<br>مرحلة Warm up في بداية الدرس تستخدم لتنشيط المعرفة السابقة لدى الطلاب وربطها بالدرس الجديد.</div>"},
+            {q:"If you are studying phonology, then you are studying .............", o:["A) The smallest unit within a language system, to which meaning is attached | أصغر وحدة في النظام اللغوي يرتبط بها معنى (المورفيم)", "B) The way in which speech sounds form patterns | الطريقة التي تشكل بها أصوات الكلام أنماطاً صوتية", "C) Individual letters and letter combinations | الحروف الفردية ومجموعات الحروف", "D) The definition of individual words and sentences | تعريف الكلمات الفردية والجمل"], c:1, t:"إذا كنت تدرس علم الأصوات الوظيفي (Phonology)، فأنت تدرس .............", e:"<div class='box-hint'>B) The way in which speech sounds form patterns<br>Phonology تدرس كيفية ترتيب الأصوات الكلامية داخل اللغة وكيفية تكوين الأنماط الصوتية.</div>"},
+            {q:"What is the highest level in Bloom's Taxonomy?", o:["A) Knowledge | المعرفة / التذكر", "B) Comprehension | الفهم / الاستيعاب", "C) Synthesis | التركيب / التأليف", "D) Analysis | التحليل"], c:2, t:"ما هو المستوى الأعلى في تصنيف بلوم (من بين الخيارات المعطاة)؟", e:"<div class='box-hint'>C. Synthesis<br>في تصنيف بلوم القديم الترتيب هو:<br>Knowledge → Comprehension → Application → Analysis → Synthesis → Evaluation<br>ومن الخيارات المعطاة، Synthesis هو الأعلى.</div>"},
+            {q:"I don't know what she said. In this sentence, the noun clause \"what she said\" functions as the:", o:["A) Subject | فاعل", "B) Indirect Object | مفعول به غير مباشر", "C) Direct Object | مفعول به مباشر (للفعل know)", "D) Complement | مكمل"], c:2, t:"في جملة (I don't know what she said)، تعمل شبه الجملة الاسمية \"what she said\" كـ:", e:"<div class='box-hint'>C) Direct Object<br>I = Subject (الفاعل)<br>don't know = Verb (الفعل)<br>what she said = Noun Clause تعمل كمفعول به (Direct Object).</div>"},
+            {q:"Which verb is considered as a linking verb?", o:["A) Sleep | ينام (فعل حركة/حدث)", "B) Meet | يقابل (فعل حدث متعدٍ)", "C) Seem | يبدو (فعل ربط)", "D) Run | يجري (فعل حركة)"], c:2, t:"أي فعل مما يلي يُعتبر فعل ربط (Linking verb)؟", e:"<div class='box-hint'>C. Seem<br>Linking verbs تربط بين الفاعل والمعلومة عنه ولا تعبر عن فعل حدث حقيقي. مثال: She seems happy. هنا seems يربط بين she و happy دون أن يدل على فعل يحدث.</div>"},
+            {q:"An important skill in language teaching refers to the use of background information to understand a reading passage. What is this skill called?", o:["A) Vocabulary recognition | التعرف على المفردات", "B) Synthetic processing | المعالجة التركيبية", "C) Schema activation | تنشيط المخططات الذهنية (المعرفة السابقة)", "D) Phonological processing | المعالجة الصوتية"], c:2, t:"مهارة مهمة في تدريس اللغة تشير إلى استخدام المعلومات والخلفية السابقة لفهم قطعة القراءة. ماذا تسمى هذه المهارة؟", e:"<div class='box-hint'>C. Schema activation<br>Schema activation تعني استخدام المعرفة والخبرة السابقة (background information) لفهم النص المقروء.</div>"},
+            {q:"A student writes an essay about a childhood memory, focusing on events in chronological order. What type of essay is this?", o:["A) narrative | مقال سردي (قصصي)", "B) persuasive | مقال إقناعي", "C) Expository | مقال تفسيري / معلوماتي", "D) Descriptive | مقال وصفي"], c:0, t:"يكتب طالب مقالاً عن ذكرى من الطفولة، مركزاً على الأحداث بترتيب زمني. ما نوع هذا المقال؟", e:"<div class='box-hint'>A) Narrative<br>الكتابة التي تركز على سرد أحداث أو ذكريات شخصية بترتيب زمني تُسمى narrative essay، أي مقال سردي.<br>إذا كان الهدف من الكتابة إقناع القارئ برأي ← persuasive، وإذا كان الهدف شرح أو توضيح معلومات ← expository.</div>"},
+            {q:"According to the \"5 R's of Reflection,\" which stage involves analyzing a classroom experience and connecting it to a specific educational theory (such as Vygotsky's Zone of Proximal Development)?", o:["A) Reporting | الإبلاغ / السرد (وصف ما حدث فقط)", "B) Relating | الربط (ربط التجربة بالخبرة الشخصية)", "C) Reasoning | الاستدلال / التعليل (تحليل التجربة وربطها بالنظريات التربوية)", "D) Responding | الاستجابة (التعبير عن المشاعر تجاه التجربة)"], c:2, t:"وفقاً لنموذج \"الـ 5 R's للتأمل\"، أي مرحلة تتضمن تحليل تجربة صفية وربطها بنظرية تعليمية محددة (مثل منطقة النمو الوشيك لفيجوتسكي)؟", e:"<div class='box-hint'>C. Reasoning<br>Reasoning في الـ 5R's تعني تحليل التجربة وربطها بالنظريات التعليمية.<br>الفرق عن المراحل الأخرى:<br>Reporting ← سرد ما حدث فقط<br>Responding ← التعبير عن شعورك تجاه التجربة<br>Relating ← ربط التجربة بخبرتك الشخصية أو السابقة<br>Reconstructing ← التفكير في تحسين التجربة مستقبلاً.</div>"},
+            {q:"Which of the following is characterized as partially interactive speech style?", o:["A) Face to face talking | التحدث وجهاً لوجه (تفاعلي بالكامل)", "B) Buying things from a shopping mall | شراء أشياء من مركز تسوق (تفاعلي جزئياً)", "C) Listening to a motivational audio book | الاستماع لكتاب صوتي تحفيزي (غير تفاعلي)", "D) Giving a recorded television speech | إلقاء خطاب تلفزيوني مسجل (غير تفاعلي)"], c:1, t:"أي مما يلي يتميز بأنه أسلوب كلام تفاعلي جزئياً (Partially interactive)؟", e:"<div class='box-hint'>B) Buying things from a shopping mall<br>Partially interactive speech يحدث عندما يكون هناك تفاعل محدود بين المتحدث والمستمع. عند شراء شيء من محل، يوجد تواصل قصير ومباشر، لكنه ليس تفاعلياً بالكامل مثل المحادثة الودية، لذا يسمى partially interactive.<br>Face to face talking ← fully interactive<br>Listening to audio book ← non-interactive</div>"},
+            {q:"In .................... students are the main focus in the learning process.", o:["A) learner-centered instruction | التدريس المتمركز حول المتعلم", "B) content-Based learning | التعلم القائم على المحتوى", "C) teacher-centered instruction | التدريس المتمركز حول المعلم", "D) task-based learning | التعلم القائم على المهام"], c:0, t:"في .................... يكون الطلاب هم المحور الرئيسي في عملية التعلم.", e:"<div class='box-hint'>A. learner-centered instruction<br>في learner-centered instruction يكون الطلاب محور العملية التعليمية، حيث يشارك الطالب بفعالية في التعلم ويكون التركيز على احتياجاتهم ومهاراتهم، وليس فقط على محتوى الدرس أو تعليم المعلم.</div>"},
+            {q:"................... refers to the movements of the speech organs in producing the sounds of speech.", o:["A) Acoustics | الصوتيات الفيزيائية (دراسة الموجات الصوتية)", "B) Phonetics | علم الصوتيات العام", "C) Articulation | النطق (حركة أعضاء النطق لإنتاج الأصوات)", "D) Phonics | الطريقة الصوتية في القراءة (ربط الحروف بالأصوات)"], c:2, t:"................... يشير إلى حركات أعضاء النطق في إنتاج أصوات الكلام.", e:"<div class='box-hint'>C) Articulation<br>Articulation تعني حركة أعضاء النطق (الفم، الشفتين، اللسان، الحنجرة) لإنتاج الأصوات الكلامية بشكل صحيح.<br>Phonetics ← دراسة الأصوات بشكل عام، صوتياً وسمعياً.<br>Phonics ← ربط الأصوات بالحروف عند القراءة.<br>Acoustics ← دراسة الخصائص الفيزيائية للصوت.</div>"},
+            {q:"Writing that conveys a story and often is read for pleasure is recognised as ........ writing", o:["A) persuasive | إقناعية", "B) descriptive | وصفية", "C) expository | تفسيرية", "D) narrative | سردية / قصصية"], c:3, t:"الكتابة التي تنقل قصة وغالباً ما تُقرأ للمتعة تُعرف بالكتابة ........", e:"<div class='box-hint'>D) Narrative<br>Narrative writing هو الكتابة السردية التي تنقل قصة، غالباً للمتعة أو الترفيه، وتركز على أحداث وشخصيات وتسلسل زمني.<br>Descriptive ← يصف مشهد أو شيء بالتفصيل<br>Expository ← يشرح أو يوضح معلومات<br>Persuasive ← يقنع القارئ برأي معين</div>"},
+            {q:"The teacher wrote the words tree, apples, leaves, and green on the board. This activity illustrates which type of vocabulary relationship?", o:["A) Association | الارتباط الدلالي / التداعي (كلمات مرتبطة بنفس السياق والمجال)", "B) Antonyms | المتضادات", "C) Synonyms | المترادفات", "D) Metonymy | الكناية / المجاز المرسل"], c:0, t:"كتب المعلم الكلمات (شجرة، تفاح، أوراق شجر، أخضر) على السبورة. يوضح هذا النشاط أي نوع من علاقات المفردات؟", e:"<div class='box-hint'>A) Association<br>الكلمات (tree, apples, leaves, green) مرتبطة ببعضها من حيث المعنى والسياق (كلها تتعلق بالشجرة)، وليست مرادفات أو أضداد.<br>Antonyms ← كلمات متضادة<br>Synonyms ← كلمات لها نفس المعنى<br>Metonymy ← استخدام كلمة بدل أخرى لها علاقة خاصة (مثل The White House بدل الحكومة).</div>"},
+            {q:"In a classroom role-play activity, what is the primary role of the teacher?", o:["A) To do all the talking for the students | القيام بكل الحديث نيابة عن الطلاب", "B) To act as a facilitator and guide while students perform the roles | العمل كميسر ومرشد بينما يؤدي الطلاب الأدوار", "C) To remain silent and not intervene at all | البقاء صامتاً وعدم التدخل على الإطلاق", "D) To grade the students without giving feedback | تقييم الطلاب بالدرجات دون إعطائهم تغذية راجعة"], c:1, t:"في نشاط لعب الأدوار داخل الفصل، ما هو الدور الأساسي للمعلم؟", e:"<div class='box-hint'>B) To act as a facilitator and guide while students perform the roles<br>في نشاط لعب الأدوار (role-play)، يكون دور المعلم توجيهياً وميسراً (facilitator and guide).</div>"},
+            {q:"Which word is considered a clipping?", o:["A) NASA | اختصار بالحروف الأولى (Acronym)", "B) Textbook | كلمة مركبة (Compound)", "C) Smog | نحت ودمج كلمتين (Blend)", "D) Flu | قص واختصار من كلمة Influenza (Clipping)"], c:3, t:"أي كلمة مما يلي تُعتبر اختصاراً بالقص (Clipping)؟", e:"<div class='box-hint'>D. Flu<br>Influenza → Flu<br>Clipping يعني اختصار كلمة طويلة إلى شكل أقصر دون تغيير معناها الكامل.<br>NASA ← اختصار بالحروف الأولى (Acronym)<br>Smog ← دمج كلمتين (Blend)<br>Textbook ← كلمة مركبة (Compound)</div>"},
+            {q:"The teacher wrote the sentence \"I love my to sisters\" on the board and then corrected the mistake for the students to \"two.\" What does this activity illustrate?", o:["A) Homonyms | متجانسات لفظية (نفس النطق والكتابة)", "B) Metonymy | كناية", "C) Synonyms | مترادفات", "D) Homophones | متجانسات صوتية (نفس النطق واختلاف التهجئة والمعنى)"], c:3, t:"كتب المعلم جملة \"I love my to sisters\" على السبورة ثم صحح الخطأ للطلاب إلى \"two\". ماذا يوضح هذا النشاط؟", e:"<div class='box-hint'>D) Homophones<br>to و two لهما نفس النطق لكن معاني وتهجئة مختلفة ← وهذا يسمى Homophones.<br>Homonyms ← نفس اللفظ ونفس التهجئة مع معاني مختلفة (مثل bank)<br>Synonyms ← نفس المعنى<br>Metonymy ← استخدام كلمة بدل أخرى لها علاقة معنوية.</div>"},
+            {q:"A teacher asked his students to collect the completed quizzes and worksheets, evaluate them, and give the students feedback on their work. This method of assessment is called:", o:["A) Formal Formative assessment | تقييم تكويني رسمي (يعتمد على أعمال مكتوبة ويقدم تغذية راجعة أثناء التعلم)", "B) informal formative assessment | تقييم تكويني غير رسمي", "C) Formal summative assessment | تقييم ختامي رسمي", "D) informal summative assessment | تقييم ختامي غير رسمي"], c:0, t:"طلب معلم من طلابه جمع الاختبارات القصيرة وأوراق العمل المكتملة، وتقييمها، وإعطاء الطلاب تغذية راجعة حول عملهم. تسمى طريقة التقييم هذه:", e:"<div class='box-hint'>A) Formal formative assessment<br>عندما يجمع المعلم الأعمال والاختبارات القصيرة ويعطي الطلاب تغذية راجعة (feedback) لتحسين تعلمهم أثناء الدراسة، فهذا يسمى Formative Assessment.<br>ولأنه يعتمد على أعمال مكتوبة مثل quizzes و worksheets فهو Formal.</div>"},
+            {q:"Which of the following verbs is NOT measurable?", o:["A) List | يعدد / يذكر في قائمة (قابل للقياس)", "B) Recall | يستدعي / يتذكر ويذكر (قابل للقياس)", "C) Understand | يفهم (فعل ذهني غامض غير قابل للقياس المباشر)", "D) Name | يسمي (قابل للقياس)"], c:2, t:"أي من الأفعال التالية غير قابل للقياس (لا يصلح لكتابة هدف سلوكي)؟", e:"<div class='box-hint'>C) Understand<br>الفعل Understand غير قابل للقياس مباشرة لأنه غامض.<br>أما الأفعال مثل List, Recall, Name فهي أفعال قابلة للقياس لأن المعلم يستطيع ملاحظتها وتقييمها.</div>"},
+            {q:"Which teaching strategy is most suitable for an introverted student?", o:["A) Role play | لعب الأدوار", "B) Group discussion | النقاش الجماعي", "C) Independent project | مشروع مستقل (فردي)", "D) Debate | المناظرة"], c:2, t:"أي استراتيجية تدريس هي الأنسب للطالب الانطوائي (Introverted student)؟", e:"<div class='box-hint'>C) Independent project<br>Independent project ← مناسب للطالب الانطوائي لأنه يعمل بشكل فردي وهادئ.</div>"},
+            {q:"The teacher asks students to write a complaint letter. This task should be given to:", o:["A) Beginner level | المستوى المبتدئ", "B) All levels | جميع المستويات", "C) Beginner and intermediate levels | المستويين المبتدئ والمتوسط", "D) Intermediate and advanced levels | المستويين المتوسط والمتقدم"], c:3, t:"يطلب المعلم من الطلاب كتابة رسالة شكوى رسمية (Complaint letter). يجب إعطاء هذه المهمة لـ:", e:"<div class='box-hint'>D) Intermediate and advanced levels<br>رسالة الشكوى تحتاج لغة رسمية، تنظيم أفكار، وتراكيب لغوية دقيقة، وهي مهارات تناسب المستويين المتوسط والمتقدم.</div>"},
+            {q:"When you say \"That is wonderful\" but actually mean \"That is terrible\", which literary device are you using?", o:["A) Irony | السخرية / التهكم اللفظي (قول الشيء وقصد عكسه)", "B) Simile | التشبيه", "C) Metaphor | الاستعارة", "D) Hyperbole | المبالغة"], c:0, t:"عندما تقول \"هذا رائع\" ولكنك تعني في الواقع \"هذا فظيع\"، فأي أداة بلاغية تستخدم؟", e:"<div class='box-hint'>A) Irony<br>Irony تعني قول شيء لكن المعنى المقصود عكسه. مثل قول \"That is wonderful\" بينما تقصد أن الشيء سيئ جداً.</div>"},
+            {q:"Students are assigned to read an article about environmental challenges. During the activity, the teacher asks them to underline all the discourse markers (e.g., \"however,\" and \"therefore\") and explain how they connect ideas. What reading strategy is being targeted?", o:["A) Analyzing text cohesion | تحليل التماسك النصي (أدوات الربط بين الجمل)", "B) Skimming for key information | التصفح السريع للمعلومات الرئيسية", "C) Making text-to-text connection | عمل روابط بين نص ونص آخر", "D) Scanning for specific information | المسح بحثاً عن معلومات محددة"], c:0, t:"كُلف الطلاب بقراءة مقال عن التحديات البيئية، وطلب منهم المعلم وضع خط تحت جميع روابط الخطاب (مثل however و therefore) وشرح كيف تربط الأفكار. ما استراتيجية القراءة المستهدفة هنا؟", e:"<div class='box-hint'>A) Analyzing text cohesion<br>عندما يطلب المعلم من الطلاب تحديد discourse markers مثل however و therefore وشرح كيف تربط الأفكار، فهذا يعني أنهم يدرسون ترابط النص وربط الجمل والأفكار، وهذا يسمى text cohesion.</div>"},
+            {q:"During a writing lesson, students analyze various sample texts to identify common structural patterns and linguistic features associated with specific purposes, such as writing a formal complaint letter. The teacher guides them to apply these patterns in their writing. What teaching approach is being implemented?", o:["A) Genre Approach | مدخل النوع الأدبي / النصي (تحليل نماذج نصوص من نفس النوع ثم محاكاتها)", "B) Process Approach | مدخل العمليات (التخطيط والمسودة والمراجعة)", "C) Product Approach | مدخل المنتج النهائي", "D) Free Writing Approach | مدخل الكتابة الحرة"], c:0, t:"خلال درس كتابة، يحلل الطلاب نماذج نصوص متنوعة لتحديد الأنماط الهيكلية والسمات اللغوية المرتبطة بأغراض محددة مثل كتابة رسالة شكوى، ثم يوجههم المعلم لتطبيق هذه الأنماط. ما المدخل التدريسي المطبق هنا؟", e:"<div class='box-hint'>A) Genre Approach<br>في Genre Approach يدرس الطلاب نماذج نصوص (sample texts) ليتعرفوا على التركيب اللغوي والبنية الخاصة بنوع معين من الكتابة مثل complaint letter، ثم يطبقون هذه الأنماط في كتاباتهم.</div>"},
+            {q:"In reading lessons, the strategy RATHM is used to help students:", o:["A) Scan for numbers and dates only | المسح بحثاً عن الأرقام والتواريخ فقط", "B) Analyze and understand the text systematically | تحليل النص وفهمه بطريقة منظمة ومنهجية", "C) Memorize vocabulary words | حفظ كلمات المفردات", "D) Write summaries without reading | كتابة ملخصات بدون قراءة"], c:1, t:"في دروس القراءة، تُستخدم استراتيجية (RATHM) لمساعدة الطلاب على:", e:"<div class='box-hint'>B) Analyze and understand the text systematically<br>استراتيجية RATHM تستخدم لمساعدة الطلاب على تحليل النص وفهمه بطريقة منظمة ومنهجية أثناء القراءة.</div>"},
+            {q:"In the early stages of language learning Arab learners may produce sentences such as: She has a smile beautiful instead of She has a beautiful smile. This can be explained as .........", o:["A) Overextension | التوسيع الدلالي المفرط", "B) positive transfer | النقل الإيجابي", "C) negative transfer | النقل السلبي (التداخل اللغوي من العربية)", "D) Overgeneralization | التعميم المفرط للقاعدة"], c:2, t:"في المراحل المبكرة لتعلم اللغة قد ينتج المتعلمون العرب جملاً مثل: (She has a smile beautiful) بدلاً من (She has a beautiful smile). يمكن تفسير ذلك بـ .........", e:"<div class='box-hint'>C) Negative transfer<br>في اللغة العربية: الصفة تتبع الموصوف: ابتسامة جميلة. بينما في اللغة الانجليزية: الصفة أولاً: beautiful smile. والمتعلم العربي هنا وقع في الخطأ وهو ما يسمى بالنقل السلبي Negative transfer.</div>"},
+            {q:"I will give you a ring tomorrow morning. The previous sentence is ...................", o:["A) ill-structured | سيئة التركيب النحوي", "B) ambiguous | غامضة دلالياً (تحمل معنيين: سأتصل بك أو سأعطيك خاتماً)", "C) Complex | جملة معقدة", "D) Compound | جملة مركبة"], c:1, t:"جملة (I will give you a ring tomorrow morning) تعتبر جملة ...................", e:"<div class='box-hint'>B. ambiguous<br>الجملة هنا غامضة لأنها قد تعني: سأعطيك خاتماً غداً، أو سأتصل بك غداً (غموض معجمي في كلمة ring).</div>"},
+            {q:"What is the main sentence in a paragraph called:", o:["A) Thesis statement | جملة الأطروحة (للمقال كاملاً)", "B) Topic sentence | جملة الموضوع (الجملة الأساسية في الفقرة)", "C) Closing sentence | الجملة الختامية", "D) First sentence | الجملة الأولى"], c:1, t:"ماذا تُسمى الجملة الرئيسية في الفقرة (Paragraph)؟", e:"<div class='box-hint'>B) Topic sentence<br>Topic sentence = هي الجملة الأساسية في الفقرة تعطي الفكرة الرئيسية التي ستتحدث عنها بقية الجمل.</div>"},
+            {q:"The writing process can be achieved by following the recursive phases of writing:", o:["A) Pre-writing, Drafting, Revising, Editing, and Publishing | ما قبل الكتابة، المسودة، المراجعة، التحرير، والنشر", "B) Drafting, Pre-writing, Revising, Editing, and Publishing | المسودة، ما قبل الكتابة، المراجعة، التحرير، والنشر", "C) Pre-writing, Revising, Drafting, Editing, and Publishing | ما قبل الكتابة، المراجعة، المسودة، التحرير، والنشر", "D) Drafting, Revising, Pre-writing, Editing, and Publishing | المسودة، المراجعة، ما قبل الكتابة، التحرير، والنشر"], c:0, t:"يمكن تحقيق عملية الكتابة من خلال اتباع المراحل المتعاقبة للكتابة بالترتيب التالي:", e:"<div class='box-hint'>A. Pre-writing, Drafting, Revising, Editing, and Publishing<br>Writing process = مراحل الكتابة الخمس:<br>Pre-writing → Drafting → Revising → Editing → Publishing</div>"},
+            {q:"________ courses are tailored English language training programs designed to meet the specific linguistic needs of employees in their professional context.", o:["A) General English | الإنجليزية العامة", "B) Academic English | الإنجليزية الأكاديمية", "C) ESP (English for Specific Purposes) | الإنجليزية لأغراض خاصة (مهنية/وظيفية)", "D) EAP (English for Academic Purposes) | الإنجليزية لأغراض أكاديمية"], c:2, t:"دورات ________ هي برامج تدريبية للغة الإنجليزية مصممة خصيصاً لتلبية الاحتياجات اللغوية المحددة للموظفين في سياقهم المهني.", e:"<div class='box-hint'>C. ESP (English for Specific Purposes)<br>tailored to specific needs ← موجه لاحتياجات محددة<br>employees / professional context ← بيئة عمل<br>وهذا تعريف ESP.</div>"},
+            {q:"If a teacher uses the Deductive Approach, what does he/she explain first in class?", o:["A) Examples first, then the grammatical rule | الأمثلة أولاً، ثم القاعدة النحوية (استقرائي)", "B) The grammatical rule first, then examples | القاعدة النحوية أولاً، ثم الأمثلة (قياسي/استنباطي)", "C) Only the grammatical rule without examples | القاعدة النحوية فقط بدون أمثلة", "D) Only examples without explaining the rule | الأمثلة فقط بدون شرح القاعدة"], c:1, t:"إذا استخدم المعلم الطريقة القياسية / الاستنباطية (Deductive Approach)، فماذا يشرح أولاً في الفصل؟", e:"<div class='box-hint'>B. The grammatical rule first, then examples<br>Deductive = Rule → Examples → Practice<br>Inductive = Examples → Rule → Practice</div>"},
+            {q:"Language is a ................", o:["A) Systematic | نظامية / منهجية (لها قواعد ونظام واضح)", "B) Rigid | جامدة / متصلبة", "C) Random | عشوائية بلا قواعد", "D) Fixed | ثابتة لا تتغير"], c:0, t:"اللغة تتصف بأنها ................", e:"<div class='box-hint'>A. Systematic<br>Systematic ← لها قواعد ونظام واضح (grammar, syntax, phonology).</div>"},
+            {q:"Brainstorming and Mind Mapping are techniques used in which English language skill?", o:["A) Writing | مهارة الكتابة (لتوليد وتنظيم الأفكار قبل الكتابة)", "B) Reading | مهارة القراءة", "C) Listening | مهارة الاستماع", "D) Pronunciation | النطق"], c:0, t:"العصف الذهني والخرائط الذهنية هي تقنيات تُستخدم بشكل رئيسي في أي مهارة من مهارات اللغة الإنجليزية؟", e:"<div class='box-hint'>A) Writing<br>تساعد Brainstorming و Mind Mapping على Writing بشكل رئيسي ← لتوليد الأفكار قبل الكتابة أو تنظيمها.</div>"},
+            {q:"Which activity is typically done before listening to a text in English class?", o:["A) Summarizing the text | تلخيص النص (بعد الاستماع)", "B) Note-taking | تدوين الملاحظات (أثناء الاستماع)", "C) Generating questions | توليد وطرح الأسئلة (قبل الاستماع للتهيئة)", "D) Answering detailed questions | الإجابة عن أسئلة تفصيلية"], c:2, t:"أي نشاط يتم إجراؤه عادةً قبل الاستماع إلى نص في حصة اللغة الإنجليزية؟", e:"<div class='box-hint'>C) Generating questions<br>Generating questions → نشاط قبل الاستماع (Pre-listening) لتحفيز التفكير والتوقعات.<br>Note-taking → أثناء الاستماع (While-listening)<br>Summarizing → بعد الاستماع (Post-listening)</div>"},
+            {q:"When a teacher instructs students to Write down all of the idea they can think of related to a topic, this is known as......", o:["A) Outlining | إعداد المخطط الهيكلي", "B) Clustering | التجميع العنقودي", "C) Note-taking | تدوين الملاحظات", "D) Brainstorming | العصف الذهني (كتابة كل الأفكار التي تخطر على البال)"], c:3, t:"عندما يوجه المعلم الطلاب لكتابة جميع الأفكار التي تخطر ببالهم حول موضوع معين، يُعرف هذا بـ ......", e:"<div class='box-hint'>D) Brainstorming<br>Brainstorming هو عملية كتابة كل الأفكار التي تخطر على بال الطلاب حول موضوع معين دون ترتيبها أو تقييمها، بهدف توليد أكبر عدد ممكن من الأفكار قبل تنظيمها أو تحليلها.</div>"},
+            {q:"When the teacher requires students to read a text quickly and then give it an appropriate title, this is known as reading ______.", o:["A) For details | القراءة للتفاصيل", "B) For the gist | القراءة للفكرة العامة (المضمون الأساسي)", "C) For knowledge | القراءة للمعرفة", "D) Scanning | المسح القرائي"], c:1, t:"عندما يطلب المعلم من الطلاب قراءة نص بسرعة ثم إعطائه عنواناً مناسباً، يُعرف هذا بالقراءة من أجل ______.", e:"<div class='box-hint'>B) For the gist<br>قراءة النص بسرعة لفهم الفكرة الأساسية أو المضمون العام دون التركيز على التفاصيل تسمى reading for the gist.<br>For details ← قراءة للعثور على معلومات محددة.<br>Scanning ← البحث عن كلمات أو أرقام معينة بسرعة.<br>For knowledge ← قراءة لفهم أو تعلم معلومات جديدة بشكل عام.</div>"},
+            {q:"Teaching English to learners from diverse cultural backgrounds like Egypt, China, Saudi Arabia, Kuwait is an example of:", o:["A) cross-cultural communication | تواصل عابر للثقافات", "B) multilingual education | تعليم متعدد اللغات", "C) cross-cultural teaching | تدريس متعدد الثقافات (مراعاة الخلفيات الثقافية المتنوعة للطلاب)", "D) monocultural teaching | تدريس أحادي الثقافة"], c:2, t:"تدريس اللغة الإنجليزية لمتعلمين من خلفيات ثقافية متنوعة مثل مصر، الصين، السعودية، والكويت هو مثال على:", e:"<div class='box-hint'>C. cross-cultural teaching<br>Cross-cultural teaching يعني تعليم الطلاب الذين ينتمون إلى خلفيات ثقافية مختلفة، مع مراعاة اختلافاتهم في اللغة، العادات، القيم، لضمان فهم المحتوى والتفاعل الفعّال في الصف.</div>"},
+            {q:"The understanding of the function of the spoken utterance in a given situation is known as.......", o:["A) Linguistic competence | الكفاءة اللغوية", "B) Strategic competence | الكفاءة الاستراتيجية", "C) Pragmatic competence | الكفاءة التداولية (فهم وظيفة الكلام حسب الموقف)", "D) Discourse competence | الكفاءة الخطابية"], c:2, t:"فهم وظيفة الكلام المنطوق في موقف معين يُعرف بـ .......", e:"<div class='box-hint'>C- Pragmatic competence<br>معنى الكلام حسب الموقف = Pragmatic.</div>"},
+            {q:"When a student whose L1 is Arabic chooses English words that are similar to words in their L1 and avoids words that are different, in order to prevent ridicule from peers, this behavior is called ______.", o:["A) Fossilization | التحجر اللغوي", "B) Avoidance | استراتيجية التجنب (تفادي الكلمات أو التراكيب الصعبة خوفاً من الخطأ)", "C) Overgeneralization | التعميم المفرط", "D) Transfer | النقل اللغوي"], c:1, t:"عندما يختار طالب لغته الأم هي العربية كلمات إنجليزية مشابهة للغته ويتجنب الكلمات المختلفة خوفاً من سخرية أقرانه، يُسمى هذا السلوك ______.", e:"<div class='box-hint'>B) Avoidance<br>Avoidance = تجنب استخدام كلمات أو تراكيب صعبة أو مختلفة عن لغتك الأم لتفادي الخطأ أو السخرية.</div>"},
+            {q:"Which type of reading focuses on reading for pleasure and general understanding rather than detailed analysis?", o:["A) Extensive | القراءة الموسعة (للمتعة والفهم العام لنصوص طويلة)", "B) Intensive | القراءة المكثفة (لتحليل التفاصيل الدقيق)", "C) Silent | القراءة الصامتة", "D) Aloud | القراءة الجهرية"], c:0, t:"أي نوع من القراءة يركز على القراءة من أجل المتعة والفهم العام بدلاً من التحليل التفصيلي؟", e:"<div class='box-hint'>A) Extensive<br>Extensive reading ← قراءة للمتعة والفهم العام، نصوص طويلة وسهلة نسبياً.<br>Intensive reading ← قراءة دقيقة لتحليل التفاصيل والفهم العميق.</div>"},
+            {q:"A student is new to your English class and avoids pronouncing difficult words because he fears making mistakes and being ridiculed by peers. This behavior is explained by the ______ hypothesis.", o:["A) Monitor | فرضية المراقب", "B) Affective | فرضية المرشح العاطفي / الوجداني (Affective Filter)", "C) Natural order | فرضية الترتيب الطبيعي", "D) Input | فرضية المدخلات"], c:1, t:"طالب جديد في فصل اللغة الإنجليزية يتجنب نطق الكلمات الصعبة لأنه يخشى ارتكاب الأخطاء وسخرية زملائه. يُفسر هذا السلوك من خلال فرضية ______.", e:"<div class='box-hint'>B) Affective<br>وفق Affective Filter Hypothesis، عندما يشعر الطالب بالخوف أو القلق من الخطأ أو السخرية، يرتفع الحاجز العاطفي لديه، مما يجعله يتجنب الكلام أو النطق بالكلمات الصعبة.</div>"},
+            {q:"The words (hence, in addition, moreover...) are the glue that holds your writing together. They help you smoothly connect ideas and are called :", o:["A) Compound words | الكلمات المركبة", "B) Transition words | الكلمات الانتقالية (أدوات الربط بين الجمل والفقرات)", "C) Sequencing words | كلمات التسلسل الزمني فقط", "D) Ordering words | كلمات الترتيب"], c:1, t:"الكلمات (hence, in addition, moreover...) هي الغراء الذي يربط كتابتك ببعضها، وتساعدك على ربط الأفكار بسلاسة وتسمى:", e:"<div class='box-hint'>B. Transition words<br>Transition words (كلمات الربط والانتقال) هي الكلمات التي تربط الأفكار بين الجمل والفقرات لجعل الكتابة سلسة وواضحة.</div>"},
+            {q:"Which area of language most clearly shows the influence of a learner's first language on their second language?", o:["A) Morphological | المجال الصرفي", "B) Pragmatic | المجال التداولي", "C) Phonological | المجال الصوتي (النطق واللهجة)", "D) Semantic | المجال الدلالي"], c:2, t:"أي مجال من مجالات اللغة يُظهر بوضوح أكبر تأثير اللغة الأولى للمتعلم على لغته الثانية؟", e:"<div class='box-hint'>C) Phonological<br>Phonological area (النطق والأصوات) هي المنطقة الأكثر تأثراً باللغة الأم. عند تعلم لغة جديدة، غالباً ينقل المتعلم أصوات وطرق نطق لغته الأم إلى اللغة الثانية (اللكنة).</div>"},
+            {q:"The variety of English spoken in the U.S.A. and Australia primarily originates from which country?", o:["A) England | إنجلترا", "B) Scotland | اسكتلندا", "C) Wales | ويلز", "D) Canada | كندا"], c:0, t:"تنوع اللغة الإنجليزية المتحدث بها في الولايات المتحدة وأستراليا ينشأ في الأصل من أي دولة؟", e:"<div class='box-hint'>A) England<br>اللغة الإنجليزية التي تستخدم في الولايات المتحدة الأمريكية وأستراليا تعود جذورها إلى الإنجليزية البريطانية. مع الهجرات والاستعمار، انتقلت الإنجليزية من إنجلترا إلى أمريكا وأستراليا، ثم تطورت هناك إلى لهجات محلية مختلفة (مثل American English و Australian English).</div>"},
+            {q:"Which of the following social media applications provides the best practice for developing writing skills?", o:["A) Snapchat | سناب شات (يركز على الصور والفيديو القصير)", "B) YouTube | يوتيوب (يركز على الفيديو)", "C) Facebook | فيسبوك (يتيح كتابة منشورات ومقالات وتعليقات طويلة)", "D) Instagram | إنستغرام (يركز على الصور والفيديو)"], c:2, t:"أي من تطبيقات التواصل الاجتماعي التالية يوفر أفضل ممارسة لتطوير مهارات الكتابة؟", e:"<div class='box-hint'>C) Facebook<br>Facebook يتيح للطلاب كتابة منشورات وتعليقات طويلة نسبياً، لذلك يوفر ممارسة أفضل لمهارات الكتابة مقارنة بالتطبيقات الأخرى التي تركز أكثر على الصور أو الفيديو.</div>"},
+            {q:"............ Based Approach focuses on students' situations in the real life.", o:["A) Topical | القائم على المواضيع", "B) Instructional | القائم على التعليمات", "C) Grammatical | القائم على القواعد", "D) Task | القائم على المهام الحياتية الواقعية (Task-Based Approach)"], c:3, t:"المنهج القائم على ............ يركز على مواقف الطلاب في الحياة الواقعية.", e:"<div class='box-hint'>D. Task<br>Task-Based Approach (منهج قائم على المهام) يركز على تطبيق اللغة في مواقف حقيقية، مثل كتابة بريد إلكتروني، إجراء مقابلة، أو طلب الطعام في مطعم.</div>"},
+            
+            /* -- الأسئلة من 51 إلى 78 (الجزء الثالث الجديد) -- */
+            {q:"A student responds physically to the teacher's commands in class. This is an example of which teaching method?", o:["A) Total Physical Response | الاستجابة الجسدية الكلية (TPR)", "B) Audio-lingual | الطريقة السمعية الشفوية", "C) Communicative Language Teaching | التدريس التواصلي", "D) Direct Method | الطريقة المباشرة"], c:0, t:"يستجيب الطالب جسدياً لأوامر المعلم في الفصل. هذا مثال على أي طريقة تدريس؟", e:"<div class='box-hint'>A) Total Physical Response<br>في TPR يستجيب الطلاب بحركات جسدية لأوامر المعلم. مثل أن يقول المعلم \"Stand up\" والطلاب يقفون فعلياً.</div>"},
+            {q:"Teacher (to students): please read the text on page 55, when you're done, write a thorough evaluation about it the preview scenario exemplifies a teaching strategy known as:", o:["A) Scanning | المسح السريع", "B) Skimming | القراءة السريعة للفكرة العامة", "C) Note taking | تدوين الملاحظات", "D) Critical thinking | التفكير النقدي"], c:3, t:"طلب المعلم من الطلاب قراءة النص ص 55، وعندما تنتهي، اكتب تقييماً شاملاً (evaluation) له، وهذا يتطلب تحليل النص وإصدار حكم عليه، وهو من مهارات التفكير النقدي (Critical thinking).", e:"<div class='box-hint'>D) Critical thinking<br>لأن الطلب يتطلب تقييماً شاملاً (evaluation) وتحليلاً، وهذا يعكس مهارات التفكير النقدي (Critical thinking).</div>"},
+            {q:"The teacher asks students what information they can tell him/her about the Topic before starting to listen to the text. Here, the teacher is ..............", o:["A) Activating students' prior knowledge | تنشيط المعرفة السابقة لدى الطلاب", "B) Focusing on language accuracy | التركيز على دقة اللغة", "C) Using the bottom-up model | استخدام نموذج من القاعدة للقمة", "D) Dealing with connected speech | التعامل مع الكلام المتصل"], c:0, t:"يسأل المعلم الطلاب ما المعلومات التي يمكنهم إخباره بها عن الموضوع قبل البدء في الاستماع للنص. هنا، المعلم يقوم بـ ..............", e:"<div class='box-hint'>A) Activating students' prior knowledge<br>عندما يسأل المعلم الطلاب ماذا يعرفون عن الموضوع قبل الاستماع، فهو يساعدهم على ربط المعلومات الجديدة بما يعرفونه مسبقاً (Activating prior knowledge).</div>"},
+            {q:"In order to collect information about students' learning needs, wishes, desires, etc. for the sake of designing a language course, a Teacher needs to do...", o:["A) A program evaluation | تقييم البرنامج", "B) An assessment plans | خطط التقييم", "C) A needs analysis | تحليل الاحتياجات (تحديد رغبات واحتياجات الطلاب)", "D) A teaching portfolio | ملف الأداء التعليمي"], c:2, t:"من أجل جمع معلومات حول احتياجات التعلم للطلاب، رغباتهم، وتطلعاتهم... من أجل تصميم منهج لغة، يحتاج المعلم إلى إجراء...", e:"<div class='box-hint'>C. Needs analysis<br>Needs analysis هي العملية التي يجمع فيها المعلم معلومات عن احتياجات الطلاب، رغباتهم، ومستوى مهاراتهم لتصميم منهج لغة مناسب لهم.</div>"},
+            {q:"Which skill is best taught using the bottom-up approach?", o:["A) Grammar | القواعد", "B) Vocabulary | المفردات", "C) Reading | القراءة (من الحروف إلى الكلمات فالجمل)", "D) Speaking | التحدث"], c:2, t:"أي مهارة يتم تدريسها بشكل أفضل باستخدام النهج التصاعدي (Bottom-up approach)؟", e:"<div class='box-hint'>C) Reading<br>Bottom-up approach يعني أن المتعلم يبدأ من الأجزاء الصغيرة إلى الكبيرة:<br>أصوات ← كلمات ← جمل ← نص كامل.<br>هذا الأسلوب يناسب القراءة (Reading) أكثر من المهارات الأخرى، لأن فهم النص يتطلب تحليل الكلمات والجمل أولاً قبل فهم الفكرة العامة.</div>"},
+            {q:"Identify the type of phrase in the sentence: \"That girl is very smart.\" The phrase \"That girl\" is a ......", o:["A) Verb phrase | شبه جملة فعلية", "B) Noun phrase | شبه جملة اسمية", "C) Prepositional phrase | شبه جملة حرف جر", "D) Adverbial phrase | شبه جملة ظرفية"], c:1, t:"حدد نوع العبارة في الجملة: \"That girl is very smart.\" العبارة \"That girl\" هي ......", e:"<div class='box-hint'>B) Noun phrase<br>تتكون من Determiner (That) + Noun (girl). تعمل كفاعل في الجملة ← لذا هي Noun Phrase.</div>"},
+            {q:"I gave Sami the photo. The word \"Sami\" is a ......", o:["A) verb | فعل", "B) subject | فاعل", "C) direct object | مفعول به مباشر", "D) indirect object | مفعول به غير مباشر (الشخص الذي يتلقى الشيء)"], c:3, t:"في جملة (I gave Sami the photo)، الكلمة \"Sami\" تُعتبر ......", e:"<div class='box-hint'>D) indirect object<br>I → Subject (الفاعل)<br>gave → Verb (الفعل)<br>the photo → Direct object (المفعول به المباشر، أي الشيء الذي يُعطى أو يُعطي لله)<br>Sami → Indirect object (المفعول به غير مباشر، الشخص الذي يُعطى له الشيء).</div>"},
+            {q:"-/t/, /t/ and /t/ in tuck, hits and slept are called", o:["A) Allophones | أصوات متتالية / متغيرة لنفس الفونيم حسب الموقع", "B) Allomorphs | مورفيمات بديلة", "C) Minimal sets | مجموعات متقابلة", "D) Minimal pairs | أزواج متقابلة"], c:0, t:"الأصوات /t/, /t/ و /t/ في كلمات tuck, hits و slept تسمى:", e:"<div class='box-hint'>A) Allophones<br>Allophones are different forms of the same phoneme<br>لأنه صوت واحد واختلاف نطقه حسب موقعه بالكلمة.</div>"},
+            {q:"What type of speech situation is it when someone gives a speech to a live audience?", o:["A) Interactive | تفاعلي", "B) Non-interactive | غير تفاعلي (مثل إلقاء خطاب أمام جمهور دون تفاعل مباشر)", "C) Partially interactive | تفاعلي جزئياً", "D) Transactional | تبادلي"], c:1, t:"ما هو نوع موقف الكلام عندما يلقي شخص خطاباً أمام جمهور حقيقي؟", e:"<div class='box-hint'>B) Non-interactive<br>عندما يلقي شخص خطَاباً أمام جمهور مباشر دون أن يحدث تفاعل مباشر أثناء الكلام، يكون هنا Non-interactive speech، أي تواصل من طرف واحد.<br>Interactive ← يوجد تفاعل مباشر بين المتحدث والجمهور.<br>Partially interactive ← تفاعل محدود (مثل البيع في محادثة قصيرة).<br>Transactional ← التواصل له هدف محدد عملي أو غير تفاعلي حسب السياق.</div>"},
+            {q:"Which processing model combines the use of both linguistic clues and prior knowledge?", o:["A) Interactive processing | معالجة تفاعلية (تجمع بين Bottom-up و Top-down)", "B) Top-down only | من أعلى لأسفل فقط", "C) Bottom-up only | من أسفل لأعلى فقط", "D) Linear decoding | فك التشفير الخطي"], c:0, t:"أي نموذج للمعالجة يجمع بين استخدام الأدلة اللغوية والمعرفة السابقة؟", e:"<div class='box-hint'>A) Interactive processing<br>Interactive processing model يجمع بين Bottom-up (تحليل التفاصيل من النص) و Top-down (استخدام المعرفة والخبرة السابقة).</div>"},
+            {q:"In a science textbook, a student looks specifically for the date of a discovery. What strategy are they using?", o:["A) Skimming | قراءة سريعة للفكرة العامة", "B) Predicting | التنبؤ", "C) Scanning | المسح السريع للبحث عن معلومة محددة", "D) Monitoring | المراقبة"], c:2, t:"في كتاب علمي، يبحث طالب خصيصاً عن تاريخ اكتشاف معين. ما هي الاستراتيجية التي يستخدمونها؟", e:"<div class='box-hint'>C) Scanning<br>Scanning يعني البحث السريع عن معلومة محددة في النص، مثل تاريخ اكتشاف علمي، دون قراءة النص كله.</div>"},
+            {q:"If a test is designed to measure how well students have learned the specific material covered in a 6-week unit, it is called a/an:", o:["A) Achievement test | اختبار تحصيلي (يقيس ما تم دراسته خلال فترة محددة)", "B) Proficiency test | اختبار كفاءة عامة", "C) Diagnostic test | اختبار تشخيصي لمعرفة نقاط القوة والضعف", "D) Aptitude test | اختبار استطاعة أو موهبة"], c:0, t:"إذا كان الاختبار مصمماً لقياس مدى تعلم الطلاب للمادة المحددة التي تم دراستها في وحدة مدتها 6 أسابيع، فيُسمى:", e:"<div class='box-hint'>A) Achievement test<br>Achievement test يقيس مدى تعلم الطلاب للمادة المحددة التي تمت دراستها خلال فترة معينة، مثل وحدة دراسية لمدة 6 أسابيع.<br>Proficiency test ← يقيس مستوى اللغة العام بغض النظر عن المنهج.<br>Diagnostic test ← يحدد نقاط القوة والضعف قبل أو أثناء التعلم.<br>Aptitude test ← يقيس القدرة أو الموهبة في تعلم اللغة مستقبلاً.</div>"},
+            {q:"Changing a morpheme to an entirely different morpheme to indicate grammatical difference is called:", o:["A) Suppletion | الإبدال الكلي لصيغة الكلمة نحوياً (مثل go إلى went)", "B) Substraction | حذف جزء من الكلمة", "C) Reduplication | تكرار جزء من الكلمة", "D) Blending | دمج"], c:2, t:"تغيير المورفيم إلى شكل مختلف تماماً للدلالة على اختلاف نحوي يُسمى:", e:"<div class='box-hint'>A) Suppletion<br>Suppletion يحدث عندما يتغير المورفيم إلى شكل مختلف تماماً للدلالة على اختلاف نحوي.<br>مثل: go ← went (الماضي).<br>Subtraction ← حذف جزء من الكلمة.<br>Reduplication ← تكرار جزء من الكلمة.</div>"},
+            {q:"A learner wants to learn English for its own sake. This type of motivation is called:", o:["A) Inceptive motivation | دافعية استهلالية", "B) Intrinsic motivation | دافعية داخلية (الرغبة في التعلم لذاته وليس لمكافأة خارجية)", "C) Competence | الكفاءة", "D) Instrumental motivation | دافعية نفعية/خارجية"], c:1, t:"يريد متعلم تعلم اللغة الإنجليزية لذاتها. هذا النوع من الدافعية يُسمى:", e:"<div class='box-hint'>B) Intrinsic motivation<br>Intrinsic motivation تعني أن المتعلم يريد تعلم اللغة بدافع داخلي ولأجلها نفسها، وليس بسبب مكافأة خارجية أو ضغط.</div>"},
+            {q:"The sounds /n/, /m/, /ŋ/ are classified as:", o:["A) -nasal, +aspirated | غير أنفي، مصحوب بهواء قوي", "B) +nasal, -aspirated | أنفي، غير مصحوب بهواء قوي (مرور الهواء من الأنف)", "C) -nasal, -aspirated | غير أنفي، غير مصحوب بهواء", "D) +nasal, +aspirated | أنفي ومصحوب بهواء قوي"], c:1, t:"الأصوات /n/, /m/, /ŋ/ تُصنف على أنها:", e:"<div class='box-hint'>B) +nasal, -aspirated<br>الأصوات /n/, /m/, /ŋ/ تمر فيها الهواء عبر الأنف (+nasal) وليست مصحوبة بخروج هواء قوي (-aspirated).</div>"},
+            {q:"A teacher wants to increase students' motivation in the classroom. Which of the following strategies is most effective?", o:["A) Technology | استخدام التكنولوجيا لجعل الدرس تفاعلياً", "B) Presentation | العرض التقديمي", "C) Assessment | التقييم", "D) Quizzes | الاختبارات القصيرة"], c:0, t:"يريد معلم زيادة دافعية الطلاب في الفصل. أي من الاستراتيجيات التالية هي الأكثر فعالية؟", e:"<div class='box-hint'>A) Technology<br>استخدام التكنولوجيا يجعل الدرس أكثر تفاعلية وجاذبية، مما يزيد تحفيز الطلاب للمشاركة والتعلم.</div>"},
+            {q:"A type of writing where the writer takes a position for or against an argument and supports it with evidence is called:", o:["A) Narrative | سردية", "B) Descriptive | وصفية", "C) Expository | تفسيرية", "D) Persuasive | إقناعية (تهدف لإقناع القارئ برأي معين باستخدام الأدلة والحجج)"], c:3, t:"نوع من الكتابة حيث يتخذ الكاتب موقفاً مع أو ضد حجة ويدعمها بالأدلة يُسمى:", e:"<div class='box-hint'>D) Persuasive<br>Persuasive writing يهدف إلى إقناع القارئ برأي معين باستخدام أدلة وحجج.</div>"},
+            {q:"Which type of pragmatic function includes claims, statements, facts, and descriptions?", o:["A) Expressive | تعبيرية", "B) Directive | توجيهية", "C) Declarative | إعلانية", "D) Assertive | تأكيدية (تستخدم عندما يذكر المتكلم حقائق أو معلومات مثل claims و facts)"], c:3, t:"أي نوع من الوظائف التداولية يتضمن الادعاءات، البيانات، الحقائق، والأوصاف؟", e:"<div class='box-hint'>D) Assertive<br>Assertives تُستخدم عندما يذكر المتكلم حقائق أو معلومات مثل: claims, statements, facts, descriptions.</div>"},
+            {q:"Which language theory argues that humans have an innate ability to acquire language?", o:["A) Behaviorism | السلوكية", "B) The Nativist Model | النموذج الفطري (تشومسكي: الإنسان يولد بقدرة فطرية على تعلم اللغة)", "C) Interactionism | التفاعلية", "D) Cognitive Theory | المعرفية"], c:1, t:"أي نظرية لغوية تقول بأن البشر لديهم قدرة فطرية على اكتساب اللغة؟", e:"<div class='box-hint'>B) The Nativist Model<br>The Nativist Model (نظرية تشومسكي) تقول إن الإنسان يولد بقدرة فطرية لتعلم اللغة (LAD - Language Acquisition Device).</div>"},
+            {q:"In which learning theory can high achievers scaffold low achievers?", o:["A) Constructivism | البنائية (يتعلم الطلاب من خلال التفاعل والتعاون، وبدعم من الزملاء المتقدمين)", "B) Behaviorism | السلوكية", "C) Cognitivism | المعرفية", "D) Nativism | الفطرية"], c:0, t:"في أي نظرية تعلّم يمكن للطلاب المتفوقين تقديم الدعم (scaffold) للطلاب الأقل تفوقاً؟", e:"<div class='box-hint'>A) Constructivism<br>في Constructivism يتعلم الطلاب من خلال التفاعل والتعاون، ويمكن للطلاب المتقدمين مساعدة (scaffold) الطلاب الأضعف.</div>"},
+            {q:"A vocabulary lesson about sports such as archery and scuba diving aims to promote:", o:["A) Lexical set | مجموعة معجمية (كلمات مرتبطة بنفس المجال أو الموضوع مثل الرياضات)", "B) Polysemy | تعدد المعاني", "C) Synonymy | الترادف", "D) Collocation | المتلازمات اللفظية"], c:0, t:"درس مفردات عن الرياضات مثل الرماية والغوص (archery and scuba diving) يهدف إلى تعزيز:", e:"<div class='box-hint'>A) Lexical set<br>Lexical set يعني مجموعة كلمات مرتبطة بنفس المجال أو الموضوع، مثل الرياضات (archery, scuba diving, football).</div>"},
+            {q:"A communicative teaching approach that focuses on communicating the meaning in its practical usage without focusing on the grammatical aspect is:", o:["A) Functional approach | المنهج الوظيفي (يركز على التواصل واستخدام اللغة لغرض معين دون التركيز المفرط على القواعد)", "B) Task based | القائم على المهام", "C) Grammar translation | الترجمة والقواعد", "D) Audio lingual | السمعية الشفوية"], c:0, t:"منهج تدريس تواصل يركز على توصيل المعنى في استخدامه العملي دون التركيز على الجانب النحوي هو:", e:"<div class='box-hint'>A) Functional approach<br>Functional approach يركز على التواصل واستخدام اللغة لغرض معين، دون التركيز الشديد على القواعد النحوية.</div>"},
+            {q:"According to Piaget, which stage the person thinks logically?", o:["A) Sensorimotor | الحس حركية (0-2 سنة)", "B) Preoperational | ما قبل العمليات (2-7 سنوات)", "C) Concrete operational | العمليات المادية / الملموسة (7-11 سنة - التفكير المنطقي حول الأشياء الملموسة)", "D) Formal operational | العمليات الشكلية"], c:2, t:"وفقاً لبياجيه، في أي مرحلة يفكر الشخص بشكل منطقي؟", e:"<div class='box-hint'>C) Concrete operational<br>وفقاً لـ Piaget:<br>- Sensorimotor (0-2 سنوات): التعلم عبر الحواس والحركة، لا يوجد تفكير منطقي.<br>- Preoperational (2-7 سنوات): تفكير رمزي لكن غير منطقي بالكامل.<br>- Concrete operational (11-7 سنوات): التفكير المنطقي حول الأشياء الملموسة يبدأ هنا.</div>"},
+            {q:"Which verb promotes critical thinking?", o:["A) Define | يحدد/يعرف (تذكر معنى فقط)", "B) Remember | يتذكر", "C) List | يذكر في قائمة", "D) Categorize | يصنف (يتطلب تحليل المعلومات وتصنيفها بناء على الفهم والعلاقات)"], c:3, t:"أي فعل يعزز التفكير النقدي؟", e:"<div class='box-hint'>D) Categorize<br>Categorize يتطلب من الطالب تحليل المعلومات وتصنيفها بناءً على الفهم والعلاقات ← يعزز التفكير النقدي.<br>Define ← تذكر معنى فقط.<br>Remember ← استدعاء معلومات.<br>List ← سرد معلومات دون تحليل.</div>"},
+            {q:"Which suffix is commonly used to form a verb from a noun or adjective?", o:["A) -ly | لتكوين حال (adverb)", "B) -ate | لتكوين أفعال مثل activate و dominate", "C) -tion | لتكوين اسم (noun)", "D) -ity | لتكوين اسم"], c:1, t:"أي لاحقة (suffix) تُستخدم عادة لتكوين فعل من اسم أو صفة؟", e:"<div class='box-hint'>B) -ate<br>-ate لتكوين أفعال مثل activate و dominate.<br>-ly لتكوين حال (adverb).<br>-tion لتكوين اسم (noun).</div>"},
+            {q:"The sounds /b/ and /p/ in English are different in meaning. They are classified as:", o:["A) Allophones", "B) Phonemes | فونيمات (أصوات مختلفة تغير معنى الكلمة، مثل bat / pat)", "C) Morphemes", "D) Graphemis"], c:1, t:"الصوتان /b/ و /p/ في اللغة الإنجليزية يختلفان في المعنى. ويصنفان على أنهما:", e:"<div class='box-hint'>B) Phonemes<br>Phonemes هي أصوات مختلفة تغير معنى الكلمة.<br>مثال: /bat/ vs /pat/ ← يغيران معنى الكلمة.</div>"},
+            {q:"Platform for interaction with native speakers", o:["A) Cambly | منصة كامبلي (تتيح التحدث مع متحدثين أصليين للغة الإنجليزية مباشرة لتطوير المهارات اللغوية)", "B) Vlog | مدونة فيديو", "C) Vodcasts | البودكاست المرئي", "D) Podcast | بودكاست صوتي"], c:0, t:"منصة للتفاعل مع المتحدثين الأصليين للغة:", e:"<div class='box-hint'>A) Cambly<br>Cambly منصة تتيح التحدث مع متحدثين أصليين للغة الإنجليزية مباشرة لتطوير المهارات اللغوية.</div>"},
+            {q:"Why should a teacher explain the learning objectives to students at the start of the lesson?", o:["A) To help them understand how they are learning", "B) To help them know when they are learning", "C) To help them know what they are learning | لشرح أهداف التعلم في بداية الدرس لمساعدة الطلاب على فهم محتوى الدرس وما المتوقع منهم تعلمه، مما يوجه تركيزهم ويزيد فعالية التعلم", "D) To help them know where they are learning"], c:2, t:"لماذا يجب على المعلم شرح أهداف التعلم للطلاب في بداية الدرس؟", e:"<div class='box-hint'>C) To help them know what they are learning<br>شرح أهداف التعلم في بداية الدرس يساعد الطلاب على فهم محتوى الدرس وما المتوقع منهم تعلمه، مما يوجه تركيزهم ويزيد فعالية التعلم.</div>"}
+        ];
+
+        let synth = window.speechSynthesis;
+        let isExamModeActive = false;
+        let isReviewModeActive = false;
+        let examCurrentIndex = 0;
+        let examRowsList = [];
+        
+        function buildApp() {
+            let qContainer = document.getElementById('q-container');
+            qContainer.innerHTML = '';
+            
+            db.forEach((qObj, index) => {
+                let displayNumber = index + 1;
+                let block = document.createElement('div');
+                block.className = 'question-row';
+                block.setAttribute('data-ans-index', qObj.c);
+                block.setAttribute('data-original-index', index);
+
+                let letters = ["A", "B", "C", "D"];
+                let optsHtml = `<div class="options-inline">` + qObj.o.map((opt, i) => {
+                    let pSplit = opt.split('|');
+                    let enO = pSplit[0].trim();
+                    let arO = pSplit[1] ? pSplit[1].trim() : '';
+                    return `
+                    <div class="opt-item" data-index="${i}" onclick="selectOption(this, event)">
+                        <div class="choice-badge">${letters[i]}</div>
+                        <div class="choice-content">
+                            <div class="choice-en" dir="ltr">${enO}</div>
+                            ${arO ? `<div class="choice-ar" dir="rtl">${arO}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+
+                let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+                
+                // زر الصوت
+                let cleanTextForAudio = qObj.q.replace(/[\d\.]/g, '').trim(); 
+                let btnAudioHtml = `<div class="q-header"><button class="btn-audio" onclick="speakText('${cleanTextForAudio.replace(/'/g, "\\'")}')">🔊 استماع للجملة</button></div>`;
+                
+                let navHtml = `
+                    <div class="exam-nav-buttons">
+                        <button class="btn-nav btn-next" onclick="nextQuestion(event)">التالي ▶</button>
+                        <button class="btn-nav btn-prev" onclick="prevQuestion(event)">◀ السابق</button>
+                    </div>
+                `;
+
+                block.innerHTML = `
+                    ${btnAudioHtml}
+                    <div class="q-text-container">
+                        <b class="q-number-lbl">${displayNumber}. </b>
+                        <div class="q-text" dir="ltr">${qObj.q}</div>
+                    </div>
+                    ${translationHtml}
+                    ${optsHtml}
+                    <div class="answer-action-container">
+                        <button class="btn-answer" onclick="revealAnswer(this)">👁️ إظهار الشرح والمفاتيح</button>
+                    </div>
+                    <div class="answer-box">
+                        <div class="grammar-explanation">${qObj.e}</div>
+                    </div>
+                    ${navHtml}
+                `;
+                qContainer.appendChild(block);
+            });
+        }
+
+        window.speakText = function(text) {
+            if(synth) {
+                synth.cancel();
+                let cleanTxt = text.replace(/[\._]/g, '').trim();
+                let u = new SpeechSynthesisUtterance(cleanTxt);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                synth.speak(u);
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let correctIndex = row.getAttribute('data-ans-index');
+            let selectedIndex = optItem.getAttribute('data-index');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-index') === correctIndex) item.classList.add('correct');
+            });
+            if (selectedIndex !== correctIndex) optItem.classList.add('wrong');
+            
+            if (!isExamModeActive && !isReviewModeActive) {
+                let btn = row.querySelector('.btn-answer');
+                if (btn) btn.click();
+            } else if (isExamModeActive) {
+                setTimeout(() => {
+                    if (examCurrentIndex < examRowsList.length - 1) {
+                        nextQuestion();
+                    } else {
+                        showResult();
+                    }
+                }, 800);
+            }
+        };
+
+        window.prevQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex > 0) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex--;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            }
+        };
+
+        window.nextQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex < examRowsList.length - 1) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex++;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            } else {
+                if(isExamModeActive) {
+                    showResult();
+                }
+            }
+        };
+
+        function updateNavButtons() {
+            if(!isExamModeActive && !isReviewModeActive) return;
+            examRowsList.forEach((row, idx) => {
+                let pBtn = row.querySelector('.btn-prev');
+                let nBtn = row.querySelector('.btn-next');
+                if(pBtn) {
+                    pBtn.style.visibility = (idx === 0) ? 'hidden' : 'visible';
+                }
+                if(nBtn) {
+                    if (idx === examRowsList.length - 1) {
+                        nBtn.innerHTML = isExamModeActive ? 'إنهاء الاختبار 🏁' : 'نهاية المراجعة 🏁';
+                    } else {
+                        nBtn.innerHTML = 'التالي ▶';
+                    }
+                }
+            });
+        }
+
+        window.setMode = function(mode) {
+            let container = document.getElementById('q-container');
+            let btnStudy = document.getElementById('btn-study');
+            let btnReview = document.getElementById('btn-review');
+            let btnExam = document.getElementById('btn-exam');
+            let btnResult = document.getElementById('btn-result');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            // إعادة تعيين الأزرار
+            btnStudy.classList.remove('active-mode');
+            btnReview.classList.remove('active-mode');
+            btnExam.classList.remove('active-mode');
+
+            if (mode === 'exam') {
+                isExamModeActive = true;
+                isReviewModeActive = false;
+                container.className = 'questions-container exam-mode';
+                btnExam.classList.add('active-mode');
+                btnResult.style.display = 'block';
+            } else if (mode === 'review') {
+                isExamModeActive = false;
+                isReviewModeActive = true;
+                container.className = 'questions-container review-mode';
+                btnReview.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            } else {
+                isExamModeActive = false;
+                isReviewModeActive = false;
+                container.className = 'questions-container train-mode';
+                btnStudy.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            // إعادة التهيئة العامة
+            rows.forEach(row => {
+                row.classList.remove('active-q');
+                if (mode !== 'review') {
+                    row.classList.remove('answered');
+                    row.querySelectorAll('.opt-item').forEach(item => {
+                        item.classList.remove('selected', 'correct', 'wrong');
+                    });
+                    let ansBox = row.querySelector('.answer-box');
+                    if (ansBox) ansBox.style.display = 'none';
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                }
+            });
+
+            if (mode === 'exam') {
+                // خلط الخيارات والأسئلة في وضع الاختبار
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else if (mode === 'review') {
+                // ترتيب أصلي + إظهار الإجابات (تظليل الأخضر) + إعداد التنقل + إخفاء صندوق الشرح افتراضيا
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    
+                    row.classList.add('answered');
+                    let correctIndex = row.getAttribute('data-ans-index');
+                    let correctOpt = row.querySelector('.opt-item[data-index="' + correctIndex + '"]');
+                    if(correctOpt) correctOpt.classList.add('correct');
+                    
+                    let ansBox = row.querySelector('.answer-box');
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (ansBox) ansBox.style.display = 'none'; // الصندوق مغلق افتراضياً في المراجعة
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                });
+                
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else {
+                // ترتيب أصلي في وضع المذاكرة
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumLbl = row.querySelector('.q-number-lbl');
+                if (qNumLbl) qNumLbl.textContent = (index + 1) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.showResult = function() {
+            let container = document.getElementById('q-container');
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> نتيجتك حتى الآن: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا أستاذ حمادة! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 مستوى رائع وممتاز!";
+                else msg += "💪 يمكنك المحاولة مجدداً، استمر في التدريب!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            window.scrollTo({ top: resEl.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        window.revealAnswer = function(btn) {
+            let row = btn.closest('.question-row');
+            let box = row.querySelector('.answer-box');
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الشرح والمفاتيح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الشرح والمفاتيح'; 
+            }
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>

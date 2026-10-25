@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الرخصة المهنية - الجزء الثالث (101 إلى 150)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #f8fafc;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1100px; padding: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; border-top: 6px solid #3b82f6; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.2em; font-weight: 900; margin-bottom: 5px; }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 25px; font-weight: bold; }
+        .creator-info { text-align: center; color: #ffffff; background-color: #3b82f6; font-size: 1.2em; font-weight: bold; margin-bottom: 35px; padding: 12px; border-radius: 8px;}
+
+        /* لوحة التحكم */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; transform: scale(1.02); background-color: #1d4ed8;}
+        .btn-exam.active-mode { outline: 3px solid #ef4444; outline-offset: 2px; transform: scale(1.02); background-color: #334155;}
+        
+        .btn-result { background-color: #f59e0b; color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: none; width: 100%; max-width: 915px;}
+        .btn-result:hover { background-color: #d97706; }
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-audio { background-color: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 6px;}
+        .btn-audio:hover { background-color: #059669; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-span { font-size: 26px; font-weight: 900; color: #3b82f6; flex-shrink: 0; padding-top: 5px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.5em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 1.8; font-family: Arial, sans-serif;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: flex; flex-direction: column; gap: 12px; direction: ltr; width: 100%; margin-top: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 70px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.3em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 60px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        
+        .choice-content { display: flex; flex-direction: column; justify-content: center; padding: 12px 15px; width: 100%; gap: 6px;}
+        .choice-en { font-weight: bold; font-size: 1.2em; color: #334155; font-family: Arial, sans-serif;}
+        .choice-ar { font-size: 1.05em; font-weight: bold; color: #b91c1c; font-family: 'Tajawal', sans-serif;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-en, .opt-item.correct .choice-ar { color: white !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-en, .opt-item.wrong .choice-ar { color: white !important; }
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed;}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .grammar-explanation { color: #1e293b; font-size: 18px; line-height: 2.0; font-weight:bold; }
+        .box-hint { display: inline-block; background-color: #fca5a5; color: #7f1d1d; padding: 4px 10px; border-radius: 6px; font-size: 0.9em; margin-bottom: 10px; font-weight: 900;}
+
+        /* وضع الاختبار الصارم */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5; padding: 15px; border-radius: 12px;}
+        .exam-mode .full-sentence-translation { display: none !important; }
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .choice-ar { display: none !important; } 
+        .exam-mode .btn-audio { display: none !important; } 
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">أسئلة الرخصة المهنية - إنجليزي</div>
+    <div class="sub-title">الجزء الثالث (الأسئلة من 101 إلى 150)</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+    
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع المذاكرة (مرتب + شرح + ترجمة)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')">🔴 وضع الاختبار (عشوائي + بدون مساعدة)</button>
+        </div>
+        <button id="btn-result" class="btn-result" onclick="showResult()">📋 إنهاء الاختبار وإظهار النتيجة</button>
+        <div class="section-result" id="res-box"></div>
+    </div>
+
+    <div id="q-container" class="questions-container train-mode"></div>
+</div>
+
+<script>
+(function initApp() {
+    try {
+        const db = [
+            {q:"When a teacher instructs students to write down all of the idea they can think of related to a topic, this is known as ........", o:["Outlining | التخطيط", "Clustering | التجميع", "Note-taking | أخذ الملاحظات", "Brainstorming | العصف الذهني"], c:3, t:"عندما يطلب المعلم من الطلاب تدوين كل الأفكار التي ترد في ذهنهم حول موضوع ما، يُعرف هذا بـ ........", e:"<span class='box-hint'>من الصندوق: كتابة كل الأفكار المتعلقة بموضوع ما هو عصف ذهني Brainstorming.</span><br><strong>الشرح الإضافي:</strong> العصف الذهني هو أداة توليد أفكار حرة ومفتوحة بدون نقد في بداية الكتابة."},
+            {q:"Which phase of writing involves defining a topic and brainstorming?", o:["Planning | التخطيط / ما قبل الكتابة", "Drafting | المسودة", "Revising | المراجعة", "Editing | التحرير"], c:0, t:"أي مرحلة كتابة تتضمن تحديد الموضوع والعصف الذهني؟", e:"<span class='box-hint'>من الصندوق: مرحلة ما قبل الكتابة التخطيط Planning مع العصف الذهني.</span><br><strong>الشرح الإضافي:</strong> وضع الخطط وتحديد العنوان والعصف الذهني تحدث جميعها في مرحلة التخطيط (Planning/Pre-writing)."},
+            {q:"The listening comprehension strategy where students are asked to listen to a paragraph as it's read aloud and summarize it in their own words, is a ........ Task.", o:["Semi-guided | شبه موجه", "Pre-listening | ما قبل الاستماع", "Unstructured | غير مهيكل", "Selective listening | استماع انتقائي"], c:0, t:"استراتيجية الفهم الاستماعي التي يُطلب فيها الاستماع لفقرة وتلخيصها بأسلوب الطلاب تُعتبر مهمة ........", e:"<span class='box-hint'>من الصندوق: الاستماع لفقرة وتلخيصها تعتبر مهمة شبه موجهة Semi-guided.</span><br><strong>الشرح الإضافي:</strong> لأن المعلم أعطى إطاراً ومهمة واضحة (الاستماع والتلخيص) ولكنه ترك حرية الصياغة للطلاب، فهي مهمة شبه موجهة."},
+            {q:"To look quickly through a reading passage to find something is called ........", o:["Synthesizing | التركيب", "Visualizing | التخيل", "Skimming | التصفح السريع", "Scanning | المسح السريع لمعلومة"], c:3, t:"النظر بسرعة خلال نص قراءة لإيجاد شيء معين يُسمى ........", e:"<span class='box-hint'>من الصندوق: نظرة سريعة لنص قراءة لتجد شيء معين هو Scanning.</span><br><strong>الشرح الإضافي:</strong> البحث عن كلمة أو رقم محدد داخل النص كعمل الماسح الضوئي هو (Scanning)."},
+            {q:"When students combine what they already know with the new materials in the text to activate their prior knowledge about the topic based on surrounding context clues, they are ........", o:["Predicting | التنبؤ", "Reflecting | التأمل", "Synthesizing | التركيب / الدمج", "Remembering | التذكر"], c:2, t:"عندما يدمج الطلاب ما يعرفونه مسبقاً مع المواد الجديدة في النص لتنشيط معرفتهم السابقة بناءً على أدلة السياق، هم يقومون بـ ........", e:"<span class='box-hint'>من الصندوق: دمج المعلومات السابقة مع الجديدة وتكوين فهم جديد هو Synthesizing.</span><br><strong>الشرح الإضافي:</strong> عملية دمج الأفكار القديمة والجديدة لإنتاج رؤية أو هيكل معرفي متكامل تُعرف بالتركيب (Synthesizing)."},
+            {q:"When a teacher asks his students to read other texts written by the same author or texts with a common theme, style or content, he wants them to ........", o:["Make text-to-text connections | ربط النص بالنص", "Use the extensive reading strategy | استخدام القراءة الموسعة", "Use the intensive reading strategy | استخدام القراءة المكثفة", "Make text-to-world connections | ربط النص بالعالم"], c:0, t:"عندما يطلب المعلم قراءة نصوص أخرى لنفس المؤلف أو ذات سمة مشتركة، فهو يريد منهم ........", e:"<span class='box-hint'>من الصندوق: قراءة نصوص من نفس المؤلف أو سمة مشتركة يعني ربط النص بالنص Text-to-text.</span><br><strong>الشرح الإضافي:</strong> ربط القارئ محتوى النص الحالي بنصوص أخرى قرأها سابقاً يُسمى ربط النص بالنص (Text-to-text connections)."},
+            {q:"A persuasive/argumentative essay makes a claim or takes a position and backs it up with ........", o:["Statistics, facts, or expert opinions | الإحصائيات والحقائق وآراء الخبراء", "Stating arguments in a sequence of events | تسلسل الأحداث", "Similarities and differences between two topics | أوجه الشبه والاختلاف", "Explaining the what, why, how, when, and where | شرح التفاصيل"], c:0, t:"المقال الإقناعي / الجدلي يطرح ادعاءً أو موقفاً ويدعمه بـ ........", e:"<span class='box-hint'>من الصندوق: المقالة الإقناعية تتبنى رأياً وتؤكده بالحقائق والإحصائيات وآراء الخبراء.</span><br><strong>الشرح الإضافي:</strong> لإقناع القارئ، يعتمد الكاتب في المقال الجدلي على الأدلة الصلبة كالإحصائيات والحقائق العلمية."},
+            {q:"Writing seen to be the hardest skill even to the native speakers of a language because it involves ........", o:["Considering the graphic representations of speech and development and presentations of thoughts in a structured way | تمثيل الكلام خطياً وتقديم الأفكار بشكل منظم", "Using the register or language variety that is appropriate to the situation | استخدام السجل المناسب", "Recognizing acoustic attributes of prosody | التعرف على الخصائص الصوتية", "Guessing word meaning from context | تخمين المعنى من السياق"], c:0, t:"تُعتبر الكتابة أصعب مهارة حتى لمتحدثي اللغة الأصليين لأنها تتضمن ........", e:"<span class='box-hint'>من الصندوق: الكتابة أصعب مهارة لأنها تتضمن تمثيل الكلام خطياً وتقديم الأفكار بشكل منظم.</span><br><strong>الشرح الإضافي:</strong> الكتابة تتطلب تحويل الأفكار المجردة إلى رموز مكتوبة ومنظمة بدقة وبنية نحوية سليمة بدون تغذية راجعة فورية."},
+            {q:"Spoken language differs from phonology representations given in a dictionary. For example, people say 'orright' for 'all right' because they speak:", o:["Ungrammatically and fluently | بشكل غير نحوي وبطلاقة", "Informally and spontaneously | بشكل غير رسمي وعفوي", "Normally and meaningfully | بشكل طبيعي وذو معنى", "Formally and accurately | بشكل رسمي ودقيق"], c:1, t:"الكلام المنطوق يختلف عن التمثيل الصوتي في القاموس. مثلاً يقولون 'orright' بدل 'all right' لأنهم يتحدثون:", e:"<span class='box-hint'>من الصندوق: يقولون orright بدلاً من all right لأنهم يتحدثون بطريقة غير رسمية وعفوية.</span><br><strong>الشرح الإضافي:</strong> الكلام اليومي العفوي يتميز بالدمج والتخفيف الصوتي (Informal and spontaneous speech) مقارنة بالنطق القاموسي الرسمي."},
+            {q:"How many thesis statements does an essay include?", o:["One | واحدة", "Two | اثنتان", "The number varies according to ideas presented | يعدد حسب الأفكار", "The number varies according to number of paragraphs | يتعدد حسب الفقرات"], c:0, t:"كم عدد جمل الأطروحة (Thesis statement) التي يتضمنها المقال الأكاديمي؟", e:"<span class='box-hint'>من الصندوق: المقال يحتوي دائماً على جملة أطروحة واحدة Thesis statement.</span><br><strong>الشرح الإضافي:</strong> أي مقال أكاديمي متماسك يرتكز بالأساس على فكرة مركزية واحدة يتم التعبير عنها في جملة أطروحة رئيسية واحدة (One thesis statement)."},
+            {q:"A suggested activity to improve listening is to re-tell listeners a well-known story. They will be motivated to ........", o:["Use facial expressions | استخدام تعبيرات الوجه", "Understand the events and enjoy it | فهم الأحداث والاستمتاع بها", "Reconstruct responses | إعادة بناء الإجابات", "Perform actions | أداء الحركات"], c:1, t:"نشاط مقترح لتحسين الاستماع هو إعادة سرد قصة معروفة للمستمعين. سيكونون متحمسين لـ ........", e:"<span class='box-hint'>من الصندوق: عندما يستمع الطلاب لقصة يفهمون الأحداث والاستمتاع بها.</span><br><strong>الشرح الإضافي:</strong> سرد القصص المعروفة يزيل حاجز الخوف اللغوي ويجعل تركيز الطلاب منصباً على تتبع الأحداث والاستمتاع بالمضمون."},
+            {q:"Which of the following types of essays can follow chronological order?", o:["Descriptive essay | المقال الوصفي", "Narrative essay | المقال السردي / القصصي", "Classification essay | مقال التصنيف", "Persuasive essay | المقال الإقناعي"], c:1, t:"أي من أنواع المقالات التالية يمكن أن يتبع الترتيب الزمني (التسلسل الزمني للأحداث)؟", e:"<span class='box-hint'>من الصندوق: المقال السردي Narrative Essay يكون بترتيب زمني.</span><br><strong>الشرح الإضافي:</strong> المقال السردي (Narrative) يحكي قصة أو حدثاً يتطور عبر الزمن، لذا يعتمد دائماً على الترتيب الزمني (Chronological order)."},
+            {q:"Students wrote a composition according to given guidelines about content and organization. This type of writing is called ........", o:["Writing for fluency | الكتابة من أجل الطلاقة", "Guided writing | الكتابة الموجهة", "Writing for training | الكتابة من أجل التدريب", "Writing for communication | الكتابة من أجل التواصل"], c:1, t:"كتب الطلاب موضوع تعبير وفق إرشادات معينة حول المحتوى والتنظيم. هذا النوع يُسمى:", e:"<span class='box-hint'>من الصندوق: الكتابة وفق توجيهات وإرشادات منظمة تسمى Guided writing.</span><br><strong>الشرح الإضافي:</strong> عندما يزود المعلم الطلاب بتوجيهات وهياكل تنظيمية محددة للكتابة، فهذه هي الكتابة الموجهة (Guided writing)."},
+            {q:"Among the following types of academic essays, which one is MOST likely to use comparison and contrast or cause and effect to explain a process to the reader?", o:["Narration | السرد", "Description | الوصف", "Exposition | المقال التفسيري / الإيضاحي", "Persuasion | الإقناع"], c:2, t:"من بين المقالات الأكاديمية التالية، أيهما الأكثر احتمالاً لاستخدام المقارنة أو السبب والنتيجة لشرح عملية للقارئ؟", e:"<span class='box-hint'>من الصندوق: المقال التفسيري Exposition لشرح عملية أو بيان تأثير أو مقارنة.</span><br><strong>الشرح الإضافي:</strong> المقال التفسيري (Exposition) يهدف لشرح وتحليل الظواهر والعمليات مستخدماً أدوات كالسبب والنتيجة والمقارنة."},
+            {q:"An English teacher asks students to read a short story quickly and write down the overall theme. Which reading strategy does the teacher implement?", o:["Scanning | المسح السريع", "Skimming | التصفح السريع (الفكرة العامة)", "Reading for detailed information | القراءة للتفاصيل", "Paraphrasing | إعادة الصياغة"], c:1, t:"طلب معلم من الطلاب قراءة قصة قصيرة بسرعة وكتابة الموضوع العام. أي استراتيجية قراءة طبقها المعلم؟", e:"<span class='box-hint'>من الصندوق: قراءة القصة بسرعة لكتابة الفكرة العامة هو Skimming.</span><br><strong>الشرح الإضافي:</strong> القراءة السريعة لاستخراج الفكرة العامة أو الموضوع الشامل (Overall theme) هي استراتيجية التصفح (Skimming)."},
+            {q:"An ESL teacher instructs his/her students to read a passage about China to answer a question about the number of people living there. The teacher here is using the reading strategy of:", o:["Scanning | المسح السريع لمعلومة محددة", "Skimming | التصفح السريع", "Connecting | الربط", "Visualizing | التخيل"], c:0, t:"يوجه المعلم الطلاب لقراءة فقرة عن الصين للإجابة عن سؤال حول عدد السكان. المعلم هنا يستخدم استراتيجية:", e:"<span class='box-hint'>من الصندوق: البحث عن معلومة دقيقة ورقم محدد هو Scanning.</span><br><strong>الشرح الإضافي:</strong> البحث عن رقم أو معلومة محددة جداً داخل النص (عدد السكان) يتطلب استراتيجية المسح (Scanning)."},
+            {q:"Checking your work for language mistakes after you have finished writing is called ........", o:["Paraphrasing | إعادة الصياغة", "Proofreading | التدقيق اللغوي", "Drafting | كتابة المسودة", "Planning | التخطيط"], c:1, t:"التحقق من عملك بحثاً عن الأخطاء اللغوية بعد الانتهاء من الكتابة يُسمى ........", e:"<span class='box-hint'>من الصندوق: التحقق من الأخطاء اللغوية بعد الانتهاء يسمى Proofreading التدقيق اللغوي.</span><br><strong>الشرح الإضافي:</strong> التدقيق النهائي (Proofreading) يتم بعد اكتمال النص لضبط الأخطاء الإملائية والنحوية وعلامات الترقيم."},
+            {q:"The teacher asks students what information they can tell him/her about the topic before starting to listen to the text. Here, the teacher is ........", o:["Activating students' prior knowledge | تنشيط المعرفة السابقة للطلاب", "Focusing on language accuracy | التركيز على الدقة اللغوية", "Using the bottom-up model | استخدام نموذج من أسفل لأعلى", "Dealing with connected speech | التعامل مع الكلام المتصل"], c:0, t:"يسأل المعلم الطلاب عن المعلومات التي يعرفونها قبل الاستماع للنص. المعلم هنا يقوم بـ ........", e:"<span class='box-hint'>من الصندوق: سؤال الطلاب قبل الاستماع ينشط المعرفة السابقة Activating prior knowledge.</span><br><strong>الشرح الإضافي:</strong> ربط موضوع الاستماع الجديد بخبرات الطلاب السابقة يسهل عليهم عملية الاستيعاب والفهم (Pre-listening schema activation)."},
+            {q:"The teacher who starts with the presentation of a rule followed by examples in which the rule is applied resorts to ........ approach.", o:["Formal | رسمي", "Declarative | تقريري", "Inductive | استقرائي", "Deductive | استنتاجي / قياسي"], c:3, t:"المعلم الذي يبدأ بتقديم القاعدة يتبعها بأمثلة لتطبيقها يلجأ إلى نهج ........", e:"<span class='box-hint'>من الصندوق: البدء بالقاعدة ثم الأمثلة هو النهج الاستنتاجي Deductive.</span><br><strong>الشرح الإضافي:</strong> النهج الاستنتاجي أو القياسي (Deductive) يبدأ بالتعميم أو القاعدة ثم ينتقل للأمثلة والتطبيق، عكس النهج الاستقرائي (Inductive) الذي يبدأ بالأمثلة ليصل الطلاب للقاعدة بأنفسهم."},
+            {q:"In which of the following stages of the writing process would the use of graphic organizers be most appropriate?", o:["Writing the draft | كتابة المسودة", "Revising and editing | المراجعة والتحرير", "Brainstorming and prewriting | العصف الذهني وما قبل الكتابة", "Writing the final draft | كتابة المسودة النهائية"], c:2, t:"في أي مرحلة من مراحل الكتابة يكون استخدام المنظمات الرسومية (كالخرائط الذهنية) أكثر ملاءمة؟", e:"<span class='box-hint'>من الصندوق: استخدام المنظمات والخرائط يكون في العصف الذهني وما قبل الكتابة Brainstorming & prewriting.</span><br><strong>الشرح الإضافي:</strong> استخدام المنظمات والرسومات البيانية يساعد الطلاب على تنظيم وترتيب أفكارهم في مرحلة التخطيط والعصف الذهني."},
+            {q:"Written lesson plans have many advantages for the teachers. Which of the following is not one of these advantages?", o:["They can give teachers an idea about student's motivation and performance | تعطي المعلمين فكرة عن تحفيز وأداء الطلاب", "They can serve as formal evidence in case teachers are to be observed | تُعد دليلاً رسمياً للملاحظة", "They can be used as a record or reminder of what has been taught | تُستخدم كسجل لما تم تدريسه", "They can help teachers improve their teaching for next semesters | تساعد على تحسين التدريس للفصول القادمة"], c:0, t:"خطط الدروس المكتوبة لها مزايا عديدة. أي مما يلي لا يُعد من هذه المزايا؟", e:"<span class='box-hint'>من الصندوق: خطط الدروس لا تعطي المعلمين فكرة عن تحفيز الدافعية وأداء الطلاب مباشرة.</span><br><strong>الشرح الإضافي:</strong> خططة الدرس هي أداة تخطيط استباقية مسبقة، ولا يمكنها التنبؤ بدقة بدافعية الطلاب أو تقييم أدائهم الفعلي مسبقاً."},
+            {q:"Before planning a lesson, it is important to consider a number of factors, one of these factors is ........?", o:["Deciding the time allocated to each lesson | تحديد الوقت", "Setting a proper grading system | تحديد نظام الدرجات", "Designing task that can measure understanding | تصميم مهام القياس", "Understanding the educational and cultural background of the students | فهم الخلفية التعليمية والثقافية للطلاب"], c:3, t:"قبل تخطيط الدرس، من المهم مراعاة عدة عوامل، أحدها ........؟", e:"<span class='box-hint'>من الصندوق: من عوامل تخطيط الدرس فهم الخلفية التعليمية والثقافية للطلاب.</span><br><strong>الشرح الإضافي:</strong> مراعاة الفروق الفردية والخلفيات الثقافية والتعليمية للطلاب يضمن تصميم درس ملائم ومحفز لهم."},
+            {q:"Which of the following stages of a lesson encourages students to use their preexisting knowledge?", o:["Production | الإنتاج", "Evaluation | التقييم", "Warm up | التسخين / الاحماء", "Practice | الممارسة"], c:2, t:"أي من مراحل الدرس التالية تشجع الطلاب على استخدام معرفتهم السابقة؟", e:"<span class='box-hint'>من الصندوق: مرحلة Warm up لتنشيط المعرفة السابقة.</span><br><strong>الشرح الإضافي:</strong> مرحلة التهيئة أو الاحماء (Warm-up) في بداية الدرس تهدف أساساً إلى جذب انتباه الطلاب وتنشيط معلوماتهم السابقة المرتكزة على الموضوع."},
+            {q:"A clear statement that describes competence that students should possess at the end of instruction is referred to as ........", o:["A syllabus | منهج دراسي", "A portfolio | ملف انجاز", "An objective | هدف تعليمي", "A contingency plan | خطة طوارئ"], c:2, t:"عبارة واضحة تصف الكفاءة التي يجب أن يمتلكها الطلاب في نهاية التدريس تُعرف بـ ........", e:"<span class='box-hint'>من الصندوق: العبارة الواضحة لناتج التعلم تسمى هدفاً تعليمياً (An objective).</span><br><strong>الشرح الإضافي:</strong> الهدف التعليمي (Objective) هو بيان دقيق ومحدد يصف ما سيكون قادراً على أدائه بنجاح نهاية الحصة."},
+            {q:"Learning objectives that mainly focus on building L2 learners' knowledge is known as ........ objectives", o:["Affective | وجداني", "Cognitive | معرفي", "Psychomotor | حركي نفسي", "Interpersonal | بين شخصي"], c:1, t:"الأهداف التعليمية التي تركز بشكل أساسي على بناء معرفة متعلمي اللغة الثانية تُعرف بالأهداف ........", e:"<span class='box-hint'>من الصندوق: الأهداف التي تركز على بناء المعرفة Knowledge هي الأهداف المعرفية Cognitive.</span><br><strong>الشرح الإضافي:</strong> تصنيف بلوم للمجال المعرفي (Cognitive domain) يتعلق باكتساب المعرفة، الحفظ، الفهم، والمهارات الذهنية."},
+            {q:"What type of learning objective is this? (By the end of this course the students will be able to name three manners of articulation)", o:["Evaluation | تقييم", "Knowledge | معرفة / تذكر", "Application | تطبيق", "Comprehension | استيعاب"], c:1, t:"ما نوع هذا الهدف التعليمي؟ (بنهاية الكอร์س سيكون الطلاب قادرين على تسمية ثلاث طرق للنطق)", e:"<span class='box-hint'>من الصندوق: استخدام فعل (name) للاسترجاع والتذكر يقع تحت مستوى المعرفة Knowledge.</span><br><strong>الشرح الإضافي:</strong> أفعال مثل (تسمية - ذكر - سرد - تحديد) تقيس أدنى مستويات تصنيف بلوم وهو التذكر والمعرفة (Knowledge)."},
+            {q:"An example of a measurable learning objective is ........", o:["Students will be familiar with sounds | الطلاب سيكونون على دراية بالأصوات (غير قياسي)", "Students will learn how to pronounce /t/ and /d/ | الطلاب سيتعلمون النطق", "Will teach students how to pronounce /t/ and /d/ | سنعلم الطلاب (يركز على المعلم)", "Students will be able to pronounce two sounds | الطلاب قادرون على نطق صوتين (صحيح وقابل للقياس)"], c:3, t:"مثال على هدف تعليمي قابل للقياس هو ........", e:"<span class='box-hint'>من الصندوق: الهدف الصحيح يركز على الطالب وقابل للقياس (Students will be able to...).</span><br><strong>الشرح الإضافي:</strong> الهدف القابل للقياس يجب أن يركز على أداء الطالب (Student-centered) ويستخدم أفعالاً سلوكية واضحة وقابلة للملاحظة والتقييم."},
+            {q:"Which of the following is the most adequate behavioral objective for a grammar lesson about the past simple tense?", o:["Will be able to use the past simple correctly | سيكونون قادرين على استخدام الماضي البسيط بشكل صحيح", "Will be able to understand the past simple tense | فهم الزمن", "Will know when to use the past simple tense | معرفة متى يستخدم", "Will realize the importance of the past simple tense | إدراك الأهمية"], c:0, t:"أي مما يلي يُعد الهدف السلوكي الأكثر ملائمة لدرس قواعد عن زمن الماضي البسيط؟", e:"<span class='box-hint'>من الصندوق: الهدف السلوكي الكافي هو (Will be able to use) لأنه قابل للقياس والملاحظة.</span><br><strong>الشرح الإضافي:</strong> أفعال مثل (Understand - Know - Realize) غامضة وغير قابلة للقياس المباشر، بينما استخدام الفعل (Use) يتيح اختبار مهارة الطالب تطبيقياً."},
+            {q:"Specific learning objectives should be ........", o:["Observable and measurable | قابلة للملاحظة والقياس", "Observable but not necessarily measurable | قابلة للملاحظة وليست للقياس", "Focused on the instructor's teaching strategies | تركز على استراتيجيات المعلم", "Focused on the student's behavior over a period of time | تركز على سلوك الطالب لفترة طويلة"], c:0, t:"أهداف التعلم المحددة يجب أن تكون ........", e:"<span class='box-hint'>من الصندوق: الأهداف المحددة يجب أن تكون قابلة للملاحظة والقياس Observable and measurable.</span><br><strong>الشرح الإضافي:</strong> لكي يكون الهدف التربوي فعالاً، يجب أن يتحقق شرطا الوضوح والقدرة على تقييمه ورصده (Observable and measurable)."},
+            {q:"Which of the following lesson plans is the correct order?", o:["Lead-in - feedback - activity | تهيئة ثم تغذية راجعة ثم نشاط", "Lead-in - activity - feedback | تهيئة ثم نشاط ثم تغذية راجعة", "Peer check - lead in - activity | مراجعة أقران ثم تهيئة", "Activity - lead in - peer check | نشاط ثم تهيئة"], c:1, t:"أي من خطط الدروس التالية يمثل الترتيب الصحيح؟", e:"<span class='box-hint'>من الصندوق: الترتيب الصحيح لخططة الدرس: تهيئة Lead-in ثم أنشطة Activity ثم تغذية راجعة Feedback.</span><br><strong>الشرح الإضافي:</strong> نبدأ بالتهيئة لجذب الانتباه، ثم ننفذ الأنشطة والتطبيقات، ونختتم بالتغذية الراجعة والتقييم."},
+            {q:"Learning objectives should be written by the ........", o:["Teacher | المعلم", "Student | الطالب", "Social advisor | المرشد الاجتماعي", "School principal | مدير المدرسة"], c:0, t:"يجب أن تُكتب أهداف التعلم بواسطة ........", e:"<span class='box-hint'>من الصندوق: الذي يكتب الأهداف التعليمية هو المعلم Teacher.</span><br><strong>الشرح الإضافي:</strong> المعلم هو المسؤول الأول عن هندسة وتخطيط الدرس وتحديد مخرجاته التعليمية المستهدفة عبر صياغة الأهداف."},
+            {q:"In lesson planning, you must have an objective for ........", o:["Every activity | كل نشاط", "New activities | الأنشطة الجديدة فقط", "Some activities | بعض الأنشطة", "Uncommon activities | الأنشطة غير العادية"], c:0, t:"في تخطيط الدرس، يجب أن يكون لديك هدف لـ ........", e:"<span class='box-hint'>من الصندوق: لابد أن يكون هنالك هدف لكل نشاط Every activity.</span><br><strong>الشرح الإضافي:</strong> التخطيط الفعال يتطلب ألا يكون هناك نشاط عشوائي؛ بل يجب أن يخدم كل نشاط في الحصة هدفاً تعليمياً محدداً."},
+            {q:"Motivation that arises as a result of the student's desire to gain a social or an economic reward is referred to as ........ motivation", o:["Intrinsic | دافعية داخلية", "Integrative | دافعية اندماجية", "Instrumental | دافعية وسيلية", "Psychological | نفسية"], c:2, t:"الدافعية التي تنشأ نتيجة رغبة الطالب في الحصول على مكافأة اجتماعية أو اقتصادية تُسمى دافعية ........", e:"<span class='box-hint'>من الصندوق: الدافعية للوصول لهدف خارجي كالعمل والمكافأة هي دافعية وسيلية Instrumental.</span><br><strong>الشرح الإضافي:</strong> الدافعية الوسيلية (Instrumental) ترتبط بتحقيق مكاسب خارجية (الحصول على وظيفة، ترقية، شهادة)، عكس الدافعية الداخلية (Intrinsic) النابعة من حب التعلم لذاته."},
+            {q:"When teachers set high yet realistic expectations for all students, this results in ........", o:["Frustrating students | إحباط الطلاب", "Filtering out low achieving students | استبعاد الطلاب الضعفاء", "Motivating students to do their best | تحفيز الطلاب لبذل قصارى جهدهم", "More homework and stronger assessment criteria | واجبات أكثر"], c:2, t:"عندما يضع المعلم توقعات عالية ولكنها واقعية لجميع الطلاب، فإن هذا ينتج عنه ........", e:"<span class='box-hint'>من الصندوق: وضع توقعات عالية وواقعية يحفز الطلاب أن يبذلوا أقصى جهدهم Motivating students.</span><br><strong>الشرح الإضافي:</strong> التوقعات الإيجابية العالية المدعومة بالدعم المستمر تشعر الطلاب بقيمتهم وتدفعهم للتميز والاجتهاد."},
+            {q:"........ is the information that a teacher receives from students about their reactions to a lesson or an activity", o:["Curriculum | المنهج", "Feedback | التغذية الراجعة", "Lesson plan | خطة الدرس", "Course book | الكتاب المقرر"], c:1, t:"........ هي المعلومات التي يتلقاها المعلم من الطلاب حول ردود أفعالهم تجاه الدرس أو النشاط.", e:"<span class='box-hint'>من الصندوق: المعلومات وردود الفعل التي يتلقاها المعلم تسمى التغذية الراجعة Feedback.</span><br><strong>الشرح الإضافي:</strong> التغذية الراجعة (Feedback) هي شريان الحياة للعملية التعليمية، فهي تزود المعلم بمؤشرات واضحة عن مدى فهم الطلاب واستيعابهم."},
+            {q:"One of the internal factors that motivates student language learning is ........", o:["Arousal of curiosity | إثارة حب الاستطلاع", "Cultural norm | المعيار الثقافي", "The local educational system | النظام التعليمي المحلي", "The sizes of classes and schools | حجم الفصول والمدرسة"], c:0, t:"أحد العوامل الداخلية التي تحفز تعلم اللغة لدى الطلاب هو ........", e:"<span class='box-hint'>من الصندوق: أحد العوامل الداخلية المحفزة هو إثارة حب الاستطلاع Arousal of curiosity.</span><br><strong>الشرح الإضافي:</strong> حب الاستطلاع والرغبة الذاتية في استكشاف المعرفة عوامل داخلية (Intrinsic) تحرك دافعية المتعلم بقوة نحو التعلم."},
+            {q:"Activities that require students to categorize cases, elements, or events using established criteria are used to measure a learning objective known as ........", o:["Classifying | التصنيف", "Critiquing | النقد", "Assessing | التقييم", "Recalling | الاسترجاع"], c:0, t:"الأنشطة التي تتطلب من الطلاب تصنيف الحالات أو العناصر بناءً على معايير محددة تُستخدم لقياس هدف تعليمي يُعرف بـ ........", e:"<span class='box-hint'>من الصندوق: تصنيف العناصر وفق معايير يقيس هدف التصنيف Classifying.</span><br><strong>الشرح الإضافي:</strong> القدرة على ترتيب وتنظيم العناصر في مجموعات والفئات بناءً على خصائص مشتركة هي مهارة التصنيف (Classifying)."},
+            {q:"Activities that require students to use procedures to solve tasks are used to measure a learning objective which is called ........", o:["Application | التطبيق", "Evaluation | التقييم", "Designing | التصميم", "Analyzing | التحليل"], c:0, t:"الأنشطة التي تتطلب من الطلاب استخدام الإجراءات لحل المهام تُستخدم لقياس هدف تعليمي يُسمى ........", e:"<span class='box-hint'>من الصندوق: استخدام الإجراءات لحل المهام يقيس هدف التطبيق Application.</span><br><strong>الشرح الإضافي:</strong> توظيف واستخدام القواعد والمعارف النظرية لحل مشكلات وتطبيقات عملية يقع في مستوى التطبيق (Application) بتصنيف بلوم."},
+            {q:"Students will understand the concept of plot: The previous statement was written in a teacher's lesson plan, it should be stated under ........", o:["Icebreakers | كاسر الجليد", "Learning goals | أهداف التعلم", "Learning activities | أنشطة التعلم", "Warm up activities | أنشطة التسخين"], c:1, t:"(سيفهم الطلاب مفهوم حبكة القصة): كُتبت العبارة السابقة في خطة درس المعلم، وينبغي إدراجها تحت ........", e:"<span class='box-hint'>من الصندوق: عبارة (سيفهم الطلاب...) تعتبر هدفاً تعليمياً Learning goals.</span><br><strong>الشرح الإضافي:</strong> أي غاية أو ناتج تعلم مرجعي يُراد تحقيقه بنهاية الدرس يندرج تحت أهداف التعلم (Learning goals/objectives)."},
+            {q:"Learning objectives in language learning classes should be centered on ........", o:["Classroom | الفصل", "Teachers | المعلمين", "Purpose | الغرض", "Students | الطلاب"], c:3, t:"يجب أن تكون الأهداف التعليمية في فصول تعلم اللغة متمركزة حول ........", e:"<span class='box-hint'>من الصندوق: يجب أن تركز الأهداف التعليمية على الطالب ومتمركزة عليه Students.</span><br><strong>الشرح الإضافي:</strong> التعليم الحديث يؤكد أن الأهداف يجب أن تصاغ دائمًا بناءً على ما سيقوم به الطالب (Student-centered) وليس ما سيقوم به المعلم."},
+            {q:"Teacher: (If it's hot, I will go swimming). Students: (If it's hot, I will go swimming). The previous conversation is an example of a teaching technique (used in speaking classes) which is known as ........", o:["Brainstorming | العصف الذهني", "Self-learning | التعلم الذاتي", "Gamification | التلعيب", "Drilling | التكرار والحفر"], c:3, t:"المعلم: (لو كان الجو حاراً سأذهب للسباحة). الطلاب يكررون نفس الجملة تماماً. هذا مثال على أسلوب تدريسي يُعرف بـ:", e:"<span class='box-hint'>من الصندوق: تكرار الطلاب لما يقوله المعلم هو التدريب والتكرار Drilling.</span><br><strong>الشرح الإضافي:</strong> أسلوب الحفر والتكرار الجماعي والفردي (Drilling) يُستخدم لترسيخ النطق الصحيح وتثبيته في الذاكرة قصيرة الأمد."},
+            {q:"In an effective lesson, which stage comes first ........?", o:["Expansion | التوسع", "Presentation | العرض / التقديم", "Practice | الممارسة", "Evaluation | التقييم"], c:1, t:"في الدرس الفعال، أي مرحلة تأتي أولاً (وفق نموذج العرض Practice-Production) ........؟", e:"<span class='box-hint'>من الصندوق: في الدرس الفعال المرحلة التي تأتي أولاً هي العرض Presentation.</span><br><strong>الشرح الإضافي:</strong> في نموذج (PPP)، يبدأ المعلم بتقديم وعرض القاعدة في سياقها الصحيح (Presentation) قبل الانتقال للممارسة (Practice) ثم الإنتاج (Production)."},
+            {q:"In a lesson planning, goals are ........ than objectives", o:["Longer | أطول", "Shorter | أقصر", "More general | أكثر شمولية وعمومية", "More specific | أكثر تحديداً"], c:2, t:"في تخطيط الدرس، الأهداف العامة (Goals) تُعد ........ مقارنة بالأهداف الإجرائية المحددة (Objectives)", e:"<span class='box-hint'>من الصندوق: الأهداف العامة Goals أكثر شمولية وعمومية من Objectives.</span><br><strong>الشرح الإضافي:</strong> (Goals) تشير للغايات الواسعة طويلة المدى، بينما (Objectives) تشير للأهداف المحددة وقصيرة المدى داخل الحصة."},
+            {q:"The highest level of the cognitive domain is ........", o:["Synthesis | التركيب", "Analysis | التحليل", "Comprehension | الفهم", "Evaluation | التقييم / التقويم"], c:3, t:"المستوى الأعلى في المجال المعرفي (تصنيف بلوم المعدل) هو ........", e:"<span class='box-hint'>من الصندوق: أعلى مستوى في المجال المعرفي عند بلوم هو Evaluation (التقييم أو الابتكار حسب النموذج الحديث).</span><br><strong>الشرح الإضافي:</strong> في هرم بلوم المعرفي التقليدي، يُعد التقييم (Evaluation) أقصى درجات التفكير العليا، بينما يتصدر الابتكار (Creating) في الهرم المعدل."},
+            {q:"Learning goals need to be SMART goals, (specific, measurable, attainable, realistic and timely). Which of these five principles did Sami miss when he gave the following assignment instructions to his students? [You need to give a presentation... use PowerPoint...]", o:["Attainable | قابل للتحقيق", "Realistic | واقعي", "Specific | محدد", "Timely | محدد بوقت"], c:3, t:"أهداف التعلم يجب أن تكون ذكية (SMART). أي من هذه المبادئ فوتها سامي عندما أعطى تعليمات لطلابه دون تحديد وقت التسليم؟", e:"<span class='box-hint'>من الصندوق: العنصر المفقود هو الوقت Timely لأن المهمة يمكن تحقيقها ومحددة ولكنها تفتقر للزمن.</span><br><strong>الشرح الإضافي:</strong> من شروط الهدف الذكي (SMART) ربطه بجدول زمني وموعد نهائي واضح للتسليم (Timely)، وهو ما غاب عن تعليمات سامي."},
+            {q:"Which of the following is a general learning outcome?", o:["Students will be able to write descriptive essay | كتابة مقال وصفي", "Students will be able to write personal stories | كتابة قصص شخصية", "Students will be academically proficient | الطلاب قادرون على الكتابة أكاديمياً (عام غير مححدد)", "Students will be able to write E-mails to classmates | كتابة إيميلات"], c:2, t:"أي مما يلي يُعد نتيجة تعلم عامة (غير محددة بدقة)؟", e:"<span class='box-hint'>من الصندوق: النتيجة العامة هي القادرة على الكتابة أكاديمياً دون تخصيص نوع المقال.</span><br><strong>الشرح الإضافي:</strong> عبارة (الكتابة أكاديمياً) مخرج عام واسع جداً، مقارنة بالأهداف المحددة التي تخص كتابة إيميل أو قصة معينة."},
+            {q:"Which of the following is a specific learning outcome?", o:["Students will be able to appreciate English grammar | تقدير القواعد", "Students will be able to understand the writing process | فهم عملية الكتابة", "Students will be value phonetics and phonology | تثمين علم الأصوات", "Students will be able to use present tense in reports | استخدام الزمن المضارع في التقارير (محدد وقابل للقياس)"], c:3, t:"أي مما يلي يُعد نتيجة تعلم محددة ودقيقة؟", e:"<span class='box-hint'>من الصندوق: النتيجة المحددة هي استخدام الزمن المضارع في التقارير.</span><br><strong>الشرح الإضافي:</strong> الهدف المحدد يذكر مهارة دقيقة وتطبيقاً عملياً واضحاً (استخدام المضارع البسيط في التقارير) يمكن رصده وتقييمه بسهولة."},
+            {q:"Which one of the following lesson-plans is the correct order?", o:["Lead-in - feedback - activity", "Lead-in - activity - feedback | تهيئة ثم نشاط ثم تغذية راجعة", "Peer check - lead in - activity", "Activity - lead in - peer check"], c:1, t:"أي من خطط الدروس التالية يمثل الترتيب الصحيح للمراحل؟", e:"<span class='box-hint'>من الصندوق: الترتيب الصحيح هو Lead-in ثم activity ثم feedback.</span><br><strong>الشرح الإضافي:</strong> التسلسل المنطقي للدرس يبدأ بالتهيئة (Lead-in)، ثم تنفيذ المهام والأنشطة (Activity)، وأخيراً المراجعة والتغذية الراجعة (Feedback)."},
+            {q:"Which question is most relevant to identifying the desired results of a lesson?", o:["How can the teacher engage the students throughout the lesson?", "What prior knowledge and skills do my students have before this lesson?", "How much time do I spend on each activity during the lesson?", "What should my students have learned by the end of this lesson? | ما الذي يجب أن يتعلمه طالبي في نهاية الدرس؟"], c:3, t:"أي سؤال يُعد الأكثر صلة بتحديد النتائج المرغوبة للدرس؟", e:"<span class='box-hint'>من الصندوق: السؤال المرتبط بالنتائج هو ما الذي يجب أن يتعلمه طالبي بنهاية الدرس؟.</span><br><strong>الشرح الإضافي:</strong> تحديد النتائج النهائية (Desired results) يرتكز حصراً على صياغة الإجابة عن سؤال: ماذا سيعرف الطلاب وماذا سيستطيعون فعله بنهاية الحصة؟"},
+            {q:"Critical learning moments happen when ........", o:["Teachers are giving the best effort | يبذل المعلمون أقصى جهد", "Students are working together | يعمل الطلاب معاً", "Lessons impact students | تؤثر الدروس في الطلاب / تحدث أثراً عميقاً", "Students are happy | الطلاب سعداء"], c:2, t:"لحظات التعلم الحرجة والمؤثرة تحدث عندما ........", e:"<span class='box-hint'>من الصندوق: لحظات التعلم الحرجة تحدث عندما تحدث الدروس أثراً في الطلاب.</span><br><strong>الشرح الإضافي:</strong> لحظات الإلهام والتعلم الحقيقي (Critical moments) تبرز عندما يلامس الدرس عقول الطلاب ويحدث تغييراً جذرياً في فهمهم واستيعابهم."},
+            {q:"The knowledge and skills students acquired by the end of a lesson are articulated through forming ........", o:["Assessment | التقييم", "Objectives | الأهداف التعليمية", "Contingency plan | خطة طوارئ", "Instructional strategies | استراتيجيات التدريس"], c:1, t:"المعرفة والمهارات التي يكتسبها الطلاب بنهاية الدرس تتم صياغتها من خلال تكوين ........", e:"<span class='box-hint'>من الصندوق: المعرفة والمهارات المكتسبة بنهاية الدرس تصاغ عبر Objectives الأهداف.</span><br><strong>الشرح الإضافي:</strong> نواتج التعلم المستهدفة والمعرفة والمهارات المكتسبة يتم التعبير عنها وتأطيرها برمجياً وتربوياً في قالب الأهداف (Objectives)."},
+            {q:"Learning goal statements should begin with ........", o:["Adverbs | ظروف", "Action verbs | أفعال حركية / سلوكية", "Adjectives | صفات", "Prepositions | حروف جر"], c:1, t:"يجب أن تبدأ بيانات أهداف التعلم بـ ........", e:"<span class='box-hint'>من الصندوق: عبارة الهدف التعليمي يجب أن تبدأ بفعل عملي Action verbs.</span><br><strong>الشرح الإضافي:</strong> لصياغة هدف قابل للقياس، يشترط أن يبدأ بفعل سلوكي حركي مباشر (مثل: يحدد، يكتب، يذكر، يطبق) وليس بفعل ذهني خفي."},
+            {q:"Learners' ability to combine previous experiences with new materials in order to produce a whole new structure is known as ........", o:["Application | التطبيق", "Analysis | التحليل", "Evaluation | التقييم", "Synthesis | التركيب / الابتكار"], c:3, t:"قدرة المتعلمين على دمج الخبرات السابقة مع المواد الجديدة لإنتاج هيكل جديد تماماً تُعرف بـ ........", e:"<span class='box-hint'>من الصندوق: دمج الخبرات السابقة مع المواد الجديدة لإنتاج شيء جديد هو Synthesis التركيب.</span><br><strong>الشرح الإضافي:</strong> أي عملية تعتمد على الخلق والإنتاج وتأليف هيكل جديد من أجزاء مختلفة تُصنف تحت مستوى التركيب أو الإنشاء (Synthesis)."},
+            {q:"Why is designing a lesson that revolves around simply having fun with learning insufficient? Because ........", o:["Learning should not always be fun | التعلم ليس ممتعاً دائماً", "It would compromise the teacher's authority | يضعف سلطة المعلم", "Learning objectives would be difficult to measure | تصعب قياس أهداف التعلم", "It is difficult to judge what learners would consider fun | يصعب الحكم على ما يعتبره الطلاب ممتعاً"], c:2, t:"لماذا يُعد تصميم درس يدور حول مجرد المرح واللعب أمراً غير كافٍ؟", e:"<span class='box-hint'>من الصندوق: لأنه سيكون من الصعب قياس أهداف التعلم Learning objectives would be difficult to measure.</span><br><strong>الشرح الإضافي:</strong> المرح وسيلة ممتازة لتحفيز الطلاب، ولكنه إذا كان غاية بحد ذاته دون ربطه بهدف أكاديمي صارم، فسيعجز المعلم عن قياس التحصيل العلمي بدقة."},
+            {q:"Helping students by modeling performance can lead to linguistic ........", o:["Failure | فشل", "Anxiety | قلق", "Confidence | الثقة اللغوية", "Embarrassment | إحراج"], c:2, t:"مساعدة الطلاب من خلال تقديم نموذج للأداء (Modeling) يمكن أن يؤدي إلى ........ لغوية.", e:"<span class='box-hint'>من الصندوق: إعطاء نموذج للمهارة يمنح الطلاب الثقة Confidence.</span><br><strong>الشرح الإضافي:</strong> عندما يرى الطالب نموذجاً حياً وواضحاً للأداء الصحيح أمامه (Modeling)، يزول عنه الغموض ويكتسب ثقة عالية لتطبيق المهارة بنفسه."},
+            {q:"Which of the following questions should take precedence for a teacher when planning a lesson?", o:["What might go wrong? | ماذا قد يسير بشكل خاطئ؟", "Who are the students? | من هم الطلاب؟", "What will it achieve? | ماذا سيحقق هذا الدرس؟ (الأهداف)", "How should it work? | كيف سيتم تنفيذه؟"], c:2, t:"أي من الأسئلة التالية يجب أن يحظى بالأولوية القصوى للمعلم عند تخطيط الدرس؟", e:"<span class='box-hint'>من الصندوق: السؤال الأهم هو ماذا سيحقق الدرس (What will it achieve) لأن الأهداف تحدد الطرق والوسائل.</span><br><strong>الشرح الإضافي:</strong> تحديد الغاية وما سيحققه الدرس من أهداف أولاً هو البوصلة التي توجه اختيار استراتيجيات التدريس والأنشطة المناسبة."},
+            {q:"When planning lesson activities, the time spent on each should be ........", o:["Extended | ممدود", "Fixed | ثابت", "Guessed | متوقع", "Estimated | مقدر تقديرياً / تقريباً"], c:3, t:"عند تخطيط أنشطة الدرس، الوقت المُستغرق لكل نشاط يجب أن يكون ........", e:"<span class='box-hint'>من الصندوق: الوقت لكل نشاط يكون مقدراً تقديرياً Estimated.</span><br><strong>الشرح الإضافي:</strong> الجدولة الزمنية للأنشطة تكون عبارة عن تقديرات تقريبية مرنة (Estimated time)، لأن تفاعل الطلاب وسرعتهم قد تختلف أثناء التطبيق الفعلي بالحصة."},
+            {q:"Ali sometimes spends a few minutes modeling difficult words for his students, and they repeat them after him. This activity is called ........", o:["Acting | تمثيل", "Miming | إيماء", "Dictating | إملاء", "Choral drilling | التدريب الجماعي (التكرار)"], c:3, t:"يقضي علي أحياناً بضع دقائق في نمذجة الكلمات الصعبة لطلاب، وهم يكررونها من بعده. يُسمى هذا النشاط:", e:"<span class='box-hint'>من الصندوق: تكرار الطلاب الكلمات بعد المعلم هو التدريب الجماعي Choral drilling.</span><br><strong>الشرح الإضافي:</strong> ترديد الطلاب الكلمات معاً بصوت جماعي خلف المعلم لضبط النطق يُعرف بالتدريب الجماعي المنظّم (Choral drilling)."},
+            {q:"In order to collect information about students' learning needs, wishes, desires, etc., for the sake of designing a language course, a teacher needs to do ........", o:["A program evaluation | تقييم برنامج", "An assessment plan | خطة تقييم", "A needs analysis | تحليل الاحتياجات", "A teaching portfolio | ملف تدريس"], c:2, t:"لجمع معلومات حول احتياجات ورغبات الطلاب لغرض تصميم منهج لغوي، يحتاج المعلم إلى عمل ........", e:"<span class='box-hint'>من الصندوق: لجمع معلومات عن احتياجات الطلاب لتصميم منهج، لابد من عمل تحليل احتياجات Needs analysis.</span><br><strong>الشرح الإضافي:</strong> تحليل الاحتياجات (Needs analysis) هو الخطوة التأسيسية الأولى والضرورية لأي مصمم مناهج لمعرفة ما يطلبه الدارسون بدقة."},
+            {q:"One of the general principles of course design is orientation, it entails ........", o:["Checking whether the needs of the target group have been met | فحص تلبية احتياجات المجموعة المستهدفة", "Evaluating materials in the light of accreditation standards | تقييم المواد مع المعايير", "Brainstorming with colleagues and selecting course materials | العصف الذهني مع الزملاء واختيار مواد الكورس", "Monitoring lessons and selecting suitable teaching techniques | مراقبة الدروس"], c:2, t:"أحد المبادئ العامة لتصميم المنهج هو التوجه (Orientation)، ويتضمن ذلك ........", e:"<span class='box-hint'>من الصندوق: التوجه كرمز للتصميم يتضمن العصف الذهني مع الزملاء واختيار المواد الدراسية.</span><br><strong>الشرح الإضافي:</strong> مرحلة التوجه والتخطيط الأولي تتطلب تعاون المعلمين وتبادل الأفكار والعصف الذهني لاختيار المحتوى الأنسب للمنهج."}
+        ];
+
+        let synth = window.speechSynthesis;
+        let isExamModeActive = false;
+        
+        function buildApp() {
+            let qContainer = document.getElementById('q-container');
+            qContainer.innerHTML = '';
+            
+            db.forEach((qObj, index) => {
+                let displayNumber = index + 101;
+                let block = document.createElement('div');
+                block.className = 'question-row';
+                block.setAttribute('data-ans-index', qObj.c);
+                block.setAttribute('data-original-index', index);
+
+                let letters = ["A", "B", "C", "D"];
+                let optsHtml = `<div class="options-inline">` + qObj.o.map((opt, i) => {
+                    let pSplit = opt.split('|');
+                    let enO = pSplit[0].trim();
+                    let arO = pSplit[1] ? pSplit[1].trim() : '';
+                    return `
+                    <div class="opt-item" data-index="${i}" onclick="selectOption(this, event)">
+                        <div class="choice-badge">${letters[i]}</div>
+                        <div class="choice-content">
+                            <div class="choice-en" dir="ltr">${enO}</div>
+                            ${arO ? `<div class="choice-ar" dir="rtl">${arO}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+
+                let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+                let btnAudioHtml = `<div class="q-header"><button class="btn-audio" onclick="speakText('${qObj.q.replace(/'/g, "\\'")}')">🔊 استماع للجملة</button></div>`;
+                
+                block.innerHTML = `
+                    ${btnAudioHtml}
+                    <div class="q-text-container">
+                        <span class="q-number-span">${displayNumber}. </span>
+                        <div class="q-text" dir="ltr">${qObj.q}</div>
+                    </div>
+                    ${translationHtml}
+                    ${optsHtml}
+                    <div class="answer-action-container">
+                        <button class="btn-answer" onclick="revealAnswer(this)">👁️ إظهار الشرح والمفاتيح</button>
+                    </div>
+                    <div class="answer-box">
+                        <div class="grammar-explanation">${qObj.e}</div>
+                    </div>
+                `;
+                qContainer.appendChild(block);
+            });
+        }
+
+        window.speakText = function(text) {
+            if(synth) {
+                synth.cancel();
+                let cleanTxt = text.replace(/[\._]/g, '').trim();
+                let u = new SpeechSynthesisUtterance(cleanTxt);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                synth.speak(u);
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let correctIndex = row.getAttribute('data-ans-index');
+            let selectedIndex = optItem.getAttribute('data-index');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-index') === correctIndex) item.classList.add('correct');
+            });
+            if (selectedIndex !== correctIndex) optItem.classList.add('wrong');
+            
+            if (!isExamModeActive) {
+                let btn = row.querySelector('.btn-answer');
+                if (btn) btn.click();
+            }
+        };
+
+        window.setMode = function(mode) {
+            let container = document.getElementById('q-container');
+            let btnStudy = document.getElementById('btn-study');
+            let btnExam = document.getElementById('btn-exam');
+            let btnResult = document.getElementById('btn-result');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            if (mode === 'exam') {
+                isExamModeActive = true;
+                container.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+                btnResult.style.display = 'block'; 
+            } else {
+                isExamModeActive = false;
+                container.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+                btnResult.style.display = 'none'; 
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            rows.forEach(row => {
+                row.classList.remove('answered');
+                row.querySelectorAll('.opt-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'wrong');
+                });
+                let ansBox = row.querySelector('.answer-box');
+                if (ansBox) ansBox.style.display = 'none';
+                let btnAns = row.querySelector('.btn-answer');
+                if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+            });
+
+            if (mode === 'exam') {
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+            } else {
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumSpan = row.querySelector('.q-number-span');
+                if (qNumSpan) qNumSpan.textContent = (index + 101) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.showResult = function() {
+            let container = document.getElementById('q-container');
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> نتيجتك حتى الآن: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا أستاذ حمادة! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 مستوى رائع وممتاز!";
+                else msg += "💪 يمكنك المحاولة مجدداً، استمر في التدريب!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            window.scrollTo({ top: resEl.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        window.revealAnswer = function(btn) {
+            let row = btn.closest('.question-row');
+            let box = row.querySelector('.answer-box');
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الشرح والمفاتيح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الشرح والمفاتيح'; 
+            }
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>

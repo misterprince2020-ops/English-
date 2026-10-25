@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تجميعات الرخصة المهنية - الأسئلة (451 إلى 500)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #f8fafc;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1100px; padding: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; border-top: 6px solid #3b82f6; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.2em; font-weight: 900; margin-bottom: 5px; }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 25px; font-weight: bold; }
+        .creator-info { text-align: center; color: #ffffff; background-color: #3b82f6; font-size: 1.2em; font-weight: bold; margin-bottom: 35px; padding: 12px; border-radius: 8px;}
+
+        /* لوحة التحكم */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; min-width: 250px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        .btn-review { background-color: #10b981; }
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; transform: scale(1.02); background-color: #1d4ed8;}
+        .btn-exam.active-mode { outline: 3px solid #ef4444; outline-offset: 2px; transform: scale(1.02); background-color: #334155;}
+        .btn-review.active-mode { outline: 3px solid #4ade80; outline-offset: 2px; transform: scale(1.02); background-color: #059669;}
+        
+        .btn-result { background-color: #f59e0b; color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: none; width: 100%; max-width: 915px;}
+        .btn-result:hover { background-color: #d97706; }
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-audio { background-color: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 6px;}
+        .btn-audio:hover { background-color: #059669; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-lbl { font-size: 26px; font-weight: 900; color: #3b82f6; flex-shrink: 0; padding-top: 5px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.5em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 1.8; font-family: Arial, sans-serif;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: flex; flex-direction: column; gap: 12px; direction: ltr; width: 100%; margin-top: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 70px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.3em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 60px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        
+        .choice-content { display: flex; flex-direction: column; justify-content: center; padding: 12px 15px; width: 100%; gap: 6px;}
+        .choice-en { font-weight: bold; font-size: 1.2em; color: #334155; font-family: Arial, sans-serif;}
+        .choice-ar { font-size: 1.05em; font-weight: bold; color: #b91c1c; font-family: 'Tajawal', sans-serif;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-en, .opt-item.correct .choice-ar { color: white !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-en, .opt-item.wrong .choice-ar { color: white !important; }
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed;}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .grammar-explanation { color: #1e293b; font-size: 18px; line-height: 2.0; font-weight:bold; }
+        .box-hint { display: block; background-color: #fca5a5; color: #7f1d1d; padding: 6px 12px; border-radius: 6px; font-size: 1em; margin-bottom: 10px; font-weight: 900;}
+
+        /* أزرار التنقل (التالي يمين - السابق يسار) */
+        .exam-nav-buttons { display: none; justify-content: space-between; margin-top: 20px; width: 100%; border-top: 2px solid #e2e8f0; padding-top: 15px;}
+        .exam-mode .exam-nav-buttons, .review-mode .exam-nav-buttons { display: flex; }
+        .btn-nav { background-color: #3b82f6; color: white; border: none; padding: 10px 25px; font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-family: 'Tajawal';}
+        .btn-nav:hover { background-color: #2563eb; }
+
+        /* وضع الاختبار الصارم (سؤال واحد) */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5; padding: 15px; border-radius: 12px;}
+        .exam-mode .full-sentence-translation, .exam-mode .answer-action-container, .exam-mode .answer-box, .exam-mode .choice-ar, .exam-mode .btn-audio { display: none !important; }
+        .exam-mode .question-row { display: none !important; }
+        .exam-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        /* وضع المراجعة الذكي (سؤال وجواب واحد فقط) */
+        .review-mode { background-color: #f0fdf4; border-color: #4ade80; padding: 15px; border-radius: 12px;}
+        .review-mode .question-row { display: none !important; }
+        .review-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(30px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">أسئلة الرخصة المهنية - إنجليزي</div>
+    <div class="sub-title">تجميعات من 451 إلى 500 (مترجمة الخيارات بالكامل وخالية من أي Span)</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+    
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع المذاكرة (مرتب + الكل)</button>
+            <button id="btn-review" class="mode-btn btn-review" onclick="setMode('review')">✅ وضع المراجعة (محلول + تنقل)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')">🔴 وضع الاختبار (عشوائي + تنقل)</button>
+        </div>
+        <button id="btn-result" class="btn-result" onclick="showResult()">📋 إنهاء الاختبار وإظهار النتيجة</button>
+        <div class="section-result" id="res-box"></div>
+    </div>
+
+    <div id="q-container" class="questions-container train-mode"></div>
+</div>
+
+<script>
+(function initApp() {
+    try {
+        const db = [
+            {q:"The sound /tʃ/ is found in:", o:["a. chin | ذقن (تنطق بصوت /tʃ/ تش)", "b. chemistry | كيمياء (تنطق بصوت /k/)", "c. back | ظهر (تنطق بصوت /k/)", "d. Christ | المسيح (تنطق بصوت /k/)"], c:0, t:"يوجد الصوت /tʃ/ في كلمة:", e:"<div class='box-hint'>a. chin<br>وين موجود هذا الصوت /tʃ/ (ينطق تش): في كلمة chin، بينما في chemistry و Christ ينطق /k/.</div>"},
+            {q:"The vowel sound /i:/ as in the word seen can be phonetically described as:", o:["a. High Front Long unrounded | مرتفع، أمامي، طويل، غير مستدير الشفتين", "b. Low Front Long unrounded | منخفض، أمامي، طويل، غير مستدير", "c. Low Back Long unrounded | منخفض، خلفي، طويل، غير مستدير", "d. Low Back Long rounded | منخفض، خلفي، طويل، مستدير"], c:0, t:"يمكن وصف صوت العلة /i:/ كما في كلمة (seen) صوتياً بأنه:", e:"<div class='box-hint'>a. High Front Long unrounded<br>صوت /i:/ ينتج بارتفاع مقدمة اللسان (High Front) وهو صوت طويل (Long) مع انفراج الشفتين (Unrounded).</div>"},
+            {q:"The vowel sound /u:/ as in the word food can be phonetically described as", o:["a. High back long rounded | مرتفع، خلفي، طويل، مستدير الشفتين", "b. High back long unrounded | مرتفع، خلفي، طويل، غير مستدير", "c. Low back long rounded | منخفض، خلفي، طويل، مستدير", "d. Low back long unrounded | منخفض، خلفي، طويل، غير مستدير"], c:0, t:"يمكن وصف صوت العلة /u:/ كما في كلمة (food) صوتياً بأنه:", e:"<div class='box-hint'>a. High Back Long rounded<br>صوت /u:/ ينتج بارتفاع مؤخرة اللسان (High Back) وهو صوت طويل (Long) مع استدارة الشفتين (Rounded).</div>"},
+            {q:"Which of the following is the strongest part in pronouncing the word \"information?\"", o:["a) in-for-MA-tion | التشديد على المقطع الثالث MA", "b) IN-for-ma-tion | التشديد على المقطع الأول IN", "c) in-for-ma-TION | التشديد على المقطع الرابع TION", "d) in-FOR-ma-tion | التشديد على المقطع الثاني FOR"], c:0, t:"أي مما يلي يمثل الجزء الأقوى (النبر الأساسي) في نطق كلمة \"information\"؟", e:"<div class='box-hint'>a) in-for-MA-tion<br>الكلمات المنتهية بالمقطع (-tion) يقع النبر والتشديد فيها دائماً على المقطع الذي يسبقه مباشرة (MA).</div>"},
+            {q:"What is the language function used by speaker B in the following situation? A: Unfortunately, I failed my final test B: So, what!", o:["a) Refusal | الرفض", "b) Sympathy | التعاطف", "c) Agreement | الموافقة", "d) Indifference | اللامبالاة / عدم الاكتراث"], c:3, t:"ما هي الوظيفة اللغوية التي يستخدمها المتحدث B في الموقف التالي؟ A: لسوء الحظ، رسبت في اختباري النهائي. B: وماذا في ذلك! (So, what!)", e:"<div class='box-hint'>d) Indifference<br>لامبالاة: استخدم So, what! للتعبير بأنه غير مبالي.</div>"},
+            {q:"What is the language function used by speaker B in the following situation? A: My grandfather passed away this morning. B: I am so sorry to hear!", o:["a) Surprise | المفاجأة", "b) Sympathy | التعاطف والمواساة", "c) Approval | الاستحسان / الموافقة", "d) Indifference | اللامبالاة"], c:1, t:"ما هي الوظيفة اللغوية التي يستخدمها المتحدث B في الموقف التالي؟ A: توفي جدي هذا الصباح. B: أنا حزين جداً لسماع ذلك!", e:"<div class='box-hint'>b) Sympathy<br>تعاطف ومواساة.</div>"},
+            {q:"What is the language function used by speaker B in the following situation? A: I lost my mobile last night. B: It's your fault", o:["a) Worry | القلق", "b) Sympathy | التعاطف", "c) Blame | اللوم والعتاب", "d) Indifference | اللامبالاة"], c:2, t:"ما هي الوظيفة اللغوية التي يستخدمها المتحدث B في الموقف التالي؟ A: فقدت هاتفي المحمول الليلة الماضية. B: إنه خطؤك (ذنبك).", e:"<div class='box-hint'>c) Blame<br>هذا خطأك يعني يلومه (اللوم Blame).</div>"},
+            {q:"The following sound is called schwa:", o:["a) /ə/ | رمز صوت الشوا (Schwa)", "b) /i:/ | رمز صوت العلة الطويل i", "c) /ɒ/ | رمز صوت العلة القصير o", "d) /æ/ | رمز صوت العلة القصير a"], c:0, t:"يُسمى الصوت التالي بصوت الشوا (Schwa):", e:"<div class='box-hint'>a) /ə/<br>صوت الشوا /ə/ هو الصوت المتحرك الأضعف والأكثر شيوعاً في اللغة الإنجليزية.</div>"},
+            {q:"In which word of the following words the final sound is not pronounced", o:["a) Tomb | قبر (حرف b في النهاية صامت لا ينطق)", "b) Knowledge | معرفة (ينطق بصوت /dʒ/)", "c) Court | محكمة (ينطق بصوت /t/)", "d) Night | ليل (ينطق بصوت /t/)"], c:0, t:"في أي كلمة من الكلمات التالية لا يتم نطق الصوت الأخير؟", e:"<div class='box-hint'>a) Tomb<br>في أي كلمة من الكلمات التالية لا يتم نطق الصوت النهائي؟ غالباً في نهاية الكلمة اذا جاءت b قبل m لا تنطق الـ b مثل comb, lamb, tomb.</div>"},
+            {q:"In which word of the following words the initial sound is not pronounced?", o:["a) Mute | صامت (تنطق الـ m)", "b) Comb | مشط (الحرف الصامت في النهاية وليس البداية)", "c) Fight | قتال (تنطق الـ f)", "d) Write | يكتب (حرف w في البداية صامت لا ينطق)"], c:3, t:"في أي كلمة من الكلمات التالية لا يتم نطق الصوت الأول (الابتدائي)؟", e:"<div class='box-hint'>d) Write<br>في أي كلمة من الكلمات التالية لا يتم نطق الصوت الأول؟ حرف w لا ينطق إذا جاء بعده حرف r في بداية الكلمة.</div>"},
+            {q:"In which word of the following words the first syllable is stressed?", o:["a) Prevention | وقاية (التشديد على المقطع الثاني ven)", "b) Knowledge | معرفة (التشديد على المقطع الأول KNOW)", "c) Democratic | ديمقراطي (التشديد على المقطع الثالث crat)", "d) Prefer | يفضل (التشديد على المقطع الثاني fer)"], c:1, t:"في أي كلمة من الكلمات التالية يتم تشديد (نبر) المقطع الأول؟", e:"<div class='box-hint'>b) Knowledge<br>في أي كلمة من الكلمات التالية يتم الشدة على المقطع الأول؟ كلمة KNOWLEDGE (اسم من مقطعين، والأسماء الثنائية غالباً تشدد في مقطعها الأول).</div>"},
+            {q:"Which of the following pairs are minimal pairs?", o:["a) Bat /Cat | خفاش / قطة (زوج أصغر يختلفان في الصوت الأول فقط)", "b) Safe/ Feed | آمن / يطعم (تختلفان في عدة أصوات)", "c) Kick/Knock | يركل / يطرق (تختلفان في صوت العلة)", "d) Prefer/Safer | يفضل / أكثر أماناً (عدد مقاطع وأصوات مختلفة)"], c:0, t:"أي من الأزواج التالية يعتبر أزواجاً صغرى (Minimal pairs)؟", e:"<div class='box-hint'>a) bat /cat<br>minimal pairs لابد مختلفين بصوت واحد فقط في نفس الموقع (/bæt/ و /kæt/).</div>"},
+            {q:"Which of the following words consists of 4 syllables?", o:["a) Expensive | غالي (3 مقاطع: ex-pen-sive)", "b) Comfortable | مريح (3 أو 4 مقاطع، وتنطق غالباً بـ 3: comf-ta-ble)", "c) Information | معلومات (4 مقاطع واضحة: in-for-ma-tion)", "d) Creation | إبداع / خلق (3 مقاطع: cre-a-tion)"], c:2, t:"أي من الكلمات التالية تتكون من 4 مقاطع صوتية؟", e:"<div class='box-hint'>c) Information<br>أي من الكلمات التالية يتكون من 4 مقاطع؟ in-for-ma-tion.</div>"},
+            {q:"Which of the following sounds is voiced?", o:["a) /v/ | صوت مجهور (يهتز معه الوتران الصوتيان)", "b) /k/ | صوت مهموس (غير مجهور)", "c) /p/ | صوت مهموس (غير مجهور)", "d) /t/ | صوت مهموس (غير مجهور)"], c:0, t:"أي من الأصوات التالية يعتبر صوتاً مجهوراً (Voiced)؟", e:"<div class='box-hint'>a) /v/<br>صوت /v/ مجهور، بينما /k/, /p/, /t/ أصوات مهموسة (Voiceless).</div>"},
+            {q:"Which of the following pairs are minimal pairs?", o:["a) Bite/ Fight | يعض / يقاتل (زوج أصغر: /baɪt/ و /faɪt/)", "b) Beef / Feed | لحم بقري / يطعم (تختلفان في الصوت الأول والأخير)", "c) Say/Cry | يقول / يبكي (تختلفان في بداية الكلمة)", "d) Doing/ Swimming | يفعل / يسبح (مختلفان كلياً)"], c:0, t:"أي من الأزواج التالية يعتبر أزواجاً صغرى (Minimal pairs)؟", e:"<div class='box-hint'>a) bite/ fight<br>كلمتان تتطابقان في كل الأصوات ما عدا الصوت الأول (/b/ و /f/).</div>"},
+            {q:"Which of the following sounds can described as: Velar plosive voiceless?", o:["a) /k/ | طبقي، انفجاري، مهموس", "b) /g/ | طبقي، انفجاري، مجهور", "c) /s/ | لثوي، احتكاكي، مهموس", "d) /n/ | لثوي، أنفي، مجهور"], c:0, t:"أي من الأصوات التالية يمكن وصفه بأنه: طبقي، انفجاري (وقفي)، مهموس؟", e:"<div class='box-hint'>a) /k/<br>صوت /k/ هو الصوت الطبقي (Velar) الانفجاري (Plosive) المهموس (Voiceless)، بينما /g/ مجهور.</div>"},
+            {q:"The final sound in the word churches is pronounced as:", o:["a) /ɪz/ | ينطق /ɪz/ بعد الأصوات الصفيرية", "b) /z/ | ينطق /z/", "c) /s/ | ينطق /s/", "d) /es/ | تمثيل حرفي وليس صوتي"], c:0, t:"يُنطق الصوت الأخير في كلمة (churches) كـ:", e:"<div class='box-hint'>a) /ɪz/<br>بعد صوت /tʃ/ في نهاية الكلمة، تنطق إضافة الجمع (es) كـ /ɪz/.</div>"},
+            {q:"The final sound in the word lived is pronounced as:", o:["a) /id/ | ينطق /ɪd/", "b) /d/ | ينطق /d/ لأن الصوت الذي قبله /v/ مجهور", "c) /t/ | ينطق /t/", "d) /et/ | نطق خاطئ"], c:1, t:"يُنطق الصوت الأخير في كلمة (lived) كـ:", e:"<div class='box-hint'>b) /d/<br>بما أن كلمة live تنتهي بصوت /v/ المجهور، فإن الـ (ed) في الماضي تنطق /d/.</div>"},
+            {q:"Which word has a different final sound:", o:["a) Laughed | ضحك (تنتهي بصوت /f/ المهموس فتنطق الـ ed كـ /t/)", "b) Blocked | حظر (تنتهي بصوت /k/ المهموس فتنطق الـ ed كـ /t/)", "c) Watched | شاهد (تنتهي بصوت /tʃ/ المهموس فتنطق الـ ed كـ /t/)", "d) Changed | غيّر (تنتهي بصوت /dʒ/ المجهور فتنطق الـ ed كـ /d/)"], c:3, t:"أي كلمة مما يلي لها صوت نهائي مختلف؟", e:"<div class='box-hint'>d) Changed<br>Voiceless + ed = t / Voiced + ed = d<br>كلها تنتهي بصوت /t/ ما عدا Changed تنتهي بصوت /d/.</div>"},
+            {q:"The final sound of the word \"teachers\" is pronounced as the final sound in:", o:["a) Tables | طاولات (تنتهي بصوت /z/ المجهور مثل teachers)", "b) Touches | يلمس (تنتهي بصوت /ɪz/)", "c) Sheets | أوراق (تنتهي بصوت /s/)", "d) Watches | ساعات (تنتهي بصوت /ɪz/)"], c:0, t:"يُنطق الصوت الأخير في كلمة \"teachers\" مثل الصوت الأخير في كلمة:", e:"<div class='box-hint'>a) Tables<br>كلمة teachers وكلمة tables كلاهما ينتهي بصوت /z/.</div>"},
+            {q:"Which of the following suffixes can be added to the word \"modern\" to change it into a verb?", o:["a) -ify | اللاحقة ify-", "b) -ize | اللاحقة ize- (لتصبح modernize يُحدّث / يُعصّرن)", "c) -en | اللاحقة en-", "d) -in | اللاحقة in-"], c:1, t:"أي من اللواحق التالية يمكن إضافتها إلى كلمة \"modern\" لتحويلها إلى فعل (Verb)؟", e:"<div class='box-hint'>b) -ize<br>modern (صفة) + ize = modernize (فعل بمعنى يُحدّث).</div>"},
+            {q:"Grammar teaching is the explicit teaching of language.......", o:["a) Forms | الأشكال والتراكيب اللغوية", "b) Words | الكلمات", "c) Function | الوظائف", "d) Meaning | المعاني"], c:0, t:"تدريس القواعد (النحو) هو التدريس الصريح لـ ....... اللغة.", e:"<div class='box-hint'>a) Forms<br>تدريس القواعد يركز بشكل مباشر وصريح على أشكال وتراكيب اللغة (Language forms).</div>"},
+            {q:"When a language learner is aware of the grammatical rule for the 3rd person singular in English, yet utters the following sentence, \"He run fast!\", we say that the learner.", o:["A. Has performance, but lack competence | لديه أداء، لكنه يفتقر للكفاءة", "B. Has both performance and competence | لديه الأداء والكفاءة معاً", "C. Has competence, but lacks performance | لديه الكفاءة (المعرفة بالقاعدة)، لكنه يفتقر للأداء السليم", "D. Lacks both performance and competence | يفتقر للأداء والكفاءة معاً"], c:2, t:"عندما يكون متعلم اللغة مدركاً للقاعدة النحوية للمفرد الغائب في الإنجليزية، ومع ذلك ينطق الجملة التالية: \"He run fast!\"، فإننا نقول إن المتعلم:", e:"<div class='box-hint'>C. Has competence, but lacks performance<br>في السؤال يقول هو يعرف القاعدة يعني عنده الكفاءة competence لكن عنده مشكلة في الأداء performance. المفروض يقول he runs fast مع انه يعرف القاعدة الا انه اخطأ بالأداء.</div>"},
+            {q:"Shaywitz talked about two neural pathways for reading in the brain. In which part of the brain do these pathways reside?", o:["A. Front | الجزء الأمامي", "B. Right | الجزء الأيمن", "C. Back | الجزء الخلفي", "D. Left | الجزء الأيسر (النصف الأيسر من الدماغ هو المسؤول عن اللغة والقراءة)"], c:2, t:"تحدث العالم (Shaywitz) عن مسارين عصبيين للقراءة في الدماغ، في أي جزء من الدماغ يقع هذان المساران؟ (ملاحظة: مجاب في الصندوق C. Back)", e:"<div class='box-hint'>C. Back<br>تحدث العالم Shaywitz عن مسارين للقراءة في الدماغ، في أي جزء من الدماغ يوجد هذين الجزئين؟ حسب مفتاح إجابة الملزمة: C. Back (الجزء الخلفي).</div>"},
+            {q:"What do we call a language that was originally a pidgin, but over time has become the first language of many people?", o:["B. Pidgins | اللغات الهجينة المؤقتة", "C. Creole | اللغة المولدة (الكريول - لغة هجينة أصبحت لغة أم)", "D. Dialects | اللهجات", "E. Vernaculars | اللغات العامية المحلية"], c:1, t:"ماذا نسمي اللغة التي كانت في الأصل لغة هجينة مبسطة (Pidgin)، ولكنها مع مرور الوقت أصبحت اللغة الأولى (اللغة الأم) لكثير من الناس؟", e:"<div class='box-hint'>C. Creole<br>ماذا نسمي اللغة التي كانت في الأصل pidgin، ولكن مع مرور الوقت أصبحت الأولى لمجموعة من الناس؟ pidgin لغة التجار التي تستخدم في حال كل شخص لا يتحدث لغة الآخر، وإذا تطورت وأصبحت مع الوقت لغة أولى للأبناء تسمى Creole.</div>"},
+            {q:"Two or more words that often go together are called .............", o:["A. Comparatives | صيغ المقارنة", "B. Conjunctions | أدوات الربط والعطف", "C. Collocations | المتلازمات اللفظية (كلمات تترافق معاً دائماً)", "D. Clusters | العناقيد الصوتية"], c:2, t:"كلمتان أو أكثر غالباً ما تأتيان معاً تسمى .............", e:"<div class='box-hint'>C. Collocations<br>collocations هي الكلمات غالباً تجي مع بعض مثل Fast food.</div>"},
+            {q:"The underlined word in the following sentence is ..\" Ouch! that hurts\"", o:["A. An interjection | أداة تعجب (صيحة تعبر عن ألم أو شعور مفاجئ)", "B. A conjunction | أداة ربط", "C. An intensifier | أداة توكيد وتشديد", "D. A preposition | حرف جر"], c:0, t:"الكلمة (Ouch!) في الجملة التالية \"Ouch! that hurts\" تعتبر:", e:"<div class='box-hint'>A. An interjection<br>الكلمات التي تعبر عن مشاعر مفاجئة هي Interjection مثل Ouch! Wow.</div>"},
+            {q:"Suffixes, such as -er in teacher, which involve a change of word class, are called ............... morphemes", o:["A. Derivational | مورفيمات اشتقاقية (تغير الفئة النحوية للكلمة)", "B. Inflectional | مورفيمات تصريفية (لا تغير الفئة النحوية)", "C. Free morpheme | مورفيم حر", "D. Bound morpheme | مورفيم مقيد"], c:0, t:"اللواحق، مثل (-er) في كلمة (teacher)، التي تتضمن تغييراً في فئة الكلمة (من فعل إلى اسم)، تسمى مورفيمات ...............", e:"<div class='box-hint'>A. Derivational<br>اذا تغيرت الكلمة وتركيبها من فعل الى اسم تكون -> اشتقاقية derivational، اما اذا المعنى والفئة لم تتغير تكون inflectional.</div>"},
+            {q:"The underlined words in the following sentence form ............clause (Although he tried a lot, he couldn't win the race)", o:["A. An adjective | شبه جملة وصفية", "B. An adverb | شبه جملة ظرفية (حال/تناقض)", "C. A relative | شبه جملة موصولة", "D. A noun | شبه جملة اسمية"], c:1, t:"الكلمات التي تحتها خط (Although he tried a lot) في الجملة تشكل شبه جملة ............", e:"<div class='box-hint'>B. An adverb<br>Noun clause تقوم بدور الفاعل او المفعول / Adjective clause ضمير وصل ويصف كلمة قبله / اذن الجملة التي تبدأ بـ Although هي adverb clause (شبه جملة ظرفية تفيد التناقض).</div>"},
+            {q:".... are different words which have the same or similar meaning", o:["A. Hyponyms | المندرجات (كلمات خاصة تحت عام)", "B. Synonyms | المترادفات (كلمات مختلفة لها نفس المعنى)", "C. Antonyms | المتضادات (كلمات متعاكسة)", "D. Polysemy | تعدد المعاني للكلمة الواحدة"], c:1, t:".... هي كلمات مختلفة لها نفس المعنى أو معنى مشابه.", e:"<div class='box-hint'>B. Synonyms<br>كلمات مختلفة لها نفس المعنى : المترادفات.</div>"},
+            {q:"The morpheme in the 'fingerprint' is:", o:["A. Compounding | التركيب (دمج كلمتين مستقلتين)", "B. Clipping | القص / الاختصار", "C. Blending | المزج / النحت", "D. Borrowing | الاستعارة"], c:0, t:"العملية الصرفية في تكوين كلمة 'fingerprint' (بصمة الإصبع) هي:", e:"<div class='box-hint'>A. Compounding<br>تركيب كلمتين مع بعض compounding: two roots are joined together to form new words, finger + print > fingerprint.</div>"},
+            {q:"What is the underlined sound of the word Headed?", o:["A. /ed/ | تمثيل حرفي", "B. /ɪd/ | ينطق /ɪd/ لأن الفعل ينتهي بصوت /d/", "C. /d/ | ينطق /d/", "D. /t/ | ينطق /t/"], c:1, t:"ما هو نطق الصوت الأخير (ed) في كلمة (Headed)؟", e:"<div class='box-hint'>B. /ɪd/<br>اذا كان الصوت الاخير قبله /d/ او /t/ -> then it is pronounced as /ɪd/.</div>"},
+            {q:"Language is a very complex entity and difficult to be defined concisely. Of the following, which is the LEAST accurate in terms of language identification?", o:["A. It is verbal | إنها شفهية/لفظية فقط (الأقل دقة لأنها تشمل الكتابة والإشارات أيضاً)", "B. Language is a system | اللغة نظام", "C. It is used for communication | تُستخدم للتواصل", "D. It is a set of symbols and referents | إنها مجموعة من الرموز والمدلولات"], c:0, t:"اللغة كيان معقد للغاية ويصعب تعريفه بإيجاز. من بين ما يلي، ما هو الأقل دقة من حيث تعريف اللغة؟", e:"<div class='box-hint'>A. It is verbal<br>اللغة كيان معقد للغاية ويصعب تعريفه بإيجاز، أي مما يلي هو أقل دقة من حيث تعريف اللغة: A. It is verbal.</div>"},
+            {q:"(Please empty your bag.) The underlined word is .............", o:["A. A verb | فعل (أفرغْ - فعل أمر)", "B. A noun | اسم", "C. An adjective | صفة", "D. A preposition | حرف جر"], c:0, t:"في جملة (Please empty your bag)، الكلمة التي تحتها خط (empty) هي .............", e:"<div class='box-hint'>A. A verb<br>من فضلك افرغ حقيبتك: كلمة empty هنا جاءت كفعل أمر (Verb).</div>"},
+            {q:"(Reem ate breakfast while Noura went shopping) The previous statement is classified as ..... sentence.", o:["A) A simple | جملة بسيطة", "B) A complex | جملة معقدة (لاحتوائها على الرابط التابع while)", "C) A compound | جملة مركبة", "D) A compound complexes | جملة مركبة معقدة"], c:1, t:"(تناولت ريم الإفطار بينما ذهبت نورة للتسوق) تصنف العبارة السابقة على أنها جملة .....", e:"<div class='box-hint'>B. A complex<br>الجملة المركبة compound تتكون من جملتين بينهم أحد روابط FANBOYS، أما الجملة المعقدة Complex فتحتوي على أي روابط تابعة غير الموجودة بـ FANBOYS مثل: Because, also, so, while. هنا في الجملة while اذن هي complex معقدة.</div>"},
+            {q:"(Sara waited for the plane, but the plane was late.) The previous statement is classified as a/an ........ sentence", o:["A) Simple | جملة بسيطة", "B) Complex | جملة معقدة", "C) Compound | جملة مركبة (لوجود الرابط العاطف but)", "D) Compound-complex | جملة مركبة معقدة"], c:2, t:"(انتظرت سارة الطائرة، لكن الطائرة تأخرت.) تصنف العبارة السابقة على أنها جملة ........", e:"<div class='box-hint'>C. Compound<br>في الجملة السابقة فيه كلمة but وهي من الروابط المجموعة في FANBOYS اذن تعتبر compound الجمل المركبة.</div>"},
+            {q:"In the word (metallic), the (ic) is a suffix used to derive............ out of other parts of speech.", o:["A) adjectives | الصفات (تحول الاسم metal إلى صفة metallic)", "B) adverbs | الظروف", "C) nouns | الأسماء", "D) verbs | الأفعال"], c:0, t:"في كلمة (metallic)، تعتبر (ic) لاحقة تُستخدم لاشتقاق ............ من أقسام الكلام الأخرى.", e:"<div class='box-hint'>A) Adjectives<br>تجعل الكلمة صفة <- (ic اللاحقة) Metal (معدن - اسم) -> Metallic (معدني - صفة).</div>"},
+            {q:"Which of the following statements is true about the word \"Massachusetts \"?", o:["A. It is a mono-morphemic word | كلمة أحادية المورفيم (قطعة واحدة لا تتجزأ صرفياً)", "B. It is a poly morphemic word | كلمة متعددة المورفيمات", "C. It is a one-syllable word | كلمة من مقطع صوتي واحد", "D. It is a plural word | كلمة جمع"], c:0, t:"أي من العبارات التالية صحيحة حول كلمة \"Massachusetts\" (ولاية ماساتشوستس)؟", e:"<div class='box-hint'>A. It is a mono-morphemic word<br>ولاية Massachusetts تتكون من مورفيم 1 لان s من اصل الكلمة وليست للجمع.</div>"},
+            {q:"The word \"unbreakable\" consists of ....... Syllables.", o:["A. 2 | مقطعين", "B. 3 | 3 مقاطع", "C. 4 | 4 مقاطع صوتية (un-break-a-ble)", "D. 5 | 5 مقاطع"], c:2, t:"تتكون كلمة \"unbreakable\" من ....... مقاطع صوتية (Syllables).", e:"<div class='box-hint'>C. 4<br>هنا يسأل عن مقاطع الاصوات syllables: Un-break-a-ble (4 مقاطع). ولكن اذا سأل عن morphemes فهي 3 (Un-break-able).</div>"},
+            {q:"Changing the stress patterns in words Such as \"present\" changes the ........ of the Word", o:["A) spelling | التهجئة", "B) meaning | المعنى فقط", "C) pronunciation | النطق فقط", "D) b and c | الخياران ب و ج (المعنى والنطق معاً)"], c:3, t:"تغيير أنماط النبر (التشديد) في كلمات مثل \"present\" يغير ........ الكلمة.", e:"<div class='box-hint'>D. b and c<br>تغيير شكل او مكان stress لو غيرناه في كلمة present يتغير المعنى والنطق (PRE-sent هدية/حاضر، pre-SENT يقدّم).</div>"},
+            {q:"Which of the following is the most common source of new words in English?", o:["A) Compounding | التركيب", "B) Borrowing | الاستعارة / الاقتباس من اللغات الأخرى", "C) Blending | المزج", "D) Clipping | القص"], c:1, t:"أي مما يلي يُعد المصدر الأكثر شيوعاً للكلمات الجديدة في اللغة الإنجليزية؟", e:"<div class='box-hint'>B. Borrowing<br>من مصادر الكلمات الجديدة في اللغة الإنجليزية والاكثر شيوعاً: الاقتباس / الاستعارة (Borrowing).</div>"},
+            {q:"When two or more sounds do not occur in the same sound environment are called:", o:["A) minimal pairs | الأزواج الصغرى", "B) minimal sets | المجموعات الصغرى", "C) allophones | الألوفونات", "D) Complementary distribution | التوزيع التكاملي (لا يظهر الصوتان في نفس السياق الصوتي أبداً)"], c:3, t:"عندما لا يظهر صوتان أو أكثر في نفس البيئة الصوتية، يُسمى ذلك:", e:"<div class='box-hint'>D. Complementary distribution<br>عندما لا يحدث صوتان او اكثر في نفس البيئة الصوتية.</div>"},
+            {q:"When a word is pronounced in two different ways such as either - /aɪðə/ or / i:ðə / are called:", o:["A. Complementary distribution | التوزيع التكاملي", "B. Minimal pairs | الأزواج الصغرى", "C. Free variation | التنوع الحر (نطقان مختلفان لنفس الكلمة دون تغير المعنى)", "D. Minimal sets | المجموعات الصغرى"], c:2, t:"عندما تُنطق الكلمة الواحدة بطريقتين مختلفتين مثل كلمة (either) - /aɪðə/ أو /i:ðə/، يُسمى ذلك:", e:"<div class='box-hint'>C. Free variation<br>كلمة تنطق بطريقتين مختلفتين .. تنوع حر C)- Free variation (same word pronounced differently).</div>"},
+            {q:"The prefix ante in the word antemeridian means:", o:["A. Together | معاً", "B. Against | ضد", "C. Before | قبل (مثل a.m. تعني قبل الظهر)", "D. By oneself | بنفسه"], c:2, t:"البادئة (ante) في كلمة (antemeridian) تعني:", e:"<div class='box-hint'>C. Before<br>Like in 10 a.m \"ante meridiem\" means before noon قبل الظهر.</div>"},
+            {q:"The smallest unit of meaning in a language is known as a:", o:["A. Morpheme. | المورفيم (أصغر وحدة صرفية ذات معنى)", "B. Syntactic unit. | الوحدة النحوية", "C. Phoneme. | الفونيم (أصغر وحدة صوتية لا تحمل معنى بذاتها)", "D. Grapheme. | الجرافيم (الحرف المكتوب)"], c:0, t:"أصغر وحدة ذات معنى في اللغة تُعرف بـ:", e:"<div class='box-hint'>A. Morpheme.<br>Morpheme is the smallest meaningful unit in a language اصغر وحدة لها معنى.</div>"},
+            {q:"An attribute adjective comes before a ........... but not after copula verbs like be/seem etc.", o:["A) Verb | فعل", "B) Noun | اسم (الصفة النعتية تأتي قبل الاسم الموصوف مباشرة)", "C) Pronoun | ضمير", "D) Sentence | جملة"], c:1, t:"تأتي الصفة النعتية (Attribute adjective) قبل ........... وليس بعد أفعال الربط مثل (be/seem).", e:"<div class='box-hint'>B. Noun<br>An attribute adjective تأتي قبل الاسم الموصوف (Noun).</div>"},
+            {q:"\"You had better stop here for petrol as there is no gas station for the next 200KM\" The purpose of this utterance is:", o:["A) Warning | تحذير", "B) Advising | نصيحة وإرشاد (باستخدام had better)", "C) Threatening | تهديد", "D) Complaining | شكوى"], c:1, t:"\"من الأفضل أن تتوقف هنا للتزود بالوقود لأنه لا توجد محطة وقود لمسافة 200 كم قادمة\" الغرض من هذه العبارة هو:", e:"<div class='box-hint'>B. Advising<br>من الافضل تقف هنا تستخدم لإعطاء النصيحة B) advising.</div>"},
+            {q:"Language variation is:", o:["A) Not systematic | غير منهجي", "B) An inherent part of language | جزء متأصل وطبيعي في اللغة", "C) Not socially and linguistically constrained | غير مقيد اجتماعياً ولغوياً", "D) A clear indicator of speakers' nationalities | مؤشر واضح لجنسيات المتحدثين"], c:1, t:"التنوع اللغوي (Language variation) هو:", e:"<div class='box-hint'>B. An inherent part of language<br>تنوع اللغة : B) an inherent part of language هو جزء متأصل في اللغة.</div>"},
+            {q:"The structural view, one of the possible theoretical positions about the nature of language, looks at language as a:", o:["A. System of structurally related elements for the transmission of meaning. | نظام من العناصر المترابطة بنيوياً لنقل المعنى", "B. Means for establishing and maintaining interpersonal relationships. | وسيلة لبناء العلاقات الشخصية والحفاظ عليها", "C. Medium for performing social transmission between individuals. | وسط لأداء النقل الاجتماعي بين الأفراد", "D. Vehicle for the expression of functions. | أداة للتعبير عن الوظائف"], c:0, t:"النظرة البنيوية (الهيكلية)، وهي إحدى المواقف النظرية حول طبيعة اللغة، تنظر إلى اللغة باعتبارها:", e:"<div class='box-hint'>A. System of structurally related elements for the transmission of meaning.<br>Structural = structurally > keywords... النظرة الهيكلية ، واحدة من النظريات عن طبيعة اللغة ترى اللغة كـ: تنظيم عناصر بشكل هيكلي لتنقل المعاني.</div>"},
+            {q:"Which of the following statements is true of Spanish, Portuguese and Italian?", o:["A) They are related to English | ترتبط باللغة الإنجليزية مباشرة", "B) They are only spoken in Europe | يتم التحدث بها في أوروبا فقط", "C) They are notoriously difficult to learn | من المعروف أنها صعبة التعلم للغاية", "D) They belong to the Romance family of languages | تنتمي جميعها إلى عائلة اللغات الرومانسية (المشتقة من اللاتينية)"], c:3, t:"أي من العبارات التالية صحيحة بالنسبة للغات الإسبانية والبرتغالية والإيطالية؟", e:"<div class='box-hint'>D) They belong to the Romance family of languages<br>ماهي العبارة الصحيحة من العبارات التالية عن اللغة الاسبانية والبرتغالية والايطالية ، كلهم من عائلة اللغات الرومانسية.</div>"}
+        ];
+
+        let synth = window.speechSynthesis;
+        let isExamModeActive = false;
+        let isReviewModeActive = false;
+        let examCurrentIndex = 0;
+        let examRowsList = [];
+        
+        function buildApp() {
+            let qContainer = document.getElementById('q-container');
+            qContainer.innerHTML = '';
+            
+            db.forEach((qObj, index) => {
+                let displayNumber = index + 451;
+                let block = document.createElement('div');
+                block.className = 'question-row';
+                block.setAttribute('data-ans-index', qObj.c);
+                block.setAttribute('data-original-index', index);
+
+                let letters = ["A", "B", "C", "D"];
+                let optsHtml = `<div class="options-inline">` + qObj.o.map((opt, i) => {
+                    let pSplit = opt.split('|');
+                    let enO = pSplit[0].trim();
+                    let arO = pSplit[1] ? pSplit[1].trim() : '';
+                    return `
+                    <div class="opt-item" data-index="${i}" onclick="selectOption(this, event)">
+                        <div class="choice-badge">${letters[i]}</div>
+                        <div class="choice-content">
+                            <div class="choice-en" dir="ltr">${enO}</div>
+                            ${arO ? `<div class="choice-ar" dir="rtl">${arO}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+
+                let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+                
+                // زر الصوت
+                let cleanTextForAudio = qObj.q.replace(/[\d\.]/g, '').trim(); 
+                let btnAudioHtml = `<div class="q-header"><button class="btn-audio" onclick="speakText('${cleanTextForAudio.replace(/'/g, "\\'")}')">🔊 استماع للجملة</button></div>`;
+                
+                let navHtml = `
+                    <div class="exam-nav-buttons">
+                        <button class="btn-nav btn-next" onclick="nextQuestion(event)">التالي ▶</button>
+                        <button class="btn-nav btn-prev" onclick="prevQuestion(event)">◀ السابق</button>
+                    </div>
+                `;
+
+                block.innerHTML = `
+                    ${btnAudioHtml}
+                    <div class="q-text-container">
+                        <b class="q-number-lbl">${displayNumber}. </b>
+                        <div class="q-text" dir="ltr">${qObj.q}</div>
+                    </div>
+                    ${translationHtml}
+                    ${optsHtml}
+                    <div class="answer-action-container">
+                        <button class="btn-answer" onclick="revealAnswer(this)">👁️ إظهار الشرح والمفاتيح</button>
+                    </div>
+                    <div class="answer-box">
+                        <div class="grammar-explanation">${qObj.e}</div>
+                    </div>
+                    ${navHtml}
+                `;
+                qContainer.appendChild(block);
+            });
+        }
+
+        window.speakText = function(text) {
+            if(synth) {
+                synth.cancel();
+                let cleanTxt = text.replace(/[\._]/g, '').trim();
+                let u = new SpeechSynthesisUtterance(cleanTxt);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                synth.speak(u);
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let correctIndex = row.getAttribute('data-ans-index');
+            let selectedIndex = optItem.getAttribute('data-index');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-index') === correctIndex) item.classList.add('correct');
+            });
+            if (selectedIndex !== correctIndex) optItem.classList.add('wrong');
+            
+            if (!isExamModeActive && !isReviewModeActive) {
+                let btn = row.querySelector('.btn-answer');
+                if (btn) btn.click();
+            } else if (isExamModeActive) {
+                setTimeout(() => {
+                    if (examCurrentIndex < examRowsList.length - 1) {
+                        nextQuestion();
+                    } else {
+                        showResult();
+                    }
+                }, 800);
+            }
+        };
+
+        window.prevQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex > 0) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex--;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            }
+        };
+
+        window.nextQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex < examRowsList.length - 1) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex++;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            } else {
+                if(isExamModeActive) {
+                    showResult();
+                }
+            }
+        };
+
+        function updateNavButtons() {
+            if(!isExamModeActive && !isReviewModeActive) return;
+            examRowsList.forEach((row, idx) => {
+                let pBtn = row.querySelector('.btn-prev');
+                let nBtn = row.querySelector('.btn-next');
+                if(pBtn) {
+                    pBtn.style.visibility = (idx === 0) ? 'hidden' : 'visible';
+                }
+                if(nBtn) {
+                    if (idx === examRowsList.length - 1) {
+                        nBtn.innerHTML = isExamModeActive ? 'إنهاء الاختبار 🏁' : 'نهاية المراجعة 🏁';
+                    } else {
+                        nBtn.innerHTML = 'التالي ▶';
+                    }
+                }
+            });
+        }
+
+        window.setMode = function(mode) {
+            let container = document.getElementById('q-container');
+            let btnStudy = document.getElementById('btn-study');
+            let btnReview = document.getElementById('btn-review');
+            let btnExam = document.getElementById('btn-exam');
+            let btnResult = document.getElementById('btn-result');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            // إعادة تعيين الأزرار
+            btnStudy.classList.remove('active-mode');
+            btnReview.classList.remove('active-mode');
+            btnExam.classList.remove('active-mode');
+
+            if (mode === 'exam') {
+                isExamModeActive = true;
+                isReviewModeActive = false;
+                container.className = 'questions-container exam-mode';
+                btnExam.classList.add('active-mode');
+                btnResult.style.display = 'block';
+            } else if (mode === 'review') {
+                isExamModeActive = false;
+                isReviewModeActive = true;
+                container.className = 'questions-container review-mode';
+                btnReview.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            } else {
+                isExamModeActive = false;
+                isReviewModeActive = false;
+                container.className = 'questions-container train-mode';
+                btnStudy.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            // إعادة التهيئة العامة
+            rows.forEach(row => {
+                row.classList.remove('active-q');
+                if (mode !== 'review') {
+                    row.classList.remove('answered');
+                    row.querySelectorAll('.opt-item').forEach(item => {
+                        item.classList.remove('selected', 'correct', 'wrong');
+                    });
+                    let ansBox = row.querySelector('.answer-box');
+                    if (ansBox) ansBox.style.display = 'none';
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                }
+            });
+
+            if (mode === 'exam') {
+                // خلط الخيارات والأسئلة في وضع الاختبار
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else if (mode === 'review') {
+                // ترتيب أصلي + إظهار الإجابات (تظليل الأخضر) + إعداد التنقل + إخفاء صندوق الشرح افتراضيا
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    
+                    row.classList.add('answered');
+                    let correctIndex = row.getAttribute('data-ans-index');
+                    let correctOpt = row.querySelector('.opt-item[data-index="' + correctIndex + '"]');
+                    if(correctOpt) correctOpt.classList.add('correct');
+                    
+                    let ansBox = row.querySelector('.answer-box');
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (ansBox) ansBox.style.display = 'none'; // الصندوق مغلق افتراضياً في المراجعة
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                });
+                
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else {
+                // ترتيب أصلي في وضع المذاكرة
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumLbl = row.querySelector('.q-number-lbl');
+                if (qNumLbl) qNumLbl.textContent = (index + 451) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.showResult = function() {
+            let container = document.getElementById('q-container');
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> نتيجتك حتى الآن: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا أستاذ حمادة! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 مستوى رائع وممتاز!";
+                else msg += "💪 يمكنك المحاولة مجدداً، استمر في التدريب!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            window.scrollTo({ top: resEl.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        window.revealAnswer = function(btn) {
+            let row = btn.closest('.question-row');
+            let box = row.querySelector('.answer-box');
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الشرح والمفاتيح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الشرح والمفاتيح'; 
+            }
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>

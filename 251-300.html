@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تجميعات الرخصة المهنية - الأسئلة (251 إلى 300)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #f8fafc;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1100px; padding: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; border-top: 6px solid #3b82f6; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.2em; font-weight: 900; margin-bottom: 5px; }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 25px; font-weight: bold; }
+        .creator-info { text-align: center; color: #ffffff; background-color: #3b82f6; font-size: 1.2em; font-weight: bold; margin-bottom: 35px; padding: 12px; border-radius: 8px;}
+
+        /* لوحة التحكم */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; min-width: 250px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        .btn-review { background-color: #10b981; }
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; transform: scale(1.02); background-color: #1d4ed8;}
+        .btn-exam.active-mode { outline: 3px solid #ef4444; outline-offset: 2px; transform: scale(1.02); background-color: #334155;}
+        .btn-review.active-mode { outline: 3px solid #4ade80; outline-offset: 2px; transform: scale(1.02); background-color: #059669;}
+        
+        .btn-result { background-color: #f59e0b; color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: none; width: 100%; max-width: 915px;}
+        .btn-result:hover { background-color: #d97706; }
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-audio { background-color: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 6px;}
+        .btn-audio:hover { background-color: #059669; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-lbl { font-size: 26px; font-weight: 900; color: #3b82f6; flex-shrink: 0; padding-top: 5px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.5em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 1.8; font-family: Arial, sans-serif;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: flex; flex-direction: column; gap: 12px; direction: ltr; width: 100%; margin-top: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 70px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.3em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 60px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        
+        .choice-content { display: flex; flex-direction: column; justify-content: center; padding: 12px 15px; width: 100%; gap: 6px;}
+        .choice-en { font-weight: bold; font-size: 1.2em; color: #334155; font-family: Arial, sans-serif;}
+        .choice-ar { font-size: 1.05em; font-weight: bold; color: #b91c1c; font-family: 'Tajawal', sans-serif;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-en, .opt-item.correct .choice-ar { color: white !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-en, .opt-item.wrong .choice-ar { color: white !important; }
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed;}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .grammar-explanation { color: #1e293b; font-size: 18px; line-height: 2.0; font-weight:bold; }
+        .box-hint { display: block; background-color: #fca5a5; color: #7f1d1d; padding: 6px 12px; border-radius: 6px; font-size: 1em; margin-bottom: 10px; font-weight: 900;}
+
+        /* أزرار التنقل (السابق - التالي) */
+        .exam-nav-buttons { display: none; justify-content: space-between; margin-top: 20px; width: 100%; border-top: 2px solid #e2e8f0; padding-top: 15px;}
+        .exam-mode .exam-nav-buttons, .review-mode .exam-nav-buttons { display: flex; }
+        .btn-nav { background-color: #3b82f6; color: white; border: none; padding: 10px 25px; font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-family: 'Tajawal';}
+        .btn-nav:hover { background-color: #2563eb; }
+
+        /* وضع الاختبار الصارم (سؤال واحد) */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5; padding: 15px; border-radius: 12px;}
+        .exam-mode .full-sentence-translation, .exam-mode .answer-action-container, .exam-mode .answer-box, .exam-mode .choice-ar, .exam-mode .btn-audio { display: none !important; }
+        .exam-mode .question-row { display: none !important; }
+        .exam-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        /* وضع المراجعة الذكي (سؤال وجواب واحد فقط) */
+        .review-mode { background-color: #f0fdf4; border-color: #4ade80; padding: 15px; border-radius: 12px;}
+        .review-mode .question-row { display: none !important; }
+        .review-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(30px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">تجميعات الرخصة المهنية - إنجليزي</div>
+    <div class="sub-title">الأسئلة من 251 إلى 300</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+    
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع المذاكرة (مرتب + الكل)</button>
+            <button id="btn-review" class="mode-btn btn-review" onclick="setMode('review')">✅ وضع المراجعة (محلول + تنقل)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')">🔴 وضع الاختبار (عشوائي + تنقل)</button>
+        </div>
+        <button id="btn-result" class="btn-result" onclick="showResult()">📋 إنهاء الاختبار وإظهار النتيجة</button>
+        <div class="section-result" id="res-box"></div>
+    </div>
+
+    <div id="q-container" class="questions-container train-mode"></div>
+</div>
+
+<script>
+(function initApp() {
+    try {
+        const db = [
+            {q:"...... using \"think - pair - share\" strategies makes L2 learners", o:["A. Bored.", "B. Confused.", "C. Competitive.", "D. Collaborative."], c:3, t:"استخدام استراتيجية \"فكر - زواج - شارك\" يجعل متعلمي اللغة الثانية ......", e:"<div class='box-hint'>استخدام استراتيجية think - pair - share يجعل المتعلمين: Collaborative متعاونين<br>فكر زواج شارك هي من ضمن استراتيجيات التعلم التعاوني وفيها يفكر كل طالب في الإجابة ثم يناقشها مع زميله ثم تطرح المناقشة الجماعية</div>"},
+            {q:"The reading teacher introduced his students a short story where a wealthy boy was robbed by a poor man in Italy. Which of the following questions help the students think critically?", o:["A. How did mother react?", "B. How plausible is the poor man's story?", "C. How did the boy feel about the robbery?", "D. How did the police catch the poor man in the end?"], c:1, t:"قدم معلم القراءة لطلابه قصة قصيرة حيث سُرق ولد ثري من قبل رجل فقير في إيطاليا. أي من الأسئلة التالية تساعد الطلاب على التفكير بشكل نقدي؟", e:"<div class='box-hint'>أي من الأسئلة الآتية تساعد الطلاب أنهم يفكروا بشكل نقدي )؟ critically بمعنى يصدروا حكم( ... How plausible is the poor man's story?<br>الى اي مدى قصة الرجل الفقير معقولة</div>"},
+            {q:"The primary purpose of scaffolding student learning is to...........", o:["A) Assist the students in a task until independent progress is possible", "B) Encourage the development of self-regulator y skills", "C) Enable the student to visualize ideas", "D) Reinforce the desired student Performance"], c:0, t:"الغرض الأساسي من السقالات لتعلم الطلاب هو...........", e:"<div class='box-hint'>Scaffolding معناها السقالة وتعنى هنا مساعدة يقدمها المعلم للطلاب في اداء مهمة معينة حتى يعتمدوا على انفسهم ... الغرض الاساسي من scaffolding لدعم الطلاب هو : - اساعد الطلاب في مهمة حتى يصبح التقدم المستقل ممكنا.</div>"},
+            {q:"Which of the following is NOT correct about the role of a teacher as a facilitator2", o:["A) The teacher develops learner autonomy.", "B) The teacher helps learners to access resources.", "C) The teacher evaluates learners using different types of assessment.", "D) The teacher encourages the use of learning strategies"], c:2, t:"أي مما يلي غير صحيح حول دور المعلم كميسر2", e:"<div class='box-hint'>أي مما يلي لايعتبر من ضمن دور المعلم كميسر facilitator؟ The teacher evaluates learners using different types of assessment. ... المعلم يقيم المتعلمين باستخدام انواع مختلفة من التقويم . لانه يعتبر دور للمعلم كمقيم وليس كميسر</div>"},
+            {q:"Which of the following can be considered a kinesthetic activity", o:["A) Write a short essay", "B) Complete a Gap Fill exercise", "C) Watch a Power Point presentation", "D) Arrange Cut-Out, jumbled words into sentences"], c:3, t:"أي مما يلي يمكن اعتباره نشاطًا حركيًا", e:"<div class='box-hint'>أي مما يلي يعتبر نشاط حركي kinesthetic activity ؟ Arrange Cut-Out, jumbled words into sentences ... يرتب قصاصات الكلمات ليحولها الى جملة. يعتبر نشاط حركي</div>"},
+            {q:"Which Learning strategy is a teacher who encourages students to keep track of their progress in English language learning?", o:["A. Metacognitive.", "B. Affective.", "C. Cognitive.", "D. Social."], c:0, t:"ما هي استراتيجية التعلم التي يشجع فيها المعلم الطلاب على تتبع تقدمهم في تعلم اللغة الإنجليزية؟", e:"<div class='box-hint'>ماهي استراتيجية التعلم التي فيها المعلم يشجع الطلاب على تتبع تقدمهم في تعلم اللغة الانجليزية؟ Metacognitive<br>ما وراء معرفية يقصد فيها الادراك والتقويم الذاتي لمعرفة المتعلم نفسه بنفسه كإنجازاته وقدراته</div>"},
+            {q:"Which of the following suggestions would you provide to your fellow teachers wanting to encourage learner autonomy in their English classes", o:["A) Put students into new groups for different activities", "B) Listen to student feedback using a class 'suggestion box' or a short questionnaire", "C) Train students to use reference resources to help them study successfully on their own", "D) Think about how you tell students about their progress. How can you Praise or encourage them instead of just giving marks"], c:2, t:"أي من الاقتراحات التالية ستقدمها لزملائك المعلمين الذين يرغبون في تشجيع استقلالية المتعلم في فصول اللغة الإنجليزية؟", e:"<div class='box-hint'>أي من الاقتراحات التالية ستقدمها لزملائك المعلمين الذين يرغبون في تشجيع استقلالية المتعلم في فصول اللغة الانجليزية ؟ Train students to use reference resources to help them study successfully on their own<br>ادرب الطلاب على استخدام المصادر المرجعية لمساعدتهم على الدراسة بنجاح بمفردهم.<br>لان الطالب اذا تعلم على استخدام المصادر يصبح متعلم مستقل.</div>"},
+            {q:"The combination of both on-line and face-to-face education is known as ...............", o:["A) Blended learning", "B) Distance learning", "C) Mobile classroom", "D) Conventional learning"], c:0, t:"يُعرف الجمع بين كل من التعليم عبر الإنترنت والتعليم وجهًا لوجه بـ ...............", e:"<div class='box-hint'>يعرف الجمع بين كل من التعليم عبر الانترنت والتعليم وجها لوجه الحضوري باسم ......؟ Blended learning<br>التعلم المدمج Blended learning<br>هو التعليم الي يكون فيه جزء عن بعد وجزء حضوري</div>"},
+            {q:"Which of the following teaching methods is the class taught in Arabic with little active use of English", o:["A) The informal method", "B) The inductive method", "C) The communicative method", "D) The grammar translation method"], c:3, t:"أي من طرق التدريس التالية يتم فيها تدريس الفصل باللغة العربية مع القليل من الاستخدام النشط للغة الإنجليزية", e:"<div class='box-hint'>أي من طرق التدريس التالية يتم تدريسها في الفصل باللغة العربية مع استخدام قليل ونشط للغة الانجليزية؟ The grammar translation method<br>لان فيه استخدام للغة الام واستخدام قليل ونشط للانجليزي في ترجمة</div>"},
+            {q:"Which of the following language teaching methods is most closely aligned to the behaviorist theory", o:["A) The natural method", "B) The silent way method", "C) The Audio-lingual method", "D) The communicative method"], c:2, t:"أي من طرق تدريس اللغة التالية هي الأقرب إلى النظرية السلوكية", e:"<div class='box-hint'>أي من طرق تدريس اللغة التالية هي الأكثر توافقا مع النظرية السلوكية؟ The Audio-lingual method<br>هذه الطريقة بنيت في الأساس على المدخل السلوكي</div>"},
+            {q:"The only approach that doesn't take students' unique abilities into consideration is...", o:["A. Cooperative Learning.", "B. Multisensory teaching.", "C. Project-based assessment.", "D. The grammar-Translation method."], c:3, t:"النهج الوحيد الذي لا يأخذ القدرات الفريدة للطلاب في الاعتبار هو...", e:"<div class='box-hint'>المنهج الذي لا يأخذ القدرات الفريدة للطلاب في الاعتبار هو ... The Grammar-Translation method.<br>نلاحظ هنا الاختيارات يستخدم فيها الطالب قدراته فمثلا يكون التركيز عليها بالتعلم التعاوني وتقويم المشاريع لكن طريقة الترجمة لا يوجد فيها اي تفاعل من الطلاب او استخدام مهارات عالية ترجمة وحفظ فقط</div>"},
+            {q:"Which of the following teaching strategies promote student engagement?", o:["A) Making learning real.", "B) Allowing less wait time", "C) Using the same activities", "D) Increasing teacher talk time"], c:0, t:"أي من استراتيجيات التدريس التالية تعزز مشاركة الطلاب؟", e:"<div class='box-hint'>أي من استراتيجية التدريس تعزز اندماج الطلاب؟ Making learning real.<br>جعل التعليم حقيقي واقعي<br>كل ما يكون التعلم مرابط بالحياة يكون أكثر</div>"},
+            {q:"Which of the following teaching theories is based on the coordination of language and bodily movements to motivate students to react to verbal input?", o:["A) The monitor model", "B) The natural approach", "C) Total physical response", "D) Dogme language teaching"], c:2, t:"أي من نظريات التدريس التالية تعتمد على التنسيق بين اللغة والحركات الجسدية لتحفيز الطلاب على الاستجابة للمدخلات اللفظية؟", e:"<div class='box-hint'>أي من نظريات التدريس تعتمد على تنسيق اللغة وحركات الجسم لتحفيز الطلاب على المدخلات اللفظية؟ Total physical response.<br>في هذه النظرية الطلاب يستجيبوا للمدخلات اللفظية verbal input من المعلم من خلال حركات جسدية bodily movements</div>"},
+            {q:"What type of learner has a preference for physical activity and information that is best encountered in tactile ways and through application in real-world activity?", o:["A) Visual", "B) Auditory", "C) Kinesthetic", "D) Read/write"], c:2, t:"ما نوع المتعلم الذي يفضل النشاط البدني والمعلومات التي يتم مواجهتها بشكل أفضل بطرق لمسية ومن خلال التطبيق في نشاط العالم الحقيقي؟", e:"<div class='box-hint'>المتعلم الذي يفضل النشاط البدني هو الحركي: Kinesthetic<br>Kinesthetic physical activity<br>مانوع المتعلم الذي يفضل الأنشطة البدنية والمعلومات التي يتم تقديمها بشكل أفضل بطرق اللمس ومن خلال التطبيق في نشاط العالم الافتراضي؟<br>أنواع المتعلمين منهم بصري visual و سمعي auditory وحركي Kinesthetic وفي السؤال ملاحظ يقول أنشطة بدنية وأنشطة مطبقة في الواقع لذلك حركي</div>"},
+            {q:"Many methodologies have been applied to teaching English as a second/foreign language. Of the following methods, which one is still dominant today?", o:["A) Direct", "B) Audio-lingual", "C) Communicative", "D) None"], c:2, t:"تم تطبيق العديد من المنهجيات في تدريس اللغة الإنجليزية كلغة ثانية/أجنبية. من بين الطرق التالية، أي منها لا يزال مهيمنًا اليوم؟", e:"<div class='box-hint'>الكثير من طرق تدريس الإنجليزية تم تطبيقها كلغة ثانية، أي واحد لايزال مسيطر أو سائد؟ Communicative<br>المنهج التواصلي communicative هو الأكثر استخداما والشائع في طرق تدريس اللغة الإنجليزية</div>"},
+            {q:"Cooperative learning has been proven to foster respect, friendship, and learning among students of various ages. Which of the following activities best achieves this objective?", o:["A) Quizzes", "B) Pair work", "C) Conversation", "D) Take-home exam Grammar Translation"], c:1, t:"ثبت أن التعلم التعاوني يعزز الاحترام والصداقة والتعلم بين الطلاب من مختلف الأعمار. أي من الأنشطة التالية يحقق هذا الهدف بشكل أفضل؟", e:"<div class='box-hint'>التعلم التعاوني يعزز الاحترام والصداقة والتعلم بين الطلاب من مختلف الأعمار.<br>اي من الأنشطة التالية يحقق هذا الهدف بشكل افضل؟ Pair work<br>العمل الثنائي Pair work يعتبر من أنواع التعلم التعاوني</div>"},
+            {q:"Problems- solving exercises can work best with ............... learners", o:["A) kinesthetic", "B) auditory", "C) analytic", "D) visual"], c:2, t:"يمكن أن تعمل تمارين حل المشكلات بشكل أفضل مع المتعلمين ...............", e:"<div class='box-hint'>تدريبات حل المشكلات ممكن تعمل بشكل افضل مع اي من المتعلمين ؟ analytic التحليلي</div>"},
+            {q:"Thinking critically in a language learning classroom can occur when students .........", o:["A) memorize new word", "B) evaluate various propositions", "C) simply learn grammatical rules", "D) copy written material from the blackboard"], c:1, t:"يمكن أن يحدث التفكير النقدي في فصل تعلم اللغة عندما يقوم الطلاب .........", e:"<div class='box-hint'>التفكير النقدي في صف تعلم اللغة يمكن ان يحدث عندما الطلاب : يقيموا افتراضات متنوعة Evaluate various propositions<br>دائما التفكير النقدي = التقييم<br>Critically = evaluate</div>"},
+            {q:"Some academic believe that ...............is the fifth language skill that is crucial in learning language.", o:["A) semantics", "B) linguistics", "C) literature", "D) culture"], c:3, t:"يعتقد بعض الأكاديميين أن ............... هي المهارة اللغوية الخامسة الحاسمة في تعلم اللغة.", e:"<div class='box-hint'>بعض الاكاديميين يرون أن الثقافة هي المهارة الخامسة من تعليم اللغة Culture</div>"},
+            {q:"During the last decade, one of the most fundamental changed in the area of second language learning is shifting the focus from .................", o:["A) The student to the teacher", "B) The teacher to the student", "C) The teacher to the curriculum", "D) The student to the assessment"], c:1, t:"خلال العقد الماضي، أحد أهم التغييرات الأساسية في مجال تعلم اللغة الثانية هو تحويل التركيز من .................", e:"<div class='box-hint'>خلال العقد الماضي ، وأحد من التغيرات الأساسية في منطقة تعلم اللغة الثانية هو تحول التركيز من : المعلم إلى الطالب The teacher to the student</div>"},
+            {q:"Teaching students to reflect and develop self- awareness will help them become.........", o:["A) Independent learners", "B) Dependent learners", "C) Accurate learners", "D) Fluent learners"], c:0, t:"تعليم الطلاب التفكير في الوعي الذاتي وتنميته سيساعدهم على أن يصبحوا.........", e:"<div class='box-hint'>تعليم الطلاب التفكير في الوعي الذاتي وتنميته سيساعدهم على أن يصبحوا ؟ Independent learners<br>متعلم مستقل (يتعلم ذاتي ويتعلم مدى حياته) لأن لديه وعي بمهاراته واستقلاله -self awareness</div>"},
+            {q:"The importance of communicating learning goals clearly to students is that it", o:["A) Make lessons less challenging", "B) Shows students that the teacher is prepared", "C) Makes it clear so the teacher can only discuss those goals listed", "D) Helps students direct their learning towards meeting their goals"], c:3, t:"تكمن أهمية توصيل أهداف التعلم بوضوح للطلاب في أنه", e:"<div class='box-hint'>تكمن أهمية توصيل أهداف التعلم للطلاب بوضوح في أنه .. ؟ Helps students direct their learning towards meeting their goals<br>يساعد الطلاب على توجيه تعلمهم نحو تحقيق أهدافهم</div>"},
+            {q:"Which of the following would be a characteristic feature of the Audiolingual method?", o:["A) Use of dialogues with picture strips", "B) Prioritizes explicit grammar teaching", "C) Focus on grammar via inductive instruction", "D) Focus on vocabulary through drills and Repetition"], c:0, t:"أي مما يلي سيكون سمة مميزة للطريقة السمعية اللغوية؟", e:"<div class='box-hint'>أي من الآتي خاصية من خصائص Audio lingual method<br>استخدام الحوارات المصحوبة بصورة Use of dialogues with picture strips<br>البقية خطأ لأن فيها تركيز على Grammar & vocabulary<br>Audio lingual method = ALM الاستماع والتحدث Oral-based approach تهتم بالمحادثة بشكل كبير وتدرس بالاستقراء inductive<br>تسلسل المهارات على حسب الأهمية LSRW والموضوع كاساس وتدريس المصطلحات وتعتمد على التدريب بالتكرار Repetition<br>تعرف بالمنهج اللغوي<br>تقوم على المنهج السلوكي Behaviorist<br>اللغة الأم لا تستخدم من المعلم فقط<br>Drill - Practice - دلالاتها<br>- Memorization Repetition<br>Little use L1<br>Limited vocabulary</div>"},
+            {q:"Effective teachers encourage long term achievement. This is accomplished through a focus on .........", o:["A) Grades", "B) Self-evaluation", "C) Class attendance", "D) Assignment performance"], c:1, t:"يشجع المعلمون الفعالون الإنجاز على المدى الطويل. يتم تحقيق ذلك من خلال التركيز على .........", e:"<div class='box-hint'>يشجع المعلمون الفعالون الإنجاز على المدى الطويل . يتم تحقيق ذلك من خلال التركيز على ... self-evaluation<br>التقويم الذاتي وذلك يساعد الطالب على الانجاز على المدى الطويل</div>"},
+            {q:"In ........... students are the main focus in the learning processes.", o:["A) Learner-centered instruction", "B) Teacher-centered instruction", "C) Content-Based learning", "D) Task-based learning"], c:0, t:"في ........... يمثل الطلاب التركيز الرئيسي في عمليات التعلم.", e:"<div class='box-hint'>في Learner-centered instruction الطلاب هم التركيز الرئيسي في عملية التعلم<br>التعليم المتمحور حول المتعلم يكون الطلاب هم التركيز الرئيسي في عملية التعلم</div>"},
+            {q:"An approach to teaching English that uses subject matter as the basis for classroom activities & language learning is called the", o:["A. Learner- centered method", "B. Grammar Translation method", "C. Total physical response method", "D. Content based instruction method"], c:3, t:"النهج لتدريس اللغة الإنجليزية الذي يستخدم الموضوع كأساس لأنشطة الفصل الدراسي وتعلم اللغة يُسمى", e:"<div class='box-hint'>تدريس اللغة الإنجليزية الذي يستخدم الموضوع كأساس لأنشطة الفصل الدراسي وتعلم اللغة Content based instruction method<br>Subject matter / content<br>يعني كل الأنشطة داخل الفصل تتكلم عن نفس الموضوع وهي طرق تدريس قائمة على المحتوى</div>"},
+            {q:"............. have an interest element of competition. This is another way to motivate students in the classroom.", o:["A) Games", "B) Flashcards", "C) Small group work", "D) Speaking activities"], c:0, t:"............. فيها عنصر تنافسي. هذه طريقة أخرى لتحفيز الطلاب في الفصل الدراسي.", e:"<div class='box-hint'>... فيها عناصر في المسابقة وهذه طريقة أخرى لتحفيز الطلاب في الفصل .. الألعاب Games<br>Have تأتي مع الجمع<br>فيها عنصر تشويقي ومنافسة وطريقة للتحفيز<br>اما small group work خطأ لأنه لا يقوم على المنافسة بالإضافة أنه مفرد</div>"},
+            {q:"The .......... instructional environment in which the focus is the language itself. The only goal for the teacher is to make sure, that students are taught vocabulary and grammar.", o:["A) Structure-based", "B) Communicative", "C) Content-based", "D) Task-based"], c:0, t:"البيئة التعليمية .......... التي يكون فيها التركيز على اللغة نفسها. الهدف الوحيد للمعلم هو التأكد من أن الطلاب يتعلمون المفردات والقواعد.", e:"<div class='box-hint'>البيئة التعليمية تركز على اللغة نفسها والهدف الوحيد للمعلم هو التأكد من أن يتم تدريس الطلاب المفردات والنحو Structure-based<br>وهو القائم على التركيب (الهيكل) لأنه يهتم في Vocabulary and grammar</div>"},
+            {q:"Developing critical thinking and problem solving skills can be done through..........", o:["A) Translation", "B) Memorization", "C) Cooperative learning", "D) Recalling information"], c:2, t:"يمكن تنمية مهارات التفكير النقدي وحل المشكلات من خلال..........", e:"<div class='box-hint'>تنمية التفكير النقدي ومهارات حل المشكلات يمكن عملها من خلال : التعلم التعاوني Cooperative learning<br>التعلم التعاوني يكون فيه طرح أفكار وتقييم الأفكار وهذا يعتبر تفكير ناقد وحل المشكلات يتم بالتعلم التعاوني</div>"},
+            {q:"Oral drills and patterns practice are techniques used by EFL instructions who implement teaching style referred to as the ............. method", o:["A) Communicative language", "B) Total physical response", "C) Grammar translation", "D) Audio lingual"], c:3, t:"التدريبات الشفوية وممارسة الأنماط هي تقنيات تستخدم في تدريس اللغة الإنجليزية كلغة أجنبية والتي تشير إلى أسلوب تدريس يسمى الطريقة .............", e:"<div class='box-hint'>التدريبات الشفوية وأنماط الممارسة هي من التقنيات المستخدمة في الطريقة السمعية الشفهية Audio lingual<br>التدريبات الشفهية هي تقنيات تستخدم في تعليم اللغة الإنجليزية كلغة أجنبية<br>الذين يطبقون أسلوب التدريس<br>يشار إليها باسم.......طريقة Audio lingual</div>"},
+            {q:"The current dominant approach in TESOL is the ........... which states that conveying meaning is the primary purpose of language.", o:["A. Direct method", "B. Audio lingual", "C. Communicative method", "D. Grammar translation method"], c:2, t:"النهج السائد الحالي في TESOL هو ........... الذي ينص على أن إيصال المعنى هو الغرض الأساسي للغة.", e:"<div class='box-hint'>المنهج المسيطر الحالي في تدريس الإنجليزية للمتحدثين من اللغات الأخرى هو التواصلي communicative method<br>والذي يصرح بإيصال المعنى هو الغرض الرئيسي للغة<br>Conveying meaning = Communicative<br>يهتم بتوصيل المعنى الذي يعتبر الغرض الأساسي باللغة</div>"},
+            {q:"Deciding how closely teachers should work with students is a matter of ........", o:["A) Contact", "B) Proximity", "C) Movement", "D) Appropriacy"], c:1, t:"إن تحديد مدى تقارب المعلم مع طلابه هو مسألة ........", e:"<div class='box-hint'>تحديد مدى تقارب المعلم مع طلابه داخل الصف Proximity<br>Closely > proximity</div>"},
+            {q:"TESOL draws on theories of ............ to develop better lesson plans and aim for more effective teaching.", o:["A) L1 acquisition", "B) Minimalist grammar", "C) Cognitive development", "D) The morpho-syntactic interface"], c:2, t:"تعتمد TESOL على نظريات ............ لتطوير خطط دروس أفضل وتهدف إلى تدريس أكثر فعالية.", e:"<div class='box-hint'>يعتمد TESOL على نظريات .... التطوير خطط درسية أفضل وتهدف إلى تدريس أكثر فعالية Cognitive development<br>تدريس اللغة الإنجليزية لمتحدثي اللغات الأخرى TESOL<br>التطور المعرفي للطلاب<br>مدى تقدمهم معرفيا وبناء عليه يتم تخطيط الدروس والأهداف لكي تصل لدروس اكثر فعالية</div>"},
+            {q:"One noticeable change in the purpose of teaching English is the shift towards learning for the purpose of ........", o:["A) Becoming a native speaker", "B) Fitting in the international community", "C) Passing a mandatory English class in school", "D) Using English as a medium for further education"], c:3, t:"أحد التغييرات الملحوظة في الغرض من تدريس اللغة الإنجليزية هو التحول نحو التعلم لغرض ........", e:"<div class='box-hint'>أحد التغييرات الملحوظة في الغرض من تدريس اللغة الإنجليزية هو التحول نحو التعلم لغرض....؟ Using English as a medium for further education<br>استخدام اللغة الإنجليزية كوسيلة لمواصلة التعليم<br>استخدام اللغة لنتعلم منها باقي العلوم<br>ESP= English for specific purposes</div>"},
+            {q:"Games that involve rhyming, syllabifying, and segmenting are popular and helpful strategies in teaching ...........", o:["A) Reading", "B) Phonetics", "C) Phonological awareness", "D) Structure of the language"], c:2, t:"الألعاب التي تتضمن القافية والتقطيع الصوتي هي استراتيجيات شائعة ومفيدة في تدريس ...........", e:"<div class='box-hint'>الألعاب تتضمن قافية وتقسيم الكلام لمقاطع شائعة ومفيدة لتدريس إستراتيجيات في تعليم Phonological awareness<br>Syllabifying > Phonological awareness<br>الصوتيات خطأ لأنه يدرس أصوات فردية<br>Phonetics individual sounds</div>"},
+            {q:"Shy students my feel more motivated if they are engaged in ........ activities.", o:["A) Different", "B) Challenging", "C) Warming up", "D) Group-based"], c:3, t:"قد يشعر الطلاب الخجولون بدافع أكبر إذا شاركوا في أنشطة ........", e:"<div class='box-hint'>كيف تحفز الطلاب الخجولين؟ عن طريق إشراكهم وضمهم لأنشطة: قائمة على المجموعات Group-based<br>أنشطة جماعية</div>"},
+            {q:"Choral drilling is a feature of the:", o:["A) Direct method of language teaching", "B) Situational method of language teaching", "C) Audio-lingual method of language teaching", "D) Grammar-Translation method of language Teaching"], c:2, t:"التدريب الجماعي هو سمة من سمات:", e:"<div class='box-hint'>التدريب الجماعي choral drilling من خصائص: Audio-lingual method of language teaching<br>الطريقة السمعية<br>Choral >> audio</div>"},
+            {q:"A teacher should act as a ............ in the classroom.", o:["A) Source of information", "B) Passive observer", "C) A facilitator", "D) Supervisor"], c:2, t:"يجب أن يتصرف المعلم كـ ............ في الفصل الدراسي.", e:"<div class='box-hint'>المعلم يجب أن يقوم بدور .... داخل الفصل: A facilitator<br>ميسر A facilitator<br>المعلم يجب أن يكون ميسر للعملية التعليمية داخل الفصل</div>"},
+            {q:"Competent English language teachers should:", o:["A) Make their students aware of different varieties of English at different levels", "B) Use several varieties and models in their class of English", "C) Not introduce varieties of English to the students", "D) Use one specific English variety"], c:0, t:"يجب على معلمي اللغة الإنجليزية الأكفاء:", e:"<div class='box-hint'>المعلم للغة الإنجليزية الكفؤ يجب أن يكون : Make their students aware of different varieties of English at different levels<br>يجب أن يجعل طلابه في مستويات مختلفة من اللغة</div>"},
+            {q:"For the student to continue learning a language they should be:", o:["A) Critical learners", "B) Guided learners", "C) Dependent learners", "D) Independent learners"], c:3, t:"لكي يستمر الطالب في تعلم اللغة يجب أن يكون:", e:"<div class='box-hint'>المتعلمين ليستمروا في التعلم : independent learners<br>مستقلين Independent learners</div>"},
+            {q:"Teaching that relates to students' feelings, and beliefs make them ...........", o:["A) Less effective", "B) More efficient", "C) Less productive", "D) More traditional"], c:1, t:"التدريس الذي يرتبط بمشاعر الطلاب ومعتقداتهم يجعلهم ...........", e:"<div class='box-hint'>التدريس المرتبط بمشاعر الطلاب ومعتقداتهم تجعلهم ... ؟ More efficient<br>أكثر كفاءة : اذا ارتبط التعليم بالمشاعر والمعتقدات والتعبير عنها يكون أكثر كفاءة</div>"},
+            {q:"In a class, modeling performance can lead to linguistic:", o:["A) Failure", "B) Anxiety", "C) Confidence", "D) Embarrassment"], c:2, t:"في الفصل، أداء النمذجة يمكن أن يؤدي إلى ........ لغوية:", e:"<div class='box-hint'>في الصف نموذج للأداء يؤدي ... لغوية. Confidence<br>ثقة لغوية Confidence<br>Modelling performance => Confidence<br>عندما المعلم يعطي نموذج للأداء مثلا<br>نطق كلمات وتكرارها هذا يعطي الطلاب ثقة لغوية</div>"},
+            {q:"In a second language classrooms, teachers should ..........", o:["A) Expect their students to use their native language", "B) Not expect their students to use their native language", "C) Use part of the native language as a model", "D) Compare the native language and the target language to find weakness"], c:0, t:"في فصول اللغة الثانية، يجب على المعلمين ..........", e:"<div class='box-hint'>في فصل اللغة الثانية، يجب على المعلمين أن: Expect their students to use their native language<br>يتوقع أن الطلاب يستخدموا لغتهم الأم</div>"},
+            {q:"By becoming active participants in the learning process, learners can become ................ in their approach to learning.", o:["A) Efficient", "B) Deficient", "C) Distanced", "D) dependent"], c:0, t:"من خلال أن يصبحوا مشاركين نشطين في عملية التعلم، يمكن للمتعلمين أن يصبحوا ................ في نهجهم للتعلم.", e:"<div class='box-hint'>أن يصبح المتعلمون مشاركين نشطين في عملية التعلم، يمكن أن يصبح المتعلمون ..... في نهجهم للتعلم Efficient<br>الطالب عندما يكون مشارك في عملية التعلم يصبح كفؤ</div>"},
+            {q:"............. is teaching strategy where the teacher assists learners with variables in the form of a ladder where he can add or remove some variables, so that learners gain confidence in their learning abilities.", o:["A) Role play", "B) Lecturing", "C) Scaffolding", "D) Cooperative learning"], c:2, t:"............. هي استراتيجية تدريس حيث يساعد المعلم المتعلمين بمتغيرات على شكل سلم حيث يمكنه إضافة أو إزالة بعض المتغيرات، حتى يكتسب المتعلمون الثقة في قدراتهم التعليمية.", e:"<div class='box-hint'>..... هي إستراتيجية تدريس يساعد بها المعلم بمتغيرات على شكل سلم وبإمكان إضافة أو إزالة بعض المتغيرات حتى يكتسب المتعلمون الثقة في قدراتهم التعليمية Scaffolding<br>تعريف- Scaffolding<br>وتعرف بالسقالات</div>"},
+            {q:"............. has been developed to help students overcome the barriers to learning. It is also concerned with the physical environment in which the learning takes place.", o:["A) Audio-lingual method", "B) Suggestopedia", "C) Reading approach", "D) Direct method"], c:1, t:"............. تم تطويره لمساعدة الطلاب في التغلب على الحواجز التي تحول دون التعلم. كما أنه يهتم بالبيئة المادية التي يتم فيها التعلم.", e:"<div class='box-hint'>...تم تطويره لمساعدة الطلاب على التغلب على حواجز التعلم . Suggestopedia<br>كما أنها تهتم بالبيئة المادية التي يتم فيها التعلم.<br>طريقة تدريس تهتم بالجوانب النفسية والجانب الإنساني</div>"},
+            {q:"According to the ............, teaching should be subordinated to learning.", o:["A) Audiolingual method", "B) Direct method", "C) Grammar translation method", "D) Silent way"], c:3, t:"وفقًا لـ ............، يجب أن يكون التدريس خاضعًا للتعلم.", e:"<div class='box-hint'>وفقاً ل .... ، يجب أن يخضع التدريس للتعلم . Silent way<br>الطريقة الصامتة D. Silent way<br>في الطريقة الصامتة: التدريس يجب ان يكون ثانوي او مرحلة ثانية للتعلم.</div>"},
+            {q:"In ............., language is presented through interesting topics which help increase leaners' knowledge of the world as well as provided rich context for language learning.", o:["A) Grammar translation method", "B) Content-based instruction", "C) Competency-based teaching", "D) Deductive approach"], c:1, t:"في .............، يتم تقديم اللغة من خلال مواضيع مثيرة للاهتمام تساعد على زيادة معرفة المتعلمين بالعالم بالإضافة إلى توفير سياق غني لتعلم اللغة.", e:"<div class='box-hint'>اللغة تقدم من خلال موضوعات شيقة وتساعد في زيادة المعرفة لدى المتعلم بالواقع وإضافة إلى سياق غني لتعلم اللغة Content-based instruction<br>التدريس القائم على المحتوى: وهو أن تعطي الطلاب مواضيع معينة ومن خلالها يتم تدريس المهارات الأربعة<br>Rich context = Content- based instruction</div>"},
+            {q:"As language teachers, we cannot evaluate Computer Assisted Language Learning (CALL) software without also thinking of how this software will be...", o:["A) Used in another language classroom in another context", "B) Used in the language learning and teaching process", "C) Used by CALL materials developers", "D) Used in designing other software"], c:1, t:"كمعلمي لغة، لا يمكننا تقييم برامج تعلم اللغة بمساعدة الكمبيوتر (CALL) دون التفكير أيضًا في كيفية هذا البرنامج...", e:"<div class='box-hint'>بصفتنا مدرسين للغة ، لا يمكننا تقييم برنامج تعلم اللغة بمساعدة الكمبيوتر (CALL) دون التفكير في كيف سيكون هذا البرنامج أن: Used in the language learning and teaching process<br>سوف يستخدم في عملية التدريس والتعلم<br>بمعنى أن استخدام التكنولوجيا في التعليم مرتبط بكيف يتم توظيفها في عملية التدريس.</div>"},
+            {q:"In Khalid's EFL speaking classes, students always talk to each other and to the teacher in English. They always laugh and have a pleasant time in learning. The teacher always gives a chance to everyone to speak voluntarily. Oral errors get implicitly corrected by the teacher. It can be inferred that ........", o:["A) The teacher does not have enough skills in correcting students' oral errors.", "B) Such environment is appropriate in teaching kids but not university students", "C) The teacher is not as strict as he is supposed to do in teaching a new language", "D) The classroom's environment is affectively healthy and full of psychological security"], c:3, t:"في فصول التحدث باللغة الإنجليزية كلغة أجنبية لخالد، يتحدث الطلاب دائمًا مع بعضهم البعض ومع المعلم باللغة الإنجليزية. يضحكون دائمًا ويقضون وقتًا ممتعًا في التعلم. يعطي المعلم دائمًا فرصة للجميع للتحدث طواعية. يتم تصحيح الأخطاء الشفوية ضمنيًا من قبل المعلم. يمكن استنتاج ذلك ........", e:"<div class='box-hint'>في فصول التحدث باللغة الإنجليزية كلغة أجنبية عند المعلم خالد يتحدث الطلاب دائما مع بعضهم البعض ويتكلمون بأريحية ويضحكوا دائما والمعلم يعطي دائما فرصة للجميع للتحدث تطوعيا كمبادرة منهم<br>والأخطاء الشفهية يتم تصحيحها بشكل ضمني ممكن نستنتج:<br>The classroom's environment is affectively healthy and full of psychological security<br>البيئة الصفية صحية وجدانيا ومليئة بالأمن النفسي.<br>بمعنى أن الطلاب عندهم ثقة وجرأة لذلك البيئة التعليمية لديهم صحية وجدانيا</div>"}
+        ];
+
+        let synth = window.speechSynthesis;
+        let isExamModeActive = false;
+        let isReviewModeActive = false;
+        let examCurrentIndex = 0;
+        let examRowsList = [];
+        
+        function buildApp() {
+            let qContainer = document.getElementById('q-container');
+            qContainer.innerHTML = '';
+            
+            db.forEach((qObj, index) => {
+                let displayNumber = index + 251;
+                let block = document.createElement('div');
+                block.className = 'question-row';
+                block.setAttribute('data-ans-index', qObj.c);
+                block.setAttribute('data-original-index', index);
+
+                let letters = ["A", "B", "C", "D"];
+                let optsHtml = `<div class="options-inline">` + qObj.o.map((opt, i) => {
+                    let pSplit = opt.split('|');
+                    let enO = pSplit[0].trim();
+                    let arO = pSplit[1] ? pSplit[1].trim() : '';
+                    return `
+                    <div class="opt-item" data-index="${i}" onclick="selectOption(this, event)">
+                        <div class="choice-badge">${letters[i]}</div>
+                        <div class="choice-content">
+                            <div class="choice-en" dir="ltr">${enO}</div>
+                            ${arO ? `<div class="choice-ar" dir="rtl">${arO}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+
+                let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+                
+                // زر الصوت
+                let cleanTextForAudio = qObj.q.replace(/[\d\.]/g, '').trim(); 
+                let btnAudioHtml = `<div class="q-header"><button class="btn-audio" onclick="speakText('${cleanTextForAudio.replace(/'/g, "\\'")}')">🔊 استماع للجملة</button></div>`;
+                
+                let navHtml = `
+                    <div class="exam-nav-buttons">
+                        <button class="btn-nav btn-next" onclick="nextQuestion(event)">التالي ▶</button>
+                        <button class="btn-nav btn-prev" onclick="prevQuestion(event)">◀ السابق</button>
+                    </div>
+                `;
+
+                block.innerHTML = `
+                    ${btnAudioHtml}
+                    <div class="q-text-container">
+                        <b class="q-number-lbl">${displayNumber}. </b>
+                        <div class="q-text" dir="ltr">${qObj.q}</div>
+                    </div>
+                    ${translationHtml}
+                    ${optsHtml}
+                    <div class="answer-action-container">
+                        <button class="btn-answer" onclick="revealAnswer(this)">👁️ إظهار الشرح والمفاتيح</button>
+                    </div>
+                    <div class="answer-box">
+                        <div class="grammar-explanation">${qObj.e}</div>
+                    </div>
+                    ${navHtml}
+                `;
+                qContainer.appendChild(block);
+            });
+        }
+
+        window.speakText = function(text) {
+            if(synth) {
+                synth.cancel();
+                let cleanTxt = text.replace(/[\._]/g, '').trim();
+                let u = new SpeechSynthesisUtterance(cleanTxt);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                synth.speak(u);
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let correctIndex = row.getAttribute('data-ans-index');
+            let selectedIndex = optItem.getAttribute('data-index');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-index') === correctIndex) item.classList.add('correct');
+            });
+            if (selectedIndex !== correctIndex) optItem.classList.add('wrong');
+            
+            if (!isExamModeActive && !isReviewModeActive) {
+                let btn = row.querySelector('.btn-answer');
+                if (btn) btn.click();
+            } else if (isExamModeActive) {
+                setTimeout(() => {
+                    if (examCurrentIndex < examRowsList.length - 1) {
+                        nextQuestion();
+                    } else {
+                        showResult();
+                    }
+                }, 800);
+            }
+        };
+
+        window.prevQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex > 0) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex--;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            }
+        };
+
+        window.nextQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex < examRowsList.length - 1) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex++;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            } else {
+                if(isExamModeActive) {
+                    showResult();
+                }
+            }
+        };
+
+        function updateNavButtons() {
+            if(!isExamModeActive && !isReviewModeActive) return;
+            examRowsList.forEach((row, idx) => {
+                let pBtn = row.querySelector('.btn-prev');
+                let nBtn = row.querySelector('.btn-next');
+                if(pBtn) {
+                    pBtn.style.visibility = (idx === 0) ? 'hidden' : 'visible';
+                }
+                if(nBtn) {
+                    if (idx === examRowsList.length - 1) {
+                        nBtn.innerHTML = isExamModeActive ? 'إنهاء الاختبار 🏁' : 'نهاية المراجعة 🏁';
+                    } else {
+                        nBtn.innerHTML = 'التالي ▶';
+                    }
+                }
+            });
+        }
+
+        window.setMode = function(mode) {
+            let container = document.getElementById('q-container');
+            let btnStudy = document.getElementById('btn-study');
+            let btnReview = document.getElementById('btn-review');
+            let btnExam = document.getElementById('btn-exam');
+            let btnResult = document.getElementById('btn-result');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            // إعادة تعيين الأزرار
+            btnStudy.classList.remove('active-mode');
+            btnReview.classList.remove('active-mode');
+            btnExam.classList.remove('active-mode');
+
+            if (mode === 'exam') {
+                isExamModeActive = true;
+                isReviewModeActive = false;
+                container.className = 'questions-container exam-mode';
+                btnExam.classList.add('active-mode');
+                btnResult.style.display = 'block';
+            } else if (mode === 'review') {
+                isExamModeActive = false;
+                isReviewModeActive = true;
+                container.className = 'questions-container review-mode';
+                btnReview.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            } else {
+                isExamModeActive = false;
+                isReviewModeActive = false;
+                container.className = 'questions-container train-mode';
+                btnStudy.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            // إعادة التهيئة العامة
+            rows.forEach(row => {
+                row.classList.remove('active-q');
+                if (mode !== 'review') {
+                    row.classList.remove('answered');
+                    row.querySelectorAll('.opt-item').forEach(item => {
+                        item.classList.remove('selected', 'correct', 'wrong');
+                    });
+                    let ansBox = row.querySelector('.answer-box');
+                    if (ansBox) ansBox.style.display = 'none';
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                }
+            });
+
+            if (mode === 'exam') {
+                // خلط الخيارات والأسئلة في وضع الاختبار
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else if (mode === 'review') {
+                // ترتيب أصلي + إظهار الإجابات (تظليل الأخضر) + إعداد التنقل + إخفاء صندوق الشرح افتراضيا
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    
+                    row.classList.add('answered');
+                    let correctIndex = row.getAttribute('data-ans-index');
+                    let correctOpt = row.querySelector('.opt-item[data-index="' + correctIndex + '"]');
+                    if(correctOpt) correctOpt.classList.add('correct');
+                    
+                    let ansBox = row.querySelector('.answer-box');
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (ansBox) ansBox.style.display = 'none'; // الصندوق مغلق افتراضياً في المراجعة
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح'; // تعديل الكلمة في الزر
+                });
+                
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else {
+                // ترتيب أصلي في وضع المذاكرة
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumLbl = row.querySelector('.q-number-lbl');
+                if (qNumLbl) qNumLbl.textContent = (index + 251) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.showResult = function() {
+            let container = document.getElementById('q-container');
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> نتيجتك حتى الآن: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا أستاذ حمادة! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 مستوى رائع وممتاز!";
+                else msg += "💪 يمكنك المحاولة مجدداً، استمر في التدريب!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            window.scrollTo({ top: resEl.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        window.revealAnswer = function(btn) {
+            let row = btn.closest('.question-row');
+            let box = row.querySelector('.answer-box');
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الشرح والمفاتيح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الشرح والمفاتيح'; 
+            }
+        };
+
+        // تفعيل النقر خارج الكلمة لإغلاق تلميح القاموس الصوتي
+        document.addEventListener('click', e => { 
+            if(!e.target.classList.contains('w-int')) { 
+                let tooltip = document.getElementById('word-tooltip');
+                if(tooltip) tooltip.style.display = 'none'; 
+                let activeWord = document.querySelector('.w-int.active-speak');
+                if(activeWord) activeWord.classList.remove('active-speak'); 
+            } 
+        });
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>

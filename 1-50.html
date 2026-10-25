@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الرخصة المهنية - الجزء الأول (1 إلى 50)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #f8fafc;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1100px; padding: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; border-top: 6px solid #3b82f6; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.2em; font-weight: 900; margin-bottom: 5px; }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 25px; font-weight: bold; }
+        .creator-info { text-align: center; color: #ffffff; background-color: #3b82f6; font-size: 1.2em; font-weight: bold; margin-bottom: 35px; padding: 12px; border-radius: 8px;}
+
+        /* لوحة التحكم */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; transform: scale(1.02); background-color: #1d4ed8;}
+        .btn-exam.active-mode { outline: 3px solid #ef4444; outline-offset: 2px; transform: scale(1.02); background-color: #334155;}
+        
+        .btn-result { background-color: #f59e0b; color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: none; width: 100%; max-width: 915px;}
+        .btn-result:hover { background-color: #d97706; }
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-span { font-size: 26px; font-weight: 900; color: #3b82f6; flex-shrink: 0; padding-top: 5px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.5em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 1.8; display: flex; flex-wrap: wrap; gap: 6px;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .en-word { display: inline-block; padding: 2px 4px; border-radius: 4px; transition: 0.2s; cursor: pointer; color: #1e293b; font-family: Arial, sans-serif;}
+        .en-word.highlight { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .blank-space { letter-spacing: 2px; color: #000; pointer-events: none;}
+
+        .options-inline { display: flex; flex-direction: column; gap: 12px; direction: ltr; width: 100%; margin-top: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 70px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.3em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 60px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        
+        .choice-content { display: flex; flex-direction: column; justify-content: center; padding: 12px 15px; width: 100%; gap: 6px;}
+        .choice-en { font-weight: bold; font-size: 1.2em; color: #334155; display: flex; flex-wrap: wrap; gap: 4px; align-items: center;}
+        .choice-ar { font-size: 1.05em; font-weight: bold; color: #b91c1c; font-family: 'Tajawal', sans-serif;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-en .en-word, .opt-item.correct .choice-ar { color: white !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-en .en-word, .opt-item.wrong .choice-ar { color: white !important; }
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed;}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .grammar-explanation { color: #1e293b; font-size: 18px; line-height: 2.0; font-weight:bold; }
+        .box-hint { display: inline-block; background-color: #fca5a5; color: #7f1d1d; padding: 4px 10px; border-radius: 6px; font-size: 0.9em; margin-bottom: 10px; font-weight: 900;}
+
+        /* وضع الاختبار الصارم */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5; padding: 15px; border-radius: 12px;}
+        .exam-mode .full-sentence-translation { display: none !important; }
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .choice-ar { display: none !important; } 
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">أسئلة الرخصة المهنية - إنجليزي</div>
+    <div class="sub-title">الجزء الأول (50 سؤال شاملة)</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+    
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع المذاكرة (مرتب + شرح + ترجمة)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')">🔴 وضع الاختبار (عشوائي + بدون مساعدة)</button>
+        </div>
+        <button id="btn-result" class="btn-result" onclick="showResult()">📋 إنهاء الاختبار وإظهار النتيجة</button>
+        <div class="section-result" id="res-box"></div>
+    </div>
+
+    <div id="q-container" class="questions-container train-mode"></div>
+</div>
+
+<script>
+(function initApp() {
+    try {
+        const db = [
+            {q:"Reading is a ........", o:["Productive skill in a written mode. | مهارة إنتاجية بشكل مكتوب.", "Receptive skill in a written mode. | مهارة استقبالية بشكل مكتوب.", "Productive skill in an oral mode. | مهارة إنتاجية بشكل شفهي.", "Receptive skill in an oral mode. | مهارة استقبالية بشكل شفهي."], c:1, t:"القراءة هي مهارة استقبالية بشكل مكتوب.", e:"<span class='box-hint'>من الصندوق: القراءة هي مهارة استقبالية بشكل مكتوب.</span><br><strong>الشرح الإضافي:</strong> المهارات في اللغة تنقسم إلى استقبالية (Receptive) وهي القراءة والاستماع، وإنتاجية (Productive) وهي الكتابة والتحدث."},
+            {q:"One of the four skills of languages which is the one that is least understood.", o:["Listening | الاستماع", "Speaking | التحدث", "Reading | القراءة", "Writing | الكتابة"], c:0, t:"أياً من مهارات اللغة الأربعة تُعد الأقل فهماً (الأكثر صعوبة في الفهم)؟", e:"<span class='box-hint'>من الصندوق: من أي المهارات اللغوية الأربعة الأقل فهم وهي الاستماع.</span><br><strong>الشرح الإضافي:</strong> الاستماع مهارة يصعب التحكم بها لأنها تعتمد على سرعة المتحدث ولهجته، مما يجعلها (least understood)."},
+            {q:"While teaching listening, which of the following includes a technique a language instructor might use to implement top-down strategies?", o:["Recognizing cognates. | التعرف على الكلمات المتشابهة.", "Listening for the main idea. | الاستماع للفكرة الرئيسية.", "Listening for specific. | الاستماع لتفاصيل محددة.", "Recognizing word-order patterns. | التعرف على الأنماط."], c:1, t:"أثناء تدريس الاستماع، أي مما يلي أسلوب لتطبيق استراتيجيات (من أعلى لأسفل)؟", e:"<span class='box-hint'>من الصندوق: Top-down strategy = main idea.</span><br><strong>الشرح الإضافي:</strong> استراتيجيات (Top-down) تركز على الفهم الكلي (main idea). بينما (Bottom-up) تركز على تفكيك اللغة وتفاصيلها."},
+            {q:"The function of language to pass on information is called: ........", o:["Transactional. | معاملاتية / تبادلية", "International | دولية", "Interactional | تفاعلية", "Translational | ترجمية"], c:0, t:"وظيفة اللغة عندما تُستخدم لنقل المعلومات تسمى:", e:"<span class='box-hint'>من الصندوق: وظيفة اللغة لنقل المعلومات Transactional = information.</span><br><strong>الشرح الإضافي:</strong> مفتاح الحل (pass on information). نقل المعلومات والحقائق يُسمى (Transactional). أما التفاعل الاجتماعي يُسمى (Interactional)."},
+            {q:"At the end of a listening class, and as a reward, the teacher plays part of a feel-good short story the students enjoyed yesterday. What kind of listening activity is it:", o:["Comprehensive listening | الاستماع الشامل", "Appreciative listening | الاستماع التذوقي", "Critical listening | الاستماع النقدي", "Therapeutic listening | الاستماع العلاجي"], c:1, t:"كمكافأة، شغل المعلم جزء من قصة ممتعة استمتع بها الطلاب. ما نوع الاستماع؟", e:"<span class='box-hint'>من الصندوق: Appreciative listening للاستمتاع enjoyed.</span><br><strong>الشرح الإضافي:</strong> الاستماع لغرض الترفيه والمتعة يُعرف بالاستماع التذوقي (Appreciative)."},
+            {q:"The activity where language instructors have students listen to a lengthy audio passage is known as ........", o:["Intensive listening | الاستماع المكثف", "Extensive listening | الاستماع الموسع", "Listening for context | الاستماع للسياق", "Listening for information | الاستماع للمعلومات"], c:1, t:"النشاط الذي يستمع فيه الطلاب إلى مقطع صوتي طويل يُعرف بـ", e:"<span class='box-hint'>من الصندوق: مفتاح الحل كلمة lengthy، الاستماع لنصوص طويلة هو extensive listening.</span><br><strong>الشرح الإضافي:</strong> الاستماع الموسع (Extensive) يُستخدم مع النصوص الطويلة (lengthy) للفهم العام، عكس المكثف للنصوص القصيرة."},
+            {q:"Intensive listening activities aim to ........", o:["Develop bottom-up processing skills | تطوير مهارات المعالجة من أسفل لأعلى", "Learn the meaning of new vocabulary | تعلم مفردات جديدة", "Transcribe the text for post-listening | نسخ النص", "Enable students to listen to lengthy text | استماع لنصوص طويلة"], c:0, t:"أنشطة الاستماع المكثفة تهدف إلى ........", e:"<span class='box-hint'>من الصندوق: bottom-up = intensive listening.</span><br><strong>الشرح الإضافي:</strong> الاستماع المكثف يهدف إلى تحليل اللغة بعمق (كلمات، قواعد)، وهذا يتطابق مع مهارات (bottom-up processing)."},
+            {q:"Teacher: who has a vehicle that can carry twenty people at once? Hint, many of you rode in one today. Students: A bus driver! The previous scenario is an example of a teaching strategy known as ........", o:["Selecting | الانتقاء", "Inferring | الاستنتاج", "Elaborating | التوسع", "Anticipating | التوقع"], c:1, t:"المعلم: مركبة تحمل 20 شخصاً؟ تلميح، الكثير ركب واحدة اليوم. الطلاب: السائق! هذا يمثل استراتيجية:", e:"<span class='box-hint'>من الصندوق: inferring استنتاج. إعطاء تلميحات ومعلومات واستنتجوا الحل.</span><br><strong>الشرح الإضافي:</strong> تقديم تلميح (Hint) للوصول للإجابة الصحيحة هو مهارة الاستنتاج (Inferring)."},
+            {q:"An activity that involves listening to a text, taking notes and reconstructing the text is called: ........", o:["Dictation | الإملاء", "Dicto gloss | الإملاء النصي", "Diction analysis | تحليل الإلقاء", "Note-taking | أخذ الملاحظات"], c:1, t:"نشاط الاستماع إلى نص، أخذ ملاحظات وإعادة بناء النص يسمى:", e:"<span class='box-hint'>من الصندوق: Dicto gloss هو أخذ ملاحظات وإعادة بناء النص.</span><br><strong>الشرح الإضافي:</strong> استراتيجية (Dicto gloss) تُجبر الطلاب على أخذ كلمات مفتاحية (notes) ثم العمل لإعادة صياغة النص (reconstructing)."},
+            {q:"It is most likely to notice gaps in L2 production, when learners ........", o:["Listen to music | يستمعون للموسيقى", "Talk to others | يتحدثون للآخرين", "Read a book | يقرأون كتاباً", "Watch TV | يشاهدون التلفاز"], c:1, t:"من المرجح ملاحظة الفجوات (القصور) في إنتاج اللغة الثانية، عندما يقوم المتعلمون بـ ........", e:"<span class='box-hint'>من الصندوق: Production (speaking) = talk to others.</span><br><strong>الشرح الإضافي:</strong> الإنتاج اللغوي (Production) يعني التحدث أو الكتابة. الفجوات تظهر عندما يحاول المتعلم التحدث فعلياً."},
+            {q:"Bottom-up listening strategies include ........", o:["Recognizing words | التعرف على الكلمات", "Making predictions | تكوين التوقعات", "Drawing inferences | استخلاص الاستنتاجات", "Forming hypothesis | تشكيل الفرضيات"], c:0, t:"استراتيجيات الاستماع من أسفل إلى أعلى تشمل ........", e:"<span class='box-hint'>من الصندوق: Bottom-up مرتبطة بـ recognizing words التعرف على الكلمات.</span><br><strong>الشرح الإضافي:</strong> استراتيجيات (Bottom-up) تركز على اللبنات الأساسية للغة: الأصوات والكلمات."},
+            {q:"Before starting a listening activity, a teacher should ........", o:["Set a listening objective | وضع هدف للاستماع", "Verify predictions | التحقق من التوقعات", "Evaluate comprehensive | تقييم الفهم", "Modify listening strategies | تعديل الاستراتيجيات"], c:0, t:"قبل البدء في نشاط الاستماع، يجب على المعلم أن ........", e:"<span class='box-hint'>من الصندوق: قبل البدء في الاستماع يجب وضع هدف Set a listening objective.</span><br><strong>الشرح الإضافي:</strong> تحديد الهدف قبل الاستماع يوجه تركيز الطلاب لما يجب أن يبحثوا عنه، مما يقلل التشتت."},
+            {q:"For long lengths of speech, it is helpful to teach student selective listening skills, for example ........", o:["Providing a summary of a speech | تقديم ملخص", "Participating in a discussion | المشاركة في نقاش", "Taking notes of main ideas and time references | أخذ ملاحظات حول الأفكار الرئيسية والإشارات الزمنية", "Determining who is right or wrong | تحديد المصيب والمخطئ"], c:2, t:"بالنسبة للنصوص الطويلة، من المفيد تعليم مهارات الاستماع الانتقائي، مثل ........", e:"<span class='box-hint'>من الصندوق: Selective listening يركز على انتقاء المعلومات.</span><br><strong>الشرح الإضافي:</strong> الاستماع الانتقائي يعني التقاط أجزاء محددة (كالأفكار والأرقام) وتجاهل الحشو."},
+            {q:"In order to improve students listening comprehension, the input should be ........", o:["Meaningful | ذات معنى / مفهومة", "Complex | معقدة", "General | عامة", "Diverse | متنوعة"], c:0, t:"من أجل تحسين الفهم الاستماعي، يجب أن تكون المدخلات (النصوص) ........", e:"<span class='box-hint'>من الصندوق: لتطوير مهارة الاستماع يجب أن تكون meaningful مفهومة.</span><br><strong>الشرح الإضافي:</strong> المدخلات يجب أن تكون مفهومة وذات معنى للمتعلم ليحدث الاستيعاب."},
+            {q:"Non-interactive listening situations involve ........", o:["Conducting telephone calls | مكالمات", "Face to face conversations | محادثات مباشرة", "Listening and speaking alternately | استماع وتحدث بالتناوب", "Listening to radio or watching TV and movies | الاستماع للراديو أو مشاهدة التلفاز"], c:3, t:"مواقف الاستماع غير التفاعلية تتضمن ........", e:"<span class='box-hint'>من الصندوق: non-interactive استماع كالراديو حيث لا يوجد تفاعل.</span><br><strong>الشرح الإضافي:</strong> الاستماع في اتجاه واحد فقط، المستمع يتلقى ولا يستطيع أن يرد (مثل الراديو)."},
+            {q:"Interactive listening is ........", o:["Listening and responding | الاستماع والاستجابة", "Listening for gist | الاستماع للخلاصة", "Listening for word stress | الاستماع لنبرة الكلمة", "Listening for speaker's attitude | الاستماع لموقف المتحدث"], c:0, t:"الاستماع التفاعلي هو ........", e:"<span class='box-hint'>من الصندوق: تعريف الاستماع التفاعلي يكون فيه responding استماع ورد.</span><br><strong>الشرح الإضافي:</strong> الاستماع التفاعلي يتطلب تواصلاً ثنائي الاتجاه بين متحدث ومستمع."},
+            {q:"This type of listening that focuses primarily on brief listening exercises which usually take a few minutes, but offer focused, concentrated practice.", o:["Extensive | الموسع", "Intensive | المكثف", "Informal | غير الرسمي", "Formal | الرسمي"], c:1, t:"الاستماع الذي يركز على تمارين قصيرة تقدم ممارسة مكثفة ومركزة.", e:"<span class='box-hint'>من الصندوق: الاستماع المكثف يكون فيه تركيز مكثف focused concentrated.</span><br><strong>الشرح الإضافي:</strong> التدريبات القصيرة والمركزة جداً تسمى استماعاً مكثفاً (Intensive)."},
+            {q:"When learners focus on the linguistic signals of a text (morphemes, discourse markers, grammatical cues, etc.) they are employing a ........ strategy.", o:["Field-dependent | الاعتماد على المجال", "Concept-driven | مدفوعة بالمفاهيم", "Bottom-up | من أسفل لأعلى", "Top-down | من أعلى لأسفل"], c:2, t:"التركيز على الإشارات اللغوية (المورفيمات، القواعد) هو استراتيجية ........", e:"<span class='box-hint'>من الصندوق: التركيز على الإشارات اللغوية كالمورفيمات هو Bottom-up.</span><br><strong>الشرح الإضافي:</strong> البدء من الأجزاء الصغيرة كالقواعد والأصوات لبناء الفهم هو جوهر استراتيجية (Bottom-up)."},
+            {q:"Which of the following is not a listening strategy", o:["Taking notes | أخذ الملاحظات", "Drawing inferences | استخلاص الاستنتاجات", "Predicting information | توقع المعلومات", "Previewing information | معاينة المعلومات"], c:3, t:"أي مما يلي ليس من استراتيجيات الاستماع؟", e:"<span class='box-hint'>من الصندوق: المعاينة Previewing لا تكون في الاستماع.</span><br><strong>الشرح الإضافي:</strong> التصفح والمعاينة (Previewing) يعتمد على البصر، لذا هو استراتيجية قراءة (Reading)."},
+            {q:"What ESL listening strategy encourages learner to accept that some audible information may be unclear or unknown?", o:["Summarizing | التلخيص", "Self-evaluation | التقييم الذاتي", "Self-monitoring | المراقبة", "Toleration of ambiguity | تقبّل الغموض"], c:3, t:"ما الاستراتيجية التي تشجع المتعلم على تقبل أن بعض المعلومات قد تكون غير واضحة؟", e:"<span class='box-hint'>من الصندوق: Toleration of ambiguity تقبل الغموض.</span><br><strong>الشرح الإضافي:</strong> الاستمرار في الاستماع رغم عدم فهم بعض الكلمات لتجنب الإحباط يُدعى تقبل الغموض."},
+            {q:"Teacher (to student): please read the text on page 55, when you're done, write a thorough evaluation about it. The preview scenario exemplifies a teaching strategy known as:", o:["Scanning | المسح السريع", "Skimming | التصفح السريع", "Note taking | أخذ الملاحظات", "Critical thinking | التفكير النقدي"], c:3, t:"اقرأ النص واكتب تقييماً شاملاً عنه. هذا يمثل استراتيجية:", e:"<span class='box-hint'>من الصندوق: المعلم طلب التقييم evaluating، وهذا تفكير نقدي Critical thinking.</span><br><strong>الشرح الإضافي:</strong> التقييم وإصدار الأحكام يتطلب مهارات التفكير النقدي."},
+            {q:"Teachers use ........ reading so L2 learners can focus on linguistic and semantic details of a text.", o:["Referential | مرجعية", "Extensive | موسعة", "Intensive | مكثفة", "Critical | نقدية"], c:2, t:"تُستخدم القراءة ........ للتركيز على التفاصيل اللغوية والدلالية للنص.", e:"<span class='box-hint'>من الصندوق: التركيز على التفاصيل والدقة هو Intensive قراءة مكثفة.</span><br><strong>الشرح الإضافي:</strong> القراءة المكثفة تهدف لتحليل بنية النص والقواعد بعمق واستخراج التفاصيل."},
+            {q:"When learners read the text for particular bits of information, they are using the strategy of ........", o:["Comprehensive | الفهم الشامل", "Skimming | التصفح السريع", "Retaining | الاستبقاء", "Scanning | المسح السريع"], c:3, t:"البحث عن أجزاء معينة من المعلومات في النص يسمى استراتيجية ........", e:"<span class='box-hint'>من الصندوق: البحث عن معلومة محددة specific information هو Scanning.</span><br><strong>الشرح الإضافي:</strong> المسح (Scanning) يستخدم لإيجاد معلومات دقيقة كالأرقام والأسماء."},
+            {q:"Teacher: I need you to take a quick look at the text and provide me with the main idea, the previous instruction is an example of a reading strategy know as ........", o:["Scanning | المسح السريع", "Skimming | التصفح السريع (للخلاصة)", "Analyzing | التحليل", "Evaluating | التقييم"], c:1, t:"نظرة سريعة على النص لإعطائي الفكرة الرئيسية. هذا مثال على استراتيجية:", e:"<span class='box-hint'>من الصندوق: نظرة سريعة quick look للوصول للفكرة الرئيسية هو Skimming.</span><br><strong>الشرح الإضافي:</strong> (Skimming) يهدف للحصول على الخلاصة، بينما (Scanning) يهدف لتفصيل محدد."},
+            {q:"To increase reading comprehension and retention for learners, it is best to ........", o:["Give very short passages | قطع قصيرة", "Read aloud for the students | قراءة بصوت عال", "Provide simple language text | نص بسيط", "Identify the purpose of reading the chosen text | تحديد الغرض من القراءة"], c:3, t:"لزيادة الفهم القرائي والاستبقاء لدى المتعلمين، من الأفضل أن ........", e:"<span class='box-hint'>من الصندوق: لزيادة الفهم القرائي، الأفضل تحديد الغرض Identify the purpose.</span><br><strong>الشرح الإضافي:</strong> توجيه ذهن الطالب وتحديد الهدف (لماذا أقرأ؟) يزيد من الاستيعاب."},
+            {q:"Composing a concise statement on the main idea of a passage is a reading strategy referred to as ........", o:["Analyzing | التحليل", "Evaluating | التقييم", "Structuring | الهيكلة", "Summarizing | التلخيص"], c:3, t:"تأليف بيان موجز عن الفكرة الرئيسية يُشار إليه بـ ........", e:"<span class='box-hint'>من الصندوق: بيان موجز concise statement عن الفكرة الرئيسية هو Summarizing التلخيص.</span><br><strong>الشرح الإضافي:</strong> إعادة صياغة الأفكار الرئيسية في جملة مختصرة هو التلخيص."},
+            {q:"The strategy where students form a best guess, using evidence or context clues is often referred to as ........", o:["Inferring | الاستنتاج", "Analyzing | التحليل", "Visualizing | التخيل", "Synthesizing | التركيب"], c:0, t:"استخدام التخمين وأدلة السياق يُشار إليه بـ ........", e:"<span class='box-hint'>من الصندوق: استخدام التخمين guess والأدلة evidence هو الاستنتاج Inferring.</span><br><strong>الشرح الإضافي:</strong> الاستنباط والقراءة بين السطور هو الاستنتاج."},
+            {q:"The teacher asks the students to match headlines with news stories, what is the purpose of this pre-reading activity?", o:["Focus on main ideas | التركيز على الأفكار الرئيسية", "Focus on details | التركيز على التفاصيل", "Guess vocabulary from context | تخمين المفردات", "Enrich sentence structure | إثراء الجملة"], c:0, t:"توصيل العناوين بالقصص الإخبارية، ما الغرض من هذا النشاط؟", e:"<span class='box-hint'>من الصندوق: العناوين headlines تركز على الأفكار الرئيسية main ideas.</span><br><strong>الشرح الإضافي:</strong> العنوان يلخص الفكرة العامة للقصة."},
+            {q:"An activity that best helps practice skimming is ........", o:["Summarizing | التلخيص", "Comparing two texts | مقارنة نصين", "Overviewing a chapter | نظرة عامة على الفصل", "Reporting on an article | التقرير عن مقال"], c:2, t:"النشاط الذي يساعد على ممارسة التصفح السريع (skimming) هو ........", e:"<span class='box-hint'>من الصندوق: Overviewing a chapter إلقاء نظرة عامة يعادل skimming.</span><br><strong>الشرح الإضافي:</strong> النظرة السريعة لمعرفة محتويات الفصل تُنمي مهارة الـ Skimming."},
+            {q:"When the teacher requires students to read a text quickly & then give it an appropriate title, this is known as reading ........", o:["For detail | للتفاصيل", "For the gist | للخلاصة (الفكرة العامة)", "For knowledge | للمعرفة", "For comprehensive | للفهم الشامل"], c:1, t:"قراءة نص بسرعة ثم إعطاءه عنواناً مناسباً يُعرف بالقراءة ........", e:"<span class='box-hint'>من الصندوق: إعطاء عنوان مناسب title يتطلب القراءة السريعة للخلاصة for the gist.</span><br><strong>الشرح الإضافي:</strong> قراءة الفكرة العامة (Gist) هي التي تمكنك من وضع عنوان معبر."},
+            {q:"Connecting background knowledge with clues in the text to come up with an idea that is not explicitly stated by the writer is called ........", o:["Visualizing | التخيل", "Inferring | الاستنتاج", "Predicting | التوقع", "Summarizing | التلخيص"], c:1, t:"ربط المعرفة السابقة بالأدلة للوصول لفكرة لم يصرح بها الكاتب بوضوح يسمى ........", e:"<span class='box-hint'>من الصندوق: فكرة لم يتم التصريح بها explicitly stated لأن القارئ استنتجها = Inferring.</span><br><strong>الشرح الإضافي:</strong> الاستدلال (Inferring) هو الوصول لمعلومة مخفية بين السطور."},
+            {q:"When we ask students to read a text, evaluate it, and react to it We are teaching ........", o:["Simple reading | القراءة البسيطة", "Scanning reading | المسح", "Skimming reading | التصفح", "Critical reading | القراءة النقدية"], c:3, t:"عندما نطلب من الطلاب قراءة نص وتقييمه والتفاعل معه، فإننا نعلمهم ........", e:"<span class='box-hint'>من الصندوق: تقييم evaluate والتفاعل react يعني قراءة نقدية Critical reading.</span><br><strong>الشرح الإضافي:</strong> التقييم وتحليل جودة النص ومصداقيته هي القراءة النقدية."},
+            {q:"To look quickly through a reading passage to find something is called ........", o:["Skimming | التصفح السريع", "Scanning | المسح للبحث", "Silent reading | القراءة الصامتة", "Comprehensive | الفهم"], c:1, t:"النظر بسرعة خلال قطعة قراءة للعثور على شيء محدد يسمى ........", e:"<span class='box-hint'>من الصندوق: البحث السريع لإيجاد شيء معين find something هو Scanning.</span><br><strong>الشرح الإضافي:</strong> البحث عن كلمة أو رقم محدد كعمل الماسح الضوئي."},
+            {q:"Reading from the beginning of a text and going word by word. Stopping to look up every unknown vocabulary item until the end of the text is an example of ........", o:["Scanning | المسح", "Skimming | التصفح", "Bottom-up strategy | من أسفل لأعلى", "Top-down strategy | من أعلى لأسفل"], c:2, t:"القراءة كلمة بكلمة والتوقف للبحث عن كل مفردة غير معروفة يمثل ........", e:"<span class='box-hint'>من الصندوق: القراءة كلمة بكلمة والتوقف عند الكلمات يركز على التفاصيل Bottom-up.</span><br><strong>الشرح الإضافي:</strong> التركيز على الأجزاء الصغيرة لبناء المعنى هو (Bottom-up)."},
+            {q:"An intensive reading text should be ........", o:["Long & easy | طويل وسهل", "Long & detailed | طويل ومفصل", "Short & simple | قصير وبسيط", "Short & complicated | قصير ومعقد"], c:3, t:"نص القراءة المكثفة يجب أن يكون ........", e:"<span class='box-hint'>من الصندوق: القراءة المكثفة Intensive يجب أن تكون قصيرة ومعقدة short & complicated.</span><br><strong>الشرح الإضافي:</strong> تُستخدم النصوص القصيرة والدسمة لتحليلها بالتفصيل العميق."},
+            {q:"In which reading strategy do students identify and fix problems with their understanding of the text?", o:["Predicting | التوقع", "Monitoring | المراقبة / التتبع", "Elaborating | التوسع", "Highlighting | التمييز"], c:1, t:"في أي استراتيجية يحدد الطلاب ويصلحون مشاكل فهمهم للنص؟", e:"<span class='box-hint'>من الصندوق: استراتيجية مراقبة الفهم Monitoring حيث يصلح الطلاب مشاكل الفهم.</span><br><strong>الشرح الإضافي:</strong> المراقبة (Monitoring) هي توقف الطالب عند تعثره ليعيد القراءة."},
+            {q:"Which of the following steps begins the process of teaching fluency in reading?", o:["Collaborative learning | التعلم التعاوني", "Independent practice | الممارسة المستقلة", "Direct instruction | التدريس المباشر", "Guided modeling | النمذجة الموجهة"], c:2, t:"أي خطوة تبدأ عملية تدريس الطلاقة في القراءة؟", e:"<span class='box-hint'>من الصندوق: أول خطوة في تدريس الطلاقة هي Direct instruction التدريس المباشر.</span><br><strong>الشرح الإضافي:</strong> يبدأ المعلم بتدريس وشرح مفهوم الطلاقة للطلاب بشكل مباشر."},
+            {q:"When writing a formal letter, which of the following greetings uses incorrect register would not be acceptable for a formal letter?", o:["Hi Anas | أهلاً أنس", "Dear Sir or Madam | عزيزي السيد", "To whom it may concern | لمن يهمه الأمر", "Good afternoon Dr. Anas | طاب مساؤك"], c:0, t:"عند كتابة خطاب رسمي، أي تحية تعتبر غير مقبولة للخطاب الرسمي؟", e:"<span class='box-hint'>من الصندوق: التحية Hi غير مقبولة في الخطاب الرسمي.</span><br><strong>الشرح الإضافي:</strong> كلمة Hi تُستخدم في السياقات غير الرسمية (Informal) بين الأصدقاء."},
+            {q:"Process oriented writing instruction places more emphasis on the ........", o:["Stages that writers go through | المراحل التي يمر بها الكتاب", "Knowledge that writers employ | المعرفة", "Experience that writers have | الخبرة", "Time that writers spend | الوقت"], c:0, t:"تعليم الكتابة كعملية يركز بشكل أكبر على ........", e:"<span class='box-hint'>من الصندوق: عملية الكتابة تركز على المراحل stages التي يمر بها الكاتب.</span><br><strong>الشرح الإضافي:</strong> نهج (Process-oriented) يعنى بالخطوات والمراحل بدلاً من المنتج النهائي."},
+            {q:"The writing process can be achieved by following the recursive phase of Editing and published ........", o:["Drafting, pre writing, revising", "Pre-writing, drafting, revising", "Pre writing, revising, drafting", "Drafting, pre writing, revising"], c:1, t:"يمكن تحقيق عملية الكتابة باتباع المراحل المتكررة التحرير والنشر و ........", e:"<span class='box-hint'>من الصندوق: خطوات الكتابة Pre-writing, drafting, revising.</span><br><strong>الشرح الإضافي:</strong> الترتيب الصحيح: ما قبل الكتابة لتوليد الأفكار، ثم المسودة، ثم المراجعة."},
+            {q:"When a teacher instructs students to write down all of idea, they can think of related of a topic this is known as ........", o:["Outlining | التخطيط", "Clustering | التجميع", "Note-taking | الملاحظات", "Brainstorming | العصف الذهني"], c:3, t:"كتابة جميع الأفكار المتعلقة بموضوع ما فور التفكير بها يُعرف بـ ........", e:"<span class='box-hint'>من الصندوق: كتابة كل الأفكار (all of idea) هو عصف ذهني Brainstorming.</span><br><strong>الشرح الإضافي:</strong> تدوين كل الأفكار بحرية تامة لجمع أكبر قدر منها."},
+            {q:"An important part of a paragraph is the ........ in which the main idea of paragraph is stated", o:["Closing sentence | الجملة الختامية", "Topic sentence | جملة الموضوع", "Heading | العنوان", "Draft | المسودة"], c:1, t:"جزء مهم من الفقرة تُذكر فيه الفكرة الرئيسية هو ........", e:"<span class='box-hint'>من الصندوق: جملة الموضوع Topic sentence هي التي تحدد الفكرة الرئيسية للفقرة.</span><br><strong>الشرح الإضافي:</strong> الجملة الافتتاحية في الفقرة (الفكرة العامة) تسمى (Topic sentence)."},
+            {q:"Writing that conveys a story, and often is read for pleasure is recognized as ........", o:["Narrative | سردي", "Expository | تفسيري", "Persuasive | إقناعي", "Descriptive | وصفي"], c:0, t:"الكتابة التي تنقل قصة للترفيه والمُتعة تُعرف بـ ........", e:"<span class='box-hint'>من الصندوق: الكتابة التي تحكي قصة (conveys a story) وتُقرأ للاستمتاع هي Narrative سردي.</span><br><strong>الشرح الإضافي:</strong> السرد يعتمد على تسلسل أحداث وشخصيات لإخبار قصة."},
+            {q:"In a journal writing in which L2 learners write a response to experience, feelings, or ideas is an example of ........ Writing", o:["Descriptive | الوصفي", "Persuasive | الإقناعي", "Reflective | التأملي", "Narrative | السردي"], c:2, t:"كتابة المذكرات التي يعبر فيها المتعلمون عن المشاعر والأفكار هي كتابة ........", e:"<span class='box-hint'>من الصندوق: عندما يكتب المتعلمون تجاربهم الشخصية ومشاعرهم (feelings) هذا مثال على Reflective التأملي.</span><br><strong>الشرح الإضافي:</strong> الكتابة التأملية تعكس مشاعر الكاتب وتأملاته الشخصية."},
+            {q:"........ is an activity where students collectively share their ideas before considering some of them more carefully", o:["Brainstorming | العصف الذهني", "Summarizing | التلخيص", "Evaluating | التقييم", "Planning | التخطيط"], c:0, t:"نشاط يتشارك فيه الطلاب أفكارهم بشكل جماعي لجمع الأفكار", e:"<span class='box-hint'>من الصندوق: مشاركة الأفكار بشكل جماعي share ideas هو العصف الذهني Brainstorming.</span><br><strong>الشرح الإضافي:</strong> طرح الأفكار بحرية تامة قبل فلترتها."},
+            {q:"During which of the following writing processes do students review and amend their writing?", o:["Prewriting | ما قبل الكتابة", "Publishing | النشر", "Drafting | المسودة", "Editing | التحرير (التنقيح)"], c:3, t:"في أي عملية كتابة يقوم الطلاب بمراجعة وتعديل كتاباتهم؟", e:"<span class='box-hint'>من الصندوق: عملية التعديل والمراجعة (amend their writing) هي Editing.</span><br><strong>الشرح الإضافي:</strong> التحرير (Editing) هو مرحلة إصلاح الأخطاء الإملائية واللغوية."},
+            {q:"Writing that lays logical argument is known as ........ Writing", o:["Descriptive | الوصفي", "Persuasive | الإقناعي / الجدلي", "Expository | التفسيري", "Narrative | السردي"], c:1, t:"الكتابة التي تضع حجة منطقية تُعرف بالكتابة ........", e:"<span class='box-hint'>من الصندوق: الكتابة التي فيها جدال أو حجة منطقية (logical argument) تعرف بـ Persuasive الإقناعية.</span><br><strong>الشرح الإضافي:</strong> المقال الإقناعي يهدف لإقناع القارئ بالحجج والأدلة المنطقية."},
+            {q:"The stage in which L2 learners incorporate peer suggestions is known as ........", o:["Pre-writing | ما قبل الكتابة", "Publishing | النشر", "Drafting | المسودة", "Revising | المراجعة"], c:3, t:"المرحلة التي يدمج فيها المتعلمون اقتراحات الأقران تُعرف بـ ........", e:"<span class='box-hint'>من الصندوق: المرحلة التي يدمج فيها الطلاب اقتراحات الأقران (peer suggestions) هي Revising.</span><br><strong>الشرح الإضافي:</strong> المراجعة تتعلق بإعادة النظر في الأفكار والتنظيم بناءً على التغذية الراجعة."},
+            {q:"When writing a strong argumentative essay, the thesis statement ........", o:["Appears at the end of the introductory | تظهر في نهاية المقدمة", "Appears in the middle | تظهر في المنتصف", "Appears at the beginning | تظهر في البداية", "Appears before the beginning | قبل البداية"], c:0, t:"عند كتابة مقال جدلي، فإن بيان الأطروحة (Thesis statement) ........", e:"<span class='box-hint'>من الصندوق: الأطروحة (Thesis statement) تظهر في نهاية المقدمة introductory.</span><br><strong>الشرح الإضافي:</strong> العرف الأكاديمي ينص على أن الجملة المحورية يجب أن تكون في نهاية الفقرة الاستهلالية."},
+            {q:"L2 learners would be more confident when they speak about ........ topics", o:["Controversial | مثيرة للجدل", "Restricted | مقيدة", "Familiar | مألوفة", "New | جديدة"], c:2, t:"سيكون المتعلمون أكثر ثقة عندما يتحدثون عن مواضيع ........", e:"<span class='box-hint'>من الصندوق: المتعلمون يكونون أكثر ثقة عند التحدث في مواضيع مألوفة Familiar.</span><br><strong>الشرح الإضافي:</strong> المواضيع المألوفة المرتبطة بحياة الطالب تزيد من طلاقته وتقلل من توتره."}
+        ];
+
+        let synth = window.speechSynthesis;
+        let isExamModeActive = false;
+        
+        function buildApp() {
+            let qContainer = document.getElementById('q-container');
+            qContainer.innerHTML = '';
+            
+            db.forEach((qObj, index) => {
+                let block = document.createElement('div');
+                block.className = 'question-row';
+                block.setAttribute('data-ans-index', qObj.c);
+                block.setAttribute('data-original-index', index);
+
+                let qWordsHtml = qObj.q.split(' ').map(w => {
+                    let cleanW = w.replace(/[^a-zA-Z0-9'-]/g, ''); 
+                    let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;'); 
+                    if(w.includes('........')) { return `<span class="en-word blank-space">........</span>`; }
+                    let missingHtml = w.replace(/_/g, '<span class="missing-letter">_</span>');
+                    return `<span class="en-word" data-speak="${safeWord}">${missingHtml}</span>`;
+                }).join(' ');
+
+                let letters = ["A", "B", "C", "D"];
+                let optsHtml = `<div class="options-inline">` + qObj.o.map((opt, i) => {
+                    let pSplit = opt.split('|');
+                    let enO = pSplit[0].trim();
+                    let arO = pSplit[1] ? pSplit[1].trim() : '';
+                    let enWordsHtml = enO.split(' ').map(w => {
+                        let cleanW = w.replace(/[^a-zA-Z0-9'-]/g, '');
+                        let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                        return `<span class="en-word" data-speak="${safeWord}">${w}</span>`;
+                    }).join(' ');
+                    return `
+                    <div class="opt-item" data-index="${i}" onclick="selectOption(this, event)">
+                        <div class="choice-badge">${letters[i]}</div>
+                        <div class="choice-content">
+                            <div class="choice-en" dir="ltr">${enWordsHtml}</div>
+                            ${arO ? `<div class="choice-ar" dir="rtl">${arO}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+
+                let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+                
+                block.innerHTML = `
+                    <div class="q-text-container">
+                        <span class="q-number-span">${index + 1}. </span>
+                        <div class="q-text" dir="ltr">${qWordsHtml}</div>
+                    </div>
+                    ${translationHtml}
+                    ${optsHtml}
+                    <div class="answer-action-container">
+                        <button class="btn-answer" onclick="revealAnswer(this)">👁️ إظهار الشرح والمفاتيح</button>
+                    </div>
+                    <div class="answer-box">
+                        <div class="grammar-explanation">${qObj.e}</div>
+                    </div>
+                `;
+                qContainer.appendChild(block);
+            });
+        }
+
+        window.selectOption = function(optItem, event) {
+            if (event && event.target.closest('.en-word')) return; 
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let correctIndex = row.getAttribute('data-ans-index');
+            let selectedIndex = optItem.getAttribute('data-index');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-index') === correctIndex) item.classList.add('correct');
+            });
+            if (selectedIndex !== correctIndex) optItem.classList.add('wrong');
+            
+            // Auto reveal answer box ONLY in study mode
+            if (!isExamModeActive) {
+                let btn = row.querySelector('.btn-answer');
+                if (btn) btn.click();
+            }
+        };
+
+        window.setMode = function(mode) {
+            let container = document.getElementById('q-container');
+            let btnStudy = document.getElementById('btn-study');
+            let btnExam = document.getElementById('btn-exam');
+            let btnResult = document.getElementById('btn-result');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            if (mode === 'exam') {
+                isExamModeActive = true;
+                container.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+                btnResult.style.display = 'block'; 
+            } else {
+                isExamModeActive = false;
+                container.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+                btnResult.style.display = 'none'; 
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            rows.forEach(row => {
+                row.classList.remove('answered');
+                row.querySelectorAll('.opt-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'wrong');
+                });
+                let ansBox = row.querySelector('.answer-box');
+                if (ansBox) ansBox.style.display = 'none';
+                let btnAns = row.querySelector('.btn-answer');
+                if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+            });
+
+            if (mode === 'exam') {
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+            } else {
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumSpan = row.querySelector('.q-number-span');
+                if (qNumSpan) qNumSpan.textContent = (index + 1) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.showResult = function() {
+            let container = document.getElementById('q-container');
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> نتيجتك حتى الآن: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا أستاذ حمادة! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 مستوى رائع وممتاز!";
+                else msg += "💪 يمكنك المحاولة مجدداً، استمر في التدريب!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            window.scrollTo({ top: resEl.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        document.addEventListener('click', function(e) {
+            let wg = e.target.closest('.en-word');
+            if (wg) {
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && synth) {
+                    synth.cancel();
+                    document.querySelectorAll('.en-word.highlight').forEach(el => el.classList.remove('highlight'));
+                    wg.classList.add('highlight');
+                    let txt = speakTextAttr.replace(/[\._]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; u.rate = 0.85;
+                        u.onend = function() { wg.classList.remove('highlight'); };
+                        u.onerror = function() { wg.classList.remove('highlight'); };
+                        synth.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), Math.max(1000, txt.length * 100));
+                    } else {
+                        wg.classList.remove('highlight');
+                    }
+                }
+            }
+        });
+
+        window.revealAnswer = function(btn) {
+            let row = btn.closest('.question-row');
+            let box = row.querySelector('.answer-box');
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الشرح والمفاتيح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الشرح والمفاتيح'; 
+            }
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>

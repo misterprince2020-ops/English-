@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تجميعات الرخصة المهنية - الأسئلة (301 إلى 350)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #f8fafc;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1100px; padding: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px; border-top: 6px solid #3b82f6; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.2em; font-weight: 900; margin-bottom: 5px; }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 25px; font-weight: bold; }
+        .creator-info { text-align: center; color: #ffffff; background-color: #3b82f6; font-size: 1.2em; font-weight: bold; margin-bottom: 35px; padding: 12px; border-radius: 8px;}
+
+        /* لوحة التحكم */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; min-width: 250px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        .btn-review { background-color: #10b981; }
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; transform: scale(1.02); background-color: #1d4ed8;}
+        .btn-exam.active-mode { outline: 3px solid #ef4444; outline-offset: 2px; transform: scale(1.02); background-color: #334155;}
+        .btn-review.active-mode { outline: 3px solid #4ade80; outline-offset: 2px; transform: scale(1.02); background-color: #059669;}
+        
+        .btn-result { background-color: #f59e0b; color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: none; width: 100%; max-width: 915px;}
+        .btn-result:hover { background-color: #d97706; }
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-audio { background-color: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 6px;}
+        .btn-audio:hover { background-color: #059669; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-lbl { font-size: 26px; font-weight: 900; color: #3b82f6; flex-shrink: 0; padding-top: 5px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.5em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 1.8; font-family: Arial, sans-serif;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: flex; flex-direction: column; gap: 12px; direction: ltr; width: 100%; margin-top: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 70px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.3em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 60px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        
+        .choice-content { display: flex; flex-direction: column; justify-content: center; padding: 12px 15px; width: 100%; gap: 6px;}
+        .choice-en { font-weight: bold; font-size: 1.2em; color: #334155; font-family: Arial, sans-serif;}
+        .choice-ar { font-size: 1.05em; font-weight: bold; color: #b91c1c; font-family: 'Tajawal', sans-serif;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-en, .opt-item.correct .choice-ar { color: white !important; }
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-en, .opt-item.wrong .choice-ar { color: white !important; }
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed;}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .grammar-explanation { color: #1e293b; font-size: 18px; line-height: 2.0; font-weight:bold; }
+        .box-hint { display: block; background-color: #fca5a5; color: #7f1d1d; padding: 6px 12px; border-radius: 6px; font-size: 1em; margin-bottom: 10px; font-weight: 900;}
+
+        /* أزرار التنقل (التالي يمين - السابق يسار) */
+        .exam-nav-buttons { display: none; justify-content: space-between; margin-top: 20px; width: 100%; border-top: 2px solid #e2e8f0; padding-top: 15px;}
+        .exam-mode .exam-nav-buttons, .review-mode .exam-nav-buttons { display: flex; }
+        .btn-nav { background-color: #3b82f6; color: white; border: none; padding: 10px 25px; font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-family: 'Tajawal';}
+        .btn-nav:hover { background-color: #2563eb; }
+
+        /* وضع الاختبار الصارم (سؤال واحد) */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5; padding: 15px; border-radius: 12px;}
+        .exam-mode .full-sentence-translation, .exam-mode .answer-action-container, .exam-mode .answer-box, .exam-mode .choice-ar, .exam-mode .btn-audio { display: none !important; }
+        .exam-mode .question-row { display: none !important; }
+        .exam-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        /* وضع المراجعة الذكي (سؤال وجواب واحد فقط) */
+        .review-mode { background-color: #f0fdf4; border-color: #4ade80; padding: 15px; border-radius: 12px;}
+        .review-mode .question-row { display: none !important; }
+        .review-mode .question-row.active-q { display: flex !important; animation: slideIn 0.5s ease-out; }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(30px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">أسئلة الرخصة المهنية - إنجليزي</div>
+    <div class="sub-title">تجميعات من 301 إلى 350 (خالية تماماً من أي Span)</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+    
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع المذاكرة (مرتب + الكل)</button>
+            <button id="btn-review" class="mode-btn btn-review" onclick="setMode('review')">✅ وضع المراجعة (محلول + تنقل)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')">🔴 وضع الاختبار (عشوائي + تنقل)</button>
+        </div>
+        <button id="btn-result" class="btn-result" onclick="showResult()">📋 إنهاء الاختبار وإظهار النتيجة</button>
+        <div class="section-result" id="res-box"></div>
+    </div>
+
+    <div id="q-container" class="questions-container train-mode"></div>
+</div>
+
+<script>
+(function initApp() {
+    try {
+        const db = [
+            {q:"Which of the following theories argues that language learning is a process of linguistic imitation and habit formation?", o:["A) The Innatist Theory", "B) The Cognitivist Theory", "C) The Behaviorist Theory", "D) The Sociocultural Theory"], c:2, t:"أي من النظريات التالية تجادل بأن تعلم اللغة هو عملية محاكاة لغوية وتكوين عادات؟", e:"<div class='box-hint'>C. The Behaviorist Theory<br>أي من النظريات التالية بتقول argues أن تعلم اللغة هو عملية محاكاة لغوية وتكوين العادات؟ لان النظرية السلوكية تهتم بالتقليد وتكوين العادات</div>"},
+            {q:"The ability to produce a cohesive coherent text out of a series of utterances is known as ........ competence.", o:["A) Discourse", "B) Grammatical", "C) Sociolinguistic", "D) Communicative"], c:0, t:"المقدرة على إنتاج نص متماسك ومترابط من سلسلة من الأقوال تُعرف بالكفاءة ........", e:"<div class='box-hint'>A) Discourse<br>المقدرة على إنتاج نص فيه تماسك cohesive وترابط coherent من مجموعة من الأقوال utterances تعرف ب ........ الكفاءة.<br>Discourse = cohesive & coherent كفاءة خطابية يكون الكلام مترابط ومتسلسل</div>"},
+            {q:"The contrastive analysis hypothesis is associated with...", o:["A. The cognitive theory", "B. The behaviorist theory", "C. The native theory", "D. None of the above"], c:1, t:"ترتبط فرضية التحليل التقابلي بـ...", e:"<div class='box-hint'>B. The behaviorist theory<br>فرضية التحليل التقابلي ترتبط بالنظرية السلوكية</div>"},
+            {q:"The claim that the deep structure of language may be common to all languages is referred to as:", o:["A) Monitor model", "B) Input hypothesis", "C) Output hypothesis", "D) Universal grammar"], c:3, t:"الادعاء بأن البنية العميقة للغة قد تكون مشتركة بين جميع اللغات يُشار إليه بـ:", e:"<div class='box-hint'>D. Universal grammar<br>الادعاء بأن التركيب العميق للغة قد يكون مشتركاً بين جميع اللغات يشار الى :- D) Universal grammar</div>"},
+            {q:"............ do not influence second language acquisition.....", o:["A. Environment and instruction factors", "B. Technological factors", "C. Individual factors", "D. Cognitive factors"], c:1, t:"............ لا تؤثر على اكتساب اللغة الثانية.", e:"<div class='box-hint'>B. Technological factors<br>.... لا تؤثر على اكتساب اللغة الثانية . B) Technological factors العوامل التقنية لا تؤثر في اكتساب اللغة الثانية</div>"},
+            {q:"The notion that the ability acquires language biologically linked to Age is called........", o:["A) Stephen Krashen's theory", "B) Multilingualism", "C) Interlanguage", "D) The critical period hypothesis"], c:3, t:"الفكرة القائلة بأن القدرة على اكتساب اللغة مرتبطة بيولوجياً بالعمر تسمى ........", e:"<div class='box-hint'>D. The critical period hypothesis<br>فكرة ان القدرة على اكتساب اللغة مرتبطة بيولوجيا بالعمر تسمى فرضية الفترة الحرجة : اكتساب اللغة مرتبط بالعمر Age : the critical period hypothesis</div>"},
+            {q:"According to Krashen, what kind of input necessarily leads to the acquisition of a second language?", o:["A) Comprehensible", "B) Conversational", "C) Entertain able", "D) Instructional"], c:0, t:"وفقاً لكراشن، ما نوع المدخلات التي تؤدي بالضرورة إلى اكتساب لغة ثانية؟", e:"<div class='box-hint'>A) Comprehensible<br>وفقا لكراشن ، ما نوع المدخلات التي تؤدي بالضرورة إلى اكتساب لغة ثانية؟ المدخلات input في وجهة نظر كراشن الجواب A مفهومة</div>"},
+            {q:"When the learner is unmotivated or stressed the affective filter is:", o:["A. Up", "B. Down", "C. On", "D. At"], c:0, t:"عندما يكون المتعلم غير متحمس أو متوتراً، يكون المرشح العاطفي:", e:"<div class='box-hint'>A. Up<br>عندما يكون المتعلم غير متحمس أو متوتر ، يكون الفلتر العاطفي: اذا المتعلم متوتر وغير متحمس يكون الفلتر مرتفع ولا يمكنه التعلم Negative feelings > up > block inputs واذا عندك دافعية وحماس وثقة ينزل الفلتر ويسمح لك بالتعلم Positive feelings > down > allow inputs</div>"},
+            {q:"Which of the following theories explains conscious error correction during oral L2 production?", o:["A) Input hypothesis", "B) Monitor hypothesis", "C) Affective filter hypothesis", "D) Natural order hypothesis"], c:1, t:"أي من النظريات التالية تشرح التصحيح الواعي للأخطاء أثناء الإنتاج الشفهي للغة الثانية؟", e:"<div class='box-hint'>B. Monitor hypothesis<br>أي من النظريات التالية تشرح التصحيح الواعي للأخطاء أثناء إنتاج اللغة الشفهية؟ فرضية المراقبة: هي من تراقب وتعدل لك الأخطاء في اللغة</div>"},
+            {q:"The ............ gives students the chance to have conversation where they receive meaningful input from teachers and other students which will in turn lead to acquisition of the grammatical rules and vocabulary of the second language.", o:["A) Scaffolding theory", "B) Behaviorist theory", "C) Interactionist theory", "D) Theory of comprehensible"], c:2, t:"تمنح ............ الطلاب فرصة لإجراء محادثة يتلقون فيها مدخلات ذات معنى من المعلمين والطلاب الآخرين مما يؤدي بدوره إلى اكتساب القواعد والمفردات.", e:"<div class='box-hint'>C. Interactionist theory<br>يمنح ...... الطلاب فرصة لإجراء محادثة حيث يتلقون مدخلات مفهومة من المعلمين والطلاب الآخرين. الأمر الذي سيؤدي بدوره إلى اكتساب القواعد النحوية ومفردات اللغة الثانية. النظرية التفاعلية لان هي الي فيها محادثة وتفاعل Conversation = interactionist theory</div>"},
+            {q:"The cognitive stage that involves changing or altering existing knowledge structures in light of new information is known as ............", o:["A) Accommodation", "B) Assimilation", "C) Activation", "D) Insertion"], c:0, t:"المرحلة المعرفية التي تتضمن تغيير أو تعديل هياكل المعرفة الحالية في ضوء المعلومات الجديدة تُعرف بـ ............", e:"<div class='box-hint'>A) Accommodation<br>تعرف المرحلة المعرفية التي تتضمن تغيير أو تعديل المعرفة الموجودة في ضوء المعلومات الجديدة باسم ... Accommodation (A التكيف Changing or altering > accommodation ويشمل تغيير الأفكار أو المخططات الموجودة كنتيجة لمعلومات أو تجارب جديدة.</div>"},
+            {q:"According to the..... theory of language acquisition, L2 input is enough to stimulate language. No teaching is required", o:["A. Innatist", "B. Cognitive", "C. Behaviorist", "D. Connection"], c:0, t:"وفقاً للنظرية ..... في اكتساب اللغة، فإن مدخلات اللغة الثانية كافية لتحفيز اللغة ولا يلزم التدريس.", e:"<div class='box-hint'>A. Innatist<br>وفقا لنظرية ..... اكتساب اللغة فإن مدخلات اللغة الثانية L2 يكفي لتحفيز اكتساب اللغة. لا يلزم التدريس. A) innatis النظرية الفطرية</div>"},
+            {q:"The second language acquisition theory that compares the target language to the learner's native language is referred to as .......", o:["A. Contrastive analysis", "B. Interlanguage", "C. Error analysis", "D. Automaticity"], c:0, t:"نظرية اكتساب اللغة الثانية التي تقارن اللغة المستهدفة باللغة الأم للمتعلم يُشار إليها بـ .......", e:"<div class='box-hint'>A. Contrastive analysis<br>نظرية اكتساب اللغة الثانية التي تقارن لغة الهدف بلغة الأم للمتعلم يشار اليها باسم ... A) contrastive analysis التحليل التقابلي تهتم بمقارنة اللغة المستهدفة بلغة الام لمعرفة اوجه الشبه بين اللغتين</div>"},
+            {q:"The understanding of the function of the spoken utterance in a given situation is known as........", o:["A- Linguistic competence", "B- Strategic competence", "C- Pragmatic competence", "D- Discourse competence"], c:2, t:"فهم وظيفة الكلام المنطوق في موقف معين يُعرف بـ ........", e:"<div class='box-hint'>C- Pragmatic competence<br>القدرة على فهم وظيفة الكلام في موقف معين تعتبر ... ؟ C) Pragmatics competence لأنها تعرف بفهم وظيفة الكلام المنطوق في موقف معين</div>"},
+            {q:"Slips of the tongue (e.g., yesterday instead of tomorrow in \" I will see you yesterday\") can be explained as a ............ error.", o:["A. Competence", "B. Performance", "C. Universal grammar", "D. Generative grammar"], c:1, t:"زلات اللسان (مثل قول أمس بدلاً من غداً) يمكن تفسيرها على أنها خطأ في ............", e:"<div class='box-hint'>B. Performance<br>زلات اللسان من اخطاء الاداء B) performance slips of the tongue = performance</div>"},
+            {q:"TESOL draws on theories of .........to develop better lesson plans and aim for more effective teaching.", o:["A. L1 acquisition", "B. Minimalist grammar", "C. Cognitive development", "D. The morpho-syntactic interface"], c:2, t:"تعتمد TESOL على نظريات ......... لتطوير خطط دروس أفضل وتهدف لتدريس أكثر فعالية.", e:"<div class='box-hint'>C. Cognitive development<br>يعتمد TESOL على نظريات ...... لتطوير خطط تدريسية أفضل ويهدف إلى تدريس أكثر فعالية C) cognitive development التطور المعرفي للطلاب مدى تقدمهم معرفيا وبناء علية بيتم تخطيط الدروس والأهداف لكي نصل لدروس اكثر فعالية</div>"},
+            {q:"In learning foreign languages, the Critical Period Hypothesis stipulates that ...", o:["A. Children are superior to adults", "B. Adults are superior to children", "C. Children and adults are equal", "D. None of the above"], c:0, t:"في تعلم اللغات الأجنبية، تنص فرضية الفترة الحرجة على أن ...", e:"<div class='box-hint'>A. Children are superior to adults<br>في تعلم اللغة في فترة الحرجة الأطفال يتفوقون على البالغين</div>"},
+            {q:"Within the cognitive approach, language acquisition is seen as", o:["A) Rule formation", "B) Habit formation", "C) Skill formation", "D) Function formation"], c:0, t:"ضمن النهج المعرفي، يُنظر إلى اكتساب اللغة على أنه:", e:"<div class='box-hint'>A) Rule formation<br>داخل الاتجاه المعرفي ، يروا ان اكتساب اللغة بانه : A) rule formation Cognitive > rule formation Behaviorism > habit formation</div>"},
+            {q:"The critical period hypothesis presents strong evidence for the .........theory of the language acquisition:", o:["A. Cognitive", "B. Behaviorist", "C. Nativist", "D. Situation"], c:2, t:"تقدم فرضية الفترة الحرجة دليلاً قوياً لنظرية ......... في اكتساب اللغة:", e:"<div class='box-hint'>C. Nativist<br>فرضية الفترة الحرجة تقدم دليل قوي على نظرية ....... لاكتساب اللغة C) nativist الفطرية نظرية الفترة الحرجة مرتبطة بالنظرية الفطرية</div>"},
+            {q:"The linguistic theory which suggests that all languages share a model of principles and basic properties is called....", o:["A. Universal Grammar", "B. Systemic Grammar", "C. Input Hypothesis", "D. Competition Model"], c:0, t:"النظرية اللغوية التي تقترح أن جميع اللغات تشترك في نموذج من المبادئ والخصائص الأساسية تسمى....", e:"<div class='box-hint'>A. Universal Grammar<br>النظرية اللغوية التي تشير إلى أن كل اللغات تشترك في نموذج من المبادئ وخصائص اساسية تسمى :- A) Universal Grammar Universal grammar = all languages اي ان كل اللغات لديها خصائص مشتركة مثل ضمير فعل وغيرها</div>"},
+            {q:"The system linguistic knowledge possessed by a speakers of language is called:", o:["A. Performance", "B. Competence", "C. Proficiency", "D. Mastery"], c:1, t:"النظام المعرفي اللغوي الذي يمتلكه متحدثو اللغة يسمى:", e:"<div class='box-hint'>B. competence<br>المعرفة اللغوية التي يمتلكها متحدث اللغة تسمى B) competence competence = knowledge الكفاءة عبارة عن المعرفة اللغوية للشخص يمتلكها عن اللغة</div>"},
+            {q:"Age, personality, and experience are considered .......factors that can influence L2 learners' acquisition of English.", o:["A. Sociocultural", "B. Psychomotor", "C. Individual", "D. Affective"], c:2, t:"يُعتبر العمر والشخصية والخبرة عوامل ....... يمكن أن تؤثر على اكتساب متعلمي اللغة الثانية للإنجليزية.", e:"<div class='box-hint'>C. individual<br>العمر والشخصية والخبرة ........ من العوامل التي يمكن أن تؤثر على اكتساب متعلمي المستوى الثاني للغة الإنجليزية. C) individual عوامل فردية Personality = individual</div>"},
+            {q:"Fluency, accuracy, and complexity of language production when L2 learners engage in communicative tasks are considered factors,", o:["A. Psycholinguistic", "B. Socialinguistic", "C. Cognitive", "D. Effective"], c:2, t:"تُعتبر الطلاقة والدقة والتعقيد في إنتاج اللغة عندما ينخرط متعلمو اللغة الثانية في مهام تواصلية عوامل:", e:"<div class='box-hint'>C. cognitive<br>الطلاقة والدقة والتعقيد في اللغة عند متعلمي اللغة الثانية عندما يندمجوا بمهارات اتصالية تعتبر .......... العوامل. C) cognitive عوامل معرفية كل مازادت معرفتي باللغة كل مايكون لدي طلاقة ودقة وكونت جمل معقدة</div>"},
+            {q:"Metalinguistic awareness begins to develop in the ......... years", o:["A. Preschool", "B. Adolescent", "C. Early adult", "D. Early school"], c:0, t:"يبدأ الوعي ما وراء اللغوي بالتطور في سنوات .........", e:"<div class='box-hint'>A. Preschool<br>يبدأ الوعي ماوراء لغوي بالتطور في سنوات A) preschool مرحلة ما قبل المدرسة</div>"},
+            {q:"It has been suggested language development is related to ........... development", o:["A. Emotional", "B. Cognitive", "C. Physical", "D. Creative"], c:1, t:"أُقترح أن تطور اللغة مرتبط بالتطور ...........", e:"<div class='box-hint'>B. Cognitive<br>أقترح أن تطوير اللغة مرتبط بـ ..... التطور B) cognitive التطور المعرفي</div>"},
+            {q:"In a second language classroom, teachers should:", o:["A. Expect their students to use their native language", "B. Not expect their students to use their native language", "C. Use part of the native language as a model", "D. Compare the native language & the target language to find weakness"], c:0, t:"في فصل اللغة الثانية، يجب على المعلمين:", e:"<div class='box-hint'>A. Expect their students to use their native language<br>في فصل اللغة الثانية ، يجب على المعلمين: A) Expect their students to use their native language يتوقع ان الطلاب يستخدموا لغتهم الام</div>"},
+            {q:"One of the following is not of the characteristics of input:", o:["A. Comprehensive", "B. Clear", "C. Adequate", "D. Ambiguous"], c:3, t:"واحد مما يلي ليس من خصائص المدخلات اللغوية:", e:"<div class='box-hint'>D. Ambiguous<br>واحد مما يلي ليس من خصائص المدخلات انتبه لكلمة Not D) Ambiguous غامضة</div>"},
+            {q:"....... is the process of becoming adapted to the culture of new or second language.", o:["A. Acculturation", "B. Social distance", "C. Accommodation", "D. Simplification"], c:0, t:"....... هي عملية التكيف مع ثقافة لغة جديدة أو ثانية.", e:"<div class='box-hint'>A. Acculturation<br>هي عملية التكيف مع ثقافة جديدة او ثانية لغة. A) Acculturation الاندماج الثقافي</div>"},
+            {q:"L2 learners become able to use some their knowledge so quickly through experience and practice because of ____", o:["A. Automatization", "B. Restructuring", "C. Negative transfer", "D. Generalization"], c:0, t:"يصبح متعلمو اللغة الثانية قادرين على استخدام بعض معارفهم بسرعة كبيرة من خلال الخبرة والممارسة بسبب ____", e:"<div class='box-hint'>A. Automatization<br>متعلمي اللغة الثانية قادرين على استخدام بعض معارفهم بسرعه من خلال الخبرة والممارسة بسبب ....... A) Automatization التلقائية تعريف التلقائية بأن المتعلم يستخدم اللغة بشكل تلقائي وبمهارة وسرعه مثل الي يتعود على قيادة السيارة أو يكتب بسرعه في الكيبورد</div>"},
+            {q:".... is a device that learners use to edit their language.", o:["A) Input", "B) Output", "C) Monitor", "D) Utterance"], c:2, t:".... هو جهاز (آلية) يستخدمه المتعلمون لتحرير وتصحيح لغتهم.", e:"<div class='box-hint'>C) Monitor<br>هو جهاز يستخدمه المتعلمون لتعديل لغتهم . C) Monitor وظيفته يحرر ويصحح اللغة</div>"},
+            {q:".... refers to the influence of L1 on L2 .", o:["A) Input", "B) Output", "C) Affective filter", "D) Transfer"], c:3, t:".... يشير إلى تأثير اللغة الأولى على اللغة الثانية.", e:"<div class='box-hint'>D) Transfer<br>L2 يشير الى تأثير اللغة الاولى على اللغة الثانية D) Transfer النقل وهو تأثير اللغة الأولى على اللغة الثانية ويكون سلبي أو ايجابي</div>"},
+            {q:".......helps to show areas of similarities and differences among the language concerned.", o:["A) Contrastive analysis", "B) Creative analysis", "C) Linguistic analysis", "D) Discourse analysis"], c:0, t:"....... يساعد على إظهار مجالات التشابه والاختلاف بين اللغات المعنية.", e:"<div class='box-hint'>A) Contrastive analysis<br>يساعد على إظهار مجالات التشابه والاختلاف بين اللغة المعنية A) contrastive analysis التحليل التقابلي تهتم بمقارنة اللغة المستهدفة بلغة الام لمعرفة اوجه الشبه والاختلاف بين اللغتين .</div>"},
+            {q:".... development is the emergence of various mental abilities and skills that make up the human intellect.", o:["A) Cognitive", "B) Linguistic", "C) Semantic", "D) Lexical"], c:0, t:"التطور .... هو ظهور القدرات والمهارات العقلية المختلفة التي تشكل العقل البشري.", e:"<div class='box-hint'>A) Cognitive<br>تطور و ظهور القدرات العقلية والمهارات المختلفة التي يتكون منها العقل الانساني. A) cognitive التطور المعرفي هو الذي يكون العقل الانساني</div>"},
+            {q:"The Affective Filter Hypothesis acknowledges that learners' ........... can affect their abilities to learn", o:["A) Nationality", "B) Appearance", "C) Voice-control", "D) Self-confidence"], c:3, t:"تقر فرضية المرشح العاطفي بأن ........... المتعلمين يمكن أن تؤثر على قدراتهم على التعلم.", e:"<div class='box-hint'>D) Self-confidence<br>فرضية الفلتر العاطفي بتعترف بان المتعلمين ...... يمكن ان تؤثر قدراتهم على التعلم D) self-confidence الثقة بالنفس لها علاقة بتأثير على افتراضية الفلتر العاطفي مشاعر ايجابية ينزل الفلتر ويسهل تعلمه مشاعر سلبية يرتفع الفلتر ويتأثر استجابته للتعلم</div>"},
+            {q:"Which theorist hypothesized that children are born with a language acquisition device (LAD)?", o:["A. Chomsky", "B. Piaget", "C. Skinner", "D. None"], c:0, t:"أي منظر افترض أن الأطفال يولدون بجهاز اكتساب اللغة (LAD)؟", e:"<div class='box-hint'>A) Chomsky<br>الذي افترض المنظر أن الأطفال يولدون باكتساب اللغة جهاز (LAD) ؟</div>"},
+            {q:"According to Noam Chomsky, ......... is a person's underlying (subconscious) linguistic ability to create and understand sentences, including sentences they have never heard before.", o:["A) Performance", "B) Competence", "C) Cognitive", "D) Native speakership"], c:1, t:"وفقاً لنعوم تشومسكي، ......... هي القدرة اللغوية الكامنة (اللاواعية) للشخص على إنشاء وفهم الجمل، بما في ذلك الجمل التي لم يسمعها من قبل.", e:"<div class='box-hint'>B. Competence<br>وفقا لنعوم تشومسكي ....... هو جوهر الشخص (اللاوعي) القدرة اللغوية على إنشاء وفهم الجمل ، بما في ذلك الجمل لم يسمعوا بها من قبل. B) competence الكفاءة قدرة المتعلم اللغوية على انتاج جمل لم يسمعها من قبل</div>"},
+            {q:"The type of language that a foreign Learners creates based on his first Language and the target language is known as ..............", o:["A) Interlanguage", "B) Intralanguage", "C) Cross language", "D) Trans language"], c:0, t:"نوع اللغة التي ينشئها المتعلم الأجنبي بناءً على لغته الأولى واللغة المستهدفة يُعرف بـ ..............", e:"<div class='box-hint'>A) interlanguage<br>نوع اللغة لمتعلمين الاجانب ينتجونها بناء على لغته الاولى واللغة الثانية Interlanguage هو المستوى الي يتوصل له المتعلم بين اللغة الاولى واللغة الثانية</div>"},
+            {q:".......refers to the use of language from the point of view of users, especially of the choices they make, the constraints they encounter in using language in social interaction and the effects their use of language has on other participants in the act of communication.\"", o:["A) Linguistic Competence", "B) Pragmatic Competence", "C) Interpersonal Competence", "D) Intrapersonal Competence"], c:1, t:"....... يشير إلى استخدام اللغة من وجهة نظر المستخدمين، وخاصة الخيارات التي يتخذونها، والقيود التي يواجهونها في التفاعل الاجتماعي وتأثير استخدامهم للغة على المشاركين الآخرين.", e:"<div class='box-hint'>B. Pragmatic Competence<br>تشير إلى استخدام اللغة من وجهة نظر المستخدمين والقيود التي يواجهونها في استخدام اللغة في التفاعل الاجتماعي وتأثير اللغة على المشاركين فيها في عملية الاتصال . هذه احد تعريفات Pragmatic Competence</div>"},
+            {q:"......view the role of feedback in language learning process as important for effective reasons, but non-influential in terms modifying or altering the sequence of linguistics development.", o:["A) Nativists", "B) Cognitivists", "C) Behaviorists", "D) Interactionists"], c:1, t:"يرى ...... أن دور التغذية الراجعة في عملية تعلم اللغة مهم لأسباب فعالة، ولكنه غير مؤثر من حيث تعديل أو تغيير تسلسل التطور اللغوي.", e:"<div class='box-hint'>B. Cognitivists<br>النظرية المعرفية ترى دور feedback في عملية تعلم مهم جدا ، ولكن ليست مؤثرة ومهمة في تعديل تتابع التطور اللغوي linguistics development</div>"},
+            {q:"If the students in the classroom all come from an Arabic speaking background, it would be generally safe to assume that:", o:["A) They exhibit similar developmental sequences and errors in L2 acquisition", "B) They individually exhibit varying developmental sequence and errors", "C) They all experience L2 acquisition the exact same way.", "D) They would all feel alienated by the L2 culture."], c:0, t:"إذا كان جميع الطلاب في الفصل يأتون من خلفية ناطقة بالعربية، فسيكون من الآمن عموماً افتراض أن:", e:"<div class='box-hint'>A) They exhibit similar developmental sequences and errors in L2 acquisition<br>لو كان الطلاب بالفصل جميعهم عرب ، فمن المفترض ان الجميع يحسن اللغة بشكل متشابه و يرتكبون نفس الاخطاء وذلك بسبب ان الجميع يشارك نفس اللغة الام</div>"},
+            {q:"............ was the leading figure of Behaviorism in which language learning was thought of in terms of operant conditioning through imitation and reinforcement", o:["A) B.F. Skinner", "B) Jean Piaget", "C) Lev Vygotsky", "D) Noam Chomsky"], c:0, t:"كان ............ الشخصية الرائدة في المدرسة السلوكية حيث كان يُنظر إلى تعلم اللغة من حيث الإشراط الإجرائي من خلال التقليد والتعزيز.", e:"<div class='box-hint'>A) B.F. Skinner<br>........ كان شخصية رائدة في (النظرية السلوكية) التي كان يعتقد ان تعلم اللغة يحدث من خلال تكييف فعال بين التقليد والتعزيز Behaviorism -> A) B.F. Skinner</div>"},
+            {q:"L2 learners apply knowledge from their native language to the language they are learning. This attempt is often referred to as ......", o:["A) Translation", "B) Meta language", "C) Mix language", "D) Language transfer"], c:3, t:"يطبق متعلمو اللغة الثانية المعرفة من لغتهم الأم على اللغة التي يتعلمونها. وغالباً ما يُشار إلى هذه المحاولة بـ ......", e:"<div class='box-hint'>D. language transfer<br>المتعلم غالباً يطبق المعرفة من لغته الأصل الي اللغة الهدف اللي جالس يتعلمها هذه المحاولة تسمى : نقل اللغة حيث المتعلم يطبق معرفته من لغته الام الى اللغة التي يريد تعلمها</div>"},
+            {q:"A main principle of behaviorism is to train learners to discriminate facts, generalize concepts, and associate explanations. These skills are used to:", o:["A. Reinforce avoidance", "B. Achieve desired behavior", "C. Establish negative attitude", "D. Understand learner's opinions"], c:1, t:"المبدأ الأساسي للسلوكية هو تدريب المتعلمين على تمييز الحقائق وتعميم المفاهيم وربط التفسيرات. تُستخدم هذه المهارات لـ:", e:"<div class='box-hint'>B. achieve desired behavior<br>مبدأ أساسي في النظرية السلوكية هو تدريب المتعلمين على تمييز الحقائق، تعميم المفاهيم، والتفسيرات المرتبطة بها وتستخدم هذه المهارات لتحقيق سلوك مرغوب : النظرية السلوكية هدفها ان الطالب يحقق سلوك مرغوب فيه behaviorism -> B)- achieve desired behavior يحقق سلوك مرغوب فيه</div>"},
+            {q:"It has been suggested that language development is related to ..... development.", o:["A. Emotional", "B. Cognitive", "C. Physical", "D. Creative"], c:1, t:"أُقترح أن تطور اللغة مرتبط بالتطور .....", e:"<div class='box-hint'>B. cognitive<br>اقترح ان تطور اللغة مرتبط ب ...... ؟ التطور اللغوي مرتبط بالتطور المعرفي</div>"},
+            {q:"Speech that is characterized by the use of a few content words without functional words or certain grammatical markers is known as:", o:["A) Telegraphic speech", "B) Cooing and babbling", "C) One word utterance", "D) Developed crying style"], c:0, t:"الكلام الذي يتميز باستخدام عدد قليل من كلمات المحتوى بدون كلمات وظيفية أو علامات نحوية معينة يُعرف بـ:", e:"<div class='box-hint'>A) Telegraphic speech<br>خطاب التليغراف تستخدم فيه القليل من الكلمات بدون ما نهتم للكلمات الوظيفية او العلامات النحوية Content words الكلمات المهمة للمحتوى Functional words لاتحمل معنى الرسالة -> Telegraphic speech</div>"},
+            {q:"A student who is developing proficiency in English is called a/an ...... Language learner.", o:["A) Original", "B) Native", "C) Foreign", "D) Arabic"], c:2, t:"الطالب الذي يطور كفاءته في اللغة الإنجليزية يسمى متعلم لغة ......", e:"<div class='box-hint'>C. Foreign<br>الطالب الي يطور كفاءته في اللغة الإنجليزية لدينا يسمى :- متعلم لغة أجنبية Foreign اجنبية</div>"},
+            {q:".... Should be analyzed by teachers to identify inappropriate transfer of first language habits.", o:["A. Words", "B. Styles", "C. Errors", "D. Attitudes"], c:2, t:".... يجب أن يحللها المعلمون لتحديد النقل غير المناسب لعادات اللغة الأولى.", e:"<div class='box-hint'>C. Errors<br>.. يجب ان يحللها المعلمين ليعرفوا النقل الغير مناسب من عادات اللغة الأولى - الاخطاء C)- Errors</div>"},
+            {q:"Code switching is the ability to:", o:["A) Use different accents of a language", "B) Use two languages simultaneously", "C) Alternate between two languages", "D) Use two varieties of a language"], c:2, t:"التناوب اللغوي (Code switching) هو القدرة على:", e:"<div class='box-hint'>C. alternate between two languages<br>Code switching هو القدرة على: تتكلم انجليزي وبوسط الكلام تتكلم عربي بشكل تبادلي Alternate between two languages التبديل بين لغتين</div>"},
+            {q:"Adults might use different strategies in Acquiring a second language, and they Usually .........", o:["A. Reach a native-like grammatical competence.", "B. Mix grammatical competence and Performance.", "C. Don't reach a native like grammatical Competence", "D. Separate grammatical competence and Performance"], c:2, t:"قد يستخدم البالغون استراتيجيات مختلفة في اكتساب لغة ثانية، وهم عادةً .........", e:"<div class='box-hint'>C. Don't reach a native like grammatical Competence<br>قد يستخدم البالغون استراتيجيات مختلفة في اكتساب لغة ثانية، وعادة : لا يصلون ل native-like competence</div>"},
+            {q:"A teenage learner's difficulty in Pronouncing certain sounds of a foreign Language is most likely attributed to:", o:["A) Physical difficulties", "B) Learning disabilities", "C) Self-consciousness", "D) Stress"], c:2, t:"صعوبة المتعلم المراهق في نطق أصوات معينة في لغة أجنبية تُعزى في الغالب إلى:", e:"<div class='box-hint'>C. self-consciousness<br>الصعوبة التي يجدها المراهق في انتاج اصوات معينة في اللغة الأجنبية يرجع الى :- Self-consciousness الوعي الذاتي (الحرج أو الخجل الذاتي)</div>"}
+        ];
+
+        let synth = window.speechSynthesis;
+        let isExamModeActive = false;
+        let isReviewModeActive = false;
+        let examCurrentIndex = 0;
+        let examRowsList = [];
+        
+        function buildApp() {
+            let qContainer = document.getElementById('q-container');
+            qContainer.innerHTML = '';
+            
+            db.forEach((qObj, index) => {
+                let displayNumber = index + 301;
+                let block = document.createElement('div');
+                block.className = 'question-row';
+                block.setAttribute('data-ans-index', qObj.c);
+                block.setAttribute('data-original-index', index);
+
+                let letters = ["A", "B", "C", "D"];
+                let optsHtml = `<div class="options-inline">` + qObj.o.map((opt, i) => {
+                    let pSplit = opt.split('|');
+                    let enO = pSplit[0].trim();
+                    let arO = pSplit[1] ? pSplit[1].trim() : '';
+                    return `
+                    <div class="opt-item" data-index="${i}" onclick="selectOption(this, event)">
+                        <div class="choice-badge">${letters[i]}</div>
+                        <div class="choice-content">
+                            <div class="choice-en" dir="ltr">${enO}</div>
+                            ${arO ? `<div class="choice-ar" dir="rtl">${arO}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+
+                let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+                
+                // زر الصوت
+                let cleanTextForAudio = qObj.q.replace(/[\d\.]/g, '').trim(); 
+                let btnAudioHtml = `<div class="q-header"><button class="btn-audio" onclick="speakText('${cleanTextForAudio.replace(/'/g, "\\'")}')">🔊 استماع للجملة</button></div>`;
+                
+                let navHtml = `
+                    <div class="exam-nav-buttons">
+                        <button class="btn-nav btn-next" onclick="nextQuestion(event)">التالي ▶</button>
+                        <button class="btn-nav btn-prev" onclick="prevQuestion(event)">◀ السابق</button>
+                    </div>
+                `;
+
+                block.innerHTML = `
+                    ${btnAudioHtml}
+                    <div class="q-text-container">
+                        <b class="q-number-lbl">${displayNumber}. </b>
+                        <div class="q-text" dir="ltr">${qObj.q}</div>
+                    </div>
+                    ${translationHtml}
+                    ${optsHtml}
+                    <div class="answer-action-container">
+                        <button class="btn-answer" onclick="revealAnswer(this)">👁️ إظهار الشرح والمفاتيح</button>
+                    </div>
+                    <div class="answer-box">
+                        <div class="grammar-explanation">${qObj.e}</div>
+                    </div>
+                    ${navHtml}
+                `;
+                qContainer.appendChild(block);
+            });
+        }
+
+        window.speakText = function(text) {
+            if(synth) {
+                synth.cancel();
+                let cleanTxt = text.replace(/[\._]/g, '').trim();
+                let u = new SpeechSynthesisUtterance(cleanTxt);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                synth.speak(u);
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let correctIndex = row.getAttribute('data-ans-index');
+            let selectedIndex = optItem.getAttribute('data-index');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-index') === correctIndex) item.classList.add('correct');
+            });
+            if (selectedIndex !== correctIndex) optItem.classList.add('wrong');
+            
+            if (!isExamModeActive && !isReviewModeActive) {
+                let btn = row.querySelector('.btn-answer');
+                if (btn) btn.click();
+            } else if (isExamModeActive) {
+                setTimeout(() => {
+                    if (examCurrentIndex < examRowsList.length - 1) {
+                        nextQuestion();
+                    } else {
+                        showResult();
+                    }
+                }, 800);
+            }
+        };
+
+        window.prevQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex > 0) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex--;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            }
+        };
+
+        window.nextQuestion = function(e) {
+            if(e) e.stopPropagation();
+            if(examCurrentIndex < examRowsList.length - 1) {
+                examRowsList[examCurrentIndex].classList.remove('active-q');
+                examCurrentIndex++;
+                examRowsList[examCurrentIndex].classList.add('active-q');
+                updateNavButtons();
+            } else {
+                if(isExamModeActive) {
+                    showResult();
+                }
+            }
+        };
+
+        function updateNavButtons() {
+            if(!isExamModeActive && !isReviewModeActive) return;
+            examRowsList.forEach((row, idx) => {
+                let pBtn = row.querySelector('.btn-prev');
+                let nBtn = row.querySelector('.btn-next');
+                if(pBtn) {
+                    pBtn.style.visibility = (idx === 0) ? 'hidden' : 'visible';
+                }
+                if(nBtn) {
+                    if (idx === examRowsList.length - 1) {
+                        nBtn.innerHTML = isExamModeActive ? 'إنهاء الاختبار 🏁' : 'نهاية المراجعة 🏁';
+                    } else {
+                        nBtn.innerHTML = 'التالي ▶';
+                    }
+                }
+            });
+        }
+
+        window.setMode = function(mode) {
+            let container = document.getElementById('q-container');
+            let btnStudy = document.getElementById('btn-study');
+            let btnReview = document.getElementById('btn-review');
+            let btnExam = document.getElementById('btn-exam');
+            let btnResult = document.getElementById('btn-result');
+            
+            if(synth) synth.cancel();
+            document.getElementById('res-box').style.display = 'none';
+
+            // إعادة تعيين الأزرار
+            btnStudy.classList.remove('active-mode');
+            btnReview.classList.remove('active-mode');
+            btnExam.classList.remove('active-mode');
+
+            if (mode === 'exam') {
+                isExamModeActive = true;
+                isReviewModeActive = false;
+                container.className = 'questions-container exam-mode';
+                btnExam.classList.add('active-mode');
+                btnResult.style.display = 'block';
+            } else if (mode === 'review') {
+                isExamModeActive = false;
+                isReviewModeActive = true;
+                container.className = 'questions-container review-mode';
+                btnReview.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            } else {
+                isExamModeActive = false;
+                isReviewModeActive = false;
+                container.className = 'questions-container train-mode';
+                btnStudy.classList.add('active-mode');
+                btnResult.style.display = 'none';
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let rows = Array.from(container.querySelectorAll('.question-row'));
+            
+            // إعادة التهيئة العامة
+            rows.forEach(row => {
+                row.classList.remove('active-q');
+                if (mode !== 'review') {
+                    row.classList.remove('answered');
+                    row.querySelectorAll('.opt-item').forEach(item => {
+                        item.classList.remove('selected', 'correct', 'wrong');
+                    });
+                    let ansBox = row.querySelector('.answer-box');
+                    if (ansBox) ansBox.style.display = 'none';
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                }
+            });
+
+            if (mode === 'exam') {
+                // خلط الخيارات والأسئلة في وضع الاختبار
+                rows.forEach(row => {
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    for (let i = opts.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        optContainer.appendChild(opts[j]);
+                        let temp = opts[i]; opts[i] = opts[j]; opts[j] = temp;
+                    }
+                });
+                for (let i = rows.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    container.appendChild(rows[j]);
+                    let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                }
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else if (mode === 'review') {
+                // ترتيب أصلي + إظهار الإجابات (تظليل الأخضر) + إعداد التنقل + إخفاء صندوق الشرح افتراضيا
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    
+                    row.classList.add('answered');
+                    let correctIndex = row.getAttribute('data-ans-index');
+                    let correctOpt = row.querySelector('.opt-item[data-index="' + correctIndex + '"]');
+                    if(correctOpt) correctOpt.classList.add('correct');
+                    
+                    let ansBox = row.querySelector('.answer-box');
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (ansBox) ansBox.style.display = 'none'; // الصندوق مغلق افتراضياً في المراجعة
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الشرح والمفاتيح';
+                });
+                
+                examRowsList = Array.from(container.querySelectorAll('.question-row'));
+                examCurrentIndex = 0;
+                if(examRowsList.length > 0) {
+                    examRowsList[0].classList.add('active-q');
+                    updateNavButtons();
+                }
+            } else {
+                // ترتيب أصلي في وضع المذاكرة
+                rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                rows.forEach(row => {
+                    container.appendChild(row); 
+                    let optContainer = row.querySelector('.options-inline');
+                    let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                    opts.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+                    opts.forEach(opt => optContainer.appendChild(opt)); 
+                });
+            }
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let rows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            rows.forEach((row, index) => {
+                let qNumLbl = row.querySelector('.q-number-lbl');
+                if (qNumLbl) qNumLbl.textContent = (index + 301) + ". ";
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.showResult = function() {
+            let container = document.getElementById('q-container');
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ أجبت على ${answeredCount} من ${totalCount}.<br> نتيجتك حتى الآن: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `النتيجة النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 أسطورة يا أستاذ حمادة! إجابات مثالية!";
+                else if(correctCount >= totalCount/2) msg += "🌟 مستوى رائع وممتاز!";
+                else msg += "💪 يمكنك المحاولة مجدداً، استمر في التدريب!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            window.scrollTo({ top: resEl.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        window.revealAnswer = function(btn) {
+            let row = btn.closest('.question-row');
+            let box = row.querySelector('.answer-box');
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الشرح والمفاتيح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الشرح والمفاتيح'; 
+            }
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>
