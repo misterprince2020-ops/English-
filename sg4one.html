@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جمل الوحدة الرابعة للصف الثاني المتوسط</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); border-radius: 16px; border: 4px solid #facc15; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.5em; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .creator-info { text-align: center; color: #facc15; background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); font-size: 1.3em; font-weight: bold; margin-bottom: 30px; padding: 14px; border-radius: 10px; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);}
+
+        .group-section { background: #f8fafc; border: 3px solid #cbd5e1; border-radius: 15px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        
+        .group-header { background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); padding: 20px; text-align: center; }
+        .group-title { color: #facc15; font-size: 2em; font-weight: 900; margin: 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+
+        /* Group Control Bar */
+        .audio-controls-row { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; background: #e0f2fe; padding: 20px; border-bottom: 3px solid #bae6fd; direction: rtl;}
+        .btn-group, .btn-test { color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 250px; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        
+        .btn-group { background-color: #3b82f6; }
+        .btn-group:hover { background-color: #2563eb; transform: translateY(-2px);}
+        .btn-group.playing { background-color: #e11d48 !important; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); }
+
+        .btn-test { background-color: #8b5cf6; }
+        .btn-test:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        .btn-test.active { background-color: #d946ef; outline: 3px solid #facc15; outline-offset: 2px;}
+
+        /* Sentences Container */
+        .sentences-container { padding: 15px; }
+
+        .sentence-row { display: flex; align-items: flex-start; justify-content: space-between; background: #ffffff; padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #e2e8f0; transition: all 0.3s ease; gap: 20px;}
+        .sentence-row:hover { background-color: #f0fdf4; border-color: #86efac; transform: scale(1.01); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .sentence-row.line-highlight { background-color: #fef08a !important; border-color: #eab308 !important; transform: scale(1.02); box-shadow: 0 5px 15px rgba(234, 179, 8, 0.3) !important; z-index: 10; }
+
+        .ar-full-translation { color: #2563eb; font-size: 1.6em; font-weight: 900; width: 40%; text-align: right; direction: rtl; transition: opacity 0.3s; line-height: 1.5; text-shadow: 0px 0px 1px rgba(37, 99, 235, 0.2); padding-top: 5px;}
+        
+        .en-sentence-part { width: 60%; display: flex; flex-direction: column; gap: 15px; direction: ltr; text-align: left; }
+        .sentence-header { display: flex; align-items: flex-end; gap: 15px; width: 100%;}
+        
+        .num-badge { font-size: 1.8em; font-weight: 900; color: #dc2626; flex-shrink: 0; font-family: Arial, sans-serif; background: #fee2e2; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fca5a5;}
+
+        /* Sentence Action Buttons */
+        .sentence-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start; margin-top: 5px; border-top: 1px dashed #cbd5e1; padding-top: 15px; direction: rtl;}
+        .btn-s-action { font-family: 'Tajawal'; font-weight: bold; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-s-action:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.15);}
+        .btn-s-action.playing { background-color: #e11d48 !important; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); animation: pulse 1s infinite;}
+        
+        .btn-wbw { background-color: #0ea5e9; }
+        .btn-nat { background-color: #10b981; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .words-wrapper { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; padding-top: 5px; }
+
+        .word-group { display: inline-flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-end !important; cursor: pointer; margin: 0 2px; position: relative; vertical-align: bottom; min-height: 45px; }
+        .word-group .ar { color: #dc2626; font-size: 16px; font-family: 'Tajawal', sans-serif; font-weight: 900; white-space: nowrap; pointer-events: none; margin-bottom: -4px; width: 100%; text-align: center !important; direction: rtl; line-height: 1; transition: opacity 0.3s;}
+        .word-group .en { font-size: 22px; font-weight: bold; padding: 2px 6px 4px 6px; border-radius: 6px; transition: 0.1s; color: #1e293b; direction: ltr; font-family: Arial, sans-serif; width: 100%; text-align: center !important; line-height: 1;}
+        
+        .audio-highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-radius: 6px; transform: scale(1.15);}
+        .word-group.highlight .en { background-color: #93c5fd !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        /* Test Mode Classes */
+        .test-mode-active .ar-full-translation { opacity: 0; pointer-events: none; }
+        .test-mode-active .word-group .ar { opacity: 0; }
+
+        @media (max-width: 900px) {
+            .sentence-row { flex-direction: column; text-align: center; gap: 20px;}
+            .ar-full-translation { width: 100%; text-align: center; font-size: 1.5em; border-bottom: 2px dashed #cbd5e1; padding-bottom: 15px;}
+            .en-sentence-part { width: 100%; justify-content: center; flex-wrap: wrap;}
+            .words-wrapper { justify-content: center; }
+            .sentence-actions { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">جمل الوحدة الرابعة للصف الثاني المتوسط</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+
+    <div id="content-container"></div>
+</div>
+
+<script>
+(function initSentencesApp() {
+    try {
+        const dictionary = {
+            "a": "أداة نكرة", "an": "أداة نكرة", "the": "الـ", "is": "يكون", "are": "يكونون", "am": "أكون", "was": "كان", "were": "كانوا", "do": "تفعل", "does": "يفعل", "did": "فعل", "have": "يملك", "has": "يملك", "had": "ملك", "will": "سوف", "can": "يستطيع", "i": "أنا", "you": "أنت", "he": "هو", "she": "هي", "it": "هو/هي", "we": "نحن", "they": "هم", "my": "خاصتي", "your": "خاصتك", "his": "خاصته", "our": "خاصتنا", "their": "خاصتهم", "this": "هذا", "that": "ذلك", "who": "من", "what": "ماذا", "where": "أين", "when": "متى", "why": "لماذا", "how": "كيف", "which": "أي", "yes": "نعم", "no": "لا", "not": "ليس", "and": "و", "or": "أو", "but": "لكن", "because": "لأن", "so": "لذلك", "if": "إذا", "in": "في", "on": "في/على", "at": "في/عند", "to": "إلى", "for": "لـ", "with": "مع", "about": "عن", "from": "من", "by": "بواسطة", "very": "جداً", "too": "جداً",
+            
+            "ahmad": "أحمد", "enjoys": "يستمتع", "reading": "قراءة", "books": "كتب", "book": "كتاب", "ice": "جليد", "cream": "آيس كريم", "hot": "حار", "days": "أيام", "buy": "يشتري", "new": "جديد", "plane": "طائرة", "planes": "طائرات", "pilot": "طيار", "speak": "يتحدث", "english": "إنجليزية", "teacher": "معلم", "free": "فراغ", "time": "وقت", "fly": "يطير", "hobby": "هواية", "cook": "يطبخ", "young": "صغير", "painting": "الرسم", "food": "طعام", "courts": "صالات", "teens": "مراهقين", "teenagers": "مراهقين", "mean": "تعني", "little": "صغير", "boy": "ولد", "likes": "يحب", "playing": "لعب", "toy": "لعبة", "trucks": "شاحنات", "brother": "أخ", "hockey": "هوكي", "gym": "نادي", "winter": "شتاء", "saw": "رأينا", "big": "كبير", "airplanes": "طائرات", "sky": "سماء", "everyday": "يومياً", "every": "كل", "day": "يوم", "shopping": "تسوق", "usually": "عادة", "goes": "تذهب", "go": "يذهب", "often": "غالباً", "know": "يعرفون", "knows": "يعرف", "play": "يلعبون", "football": "كرة قدم", "school": "مدرسة", "friend": "صديق", "eat": "يأكلون", "eating": "أكل", "wants": "تريد", "didnt": "لم", "out": "خارج", "learn": "تتعلم", "learning": "تتعلم", "iceskate": "تتزلج", "work": "تتمرن"
+        };
+
+        function getTranslation(word) {
+            let clean = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(!clean) return '';
+            if(dictionary[clean]) return dictionary[clean];
+            if(clean.endsWith('ies') && dictionary[clean.slice(0,-3) + 'y']) return dictionary[clean.slice(0,-3) + 'y'];
+            if(clean.endsWith('es') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('s') && dictionary[clean.slice(0,-1)]) return dictionary[clean.slice(0,-1)];
+            if(clean.endsWith('ed') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('ing') && dictionary[clean.slice(0,-3)]) return dictionary[clean.slice(0,-3)];
+            return ""; 
+        }
+
+        const groupsData = [
+            {
+                title: "المجموعة الأولى",
+                sentences: [
+                    { en: "She usually goes shopping.", ar: "هي عادة تذهب للتسوق." },
+                    { en: "How often do you work out?", ar: "كم مرة تتمرن؟" },
+                    { en: "They don't know how to play football.", ar: "هم لا يعرفون كيف يلعبون كرة القدم." },
+                    { en: "How often do you go to school? I go to school everyday.", ar: "كم مرة تذهب إلى المدرسة؟ أذهب إلى المدرسة كل يوم." },
+                    { en: "How often do you go out with your friend?", ar: "كم مرة تخرج مع صديقك؟" }
+                ]
+            },
+            {
+                title: "المجموعة الثانية",
+                sentences: [
+                    { en: "Ahmad enjoys reading books.", ar: "أحمد يستمتع بقراءة الكتب." },
+                    { en: "I like eating ice cream on hot days.", ar: "أنا أحب أكل الآيس كريم في الأيام الحارة." },
+                    { en: "She wants to buy a new book.", ar: "هي تريد أن تشتري كتاباً جديداً." },
+                    { en: "He knows how to fly a plane, he's a pilot.", ar: "هو يعرف كيف يطير بطائرة، هو طيار." },
+                    { en: "He knows how to speak English, he's an English teacher.", ar: "هو يعرف كيف يتحدث الإنجليزية، هو معلم لغة إنجليزية." }
+                ]
+            },
+            {
+                title: "المجموعة الثالثة",
+                sentences: [
+                    { en: "What do you usually do in your free time? I fly planes.", ar: "ماذا تفعل عادة في وقت فراغك؟ أطير بالطائرات." },
+                    { en: "What's your hobby? Reading books is my hobby.", ar: "ما هي هوايتك؟ قراءة الكتب هي هوايتي." },
+                    { en: "I didn't know how to cook, because I'm too young.", ar: "لم أكن أعرف كيف أطبخ، لأنني صغير جداً." },
+                    { en: "My hobby is painting.", ar: "هوايتي هي الرسم." },
+                    { en: "They eat in food courts.", ar: "هم يأكلون في صالات الطعام." }
+                ]
+            },
+            {
+                title: "المجموعة الرابعة",
+                sentences: [
+                    { en: "Teens mean teenagers.", ar: "كلمة Teens تعني المراهقين." },
+                    { en: "What do you do in your free time?", ar: "ماذا تفعل في وقت فراغك؟" },
+                    { en: "The little boy likes playing with toy trucks.", ar: "الولد الصغير يحب اللعب بشاحنات الألعاب." },
+                    { en: "My brother knows how to play hockey.", ar: "أخي يعرف كيف يلعب الهوكي." },
+                    { en: "I go to the gym to work out every day.", ar: "أنا أذهب إلى الصالة الرياضية لأتمرن كل يوم." },
+                    { en: "She is learning how to ice-skate in the winter.", ar: "هي تتعلم كيف تتزلج على الجليد في الشتاء." },
+                    { en: "We saw big airplanes in the sky.", ar: "رأينا طائرات كبيرة في السماء." }
+                ]
+            }
+        ];
+
+        function renderClickableHtml(text) {
+            let pairs = text.split(' ').map(p => p.trim()).filter(p => p !== '');
+            return pairs.map(pair => {
+                let cleanW = pair.replace(/[^a-zA-Z0-9'-]/g, '');
+                let arW = getTranslation(cleanW);
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let arHtml = arW !== "" ? `<span class="ar">${arW}</span>` : `<span class="ar" style="display:none;"></span>`;
+                return `<span class="word-group" data-speak="${safeWord}">${arHtml}<span class="en">${pair}</span></span>`;
+            }).join(' ');
+        }
+
+        function buildApp() {
+            let container = document.getElementById('content-container');
+            container.innerHTML = '';
+
+            groupsData.forEach((group, gIdx) => {
+                let section = document.createElement('div');
+                section.className = 'group-section';
+                section.id = `group-${gIdx}`;
+                
+                let header = document.createElement('div');
+                header.className = 'group-header';
+                header.innerHTML = `<h2 class="group-title">${group.title}</h2>`;
+                section.appendChild(header);
+
+                // أزرار المجموعة في الأعلى
+                let audioBar = document.createElement('div');
+                audioBar.className = 'audio-controls-row';
+                audioBar.innerHTML = `
+                    <button class="btn-group" onclick="playGroup(this, 'group-${gIdx}')">🎧 قراءة المجموعة كاملة</button>
+                    <button class="btn-test" onclick="toggleReadingTest(this, '#group-${gIdx}')">🎤 اختبر نفسك</button>
+                `;
+                section.appendChild(audioBar);
+
+                let sentencesContainer = document.createElement('div');
+                sentencesContainer.className = 'sentences-container';
+
+                group.sentences.forEach((s, sIdx) => {
+                    let rowId = `row-${gIdx}-${sIdx}`;
+                    let row = document.createElement('div');
+                    row.className = 'sentence-row';
+                    row.id = rowId;
+                    
+                    row.innerHTML = `
+                        <div class="ar-full-translation">${s.ar}</div>
+                        <div class="en-sentence-part">
+                            <div class="sentence-header">
+                                <span class="num-badge">${sIdx + 1}</span>
+                                <div class="words-wrapper">${renderClickableHtml(s.en)}</div>
+                            </div>
+                            <div class="sentence-actions">
+                                <button class="btn-s-action btn-wbw" onclick="playSentenceWBW(this, '${rowId}')">🐢 قراءة كلمة كلمة</button>
+                                <button class="btn-s-action btn-nat" onclick="playSentenceNatural(this, '${rowId}')">🗣️ قراءة طبيعية (تكرار)</button>
+                            </div>
+                        </div>
+                    `;
+                    sentencesContainer.appendChild(row);
+                });
+
+                section.appendChild(sentencesContainer);
+                container.appendChild(section);
+            });
+        }
+
+        window.toggleReadingTest = function(btn, groupSelector) {
+            let groupEl = document.querySelector(groupSelector);
+            if (groupEl.classList.contains('test-mode-active')) {
+                groupEl.classList.remove('test-mode-active');
+                btn.innerHTML = '🎤 اختبر نفسك';
+                btn.classList.remove('active');
+            } else {
+                groupEl.classList.add('test-mode-active');
+                btn.innerHTML = '👁️ إنهاء الاختبار';
+                btn.classList.add('active');
+            }
+        };
+
+        window.applyVoiceSettings = function(u) {
+            u.pitch = 1.0;
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                let engVoices = voices.filter(v => v.lang.startsWith('en'));
+                if (engVoices.length > 0) {
+                    let defaultVoice = engVoices.find(v => v.default) || engVoices.find(v => v.lang === 'en-US') || engVoices[0];
+                    u.voice = defaultVoice;
+                }
+            }
+        };
+
+        // --- نظام إدارة الصوت المركزي (يمنع التداخل) ---
+        window.currentAudio = { type: null, btn: null, targetId: null, queue: [], currentIndex: 0, text: '' };
+
+        function stopAudio() {
+            if(window.speechSynthesis) window.speechSynthesis.cancel();
+            clearHighlights();
+            if(window.currentAudio.btn) {
+                window.currentAudio.btn.classList.remove('playing');
+                if(window.currentAudio.btn.hasAttribute('data-original-text')) {
+                    window.currentAudio.btn.innerHTML = window.currentAudio.btn.getAttribute('data-original-text');
+                }
+            }
+            window.currentAudio.type = null;
+            window.currentAudio.btn = null;
+        }
+
+        function setBtnPlaying(btn, type) {
+            btn.classList.add('playing');
+            if(!btn.hasAttribute('data-original-text')) {
+                btn.setAttribute('data-original-text', btn.innerHTML);
+            }
+            btn.innerHTML = type === 'GROUP' ? '⏹ إيقاف القراءة' : '⏹ إيقاف';
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.audio-highlight').forEach(el => el.classList.remove('audio-highlight'));
+            document.querySelectorAll('.sentence-row.line-highlight').forEach(el => el.classList.remove('line-highlight'));
+        }
+
+        // 1. قراءة كلمة كلمة للجملة (مع التكرار)
+        window.playSentenceWBW = function(btn, rowId) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            if (window.currentAudio.btn === btn) { stopAudio(); return; }
+            
+            stopAudio();
+            let queue = Array.from(document.getElementById(rowId).querySelectorAll('.word-group'));
+            window.currentAudio = { type: 'WBW', btn: btn, targetId: rowId, queue: queue, currentIndex: 0 };
+            setBtnPlaying(btn, 'WBW');
+            speakNextWBW();
+        };
+
+        function speakNextWBW() {
+            if(window.currentAudio.type !== 'WBW') return;
+            
+            if(window.currentAudio.currentIndex >= window.currentAudio.queue.length) {
+                window.currentAudio.currentIndex = 0; // إعادة التكرار
+                setTimeout(speakNextWBW, 1000); 
+                return;
+            }
+
+            clearHighlights();
+            let wordEl = window.currentAudio.queue[window.currentAudio.currentIndex];
+            wordEl.classList.add('audio-highlight');
+            
+            let text = wordEl.querySelector('.en').textContent.trim();
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.8;
+            applyVoiceSettings(u);
+            
+            u.onend = function() {
+                if(window.currentAudio.type === 'WBW') {
+                    window.currentAudio.currentIndex++;
+                    speakNextWBW();
+                }
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        // 2. قراءة الجملة طبيعية (مع التكرار)
+        window.playSentenceNatural = function(btn, rowId) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            if (window.currentAudio.btn === btn) { stopAudio(); return; }
+            
+            stopAudio();
+            let wordEls = Array.from(document.getElementById(rowId).querySelectorAll('.word-group .en'));
+            let text = wordEls.map(w => w.textContent.trim()).join(' ');
+            
+            window.currentAudio = { type: 'NAT', btn: btn, targetId: rowId, text: text };
+            setBtnPlaying(btn, 'NAT');
+            speakNAT();
+        };
+
+        function speakNAT() {
+            if(window.currentAudio.type !== 'NAT') return;
+            
+            clearHighlights();
+            document.getElementById(window.currentAudio.targetId).classList.add('line-highlight');
+
+            let u = new SpeechSynthesisUtterance(window.currentAudio.text);
+            u.lang = 'en-US';
+            u.rate = 0.9;
+            applyVoiceSettings(u);
+            
+            u.onend = function() {
+                if(window.currentAudio.type === 'NAT') {
+                    setTimeout(speakNAT, 1000); // إعادة التكرار
+                }
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        // 3. قراءة المجموعة كاملة
+        window.playGroup = function(btn, groupId) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            if (window.currentAudio.btn === btn) { stopAudio(); return; }
+            
+            stopAudio();
+            let queue = Array.from(document.getElementById(groupId).querySelectorAll('.sentence-row'));
+            window.currentAudio = { type: 'GROUP', btn: btn, targetId: groupId, queue: queue, currentIndex: 0 };
+            setBtnPlaying(btn, 'GROUP');
+            speakNextGroup();
+        };
+
+        function speakNextGroup() {
+            if(window.currentAudio.type !== 'GROUP') return;
+            
+            if(window.currentAudio.currentIndex >= window.currentAudio.queue.length) {
+                stopAudio(); // انتهاء المجموعة بدون تكرار
+                return;
+            }
+
+            clearHighlights();
+            let rowEl = window.currentAudio.queue[window.currentAudio.currentIndex];
+            rowEl.classList.add('line-highlight');
+            rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            let wordEls = Array.from(rowEl.querySelectorAll('.word-group .en'));
+            let text = wordEls.map(w => w.textContent.trim()).join(' ');
+
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.9;
+            applyVoiceSettings(u);
+            
+            u.onend = function() {
+                if(window.currentAudio.type === 'GROUP') {
+                    window.currentAudio.currentIndex++;
+                    speakNextGroup();
+                }
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        // 4. نطق الكلمة الفردية عند الضغط عليها بالماوس
+        document.addEventListener('click', function(e) {
+            let wg = e.target.closest('.word-group');
+            if (wg && !e.target.closest('button')) {
+                stopAudio(); // إيقاف أي قراءة مستمرة عند الضغط اليدوي على كلمة
+                
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && window.speechSynthesis) {
+                    wg.classList.add('highlight');
+                    let txt = speakTextAttr.replace(/[\._\?\,]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; 
+                        u.rate = 0.85;
+                        applyVoiceSettings(u);
+                        u.onend = () => wg.classList.remove('highlight');
+                        u.onerror = () => wg.classList.remove('highlight');
+                        window.speechSynthesis.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), 1200);
+                    } else {
+                        wg.classList.remove('highlight');
+                    }
+                }
+            }
+        });
+
+        if(window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>
