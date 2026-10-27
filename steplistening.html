@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELIS 110 - Ultimate B1/B2 Listening Platform (Giant Dictionary & Auto-Scroll)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); border-radius: 16px; border: 4px solid #facc15; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.5em; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .sub-title { text-align: center; color: #475569; font-size: 1.3em; margin-bottom: 20px; font-weight: bold; }
+        .creator-info { text-align: center; color: #facc15; background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); font-size: 1.2em; font-weight: bold; margin-bottom: 30px; padding: 14px; border-radius: 10px; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);}
+
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 15px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+        .btn-exam.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        .action-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 915px;}
+        .btn-result { background-color: #f59e0b; } .btn-result:hover { background-color: #d97706; }
+
+        .section-result { font-weight: 900; font-size: 1.5em; color: #1e3a8a; background: #eff6ff; padding: 15px 30px; border-radius: 8px; display: block; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px;}
+
+        .exam-section-title { background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); color: #facc15; padding: 12px 20px; border-radius: 8px; margin: 35px 0 20px 0; font-size: 1.5em; font-weight: 900; text-align: right; border-right: 6px solid #facc15; }
+        
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s; position: relative;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        
+        .audio-bar { background: #e0f2fe; border: 2px solid #bae6fd; padding: 15px 20px; border-radius: 10px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;}
+        .dialogue-box { background: #ffffff; padding: 15px; border-radius: 8px; border: 1px dashed #7dd3fc; margin-top: 8px; font-size: 1.1em; line-height: 2.2; direction: ltr; text-align: left; }
+        
+        .dialogue-line { margin-bottom: 15px; direction: ltr; text-align: left; display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; padding: 10px; border-radius: 8px; transition: all 0.3s ease; position: relative; border: 2px solid transparent;}
+        .dialogue-line:hover { background-color: #f8fafc; }
+        
+        .dialogue-line.line-highlight { background-color: #fef08a !important; border-color: #eab308 !important; transform: scale(1.02); box-shadow: 0 5px 15px rgba(234, 179, 8, 0.3) !important; z-index: 10; }
+
+        .speaker-1 { color: #1e3a8a; font-weight: bold; margin-top: 10px;}
+        .speaker-2 { color: #059669; font-weight: bold; margin-top: 10px;}
+        .speaker-badge { background: #e2e8f0; color: #475569; font-size: 11px; padding: 2px 6px; border-radius: 4px; position: absolute; top: -10px; left: 10px;}
+        .speaker-badge.female { background: #fbcfe8; color: #be185d;}
+        .speaker-badge.male { background: #bfdbfe; color: #1d4ed8;}
+
+        .audio-controls-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 5px; justify-content: flex-end; direction: ltr;}
+
+        .btn-natural { background-color: #10b981; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-natural:hover { background-color: #059669; transform: translateY(-2px);}
+        .btn-natural.playing { background-color: #e11d48 !important; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); }
+        .btn-natural.paused { background-color: #f59e0b !important; }
+
+        .btn-toggle { background-color: #0ea5e9; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-toggle:hover { background-color: #0284c7; transform: translateY(-2px);}
+        .btn-toggle.playing { background-color: #e11d48 !important; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); }
+        .btn-toggle.paused { background-color: #f59e0b !important; }
+
+        .line-audio-btn { background-color: #3b82f6; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 16px; margin-top: 5px; flex-shrink: 0; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .line-audio-btn:hover { background-color: #2563eb; transform: scale(1.1); }
+        .line-audio-btn.playing { background-color: #ef4444 !important; animation: pulse 1s infinite;}
+        .line-audio-btn.paused { background-color: #f59e0b !important; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-span { font-size: 26px; font-weight: 900; color: #dc2626; flex-shrink: 0; padding-top: 15px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        .q-text { font-size: 1.35em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 2.8; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;}
+        
+        .options-inline { display: flex; gap: 15px; direction: ltr; width: 100%; margin-top: 10px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 10px;}
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; min-height: 75px; flex: 1; min-width: 220px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.2em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 50px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        .choice-text { padding: 15px; font-weight: bold; font-size: 1.15em; color: #334155; display: flex; align-items: center; width:100%; flex-wrap: wrap; gap: 8px; white-space: nowrap;}
+
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-text, .opt-item.correct .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.correct .word-group .ar { color: #fef08a !important; } 
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-text, .opt-item.wrong .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.wrong .word-group .ar { color: #fef08a !important; }
+
+        .word-group { display: inline-flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-end !important; cursor: pointer; margin: 0 4px; position: relative; vertical-align: bottom; min-height: 40px; }
+        .word-group .ar { color: #dc2626; font-size: 15px; font-family: 'Tajawal', sans-serif; font-weight: 900; white-space: nowrap; pointer-events: none; margin-bottom: -4px; width: 100%; text-align: center !important; direction: rtl; line-height: 1;}
+        .word-group .en { font-size: 21px; font-weight: bold; padding: 2px 6px 4px 6px; border-radius: 6px; transition: 0.1s; color: #1e293b; direction: ltr; font-family: Arial, sans-serif; width: 100%; text-align: center !important; line-height: 1;}
+        
+        .audio-highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-radius: 6px; transform: scale(1.15);}
+        .word-group.highlight .en { background-color: #93c5fd !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        .correct-word-text { font-weight: bold; font-size: 18px; color: #1e293b; margin-bottom: 10px; line-height: 2.2;}
+
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5;}
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .audio-bar { display: flex !important; } 
+        .exam-mode .btn-toggle { display: flex !important; } 
+        .exam-mode .btn-natural { display: flex !important; } 
+        .exam-mode .line-audio-btn { display: flex !important; } 
+        .exam-mode .word-group .ar { display: none !important; } 
+        .exam-mode .word-group { pointer-events: none !important; } 
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">ELIS 110 - Ultimate B1/B2 Listening Platform</div>
+    <div class="sub-title">20 محادثة متقدمة - 160 سؤال - قاموس عملاق شامل وتظليل ذكي للأسطر</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+
+    <div class="group-control-bar">
+        <div class="control-buttons-row">
+            <button id="btn-study" class="mode-btn btn-study active-mode" onclick="setMode('train')">🎓 وضع التدريب (أصوات مزدوجة + تظليل وترجمة)</button>
+            <button id="btn-exam" class="mode-btn btn-exam" onclick="setMode('exam')"><span style="color:#ef4444;">🔴</span> وضع الاختبار (أصوات وتظليل بدون ترجمة)</button>
+        </div>
+        <div class="action-buttons-row">
+            <button class="action-btn btn-result" onclick="showExamResult()">📋 إظهار النتيجة النهائية من 160</button>
+        </div>
+        <div class="section-result" id="res-box" style="display:none;"></div>
+    </div>
+
+    <div id="exam-container"></div>
+</div>
+
+<script>
+(function initUltimateEngine() {
+    try {
+        const dictionary = {
+            "a": "أداة نكرة", "an": "أداة نكرة", "the": "الـ", "is": "يكون/هل", "are": "يكونون/هل", "am": "أكون", "was": "كان", "were": "كانوا", "be": "يكون", "been": "كان", "do": "يفعل/هل", "does": "يفعل/هل", "did": "فعل/هل", "done": "تـم", "have": "يملك/قد", "has": "يملك/قد", "had": "ملك", "will": "سوف", "would": "هل تود/سوف", "can": "يستطيع", "could": "استطاع", "should": "ينبغي", "must": "يجب", "might": "ربما", "i": "أنا", "you": "أنت", "he": "هو", "she": "هي", "it": "هو/هي", "we": "نحن", "they": "هم", "me": "أنا/ني", "him": "هو/هـ", "her": "لها", "us": "نحن/نا", "them": "هم", "my": "خاصتي", "your": "خاصتك", "his": "خاصته", "its": "خاصته", "our": "خاصتنا", "their": "خاصتهم", "this": "هذا", "that": "ذلك", "these": "هؤلاء", "those": "أولئك", "who": "من", "what": "ماذا/ما", "where": "أين", "when": "متى", "why": "لماذا", "how": "كيف", "which": "أي/الذي", "yes": "نعم", "no": "لا", "not": "ليس", "none": "لا شيء", "and": "و", "or": "أو", "but": "لكن", "because": "لأن", "so": "لذلك/جداً", "if": "إذا", "as": "كـ/مثل", "than": "من", "in": "في", "on": "على/في", "at": "عند/في", "to": "إلى/أن", "for": "لـ/لأجل", "with": "مع", "about": "عن/حول", "from": "من", "by": "بواسطة", "into": "إلى داخل", "over": "فوق/عبر", "under": "تحت", "between": "بين", "through": "عبر", "after": "بعد", "before": "قبل", "during": "خلال", "without": "بدون", "very": "جداً", "too": "أيضاً/جداً", "also": "أيضاً", "just": "فقط", "only": "فقط",
+            
+            "nuclear": "نووي", "energy": "طاقة", "fossil": "أحفوري", "fuels": "وقود", "fuel": "وقود", "renewable": "متجدد", "weather": "طقس", "mild": "معتدل", "snowy": "مثلج", "extreme": "متطرف", "hope": "يأمل", "cheaper": "أرخص", "cheap": "رخيص", "cars": "سيارات", "car": "سيارة", "all": "كل", "nations": "دول", "nation": "دولة", "unite": "تتحد", "more": "أكثر", "rain": "مطر", "act": "يتصرف", "quickly": "بسرعة", "late": "متأخر", "save": "يوفر", "money": "مال", "win": "يفوز", "prize": "جائزة", "every": "كل", "small": "صغير", "action": "تصرف", "help": "يساعد", "reduce": "يقلل", "national": "قومي", "debt": "دين", "carbon": "كربون", "footprint": "بصمة", "population": "تعداد", "growth": "نمو", "focus": "تركيز", "eating": "أكل", "whole": "كامل", "foods": "أطعمة", "meat": "لحم", "fast": "سريع", "food": "طعام", "limit": "يحد", "processed": "مصنع", "sugars": "سكريات", "sugar": "سكر", "fresh": "طازج", "fruits": "فواكه", "drinking": "شرب", "water": "ماء", "levels": "مستويات", "sleeping": "نوم", "sleep": "ينام", "less": "أقل", "coffee": "قهوة", "start": "يبدأ", "doing": "فعل", "performing": "إجراء", "surgery": "جراحة", "planning": "تخطيط", "meals": "وجبات", "prescribing": "وصف", "medicine": "دواء", "medicines": "أدوية", "vegetables": "خضروات", "grains": "حبوب", "burgers": "برجر", "fries": "بطاطس", "sweets": "حلويات", "cakes": "كعك", "avoid": "يتجنب", "staying": "بقاء", "hydrated": "رطباً", "vital": "حيوي", "health": "صحة", "losing": "فقدان", "weight": "وزن", "building": "بناء", "muscle": "عضلة", "make": "يصنع/يجعل", "difference": "فرق", "expensive": "غالي",
+            "johns": "لجون", "sarahs": "لسارة", "startups": "للشركة الناشئة", "teams": "فريق", "sarah": "سارة", "mark": "مارك", "david": "ديفيد", "emma": "إيما", "alex": "أليكس", "maria": "ماريا", "dr": "الدكتور", "smith": "سميث", "john": "جون", "reporter": "مراسل", "astronaut": "رائد فضاء", "manager": "مدير", "employee": "موظف", "alice": "أليس", "bob": "بوب", "salesman": "بائع", "customer": "زبون", "parent": "والد", "teacher": "معلم", "advisor": "مستشار", "client": "عميل", "lisa": "ليزا", "tom": "توم", "buyer": "مشتري", "dealer": "تاجر", "tourist": "سائح", "guide": "مرشد", "therapist": "معالج", "patient": "مريض", "investor": "مستثمر", "founder": "مؤسس", "mayor": "عمدة", "architect": "مهندس", "traveler": "مسافر", "agent": "وكيل", "gamer": "لاعب", "developer": "مطور", "student": "طالب", "coach": "مدرب", "journalist": "صحفي", "scientist": "عالم",
+            "transition": "انتقال", "remote": "عن بعد", "work": "عمل", "working": "يعمل", "going": "يذهب/يسير", "team": "فريق", "quite": "إلى حد ما", "challenging": "مليء بالتحديات", "rewarding": "مُجزٍ", "overall": "بشكل عام", "understand": "أفهم", "biggest": "الأكبر", "difficulty": "صعوبة", "faced": "واجهت", "far": "بعيد", "communication": "تواصل", "definitely": "بالتأكيد", "main": "رئيسي", "issue": "مشكلة", "miss": "نفتقد", "spontaneous": "عفوي", "office": "مكتب", "discussions": "نقاشات", "tried": "جربت", "using": "استخدام", "new": "جديد", "collaboration": "تعاون", "software": "برمجيات", "bridge": "يجسر", "gap": "فجوة", "recently": "مؤخراً", "adopted": "اعتمدنا", "project": "مشروع", "management": "إدارة", "platform": "منصة", "helps": "يساعد", "lot": "كثير", "excellent": "ممتاز", "think": "يعتقد", "productivity": "إنتاجية", "increased": "زادت", "decreased": "انخفضت", "surprisingly": "بشكل مفاجئ", "people": "الناس", "face": "يواجهون", "fewer": "أقل", "distractions": "مشتتات", "home": "منزل",
+            "artificial": "اصطناعي", "intelligence": "ذكاء", "changing": "يغير", "industry": "صناعة", "rapidly": "بسرعة", "creating": "يخلق", "massive": "هائل", "shifts": "تحولات", "daily": "يومي", "operations": "عمليات", "employees": "موظفين", "worried": "قلقون", "jobs": "وظائف", "some": "بعض", "see": "يرون", "opportunities": "فرص", "growth": "نمو", "companies": "شركات", "train": "تدريب", "staff": "طاقم", "adapt": "يتكيف", "absolutely": "بالتأكيد", "continuous": "مستمر", "learning": "تعلم", "essential": "أساسي", "nowadays": "حالياً", "agree": "أوافق", "future": "مستقبل", "belongs": "ينتمي", "embrace": "يعتنقون", "technology": "تكنولوجيا", "exactly": "بالضبط", "ai": "الذكاء الاصطناعي", "tool": "أداة", "enhance": "يعزز", "human": "بشري", "skills": "مهارات", "replace": "يستبدل",
+            "climate": "مناخ", "change": "تغير", "becoming": "يصبح", "severe": "شديد", "global": "عالمي", "ignore": "يتجاهل", "anymore": "بعد الآن", "steps": "خطوات", "taking": "يتخذ", "reduce": "يقلل", "carbon": "كربون", "footprint": "بصمة", "driving": "قيادة", "electric": "كهربائي", "recycling": "إعادة تدوير", "great": "عظيم", "start": "بداية", "need": "نحتاج", "large": "كبير", "scale": "نطاق", "government": "حكومة", "policies": "سياسات", "true": "صحيح", "investing": "استثمار", "crucial": "حاسم", "hope": "آمل", "unite": "تتحد", "solve": "لحل", "crisis": "أزمة", "act": "نتصرف", "quickly": "بسرعة", "late": "متأخر", "action": "تصرف",
+            "experience": "تجربة", "space": "فضاء", "station": "محطة", "incredible": "لا يصدق", "floating": "الطفو", "zero": "صفر", "gravity": "جاذبية", "unforgettable": "لا ينسى", "find": "يجد", "research": "بحث", "experiments": "تجارب", "difficult": "صعب", "required": "تطلبت", "intense": "شديد", "results": "نتائج", "fascinating": "رائع", "moments": "لحظات", "fear": "خوف", "looking": "النظر", "down": "لأسفل", "earth": "أرض", "felt": "شعرت", "peace": "سلام", "awe": "رهبة", "go": "ذهاب", "back": "عائداً", "mars": "المريخ", "mission": "مهمة", "heartbeat": "نبضة", "exploration": "استكشاف", "passion": "شغف",
+            "discuss": "مناقشة", "recent": "أخير", "performance": "أداء", "review": "تقييم", "appreciate": "أقدر", "feedback": "تغذية راجعة", "exceeded": "تجاوزت", "expectations": "توقعات", "quarter": "فصل", "glad": "سعيد", "hear": "يسمع", "put": "وضعت", "effort": "جهد", "projects": "مشاريع", "leadership": "قيادة", "offering": "نقدم", "promotion": "ترقية", "senior": "أقدم/كبير", "analyst": "محلل", "honor": "شرف", "ready": "مستعد", "take": "أخذ", "responsibilities": "مسؤوليات", "confident": "واثق", "success": "نجاح", "role": "دور",
+            "installed": "مُثبَّت", "solar": "شمسي", "panels": "ألواح", "roof": "سقف", "yet": "بعد", "investment": "استثمار", "electricity": "كهرباء", "bills": "فواتير", "slashes": "يخفض", "monthly": "شهري", "half": "نصف", "install": "للتثبيت", "initially": "بالبداية", "long": "طويل", "term": "مدى", "savings": "مدخرات", "huge": "ضخم", "consider": "أفكر", "doing": "القيام", "house": "منزل", "made": "صنعت", "switch": "تحول", "green": "أخضر",
+            "smart": "ذكي", "system": "نظام", "allows": "يسمح", "control": "تحكم", "lighting": "إضاءة", "voice": "صوت", "sounds": "يبدو", "convenient": "مريح", "secure": "آمن", "data": "بيانات", "encrypted": "مشفر", "privacy": "خصوصية", "top": "قمة", "priority": "أولوية", "set": "ضبط", "routines": "روتينات", "different": "مختلف", "devices": "أجهزة", "create": "إنشاء", "schedules": "جداول", "heating": "تدفئة", "security": "أمن", "cameras": "كاميرات", "connect": "يتصل", "phone": "هاتف", "easily": "بسهولة", "dedicated": "مخصص", "app": "تطبيق", "takes": "يستغرق", "minutes": "دقائق", "buy": "شراء", "premium": "مميز", "package": "باقة", "today": "اليوم",
+            "notice": "ألاحظ", "child": "طفل", "struggling": "يعاني", "stay": "يبقى", "engaged": "متفاعل", "virtual": "افتراضي", "classes": "حصص", "common": "شائع", "students": "طلاب", "distracted": "مشتت", "screen": "شاشة", "lessons": "دروس", "adding": "نضيف", "interactive": "تفاعلي", "quizzes": "اختبارات", "short": "قصير", "breaks": "استراحات", "area": "منطقة", "quiet": "هادئ", "environment": "بيئة", "plays": "يلعب", "online": "إنترنت", "requires": "يتطلب", "discipline": "انضباط", "teamwork": "عمل جماعي", "succeed": "ينجح",
+            "retirement": "تقاعد", "portfolio": "محفظة", "diversified": "متنوع", "mix": "مزيج", "stocks": "أسهم", "bonds": "سندات", "risk": "مخاطرة", "tolerance": "تحمل", "investments": "استثمارات", "prefer": "أفضل", "moderate": "معتدل", "approach": "نهج", "steady": "ثابت", "strategy": "استراتيجية", "protect": "يحمي", "wealth": "ثروة", "annually": "سنوياً", "adjust": "نعدل", "based": "بناءً", "market": "سوق", "conditions": "ظروف", "trust": "أثق", "financial": "مالي", "expertise": "خبرة",
+            "realized": "أدركت", "spending": "قضاء", "many": "العديد", "hours": "ساعات", "scrolling": "تصفح", "social": "اجتماعي", "media": "إعلام", "addictive": "مسبب للإدمان", "design": "تصميم", "algorithms": "خوارزميات", "keep": "تبقي", "hooked": "مدمن", "thinking": "أفكر", "deleting": "حذف", "apps": "تطبيقات", "drastic": "جذري", "step": "خطوة", "effective": "فعال", "mental": "عقلي", "real": "حقيقي", "life": "حياة", "connections": "روابط", "support": "أدعم", "probably": "ربما", "leaving": "ترك", "phones": "هواتف", "another": "آخر", "room": "غرفة", "agreed": "متفق", "reclaim": "نستعيد", "free": "حر",
+            "interested": "مهتم", "vehicle": "مركبة", "model": "طراز", "best": "الأفضل", "seller": "مبيعاً", "range": "مدى", "hundred": "مائة", "miles": "أميال", "per": "لكل", "charge": "شحنة", "sufficient": "كافٍ", "commute": "تنقل", "city": "مدينة", "charging": "شحن", "network": "شبكة", "growing": "تنمو", "nationwide": "وطنياً", "fully": "بالكامل", "battery": "بطارية", "charger": "شاحن", "overnight": "طوال الليل", "lifestyle": "أسلوب حياة", "plus": "بالإضافة", "save": "يوفر", "fuel": "وقود",
+            "festival": "مهرجان", "celebrating": "يحتفل", "annual": "سنوي", "harvest": "حصاد", "end": "نهاية", "autumn": "خريف", "traditional": "تقليدي", "music": "موسيقى", "dance": "رقص", "performances": "عروض", "amazing": "مذهل", "colorful": "ملون", "costumes": "أزياء", "made": "مصنوع", "local": "محلي", "silk": "حرير", "visitors": "زوار", "join": "ينضم", "parade": "موكب", "streets": "شوارع", "welcome": "مرحب", "stalls": "أكشاك", "sweet": "حلو", "rice": "أرز", "cakes": "كعك", "delicious": "لذيذ",
+            "mentioned": "ذكرت", "feeling": "شعور", "overwhelmed": "مرهق", "heavy": "ثقيل", "workload": "عبء", "constantly": "باستمرار", "stressed": "متوتر", "cannot": "لا يستطيع", "well": "جيداً", "practicing": "ممارسة", "mindfulness": "يقظة", "meditation": "تأمل", "hard": "صعب", "calm": "تهدئة", "mind": "عقل", "even": "حتى", "deep": "عميق", "breathing": "تنفس", "exercises": "تمارين", "manageable": "مقدور عليه", "tomorrow": "غداً", "consistency": "استمرارية", "lowering": "خفض", "hormones": "هرمونات", "prioritize": "أولوية", "wellbeing": "رفاهية",
+            "startup": "شركة ناشئة", "revenue": "إيرادات", "doubled": "تضاعفت", "year": "سنة", "achieve": "يحقق", "optimized": "حسّنّا", "logistics": "لوجستيات", "offer": "نقدم", "faster": "أسرع", "delivery": "توصيل", "impressive": "مذهل", "build": "تبني", "own": "خاص", "partnered": "شاركنا", "reliable": "موثوق", "courier": "ساعي", "services": "خدمات", "strategy": "استراتيجية", "next": "التالي", "plan": "نخطط", "expand": "نوسع", "product": "منتج", "international": "دولي", "markets": "أسواق", "significant": "مهم", "capital": "رأس مال", "fund": "تمويل", "expansion": "توسع", "partnership": "شراكة", "guarantee": "يضمن",
+            "architecture": "عمارة", "design": "تصميم", "rest": "باقي", "uses": "يستخدم", "sustainable": "مستدام", "materials": "مواد", "blends": "يمتزج", "nature": "طبيعة", "spaces": "مساحات", "structurally": "إنشائياً", "safe": "آمن", "withstand": "يتحمل", "earthquakes": "زلازل", "consume": "يستهلك", "glass": "زجاج", "walls": "جدران", "maximize": "يعظم", "natural": "طبيعي", "sunlight": "ضوء الشمس", "saving": "توفير", "symbol": "رمز", "urban": "حضري", "development": "تطوير", "proud": "فخور", "contribute": "يساهم", "innovative": "مبتكر",
+            "tourism": "سياحة", "destination": "وجهة", "vacation": "إجازة", "ecofriendly": "صديق للبيئة", "resort": "منتجع", "costa": "كوستا", "rica": "ريكا", "interesting": "مثير", "makes": "يجعل", "runs": "يعمل", "power": "طاقة", "protects": "يحمي", "wildlife": "حياة برية", "activities": "أنشطة", "hiking": "مشي", "scuba": "غوص", "diving": "غوص", "hike": "يتنزه", "rainforest": "غابة مطيرة", "dive": "يغوص", "clear": "صافي", "waters": "مياه", "perfect": "مثالي", "escape": "هروب", "book": "يحجز", "tickets": "تذاكر", "reserve": "يحجز", "cabin": "كوخ",
+            "virtual": "افتراضي", "reality": "واقع", "vr": "الواقع الافتراضي", "headset": "سماعة", "amazing": "مذهل", "glad": "سعيد", "liked": "أحببته", "immersive": "غامر", "graphics": "رسوميات", "took": "استغرق", "years": "سنوات", "feels": "يشعر", "especially": "خصوصاً", "scenes": "مشاهد", "advanced": "متقدم", "sensors": "مستشعرات", "track": "يتتبع", "head": "رأس", "movements": "حركات", "perfectly": "بشكل مثالي", "multiplayer": "جماعي", "games": "ألعاب", "servers": "خوادم", "connect": "يتصل", "players": "لاعبين", "globally": "عالمياً", "releasing": "نُصدر", "stunning": "مذهل", "month": "شهر",
+            "struggling": "أعاني", "meet": "ألحق", "deadlines": "مواعيد", "lost": "ضائع", "review": "نراجع", "schedule": "جدول", "prioritize": "أولويات", "tasks": "مهام", "really": "حقاً", "everything": "كل شيء", "once": "مرة", "separate": "تفصل", "urgent": "عاجل", "important": "مهم", "nonurgent": "غير عاجل", "ones": "الأشياء", "effectively": "بفعالية", "wasting": "تضييع", "planner": "مخطط", "write": "اكتب", "goals": "أهداف", "day": "يوم", "practical": "عملي", "anxiety": "قلق",
+            "pollution": "تلوث", "bad": "سيء", "plastic": "بلاستيك", "waste": "نفايات", "problem": "مشكلة", "catastrophic": "كارثي", "millions": "ملايين", "tons": "أطنان", "destroying": "يدمر", "marine": "بحري", "ecosystems": "أنظمة", "recycling": "تدوير", "programs": "برامج", "enough": "كافٍ", "strict": "صارم", "bans": "حظر", "singleuse": "استخدام لمرة", "plastics": "بلاستيكيات", "industries": "صناعات", "rely": "تعتمد", "heavily": "بشدة", "cheap": "رخيص", "packaging": "تغليف", "innovate": "يبتكرون", "biodegradable": "متحلل", "alternatives": "بدائل", "immediately": "فوراً", "public": "عام", "awareness": "وعي", "increasing": "يزداد", "translate": "يترجم", "political": "سياسي",
+            "topic": "موضوع", "conversation": "محادثة", "happen": "يحدث", "kind": "نوع", "rule": "قاعدة", "reason": "سبب", "quit": "يستقيل", "salary": "راتب", "inflation": "تضخم", "economic": "اقتصادي", "meat": "لحم", "fast": "سريع", "fruits": "فواكه", "muscle": "عضلة", "medicines": "أدوية", "boring": "ممل", "scary": "مخيف", "panic": "ذعر", "sadness": "حزن", "useless": "غير مفيد", "teaching": "تدريس", "terrified": "مذعور", "unsure": "غير متأكد", "antenna": "هوائي", "tank": "خزان", "maintenance": "صيانة", "costs": "تكاليف", "regretful": "نادم", "indifferent": "غير مبالٍ", "printed": "مطبوعة", "deleted": "محذوفة", "cable": "كابل", "nothing": "لا شيء", "noisy": "مزعج", "principal": "مدير", "rest": "يرتاح", "gold": "ذهب", "real": "حقيقي", "estate": "عقارات", "blog": "مدونة", "truck": "شاحنة", "diesel": "ديزل", "racing": "سباق", "track": "مضمار", "annoying": "مزعج", "battle": "معركة", "cotton": "قطن", "wool": "صوف", "noodles": "نودلز", "spicy": "حار", "grilled": "مشوي", "fish": "سمك", "debt": "دين", "marathon": "ماراثون", "running": "جري", "prices": "أسعار", "raising": "رفع", "firing": "تسريح", "drones": "طائرات", "sales": "مبيعات", "fail": "فشل", "bricks": "طوب", "disaster": "كارثة", "floods": "فيضانات", "hurricanes": "أعاصير", "candles": "شموع", "helicopter": "مروحية", "pad": "مهبط", "dangerous": "خطير", "ancient": "قديم", "tent": "خيمة", "boat": "قارب", "board": "لوح", "cards": "بطاقات", "controller": "تحكم", "camera": "كاميرا", "video": "فيديو", "delay": "تأخير", "alarm": "منبه", "loud": "مرتفع", "minor": "بسيط", "solved": "محلول", "describe": "يصف", "purpose": "غرض", "increase": "زيادة", "decrease": "انخفاض"
+        };
+
+        function getTranslation(word) {
+            let clean = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(!clean) return '';
+            if(dictionary[clean]) return dictionary[clean];
+            if(clean.endsWith('ies') && dictionary[clean.slice(0,-3) + 'y']) return dictionary[clean.slice(0,-3) + 'y'];
+            if(clean.endsWith('es') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('s') && dictionary[clean.slice(0,-1)]) return dictionary[clean.slice(0,-1)];
+            if(clean.endsWith('ed') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('ing') && dictionary[clean.slice(0,-3)]) return dictionary[clean.slice(0,-3)];
+            return ""; 
+        }
+
+        const examData = { listening: [] };
+
+        function getSpeakerGender(name) {
+            const femaleNames = /^(Sarah|Emma|Maria|Alice|Lisa|Mona|Sara|Julia|Anna|Lily|Wife|Yui|Lucy|Girl|Daughter|Woman|Sister|Nadia|Susan|Fatima|Maha|Laila|Mom|Therapist)$/i;
+            return femaleNames.test(name) ? 'f' : 'm';
+        }
+
+        function generateAdvancedDialogues() {
+            const data = [
+                { t: "1. Remote Work Transition", 
+                  lines: [
+                    {s: "Mark", t: "Good morning, Sarah. How is the transition to remote work going for your team?"},
+                    {s: "Sarah", t: "Good morning, Mark. It has been quite challenging but very rewarding overall."},
+                    {s: "Mark", t: "I understand. What is the biggest difficulty you have faced so far?"},
+                    {s: "Sarah", t: "Communication is definitely the main issue. We miss spontaneous office discussions."},
+                    {s: "Mark", t: "Have you tried using any new collaboration software to bridge that gap?"},
+                    {s: "Sarah", t: "Yes, we recently adopted a new project management platform which helps a lot."},
+                    {s: "Mark", t: "That is excellent. Do you think productivity has increased or decreased?"},
+                    {s: "Sarah", t: "Surprisingly, our productivity has increased, as people face fewer distractions at home."}
+                  ],
+                  qs: [
+                    {q: "What is the main topic of the conversation?", o: ["remote work transition|انتقال العمل عن بعد", "office design|تصميم المكتب", "vacation plans|خطط الإجازة"], c: 0},
+                    {q: "What is the biggest difficulty Sarah's team faced?", o: ["communication issues|مشاكل التواصل", "slow internet|إنترنت بطيء", "lack of computers|نقص الحواسيب"], c: 0},
+                    {q: "What did they recently adopt?", o: ["a project management platform|منصة إدارة مشاريع", "a new office building|مبنى مكتب جديد", "new laptops|حواسيب محمولة جديدة"], c: 0},
+                    {q: "What happened to their productivity?", o: ["it has increased|لقد زادت", "it has decreased|لقد انخفضت", "it stayed the same|بقيت كما هي"], c: 0},
+                    {q: "How does Sarah describe the transition overall?", o: ["challenging but rewarding|صعبة لكنها مجزية", "very easy|سهلة جداً", "a complete failure|فشل تام"], c: 0},
+                    {q: "What do they miss about the office?", o: ["spontaneous office discussions|نقاشات المكتب العفوية", "the coffee machine|آلة القهوة", "the long commute|التنقل الطويل"], c: 0},
+                    {q: "Why has productivity increased?", o: ["fewer distractions at home|مشتتات أقل في المنزل", "working longer hours|العمل ساعات أطول", "more pressure from management|ضغط أكبر من الإدارة"], c: 0},
+                    {q: "What is the purpose of the new software?", o: ["to bridge the communication gap|لسد فجوة التواصل", "to track employee time|لتتبع وقت الموظفين", "to design new products|لتصميم منتجات جديدة"], c: 0}
+                  ]
+                },
+                { t: "2. Artificial Intelligence Impact", 
+                  lines: [
+                    {s: "David", t: "Hello, Emma. Artificial intelligence is changing our industry rapidly."},
+                    {s: "Emma", t: "Yes, David. It is creating massive shifts in our daily operations."},
+                    {s: "David", t: "Are employees worried about losing their jobs?"},
+                    {s: "Emma", t: "Some of them are, but they also see new opportunities for growth."},
+                    {s: "David", t: "Should companies train their staff to adapt to this technology?"},
+                    {s: "Emma", t: "Absolutely. Continuous learning is essential nowadays."},
+                    {s: "David", t: "I agree. The future belongs to those who embrace technology."},
+                    {s: "Emma", t: "Exactly. AI is a tool to enhance human skills, not replace them."}
+                  ],
+                  qs: [
+                    {q: "What is changing their industry rapidly?", o: ["artificial intelligence|الذكاء الاصطناعي", "climate change|تغير المناخ", "new management|إدارة جديدة"], c: 0},
+                    {q: "How do some employees feel about their jobs?", o: ["worried about losing them|قلقون من فقدانها", "bored and tired|ملولون ومتعبون", "completely safe|آمنون تماماً"], c: 0},
+                    {q: "What is essential nowadays according to Emma?", o: ["continuous learning|التعلم المستمر", "working from home|العمل من المنزل", "taking long vacations|أخذ إجازات طويلة"], c: 0},
+                    {q: "What is AI's role regarding human skills?", o: ["to enhance them|لتعزيزها", "to replace them|لاستبدالها", "to ignore them|لتجاهلها"], c: 0},
+                    {q: "What is AI creating in their operations?", o: ["massive shifts|تحولات هائلة", "no real changes|لا تغييرات حقيقية", "only problems|مشاكل فقط"], c: 0},
+                    {q: "What do some employees see in AI?", o: ["new opportunities for growth|فرص جديدة للنمو", "a reason to quit|سبباً للاستقالة", "a decrease in salary|انخفاضاً في الراتب"], c: 0},
+                    {q: "Who does the future belong to?", o: ["those who embrace technology|الذين يتبنون التكنولوجيا", "those who ignore computers|الذين يتجاهلون الحواسيب", "only programmers|المبرمجين فقط"], c: 0},
+                    {q: "How should companies respond to this?", o: ["train their staff|تدريب طاقمهم", "fire old workers|طرد العمال القدامى", "ignore the changes|تجاهل التغييرات"], c: 0}
+                  ]
+                },
+                { t: "3. Climate Change Actions", 
+                  lines: [
+                    {s: "Alex", t: "Climate change is becoming a severe global issue, Maria."},
+                    {s: "Maria", t: "We cannot ignore the extreme weather anymore. What steps are you taking?"},
+                    {s: "Alex", t: "I am driving an electric car and recycling more."},
+                    {s: "Maria", t: "That is a great start, but we need large scale government policies too."},
+                    {s: "Alex", t: "True. Investing in renewable energy is crucial for our future."},
+                    {s: "Maria", t: "I hope all nations unite to solve this crisis."},
+                    {s: "Alex", t: "We must act quickly before it is too late."},
+                    {s: "Maria", t: "I agree. Every small action helps reduce our carbon footprint."}
+                  ],
+                  qs: [
+                    {q: "What is becoming a severe global issue?", o: ["climate change|تغير المناخ", "economic inflation|التضخم الاقتصادي", "space exploration|استكشاف الفضاء"], c: 0},
+                    {q: "What personal step is Alex taking?", o: ["driving an electric car|قيادة سيارة كهربائية", "planting trees|زراعة الأشجار", "eating less meat|تناول لحوم أقل"], c: 0},
+                    {q: "What does Maria say is also needed?", o: ["government policies|سياسات حكومية", "more cars|مزيد من السيارات", "new schools|مدارس جديدة"], c: 0},
+                    {q: "What kind of energy is crucial for the future?", o: ["renewable energy|طاقة متجددة", "fossil fuels|وقود أحفوري", "nuclear energy|طاقة نووية"], c: 0},
+                    {q: "What weather is mentioned?", o: ["extreme weather|طقس متطرف", "mild weather|طقس معتدل", "snowy weather|طقس مثلج"], c: 0},
+                    {q: "What does Maria hope for?", o: ["all nations unite|أن تتحد كل الدول", "more rain|مزيداً من المطر", "cheaper cars|سيارات أرخص"], c: 0},
+                    {q: "Why must they act quickly?", o: ["before it is too late|قبل فوات الأوان", "to save money|لتوفير المال", "to win a prize|للفوز بجائزة"], c: 0},
+                    {q: "What does every small action help reduce?", o: ["our carbon footprint|بصمتنا الكربونية", "the national debt|الدين القومي", "population growth|النمو السكاني"], c: 0}
+                  ]
+                },
+                { t: "4. Healthy Diet Habits", 
+                  lines: [
+                    {s: "Dr. Smith", t: "Hello, John. How can we improve your daily diet?"},
+                    {s: "John", t: "I want to focus on eating whole foods like vegetables and grains."},
+                    {s: "Dr. Smith", t: "That is excellent. Should you avoid sugar completely?"},
+                    {s: "John", t: "I will try to limit processed sugars as much as possible."},
+                    {s: "Dr. Smith", t: "Drinking more water will also help your energy levels."},
+                    {s: "John", t: "Yes, staying hydrated is vital for good health."},
+                    {s: "Dr. Smith", t: "I will start planning your meals for better consistency."},
+                    {s: "John", t: "Thank you, doctor. Small changes make a big difference."}
+                  ],
+                  qs: [
+                    {q: "What does John want to focus on eating?", o: ["whole foods|أطعمة كاملة", "fast food|وجبات سريعة", "only meat|لحوم فقط"], c: 0},
+                    {q: "What will John try to limit?", o: ["processed sugars|سكريات مصنعة", "fresh fruits|فواكه طازجة", "drinking water|شرب الماء"], c: 0},
+                    {q: "What will help John's energy levels?", o: ["drinking more water|شرب المزيد من الماء", "sleeping less|النوم أقل", "drinking coffee|شرب القهوة"], c: 0},
+                    {q: "What will the doctor start doing?", o: ["planning meals|تخطيط الوجبات", "prescribing medicine|وصف الدواء", "performing surgery|إجراء جراحة"], c: 0},
+                    {q: "What kind of foods does John want to eat?", o: ["vegetables and grains|الخضروات والحبوب", "burgers and fries|برجر وبطاطس", "sweets and cakes|حلويات وكعك"], c: 0},
+                    {q: "What should John avoid?", o: ["sugar|السكر", "water|الماء", "vegetables|الخضروات"], c: 0},
+                    {q: "What is staying hydrated vital for?", o: ["good health|الصحة الجيدة", "losing weight fast|فقدان الوزن بسرعة", "building muscle|بناء العضلات"], c: 0},
+                    {q: "What makes a big difference?", o: ["small changes|تغييرات صغيرة", "expensive medicines|أدوية غالية", "eating less|الأكل أقل"], c: 0}
+                  ]
+                },
+                { t: "5. Space Exploration", 
+                  lines: [
+                    {s: "Reporter", t: "How was your experience on the space station?"},
+                    {s: "Astronaut", t: "It was incredible. Floating in zero gravity is unforgettable."},
+                    {s: "Reporter", t: "Did you find the research experiments difficult?"},
+                    {s: "Astronaut", t: "They required intense focus, but the results were fascinating."},
+                    {s: "Reporter", t: "Were there moments of fear?"},
+                    {s: "Astronaut", t: "Looking down at Earth, I felt only peace and awe."},
+                    {s: "Reporter", t: "Would you go back for a Mars mission?"},
+                    {s: "Astronaut", t: "In a heartbeat. Space exploration is my true passion."}
+                  ],
+                  qs: [
+                    {q: "Where was the astronaut?", o: ["on the space station|في محطة الفضاء", "on the moon|على القمر", "on Mars|على المريخ"], c: 0},
+                    {q: "How did floating in zero gravity feel?", o: ["unforgettable|لا يُنسى", "boring|ممل", "scary|مخيف"], c: 0},
+                    {q: "What did the research experiments require?", o: ["intense focus|تركيز شديد", "a lot of money|الكثير من المال", "physical strength|قوة بدنية"], c: 0},
+                    {q: "How did the astronaut feel looking at Earth?", o: ["peace and awe|سلام ورهبة", "fear and panic|خوف وذعر", "sadness|حزن"], c: 0},
+                    {q: "What is incredible?", o: ["the experience|التجربة", "the food|الطعام", "the weather|الطقس"], c: 0},
+                    {q: "How were the research results?", o: ["fascinating|رائعة", "disappointing|مخيبة للآمال", "useless|غير مفيدة"], c: 0},
+                    {q: "What is the astronaut's true passion?", o: ["space exploration|استكشاف الفضاء", "writing books|كتابة الكتب", "teaching science|تدريس العلوم"], c: 0},
+                    {q: "Would the astronaut go to Mars?", o: ["in a heartbeat|في لمح البصر", "never again|لن يعود أبداً", "only for money|من أجل المال فقط"], c: 0}
+                  ]
+                },
+                { t: "6. Job Promotion", 
+                  lines: [
+                    {s: "Manager", t: "I wanted to discuss your recent performance review."},
+                    {s: "Employee", t: "Thank you. I appreciate any feedback you have."},
+                    {s: "Manager", t: "You have exceeded our expectations this quarter."},
+                    {s: "Employee", t: "I am glad to hear that. I put a lot of effort into my projects."},
+                    {s: "Manager", t: "Because of your leadership, we are offering you a promotion."},
+                    {s: "Employee", t: "To senior analyst? That is a great honor."},
+                    {s: "Manager", t: "Yes. Are you ready to take on more responsibilities?"},
+                    {s: "Employee", t: "Absolutely. I am confident in my success in this new role."}
+                  ],
+                  qs: [
+                    {q: "What are the manager and employee discussing?", o: ["a performance review|تقييم أداء", "a vacation request|طلب إجازة", "a new client|عميل جديد"], c: 0},
+                    {q: "How was the employee's performance this quarter?", o: ["exceeded expectations|تجاوزت التوقعات", "needs improvement|تحتاج تحسين", "very poor|ضعيفة جداً"], c: 0},
+                    {q: "What is the manager offering the employee?", o: ["a promotion|ترقية", "a warning|تحذير", "a transfer|نقل"], c: 0},
+                    {q: "What new role is the employee getting?", o: ["senior analyst|كبير المحللين", "project manager|مدير مشروع", "intern|متدرب"], c: 0},
+                    {q: "What did the employee put into projects?", o: ["a lot of effort|الكثير من الجهد", "a lot of money|الكثير من المال", "very little time|وقت قليل جداً"], c: 0},
+                    {q: "Why is the manager offering a promotion?", o: ["because of leadership|بسبب القيادة", "because of age|بسبب العمر", "because of luck|بسبب الحظ"], c: 0},
+                    {q: "What must the employee take on now?", o: ["more responsibilities|مسؤوليات أكثر", "fewer hours|ساعات أقل", "a new office|مكتب جديد"], c: 0},
+                    {q: "How does the employee feel about the new role?", o: ["confident|واثق", "terrified|مذعور", "unsure|غير متأكد"], c: 0}
+                  ]
+                },
+                { t: "7. Renewable Energy Investment", 
+                  lines: [
+                    {s: "Alice", t: "Have you installed solar panels on your roof yet, Bob?"},
+                    {s: "Bob", t: "Yes, I did. It is a great investment for the future."},
+                    {s: "Alice", t: "Does it really help reduce your electricity bills?"},
+                    {s: "Bob", t: "Absolutely. It slashes my monthly electricity bills by half."},
+                    {s: "Alice", t: "But wasn't it very expensive to install initially?"},
+                    {s: "Bob", t: "It was, but the long term savings are huge."},
+                    {s: "Alice", t: "I should consider doing that for my house too."},
+                    {s: "Bob", t: "You should. I am glad I made the switch to green energy."}
+                  ],
+                  qs: [
+                    {q: "What did Bob install on his roof?", o: ["solar panels|ألواح شمسية", "a new antenna|هوائي جديد", "a water tank|خزان مياه"], c: 0},
+                    {q: "How does it affect his electricity bills?", o: ["slashes them by half|يخفضها للنصف", "doubles them|يضاعفها", "no change|لا يوجد تغيير"], c: 0},
+                    {q: "Was the initial installation cheap?", o: ["No, it was expensive|لا، كان غالياً", "Yes, it was very cheap|نعم، كان رخيصاً جداً", "It was free|كان مجانياً"], c: 0},
+                    {q: "What kind of energy is Bob using now?", o: ["green energy|طاقة خضراء", "nuclear energy|طاقة نووية", "fossil fuels|وقود أحفوري"], c: 0},
+                    {q: "What is the solar panel considered as?", o: ["a great investment|استثمار عظيم", "a waste of money|إهدار للمال", "a temporary fix|حل مؤقت"], c: 0},
+                    {q: "What are huge in the long term?", o: ["the savings|المدخرات", "the maintenance costs|تكاليف الصيانة", "the electricity bills|فواتير الكهرباء"], c: 0},
+                    {q: "What is Alice considering?", o: ["doing it for her house|فعل ذلك لمنزلها", "moving to a new house|الانتقال لمنزل جديد", "buying a new car|شراء سيارة جديدة"], c: 0},
+                    {q: "How does Bob feel about the switch?", o: ["glad|سعيد", "regretful|نادم", "indifferent|غير مبالٍ"], c: 0}
+                  ]
+                },
+                { t: "8. Smart Home Systems", 
+                  lines: [
+                    {s: "Salesman", t: "This smart home system allows you to control lighting with your voice."},
+                    {s: "Customer", t: "That sounds convenient. Is it secure?"},
+                    {s: "Salesman", t: "Yes, all your data is encrypted. Privacy is our top priority."},
+                    {s: "Customer", t: "Can I set up routines for different devices?"},
+                    {s: "Salesman", t: "Absolutely. You can create schedules for heating and security cameras."},
+                    {s: "Customer", t: "Does it connect to my phone easily?"},
+                    {s: "Salesman", t: "Yes, through our dedicated app. It takes two minutes."},
+                    {s: "Customer", t: "I will buy the premium package today."}
+                  ],
+                  qs: [
+                    {q: "What can the customer control with his voice?", o: ["lighting|الإضاءة", "the car|السيارة", "the weather|الطقس"], c: 0},
+                    {q: "How is the data protected?", o: ["it is encrypted|مشفرة", "it is printed|مطبوعة", "it is deleted|محذوفة"], c: 0},
+                    {q: "What can the customer create schedules for?", o: ["heating and security cameras|التدفئة وكاميرات الأمن", "cooking and cleaning|الطبخ والتنظيف", "sleeping and eating|النوم والأكل"], c: 0},
+                    {q: "How does the system connect to the phone?", o: ["through a dedicated app|عبر تطبيق مخصص", "via bluetooth only|عبر البلوتوث فقط", "using a cable|باستخدام كابل"], c: 0},
+                    {q: "What is the company's top priority?", o: ["privacy|الخصوصية", "speed|السرعة", "cheap prices|أسعار رخيصة"], c: 0},
+                    {q: "How long does the app setup take?", o: ["two minutes|دقيقتان", "two hours|ساعتان", "two days|يومان"], c: 0},
+                    {q: "What does the customer want to set up?", o: ["routines for different devices|روتينات لأجهزة مختلفة", "a new internet router|راوتر إنترنت جديد", "a TV satellite|قمر صناعي للتلفاز"], c: 0},
+                    {q: "What will the customer buy today?", o: ["the premium package|الباقة المميزة", "the basic package|الباقة الأساسية", "nothing|لا شيء"], c: 0}
+                  ]
+                },
+                { t: "9. Online Education Challenges", 
+                  lines: [
+                    {s: "Parent", t: "I notice my child is struggling to stay engaged in virtual classes."},
+                    {s: "Teacher", t: "It is common. Students get distracted easily on a screen."},
+                    {s: "Parent", t: "How can we improve his focus during lessons?"},
+                    {s: "Teacher", t: "We are adding more interactive quizzes and short breaks."},
+                    {s: "Parent", t: "That might help. I will try setting up a dedicated study area."},
+                    {s: "Teacher", t: "A quiet environment plays a crucial role in focus."},
+                    {s: "Parent", t: "I agree. Online learning requires a lot of discipline."},
+                    {s: "Teacher", t: "Yes, but with our teamwork, he will succeed."}
+                  ],
+                  qs: [
+                    {q: "What is the child struggling with?", o: ["staying engaged in virtual classes|البقاء متفاعلاً في الحصص الافتراضية", "waking up early|الاستيقاظ مبكراً", "eating healthy food|تناول طعام صحي"], c: 0},
+                    {q: "What causes the distraction?", o: ["the screen|الشاشة", "the noisy classroom|الفصل المزعج", "the difficult books|الكتب الصعبة"], c: 0},
+                    {q: "What is the teacher adding to lessons?", o: ["interactive quizzes and short breaks|اختبارات تفاعلية واستراحات قصيرة", "more homework|واجبات أكثر", "longer reading sessions|جلسات قراءة أطول"], c: 0},
+                    {q: "What will the parent set up?", o: ["a dedicated study area|منطقة دراسة مخصصة", "a new computer|حاسوب جديد", "a playground|ملعب"], c: 0},
+                    {q: "What plays a crucial role in focus?", o: ["a quiet environment|بيئة هادئة", "loud music|موسيقى صاخبة", "eating snacks|تناول الوجبات الخفيفة"], c: 0},
+                    {q: "What does online learning require?", o: ["a lot of discipline|الكثير من الانضباط", "a lot of money|الكثير من المال", "fast typing skills|مهارات طباعة سريعة"], c: 0},
+                    {q: "Who needs to do teamwork?", o: ["the parent and the teacher|الوالد والمعلم", "the students and the principal|الطلاب والمدير", "the child and his friends|الطفل وأصدقائه"], c: 0},
+                    {q: "What is the goal of this teamwork?", o: ["the child will succeed|سينجح الطفل", "the school will close|ستغلق المدرسة", "the teacher will rest|سيرتاح المعلم"], c: 0}
+                  ]
+                },
+                { t: "10. Financial Planning", 
+                  lines: [
+                    {s: "Advisor", t: "We need to start planning your retirement portfolio today."},
+                    {s: "Client", t: "I want a diversified mix of stocks and bonds."},
+                    {s: "Advisor", t: "What is your risk tolerance for these investments?"},
+                    {s: "Client", t: "I prefer a moderate approach for steady long term growth."},
+                    {s: "Advisor", t: "That is a smart strategy to protect your wealth."},
+                    {s: "Client", t: "Will we review the portfolio annually?"},
+                    {s: "Advisor", t: "Yes, we will adjust it based on market conditions."},
+                    {s: "Client", t: "Excellent. I trust your financial expertise."}
+                  ],
+                  qs: [
+                    {q: "What are they planning?", o: ["a retirement portfolio|محفظة التقاعد", "a summer vacation|عطلة صيفية", "a new business|عمل تجاري جديد"], c: 0},
+                    {q: "What mix does the client want?", o: ["stocks and bonds|أسهم وسندات", "cash and gold|نقد وذهب", "real estate only|عقارات فقط"], c: 0},
+                    {q: "What is the client's risk tolerance?", o: ["moderate|معتدل", "very high|عالٍ جداً", "zero risk|بدون مخاطرة"], c: 0},
+                    {q: "How often will they review the portfolio?", o: ["annually|سنوياً", "monthly|شهرياً", "daily|يومياً"], c: 0},
+                    {q: "What kind of mix is requested?", o: ["a diversified mix|مزيج متنوع", "a risky mix|مزيج خطر", "a single asset|أصل واحد"], c: 0},
+                    {q: "What is the goal of the moderate approach?", o: ["steady long term growth|نمو ثابت على المدى الطويل", "quick cash|نقد سريع", "losing money|خسارة المال"], c: 0},
+                    {q: "Why will they adjust the portfolio?", o: ["based on market conditions|بناءً على ظروف السوق", "based on the weather|بناءً على الطقس", "based on age|بناءً على العمر"], c: 0},
+                    {q: "What does the client trust?", o: ["financial expertise|الخبرة المالية", "luck|الحظ", "the bank|البنك"], c: 0}
+                  ]
+                },
+                { t: "11. Social Media Addiction", 
+                  lines: [
+                    {s: "Lisa", t: "I realized I am spending too many hours scrolling on social media."},
+                    {s: "Tom", t: "It is very addictive by design. The algorithms keep you hooked."},
+                    {s: "Lisa", t: "I am thinking about deleting the apps from my phone."},
+                    {s: "Tom", t: "That is a drastic step, but it might be very effective."},
+                    {s: "Lisa", t: "I need to focus on my mental health and real life connections."},
+                    {s: "Tom", t: "I support you. I should probably reduce my screen time too."},
+                    {s: "Lisa", t: "We can start by leaving our phones in another room at night."},
+                    {s: "Tom", t: "Agreed. Let us reclaim our free time."}
+                  ],
+                  qs: [
+                    {q: "What problem is Lisa facing?", o: ["spending too much time on social media|قضاء وقت طويل على السوشيال ميديا", "working too much|العمل كثيراً", "eating too much junk food|أكل طعام غير صحي"], c: 0},
+                    {q: "What keeps people hooked on social media?", o: ["algorithms|الخوارزميات", "good friends|الأصدقاء الجيدون", "educational videos|فيديوهات تعليمية"], c: 0},
+                    {q: "What is Lisa thinking of doing?", o: ["deleting the apps|حذف التطبيقات", "buying a new phone|شراء هاتف جديد", "starting a blog|إنشاء مدونة"], c: 0},
+                    {q: "What rule did they agree on for the night?", o: ["leaving phones in another room|ترك الهواتف في غرفة أخرى", "turning off the internet|إغلاق الإنترنت", "calling each other|الاتصال ببعضهما"], c: 0},
+                    {q: "Why is social media addictive?", o: ["by design|بالتصميم", "by mistake|بالخطأ", "because it is boring|لأنه ممل"], c: 0},
+                    {q: "What does Lisa want to focus on?", o: ["mental health|الصحة العقلية", "playing games|لعب الألعاب", "watching TV|مشاهدة التلفاز"], c: 0},
+                    {q: "How does Tom describe deleting the apps?", o: ["a drastic step|خطوة جذرية", "a bad idea|فكرة سيئة", "a waste of time|مضيعة للوقت"], c: 0},
+                    {q: "What do they want to reclaim?", o: ["their free time|وقت فراغهم", "their lost money|مالهم المفقود", "their old friends|أصدقاءهم القدامى"], c: 0}
+                  ]
+                },
+                { t: "12. Buying an Electric Vehicle", 
+                  lines: [
+                    {s: "Buyer", t: "I am interested in this electric vehicle model."},
+                    {s: "Dealer", t: "It is our best seller. It has a range of three hundred miles per charge."},
+                    {s: "Buyer", t: "That is sufficient for my daily commute to the city."},
+                    {s: "Dealer", t: "And the charging network is growing rapidly nationwide."},
+                    {s: "Buyer", t: "How long does it take to fully charge the battery at home?"},
+                    {s: "Dealer", t: "With a fast charger, it takes about six hours overnight."},
+                    {s: "Buyer", t: "That sounds very convenient for my lifestyle."},
+                    {s: "Dealer", t: "Plus, you will save a lot of money on fuel."}
+                  ],
+                  qs: [
+                    {q: "What kind of vehicle is the buyer interested in?", o: ["an electric vehicle|مركبة كهربائية", "a sports car|سيارة رياضية", "a diesel truck|شاحنة ديزل"], c: 0},
+                    {q: "What is the range of the vehicle per charge?", o: ["three hundred miles|ثلاثمائة ميل", "one hundred miles|مائة ميل", "five hundred miles|خمسمائة ميل"], c: 0},
+                    {q: "How long does it take to charge at home?", o: ["about six hours|حوالي ست ساعات", "ten minutes|عشر دقائق", "two days|يومان"], c: 0},
+                    {q: "What is an extra benefit of the vehicle?", o: ["saving money on fuel|توفير المال في الوقود", "free parking everywhere|مواقف مجانية في كل مكان", "it drives itself|تقود نفسها بنفسها"], c: 0},
+                    {q: "Why is this model popular?", o: ["it is a best seller|إنه الأكثر مبيعاً", "it is the cheapest|إنه الأرخص", "it is the smallest|إنه الأصغر"], c: 0},
+                    {q: "What is the range sufficient for?", o: ["daily commute to the city|التنقل اليومي للمدينة", "traveling across the world|السفر عبر العالم", "racing on a track|السباق في المضمار"], c: 0},
+                    {q: "What is growing rapidly nationwide?", o: ["the charging network|شبكة الشحن", "the price of cars|سعر السيارات", "the size of the batteries|حجم البطاريات"], c: 0},
+                    {q: "How is the charging time described by the buyer?", o: ["convenient|مريح", "too long|طويل جداً", "annoying|مزعج"], c: 0}
+                  ]
+                },
+                { t: "13. A Cultural Festival", 
+                  lines: [
+                    {s: "Tourist", t: "What is this festival celebrating?"},
+                    {s: "Guide", t: "This is the annual harvest festival, celebrating the end of autumn."},
+                    {s: "Tourist", t: "The traditional music and dance performances are amazing."},
+                    {s: "Guide", t: "Yes, and notice the colorful costumes made of local silk."},
+                    {s: "Tourist", t: "Can visitors join the parade in the streets?"},
+                    {s: "Guide", t: "Absolutely, everyone is welcome to dance and celebrate."},
+                    {s: "Tourist", t: "I want to try the local food from these stalls."},
+                    {s: "Guide", t: "You must try the sweet rice cakes. They are delicious."}
+                  ],
+                  qs: [
+                    {q: "What does the festival celebrate?", o: ["the harvest season|موسم الحصاد", "the new year|العام الجديد", "a historical battle|معركة تاريخية"], c: 0},
+                    {q: "What are the colorful costumes made of?", o: ["local silk|حرير محلي", "cheap cotton|قطن رخيص", "heavy wool|صوف ثقيل"], c: 0},
+                    {q: "Can visitors join the parade?", o: ["Yes, absolutely|نعم، بالتأكيد", "No, they cannot|لا، لا يمكنهم", "Only children can|الأطفال فقط يمكنهم"], c: 0},
+                    {q: "What local food does the guide recommend?", o: ["sweet rice cakes|كعك الأرز الحلو", "spicy noodles|نودلز حارة", "grilled fish|سمك مشوي"], c: 0},
+                    {q: "What does the festival mark the end of?", o: ["autumn|الخريف", "summer|الصيف", "winter|الشتاء"], c: 0},
+                    {q: "What performances are amazing?", o: ["music and dance|موسيقى ورقص", "magic shows|عروض سحرية", "sports games|ألعاب رياضية"], c: 0},
+                    {q: "Who is welcome to dance?", o: ["everyone|الجميع", "only locals|السكان المحليون فقط", "only artists|الفنانون فقط"], c: 0},
+                    {q: "Where is the local food sold?", o: ["from stalls|من الأكشاك", "in a luxury restaurant|في مطعم فخم", "in a supermarket|في سوبر ماركت"], c: 0}
+                  ]
+                },
+                { t: "14. Stress Management", 
+                  lines: [
+                    {s: "Therapist", t: "You mentioned feeling overwhelmed by your heavy workload."},
+                    {s: "Patient", t: "Yes, I am constantly stressed and cannot sleep well at night."},
+                    {s: "Therapist", t: "Have you tried practicing mindfulness or daily meditation?"},
+                    {s: "Patient", t: "I find it hard to calm my mind for even five minutes."},
+                    {s: "Therapist", t: "We can start with deep breathing exercises during your breaks."},
+                    {s: "Patient", t: "That sounds manageable. I will try it tomorrow at the office."},
+                    {s: "Therapist", t: "Consistency is key to lowering your stress hormones."},
+                    {s: "Patient", t: "I understand. I really need to prioritize my well-being."}
+                  ],
+                  qs: [
+                    {q: "Why is the patient feeling overwhelmed?", o: ["heavy workload|عبء عمل ثقيل", "family problems|مشاكل عائلية", "financial debt|ديون مالية"], c: 0},
+                    {q: "What happens to the patient at night?", o: ["cannot sleep well|لا يستطيع النوم جيداً", "eats a lot of food|يأكل كثيراً", "watches TV all night|يشاهد التلفاز طوال الليل"], c: 0},
+                    {q: "What does the therapist suggest starting with?", o: ["deep breathing exercises|تمارين تنفس عميق", "running a marathon|الجري في ماراثون", "quitting the job|ترك الوظيفة"], c: 0},
+                    {q: "What is key to lowering stress hormones?", o: ["consistency|الاستمرارية", "drinking coffee|شرب القهوة", "ignoring problems|تجاهل المشاكل"], c: 0},
+                    {q: "How does the patient feel constantly?", o: ["stressed|متوتر", "happy|سعيد", "bored|ملول"], c: 0},
+                    {q: "What is hard for the patient?", o: ["calming the mind|تهدئة العقل", "waking up early|الاستيقاظ مبكراً", "eating healthy|الأكل الصحي"], c: 0},
+                    {q: "When should the patient practice breathing?", o: ["during breaks|أثناء الاستراحات", "while driving|أثناء القيادة", "during meetings|أثناء الاجتماعات"], c: 0},
+                    {q: "What must the patient prioritize?", o: ["wellbeing|الرفاهية", "making money|كسب المال", "working more hours|العمل ساعات أكثر"], c: 0}
+                  ]
+                },
+                { t: "15. E-commerce Startup", 
+                  lines: [
+                    {s: "Investor", t: "Your startup's revenue has doubled this year. How did you achieve this?"},
+                    {s: "Founder", t: "We optimized our logistics to offer faster delivery times."},
+                    {s: "Investor", t: "That is impressive. Did you build your own delivery network?"},
+                    {s: "Founder", t: "No, we partnered with reliable local courier services."},
+                    {s: "Investor", t: "What is your main strategy for the next quarter?"},
+                    {s: "Founder", t: "We plan to expand our product range into international markets."},
+                    {s: "Investor", t: "That requires significant capital. I am ready to fund the expansion."},
+                    {s: "Founder", t: "Thank you. This partnership will guarantee our global success."}
+                  ],
+                  qs: [
+                    {q: "What happened to the startup's revenue?", o: ["it doubled|لقد تضاعفت", "it decreased|لقد انخفضت", "it stayed the same|بقيت كما هي"], c: 0},
+                    {q: "How did they achieve this success?", o: ["by offering faster delivery|بتقديم توصيل أسرع", "by raising prices|برفع الأسعار", "by firing employees|بتسريح الموظفين"], c: 0},
+                    {q: "Who handles their deliveries?", o: ["local courier services|خدمات بريد محلية", "their own network|شبكتهم الخاصة", "international drones|طائرات مسيرة دولية"], c: 0},
+                    {q: "What is their strategy for the next quarter?", o: ["expand into international markets|التوسع في الأسواق الدولية", "close the business|إغلاق العمل", "focus only on local sales|التركيز على المبيعات المحلية"], c: 0},
+                    {q: "What did they optimize?", o: ["logistics|اللوجستيات", "the website design|تصميم الموقع", "the employee salaries|رواتب الموظفين"], c: 0},
+                    {q: "What requires significant capital?", o: ["the expansion|التوسع", "buying new computers|شراء حواسيب جديدة", "paying local couriers|الدفع للسعاة المحليين"], c: 0},
+                    {q: "What will the investor do?", o: ["fund the expansion|يمول التوسع", "buy the company|يشتري الشركة", "cancel the partnership|يلغي الشراكة"], c: 0},
+                    {q: "What will the partnership guarantee?", o: ["global success|نجاح عالمي", "local failure|فشل محلي", "slower delivery|توصيل أبطأ"], c: 0}
+                  ]
+                },
+                { t: "16. Modern Architecture", 
+                  lines: [
+                    {s: "Mayor", t: "This new building design is completely different from the rest of the city."},
+                    {s: "Architect", t: "Yes, it uses sustainable materials and blends with nature."},
+                    {s: "Mayor", t: "I like the green spaces on the roof, but is it structurally safe?"},
+                    {s: "Architect", t: "Absolutely. It is designed to withstand severe earthquakes."},
+                    {s: "Mayor", t: "Will it consume a lot of energy?"},
+                    {s: "Architect", t: "No, the glass walls maximize natural sunlight, saving electricity."},
+                    {s: "Mayor", t: "This will be a great symbol for our modern urban development."},
+                    {s: "Architect", t: "I am proud to contribute to the city's innovative future."}
+                  ],
+                  qs: [
+                    {q: "What materials are used in the new building design?", o: ["sustainable materials|مواد مستدامة", "traditional bricks|طوب تقليدي", "cheap plastic|بلاستيك رخيص"], c: 0},
+                    {q: "What does the building blend with?", o: ["nature|الطبيعة", "the old factories|المصانع القديمة", "the ocean|المحيط"], c: 0},
+                    {q: "What natural disaster can the building withstand?", o: ["earthquakes|الزلازل", "floods|الفيضانات", "hurricanes|الأعاصير"], c: 0},
+                    {q: "How does the building save electricity?", o: ["glass walls maximize natural sunlight|الجدران الزجاجية تعظم ضوء الشمس الطبيعي", "by turning off lights|بإطفاء الأنوار", "using candles|باستخدام الشموع"], c: 0},
+                    {q: "What is on the roof?", o: ["green spaces|مساحات خضراء", "a swimming pool|مسبح", "a helicopter pad|مهبط طائرات عمودية"], c: 0},
+                    {q: "Is the building structurally safe?", o: ["Yes, absolutely|نعم، بالتأكيد", "No, it is dangerous|لا، إنه خطير", "They are not sure|هم غير متأكدين"], c: 0},
+                    {q: "What will the building be a symbol of?", o: ["modern urban development|تطوير حضري حديث", "ancient history|تاريخ قديم", "bad architecture|عمارة سيئة"], c: 0},
+                    {q: "What is the architect proud of?", o: ["contributing to innovative future|المساهمة في مستقبل مبتكر", "making a lot of money|كسب الكثير من المال", "building the tallest tower|بناء أطول برج"], c: 0}
+                  ]
+                },
+                { t: "17. Eco-Friendly Tourism", 
+                  lines: [
+                    {s: "Traveler", t: "I am looking for a unique destination for my summer vacation."},
+                    {s: "Agent", t: "How about an eco-friendly resort in Costa Rica?"},
+                    {s: "Traveler", t: "That sounds interesting. What makes it eco-friendly?"},
+                    {s: "Agent", t: "The resort runs on solar power and protects local wildlife."},
+                    {s: "Traveler", t: "Are there activities like hiking or scuba diving?"},
+                    {s: "Agent", t: "Yes, you can hike in the rainforest and dive in clear waters."},
+                    {s: "Traveler", t: "It sounds like a perfect escape from city life."},
+                    {s: "Agent", t: "I will book the tickets and reserve a beautiful cabin for you."}
+                  ],
+                  qs: [
+                    {q: "Where does the agent suggest for the vacation?", o: ["an eco-friendly resort in Costa Rica|منتجع صديق للبيئة في كوستاريكا", "a luxury hotel in Paris|فندق فخم في باريس", "a busy city in Japan|مدينة مزدحمة في اليابان"], c: 0},
+                    {q: "What powers the resort?", o: ["solar power|الطاقة الشمسية", "coal|الفحم", "nuclear energy|طاقة نووية"], c: 0},
+                    {q: "What activities can the traveler do?", o: ["hiking and diving|المشي لمسافات طويلة والغوص", "shopping and eating|التسوق والأكل", "skiing and snowboarding|التزلج"], c: 0},
+                    {q: "What will the agent reserve for the traveler?", o: ["a beautiful cabin|كوخ جميل", "a large tent|خيمة كبيرة", "a small room|غرفة صغيرة"], c: 0},
+                    {q: "What does the resort protect?", o: ["wildlife|حياة برية", "big factories|مصانع كبيرة", "city streets|شوارع المدينة"], c: 0},
+                    {q: "Where can the traveler hike?", o: ["in the rainforest|في الغابة المطيرة", "on a snowy mountain|على جبل ثلجي", "in the desert|في الصحراء"], c: 0},
+                    {q: "What is the resort an escape from?", o: ["city life|حياة المدينة", "healthy food|طعام صحي", "vacation time|وقت الإجازة"], c: 0},
+                    {q: "What will the agent book?", o: ["the tickets|التذاكر", "a rental car|سيارة إيجار", "a boat|قارب"], c: 0}
+                  ]
+                },
+                { t: "18. Virtual Reality Gaming", 
+                  lines: [
+                    {s: "Gamer", t: "I just tried the new virtual reality headset. It is amazing."},
+                    {s: "Developer", t: "I am glad you liked it. The immersive graphics took years to build."},
+                    {s: "Gamer", t: "The environment feels so real, especially the ocean scenes."},
+                    {s: "Developer", t: "We used advanced sensors to track your head movements perfectly."},
+                    {s: "Gamer", t: "Is it possible to play multiplayer games with my friends?"},
+                    {s: "Developer", t: "Yes, the online servers connect players globally in real time."},
+                    {s: "Gamer", t: "I will definitely buy one. This is the future of gaming."},
+                    {s: "Developer", t: "Thank you. We are releasing more stunning games next month."}
+                  ],
+                  qs: [
+                    {q: "What did the gamer just try?", o: ["a virtual reality headset|سماعة واقع افتراضي", "a new computer|حاسوب جديد", "a mobile phone|هاتف محمول"], c: 0},
+                    {q: "What took years to build?", o: ["the immersive graphics|الرسومات الغامرة", "the physical headset|سماعة الرأس المادية", "the battery|البطارية"], c: 0},
+                    {q: "What is possible to play with friends?", o: ["multiplayer games|ألعاب جماعية", "board games|ألعاب لوحية", "card games|ألعاب بطاقات"], c: 0},
+                    {q: "What are they releasing next month?", o: ["more stunning games|مزيد من الألعاب المذهلة", "a new controller|وحدة تحكم جديدة", "a TV show|برنامج تلفزيوني"], c: 0},
+                    {q: "What scenes feel so real?", o: ["the ocean scenes|مشاهد المحيط", "the desert scenes|مشاهد الصحراء", "the space scenes|مشاهد الفضاء"], c: 0},
+                    {q: "What tracks head movements?", o: ["advanced sensors|مستشعرات متقدمة", "a video camera|كاميرا فيديو", "a remote control|ريموت كنترول"], c: 0},
+                    {q: "How do online servers connect players?", o: ["globally in real time|عالمياً في الوقت الفعلي", "only locally|محلياً فقط", "with a delay|بتأخير زمني"], c: 0},
+                    {q: "What does the gamer think this is?", o: ["the future of gaming|مستقبل الألعاب", "a waste of money|مضيعة للمال", "a bad idea|فكرة سيئة"], c: 0}
+                  ]
+                },
+                { t: "19. Time Management Coaching", 
+                  lines: [
+                    {s: "Student", t: "I am struggling to meet my university deadlines. I feel lost."},
+                    {s: "Coach", t: "Let us review your schedule. Do you prioritize your daily tasks?"},
+                    {s: "Student", t: "Not really. I just try to do everything at once."},
+                    {s: "Coach", t: "You must separate urgent tasks from important but non-urgent ones."},
+                    {s: "Student", t: "How do I do that effectively without wasting time?"},
+                    {s: "Coach", t: "Use a simple planner. Write down the top three goals for the day."},
+                    {s: "Student", t: "That sounds practical. I will start doing that tomorrow morning."},
+                    {s: "Coach", t: "Good. Focus on one task at a time to reduce your anxiety."}
+                  ],
+                  qs: [
+                    {q: "What is the student struggling with?", o: ["university deadlines|مواعيد الجامعة النهائية", "waking up early|الاستيقاظ مبكراً", "making new friends|تكوين أصدقاء جدد"], c: 0},
+                    {q: "What does the coach suggest the student do with tasks?", o: ["prioritize them|تحديد أولوياتها", "ignore them|تجاهلها", "give them to someone else|إعطاؤها لشخص آخر"], c: 0},
+                    {q: "What tool should the student use?", o: ["a simple planner|مخطط بسيط", "a complicated app|تطبيق معقد", "a loud alarm|منبه مزعج"], c: 0},
+                    {q: "How many top goals should be written down for the day?", o: ["three|ثلاثة", "five|خمسة", "ten|عشرة"], c: 0},
+                    {q: "How does the student feel?", o: ["lost|ضائع", "happy|سعيد", "angry|غاضب"], c: 0},
+                    {q: "What must be separated?", o: ["urgent from important tasks|المهام العاجلة عن المهمة", "school from work|المدرسة عن العمل", "day from night|النهار عن الليل"], c: 0},
+                    {q: "When will the student start using the planner?", o: ["tomorrow morning|غداً صباحاً", "next week|الأسبوع القادم", "tonight|الليلة"], c: 0},
+                    {q: "What reduces anxiety?", o: ["focusing on one task|التركيز على مهمة واحدة", "doing everything at once|فعل كل شيء في وقت واحد", "ignoring the deadlines|تجاهل المواعيد النهائية"], c: 0}
+                  ]
+                },
+                { t: "20. Ocean Pollution Debate", 
+                  lines: [
+                    {s: "Journalist", t: "How bad is the plastic waste problem in the ocean today?"},
+                    {s: "Scientist", t: "It is catastrophic. Millions of tons of plastic are destroying marine ecosystems."},
+                    {s: "Journalist", t: "Are recycling programs enough to solve this issue?"},
+                    {s: "Scientist", t: "No, recycling is not enough. We need strict bans on single-use plastics."},
+                    {s: "Journalist", t: "But many industries rely heavily on cheap plastic packaging."},
+                    {s: "Scientist", t: "They must innovate and find biodegradable alternatives immediately."},
+                    {s: "Journalist", t: "Do you think public awareness is increasing?"},
+                    {s: "Scientist", t: "Yes, but awareness must translate into urgent political action."}
+                  ],
+                  qs: [
+                    {q: "What is destroying marine ecosystems?", o: ["plastic waste|نفايات بلاستيكية", "heavy rain|مطر غزير", "fishing boats|قوارب الصيد"], c: 0},
+                    {q: "Is recycling enough to solve the issue?", o: ["No, it is not|لا، ليس كافياً", "Yes, it is perfect|نعم، إنه مثالي", "They do not know|هم لا يعرفون"], c: 0},
+                    {q: "What does the scientist demand regarding single-use plastics?", o: ["strict bans|حظر صارم", "more production|إنتاج أكثر", "cheaper prices|أسعار أرخص"], c: 0},
+                    {q: "What must awareness translate into?", o: ["urgent political action|عمل سياسي عاجل", "more TV shows|برامج تلفزيونية أكثر", "longer vacations|إجازات أطول"], c: 0},
+                    {q: "How much plastic is in the ocean?", o: ["millions of tons|ملايين الأطنان", "a few kilograms|بضعة كيلوجرامات", "none|لا شيء"], c: 0},
+                    {q: "What do many industries rely on?", o: ["cheap plastic packaging|تغليف بلاستيكي رخيص", "expensive glass|زجاج غالي", "paper bags only|أكياس ورقية فقط"], c: 0},
+                    {q: "What must industries find?", o: ["biodegradable alternatives|بدائل قابلة للتحلل", "more cheap plastic|مزيد من البلاستيك الرخيص", "new marketing ideas|أفكار تسويق جديدة"], c: 0},
+                    {q: "How does the scientist describe the problem?", o: ["catastrophic|كارثية", "minor|بسيطة", "solved|محلولة"], c: 0}
+                  ]
+                }
+            ];
+
+            data.forEach((d, idx) => {
+                let globalIdBase = `advlis-${idx}-${Math.random().toString(36).substr(2,4)}`;
+                examData.listening.push({
+                    title: d.t,
+                    dialogue: d.lines.map(l => ({
+                        speaker: l.s, 
+                        text: l.t, 
+                        gender: getSpeakerGender(l.s)
+                    })),
+                    questions: [
+                        { q: d.qs[0].q, o: [d.qs[0].o[0], d.qs[0].o[1], d.qs[0].o[2]], correctIdx: d.qs[0].c, globalId: `${globalIdBase}-1` },
+                        { q: d.qs[1].q, o: [d.qs[1].o[0], d.qs[1].o[1], d.qs[1].o[2]], correctIdx: d.qs[1].c, globalId: `${globalIdBase}-2` },
+                        { q: d.qs[2].q, o: [d.qs[2].o[0], d.qs[2].o[1], d.qs[2].o[2]], correctIdx: d.qs[2].c, globalId: `${globalIdBase}-3` },
+                        { q: d.qs[3].q, o: [d.qs[3].o[0], d.qs[3].o[1], d.qs[3].o[2]], correctIdx: d.qs[3].c, globalId: `${globalIdBase}-4` },
+                        { q: d.qs[4].q, o: [d.qs[4].o[0], d.qs[4].o[1], d.qs[4].o[2]], correctIdx: d.qs[4].c, globalId: `${globalIdBase}-5` },
+                        { q: d.qs[5].q, o: [d.qs[5].o[0], d.qs[5].o[1], d.qs[5].o[2]], correctIdx: d.qs[5].c, globalId: `${globalIdBase}-6` },
+                        { q: d.qs[6].q, o: [d.qs[6].o[0], d.qs[6].o[1], d.qs[6].o[2]], correctIdx: d.qs[6].c, globalId: `${globalIdBase}-7` },
+                        { q: d.qs[7].q, o: [d.qs[7].o[0], d.qs[7].o[1], d.qs[7].o[2]], correctIdx: d.qs[7].c, globalId: `${globalIdBase}-8` }
+                    ]
+                });
+            });
+        }
+
+        function buildExamApp() {
+            generateAdvancedDialogues();
+            let container = document.getElementById('exam-container');
+            container.innerHTML = '';
+
+            let lHeader = document.createElement('div');
+            lHeader.className = 'exam-section-title';
+            lHeader.innerText = "Advanced B1/B2 Listening Section (20 Dialogues, 160 Questions)";
+            container.appendChild(lHeader);
+
+            examData.listening.forEach((pass, pIdx) => {
+                let audioBar = document.createElement('div');
+                audioBar.className = 'audio-bar';
+                
+                let dialogueHtml = `<div class="dialogue-box">`;
+                pass.dialogue.forEach((line, lineIdx) => {
+                    let speakerClass = (lineIdx % 2 === 0) ? 'speaker-1' : 'speaker-2';
+                    dialogueHtml += `
+                        <div class="dialogue-line" id="line-${pIdx}-${lineIdx}" data-gender="${line.gender}">
+                            <span class="speaker-badge ${line.gender === 'f' ? 'female' : 'male'}">${line.gender === 'f' ? 'صوت أنثوي' : 'صوت ذكوري'}</span>
+                            <button class="line-audio-btn" data-state="stopped" onclick="handleAudioClick(this, '.dialogue-line', false)">🔊</button>
+                            <span class="${speakerClass}">${line.speaker}:</span> 
+                            <div style="display:inline-flex; flex-wrap:wrap; gap:5px; align-items:flex-end; padding-top:10px;">${renderClickableHtml(line.text)}</div>
+                        </div>`;
+                });
+                dialogueHtml += `</div>`;
+
+                audioBar.innerHTML = `
+                    <div style="font-weight:bold; color:#0369a1; margin-bottom:5px; font-size:1.3em;">🎧 ${pass.title}</div>
+                    <div class="audio-controls-row">
+                        <button class="btn-natural" data-state="stopped" onclick="handleNaturalReading(this, '.audio-bar')">🗣️ قراءة طبيعية مزدوجة (Natural)</button>
+                        <button class="audio-btn btn-toggle" data-state="stopped" onclick="handleAudioClick(this, '.audio-bar', true)">🎧 بدء التتبع والإملاء كاملاً (Dictation)</button>
+                    </div>
+                    ${dialogueHtml}
+                `;
+                container.appendChild(audioBar);
+
+                pass.questions.forEach((q, qIdx) => {
+                    container.appendChild(createQuestionCard(q, qIdx));
+                });
+            });
+        }
+
+        function renderClickableHtml(text) {
+            let pairs = text.split(' ').map(p => p.trim()).filter(p => p !== '');
+            return pairs.map(pair => {
+                let cleanW = pair.replace(/[^a-zA-Z0-9'-]/g, '');
+                let arW = getTranslation(cleanW);
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let arHtml = arW !== "" ? `<span class="ar">${arW}</span>` : `<span class="ar" style="display:none;"></span>`;
+                return `<span class="word-group" data-speak="${safeWord}">${arHtml}<span class="en">${pair}</span></span>`;
+            }).join(' ');
+        }
+
+        function createQuestionCard(qObj, index) {
+            let block = document.createElement('div');
+            block.className = 'question-row';
+            block.id = `q-${qObj.globalId}`;
+            
+            let originalCorrectOptStr = qObj.o[qObj.correctIdx].split('|')[0].replace(/_/g, ' ').trim();
+            block.setAttribute('data-ans', originalCorrectOptStr);
+
+            let wordsHtml = renderClickableHtml(qObj.q.replace(/_/g, ' '));
+
+            let indexedOpts = qObj.o.map((opt, idx) => ({ optStr: opt, isCorrect: (idx === qObj.correctIdx) }));
+            indexedOpts.sort(() => Math.random() - 0.5);
+
+            let letters = ["A", "B", "C", "D"];
+            let optsHtml = `<div class="options-inline" id="opts-area-${qObj.globalId}">` + indexedOpts.map((item, i) => {
+                let optWordsHtml = renderClickableHtml(item.optStr.split('|')[0]);
+                let isCorrAttr = item.isCorrect ? 'true' : 'false';
+                let cleanOptVal = item.optStr.split('|')[0].replace(/_/g, ' ').trim();
+                return `<div class="opt-item" data-correct="${isCorrAttr}" data-opt-val="${cleanOptVal}" onclick="selectOption(this, event)"><div class="choice-badge">${letters[i]}</div><div class="choice-text">${optWordsHtml}</div></div>`;
+            }).join('') + `</div>`;
+
+            block.innerHTML = `
+                <div class="q-text-container">
+                    <span class="q-number-span" id="num-${qObj.globalId}">${index + 1}. </span>
+                    <div class="q-text">${wordsHtml}</div>
+                </div>
+                ${optsHtml}
+                <div class="answer-action-container">
+                    <button class="btn-answer" id="btn-ans-${qObj.globalId}" onclick="window.revealAnswer('${qObj.globalId}')">👁️ إظهار الإجابة</button>
+                </div>
+                <div class="answer-box" id="ans-box-${qObj.globalId}">
+                    <div class="correct-word-text">الإجابة الصحيحة: <span class="en-ans" style="color:#059669; font-weight:bold;">${originalCorrectOptStr}</span></div>
+                </div>
+            `;
+            return block;
+        }
+
+        window.applyVoiceSettings = function(u, gender) {
+            u.pitch = (gender === 'f') ? 1.4 : 0.8;
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                let engVoices = voices.filter(v => v.lang.startsWith('en'));
+                if (engVoices.length > 0) {
+                    if (gender === 'f') {
+                        let femaleVoice = engVoices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('karen'));
+                        if (femaleVoice) u.voice = femaleVoice;
+                    } else {
+                        let maleVoice = engVoices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('mark') || v.name.toLowerCase().includes('daniel'));
+                        if (maleVoice) u.voice = maleVoice;
+                        else if (engVoices.length > 1) u.voice = engVoices[engVoices.length - 1]; 
+                    }
+                }
+            }
+        };
+
+        window.naturalReadingState = { btn: null, lines: [], currentIndex: 0, status: 'stopped' };
+
+        window.clearHighlights = function() {
+            document.querySelectorAll('.audio-highlight').forEach(el => el.classList.remove('audio-highlight'));
+            document.querySelectorAll('.dialogue-line.line-highlight').forEach(el => el.classList.remove('line-highlight'));
+        };
+
+        window.handleNaturalReading = function(btn, containerSelector) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+
+            let nr = window.naturalReadingState;
+            let am = window.audioManager;
+
+            if (am.status !== 'stopped') {
+                am.status = 'stopped';
+                window.speechSynthesis.cancel();
+                window.clearHighlights();
+                if (am.btn) window.updateBtnUI(am.btn, 'stopped', am.btn.classList.contains('audio-btn'));
+                am.btn = null;
+            }
+
+            if (nr.btn === btn) {
+                if (nr.status === 'playing') {
+                    nr.status = 'paused';
+                    window.speechSynthesis.cancel(); 
+                    btn.innerHTML = '▶️ استئناف الطبيعية';
+                    btn.className = 'btn-natural paused';
+                    return;
+                } else if (nr.status === 'paused') {
+                    nr.status = 'playing';
+                    btn.innerHTML = '⏸ إيقاف الطبيعية';
+                    btn.className = 'btn-natural playing';
+                    window.speakNextNaturalLine();
+                    return;
+                }
+            }
+
+            window.speechSynthesis.cancel();
+            window.clearHighlights();
+
+            if (nr.btn && nr.btn !== btn) {
+                nr.btn.innerHTML = '🗣️ قراءة طبيعية مزدوجة (Natural)';
+                nr.btn.className = 'btn-natural';
+            }
+
+            nr.btn = btn;
+            nr.status = 'playing';
+            btn.innerHTML = '⏸ إيقاف الطبيعية';
+            btn.className = 'btn-natural playing';
+
+            let container = btn.closest(containerSelector);
+            nr.lines = Array.from(container.querySelectorAll('.dialogue-line'));
+            nr.currentIndex = 0;
+
+            window.speakNextNaturalLine();
+        };
+
+        window.speakNextNaturalLine = function() {
+            let nr = window.naturalReadingState;
+            
+            if (nr.status !== 'playing') return;
+
+            window.clearHighlights();
+
+            if (nr.currentIndex >= nr.lines.length) {
+                nr.currentIndex = 0;
+                let savedBtn = nr.btn;
+                setTimeout(function() {
+                    if (nr.status === 'playing' && nr.btn === savedBtn) {
+                        window.speakNextNaturalLine();
+                    }
+                }, 1200); 
+                return;
+            }
+
+            let currentLineEl = nr.lines[nr.currentIndex];
+            currentLineEl.classList.add('line-highlight'); 
+            currentLineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            let gender = currentLineEl.getAttribute('data-gender');
+            let words = Array.from(currentLineEl.querySelectorAll('.word-group .en'));
+            let text = words.map(w => w.textContent.trim()).join(' ');
+
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 1.0; 
+            
+            window.applyVoiceSettings(u, gender);
+
+            u.onend = function() {
+                if (nr.status === 'playing') {
+                    nr.currentIndex++;
+                    window.speakNextNaturalLine();
+                } else {
+                    window.clearHighlights();
+                }
+            };
+            
+            u.onerror = function() {
+                if (nr.status === 'playing') {
+                    nr.currentIndex++;
+                    window.speakNextNaturalLine();
+                } else {
+                    window.clearHighlights();
+                }
+            };
+
+            window.speechSynthesis.speak(u);
+        };
+        
+        window.audioManager = {
+            btn: null,
+            wordsQueue: [],
+            currentIndex: 0,
+            status: 'stopped',
+            lastScrolledLine: null
+        };
+
+        window.updateBtnUI = function(btn, state, isFull) {
+            if (isFull) {
+                if (state === 'playing') {
+                    btn.innerHTML = '⏸ إيقاف الإملاء مؤقتاً (Pause)';
+                    btn.className = 'audio-btn btn-toggle playing';
+                } else if (state === 'paused') {
+                    btn.innerHTML = '▶️ استئناف الإملاء (Resume)';
+                    btn.className = 'audio-btn btn-toggle paused';
+                } else {
+                    btn.innerHTML = '🎧 بدء التتبع والإملاء كاملاً (Dictation)';
+                    btn.className = 'audio-btn btn-toggle';
+                }
+            } else {
+                if (state === 'playing') {
+                    btn.innerHTML = '⏸';
+                    btn.className = 'line-audio-btn playing';
+                } else if (state === 'paused') {
+                    btn.innerHTML = '▶️';
+                    btn.className = 'line-audio-btn paused';
+                } else {
+                    btn.innerHTML = '🔊';
+                    btn.className = 'line-audio-btn';
+                }
+            }
+        };
+
+        window.speakCurrentWord = function(isFull) {
+            let am = window.audioManager;
+            
+            if (am.status !== 'playing') return;
+            
+            if (am.currentIndex >= am.wordsQueue.length) {
+                am.currentIndex = 0;
+                am.lastScrolledLine = null;
+                window.clearHighlights();
+                let savedBtn = am.btn;
+                
+                setTimeout(function() {
+                    if (am.status === 'playing' && am.btn === savedBtn) {
+                        window.speakCurrentWord(isFull);
+                    }
+                }, 1000); 
+                return;
+            }
+
+            window.clearHighlights();
+            let currentWordEl = am.wordsQueue[am.currentIndex];
+            currentWordEl.classList.add('audio-highlight');
+            
+            let currentLine = currentWordEl.closest('.dialogue-line');
+            if(currentLine && am.lastScrolledLine !== currentLine) {
+                currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                am.lastScrolledLine = currentLine;
+            }
+            
+            let text = currentWordEl.querySelector('.en').textContent.trim();
+            let gender = currentLine ? currentLine.getAttribute('data-gender') : 'm';
+            
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.85; 
+            
+            window.applyVoiceSettings(u, gender);
+
+            u.onend = function() {
+                if (am.status === 'playing') {
+                    am.currentIndex++;
+                    window.speakCurrentWord(isFull);
+                }
+            };
+            
+            u.onerror = function() {
+                if (am.status === 'playing') {
+                    am.currentIndex++;
+                    window.speakCurrentWord(isFull);
+                }
+            };
+
+            window.speechSynthesis.speak(u);
+        };
+
+        window.handleAudioClick = function(btn, containerSelector, isFull) {
+            if (!window.speechSynthesis) {
+                alert("متصفحك لا يدعم خاصية نطق الصوت.");
+                return;
+            }
+
+            let am = window.audioManager;
+            let nr = window.naturalReadingState;
+
+            if (nr.status !== 'stopped') {
+                nr.status = 'stopped';
+                window.speechSynthesis.cancel();
+                if (nr.btn) {
+                    nr.btn.innerHTML = '🗣️ قراءة طبيعية مزدوجة (Natural)';
+                    nr.btn.className = 'btn-natural';
+                }
+                nr.btn = null;
+            }
+
+            if (am.btn === btn) {
+                if (am.status === 'playing') {
+                    am.status = 'paused';
+                    window.speechSynthesis.cancel(); 
+                    window.updateBtnUI(btn, 'paused', isFull);
+                    return;
+                } else if (am.status === 'paused') {
+                    am.status = 'playing';
+                    window.updateBtnUI(btn, 'playing', isFull);
+                    window.speakCurrentWord(isFull);
+                    return;
+                }
+            }
+
+            window.speechSynthesis.cancel();
+            window.clearHighlights();
+            
+            if (am.btn && am.btn !== btn) {
+                window.updateBtnUI(am.btn, 'stopped', am.btn.classList.contains('audio-btn'));
+            }
+
+            am.btn = btn;
+            am.status = 'playing';
+            window.updateBtnUI(btn, 'playing', isFull);
+
+            let container = btn.closest(containerSelector);
+            if(isFull){
+                am.wordsQueue = Array.from(container.querySelectorAll('.dialogue-box .word-group'));
+            } else {
+                am.wordsQueue = Array.from(container.querySelectorAll('.word-group'));
+            }
+            am.currentIndex = 0;
+            am.lastScrolledLine = null;
+            
+            window.speakCurrentWord(isFull);
+        };
+
+        window.setMode = function(mode) {
+            let pageEl = document.querySelector('.page');
+            let btnStudy = document.getElementById('btn-study');
+            let btnExam = document.getElementById('btn-exam');
+            
+            if(window.speechSynthesis) window.speechSynthesis.cancel();
+            window.clearHighlights();
+            
+            if(window.audioManager.btn) {
+                window.audioManager.status = 'stopped';
+                window.updateBtnUI(window.audioManager.btn, 'stopped', window.audioManager.btn.classList.contains('audio-btn'));
+                window.audioManager.btn = null;
+            }
+            if(window.naturalReadingState.btn) {
+                window.naturalReadingState.status = 'stopped';
+                window.naturalReadingState.btn.innerHTML = '🗣️ قراءة طبيعية مزدوجة (Natural)';
+                window.naturalReadingState.btn.className = 'btn-natural';
+                window.naturalReadingState.btn = null;
+            }
+            
+            document.getElementById('res-box').style.display = 'none';
+
+            if (mode === 'exam') {
+                pageEl.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+            } else {
+                pageEl.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+            }
+        };
+
+        window.selectOption = function(optItem, event) {
+            if (event && event.target.closest('.word-group')) return;
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let isCorrectChoice = (optItem.getAttribute('data-correct') === 'true');
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            row.querySelectorAll('.opt-item').forEach(item => {
+                if (item.getAttribute('data-correct') === 'true') item.classList.add('correct');
+            });
+            if (!isCorrectChoice) optItem.classList.add('wrong');
+        };
+
+        document.addEventListener('click', function(e) {
+            if(document.querySelector('.page').classList.contains('exam-mode')) return;
+            let wg = e.target.closest('.word-group');
+            
+            if (wg && !e.target.closest('.line-audio-btn') && !e.target.closest('.audio-btn') && !e.target.closest('.btn-natural')) {
+                let am = window.audioManager;
+                let nr = window.naturalReadingState;
+
+                if (am.status === 'playing') {
+                    window.speechSynthesis.cancel();
+                    am.status = 'paused';
+                    window.updateBtnUI(am.btn, 'paused', am.btn.classList.contains('audio-btn'));
+                    window.clearHighlights();
+                }
+                if (nr.status === 'playing') {
+                    window.speechSynthesis.cancel();
+                    nr.status = 'paused';
+                    nr.btn.innerHTML = '▶️ استئناف الطبيعية';
+                    nr.btn.className = 'btn-natural paused';
+                    window.clearHighlights();
+                }
+                
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    window.clearHighlights();
+                    wg.classList.add('highlight');
+                    
+                    let txt = speakTextAttr.replace(/[\._]/g, '').trim();
+                    let gender = wg.closest('.dialogue-line') ? wg.closest('.dialogue-line').getAttribute('data-gender') : 'm';
+
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; 
+                        u.rate = 0.85;
+                        window.applyVoiceSettings(u, gender);
+                        u.onend = () => wg.classList.remove('highlight');
+                        window.speechSynthesis.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), 1200);
+                    }
+                }
+            }
+        });
+
+        window.revealAnswer = function(id) {
+            let box = document.getElementById(`ans-box-${id}`); 
+            let btn = document.getElementById(`btn-ans-${id}`);
+            if (box.style.display === 'none' || !box.style.display) { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الإجابة'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الإجابة'; 
+            }
+        };
+
+        window.showExamResult = function() {
+            let rows = document.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.getAttribute('data-correct') === 'true') correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById('res-box');
+            let msg = `النتيجة النهائية: ${correctCount} من ${totalCount}<br>`;
+            if(correctCount === totalCount) msg += "🏆 أداء أسطوري! إجابات مثالية!";
+            else if(correctCount >= totalCount/2) msg += "🌟 أداء ممتاز! استمر هكذا!";
+            else msg += "💪 تدرب أكثر لرفع درجتك!";
+            
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+            resEl.scrollIntoView({behavior: 'smooth'});
+        };
+
+        if(window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        buildExamApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>
