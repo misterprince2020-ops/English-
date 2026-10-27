@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جمل الوحدة الرابعة - الصف الثاني المتوسط</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); border-radius: 16px; border: 4px solid #facc15; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.5em; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .creator-info { text-align: center; color: #facc15; background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); font-size: 1.3em; font-weight: bold; margin-bottom: 30px; padding: 14px; border-radius: 10px; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);}
+
+        .group-section { background: #f8fafc; border: 3px solid #cbd5e1; border-radius: 15px; margin-bottom: 40px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        
+        .group-header { background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); padding: 20px; text-align: center; }
+        .group-title { color: #facc15; font-size: 2em; font-weight: 900; margin: 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+
+        .audio-controls-row { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; background: #e0f2fe; padding: 20px; border-bottom: 3px solid #bae6fd; direction: rtl;}
+        .btn-group, .btn-test { color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 250px; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        
+        .btn-group { background-color: #3b82f6; }
+        .btn-group:hover { background-color: #2563eb; transform: translateY(-2px);}
+        .btn-group.playing { background-color: #e11d48 !important; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); }
+
+        .btn-test { background-color: #8b5cf6; }
+        .btn-test:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        .btn-test.active { background-color: #d946ef; outline: 3px solid #facc15; outline-offset: 2px;}
+
+        .sentences-container { padding: 15px; }
+
+        .sentence-row { display: flex; align-items: flex-start; justify-content: space-between; background: #ffffff; padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #e2e8f0; transition: all 0.3s ease; gap: 20px;}
+        .sentence-row:hover { background-color: #f0fdf4; border-color: #86efac; transform: scale(1.01); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .sentence-row.line-highlight { background-color: #fef08a !important; border-color: #eab308 !important; transform: scale(1.02); box-shadow: 0 5px 15px rgba(234, 179, 8, 0.3) !important; z-index: 10; }
+
+        .ar-full-translation { color: #2563eb; font-size: 1.6em; font-weight: 900; width: 40%; text-align: right; direction: rtl; transition: opacity 0.3s; line-height: 1.5; text-shadow: 0px 0px 1px rgba(37, 99, 235, 0.2); padding-top: 5px;}
+        
+        .en-sentence-part { width: 60%; display: flex; flex-direction: column; gap: 15px; direction: ltr; text-align: left; }
+        .sentence-header { display: flex; align-items: flex-end; gap: 15px; width: 100%;}
+        
+        .num-badge { font-size: 1.8em; font-weight: 900; color: #dc2626; flex-shrink: 0; font-family: Arial, sans-serif; background: #fee2e2; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fca5a5;}
+
+        .sentence-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start; margin-top: 5px; border-top: 1px dashed #cbd5e1; padding-top: 15px; direction: rtl;}
+        .btn-s-action { font-family: 'Tajawal'; font-weight: bold; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; color: white; display: flex; align-items: center; gap: 8px; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-s-action:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.15);}
+        .btn-s-action.playing { background-color: #e11d48 !important; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); animation: pulse 1s infinite;}
+        
+        .btn-wbw { background-color: #0ea5e9; }
+        .btn-nat { background-color: #10b981; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .words-wrapper { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; padding-top: 5px; }
+
+        .word-group { display: inline-flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-end !important; cursor: pointer; margin: 0 2px; position: relative; vertical-align: bottom; min-height: 45px; }
+        .word-group .ar { color: #dc2626; font-size: 16px; font-family: 'Tajawal', sans-serif; font-weight: 900; white-space: nowrap; pointer-events: none; margin-bottom: -4px; width: 100%; text-align: center !important; direction: rtl; line-height: 1; transition: opacity 0.3s;}
+        .word-group .en { font-size: 21px; font-weight: bold; padding: 2px 6px 4px 6px; border-radius: 6px; transition: 0.1s; color: #1e293b; direction: ltr; font-family: Arial, sans-serif; width: 100%; text-align: center !important; line-height: 1;}
+        
+        .audio-highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-radius: 6px; transform: scale(1.15);}
+        .word-group.highlight .en { background-color: #93c5fd !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        .test-mode-active .ar-full-translation { opacity: 0; pointer-events: none; }
+        .test-mode-active .word-group .ar { opacity: 0; }
+
+        @media (max-width: 900px) {
+            .sentence-row { flex-direction: column; text-align: center; gap: 20px;}
+            .ar-full-translation { width: 100%; text-align: center; font-size: 1.5em; border-bottom: 2px dashed #cbd5e1; padding-bottom: 15px;}
+            .en-sentence-part { width: 100%; justify-content: center; flex-wrap: wrap;}
+            .words-wrapper { justify-content: center; }
+            .sentence-actions { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">جمل الوحدة الرابعة للصف الثاني المتوسط</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+
+    <div id="content-container"></div>
+</div>
+
+<script>
+(function initSentencesApp() {
+    try {
+        const dictionary = {
+            "a": "أداة نكرة", "an": "أداة نكرة", "the": "الـ", "is": "يكون", "are": "يكونون", "am": "أكون", "was": "كان", "were": "كانوا", "do": "تفعل", "does": "يفعل", "did": "فعل", "have": "يملك/لديه", "has": "يملك/لديه", "had": "ملك", "will": "سوف", "can": "يستطيع", "i": "أنا", "you": "أنت", "he": "هو", "she": "هي", "it": "هو/هي", "we": "نحن", "they": "هم", "my": "خاصتي", "your": "خاصتك", "his": "خاصته", "our": "خاصتنا", "their": "خاصتهم", "this": "هذا", "that": "ذلك", "who": "من", "what": "ماذا", "where": "أين", "when": "متى", "why": "لماذا", "how": "كيف", "which": "أي", "yes": "نعم", "no": "لا", "not": "ليس", "and": "و", "or": "أو", "but": "لكن", "because": "لأن", "so": "لذلك", "if": "إذا", "in": "في", "on": "في/على", "at": "في/عند", "to": "إلى/أن", "for": "لـ/من أجل", "with": "مع", "about": "عن", "from": "من", "by": "بواسطة", "very": "جداً", "too": "جداً/أيضاً",
+            
+            // Unit 4 Specific Vocabulary
+            "youth": "الشباب", "usually": "عادة", "free": "فراغ/حر", "time": "وقت", "hang": "يخرج/يتسكع", "out": "خارج", "friends": "أصدقاء", "just": "فقط", "meet": "يلتقي", "talk": "يتحدث", "play": "يلعب", "sports": "رياضة", "work": "يعمل/يتمرن", "eat": "يأكل", "food": "طعام", "courts": "صالات", "restaurants": "مطاعم", "video": "فيديو", "board": "لوح", "games": "ألعاب", "hobby": "هواية", "example": "مثال", "cook": "يطبخ", "paint": "يرسم", "read": "يقرأ", "make": "يصنع", "things": "أشياء", "teens": "مراهقين", "participate": "يشارك", "social": "اجتماعي", "networks": "شبكات", "send": "يرسل", "receive": "يستقبل", "emails": "إيميلات",
+            "often": "غالباً", "basketball": "كرة السلة", "practice": "يتدرب", "three": "ثلاث", "times": "مرات", "week": "أسبوع", "favorite": "مفضل", "thing": "شيء", "like": "يحب/مثل", "hockey": "هوكي", "know": "يعرف", "well": "جيداً", "go": "يذهب", "rink": "حلبة", "weekends": "نهاية الأسبوع", "take": "يأخذ", "shower": "استحمام", "always": "دائماً", "morning": "صباح", "bed": "سرير", "twice": "مرتين", "seldom": "نادراً", "watches": "يشاهد", "tv": "تلفاز",
+            "thursdays": "أيام الخميس", "shopping": "تسوق", "sometimes": "أحياناً", "night": "ليل", "ski": "يتزلج", "homework": "واجب", "five": "خمس", "all": "كل", "indoor": "داخلي", "climbing": "تسلق", "day": "يوم", "unusual": "غير عادي", "fly": "يطير", "planes": "طائرات", "sounds": "يبدو", "exciting": "مثير", "normally": "عادة", "really": "حقاً", "aerobatics": "ألعاب بهلوانية", "perform": "يؤدي", "stunts": "حركات خطيرة", "stuff": "أشياء", "dangerous": "خطير", "safe": "آمن", "should": "ينبغي", "come": "يأتي", "along": "مع", "club": "نادي", "sometime": "وقتاً ما", "would": "يود", "love": "يحب", "up": "أعلى", "air": "هواء",
+            "aeromodelling": "صنع نماذج الطائرات", "attracts": "يجذب", "people": "الناس", "ages": "أعمار", "one": "واحد", "common": "مشترك", "interest": "اهتمام", "advances": "تقدم", "technology": "تكنولوجيا", "big": "كبير", "radiocontrolled": "يتحكم بها بالراديو", "airplanes": "طائرات", "models": "نماذج", "real": "حقيقي", "aircraft": "طائرة", "control": "يتحكم", "movement": "حركة", "through": "عبر", "signals": "إشارات", "price": "سعر", "varies": "يختلف", "different": "مختلف", "methods": "طرق", "propulsion": "دفع", "jetpowered": "تعمل بالنفاث", "sophisticated": "متطور", "engines": "محركات", "sound": "تبدو/صوت", "fullsize": "حجم كامل", "jet": "نفاث",
+            "attract": "يجذب", "large": "كبير", "crowds": "حشود", "fliers": "طيارون", "series": "سلسلة", "actions": "إجراءات", "popular": "شائع", "world": "عالم", "painting": "الرسم", "relaxing": "مريح", "playing": "لعب", "football": "كرة قدم", "lot": "كثير", "fun": "متعة", "prefer": "يفضل", "watching": "مشاهدة", "spends": "يقضي", "working": "تمرن", "gym": "صالة رياضية", "ethnic": "عرقي", "foods": "أطعمة",
+            "enjoy": "يستمتع", "drawing": "رسم", "pictures": "صور", "paper": "ورق", "paints": "ألوان", "brushes": "فرش", "much": "كثير", "hours": "ساعات", "creating": "ابتكار", "picture": "صورة", "room": "غرفة", "garden": "حديقة", "flowers": "أزهار", "trees": "أشجار", "feel": "يشعر", "alone": "وحيداً", "pastime": "هواية",
+            "recommend": "أوصي", "skateboarding": "تزلج باللوح", "park": "متنزه", "stand": "يطيق", "losing": "خسارة", "dislike": "أكره", "boring": "ممل", "films": "أفلام", "eating": "أكل", "tonight": "الليلة", "hates": "تكره", "waiting": "انتظار", "bus": "حافلة", "swimming": "سباحة", "sea": "بحر", "going": "ذهاب", "mall": "مركز تجاري", "teammates": "زملاء فريق", "winning": "فوز", "raining": "تمطر", "inside": "داخل",
+            "online": "إنترنت", "practicing": "تدريب", "professional": "محترف", "player": "لاعب", "coach": "مدرب", "recommends": "يوصي", "hope": "نأمل", "win": "نفوز", "cup": "كأس", "year": "سنة", "hanging": "تسكع", "saturdays": "أيام السبت", "riding": "ركوب", "bikes": "دراجات", "look": "ننظر", "stores": "متاجر", "buy": "نشتري", "magazines": "مجلات",
+            "similarities": "تشابه", "differences": "اختلافات", "seldom": "نادراً", "studies": "تدرس", "french": "فرنسية", "climb": "يتسلق", "maneuvers": "مناورات", "anyone": "أي شخص", "elearn": "تعلم إلكتروني", "easy": "سهل"
+        };
+
+        function getTranslation(word) {
+            let clean = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(!clean) return '';
+            if(dictionary[clean]) return dictionary[clean];
+            if(clean.endsWith('ies') && dictionary[clean.slice(0,-3) + 'y']) return dictionary[clean.slice(0,-3) + 'y'];
+            if(clean.endsWith('es') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('s') && dictionary[clean.slice(0,-1)]) return dictionary[clean.slice(0,-1)];
+            if(clean.endsWith('ed') && dictionary[clean.slice(0,-2)]) return dictionary[clean.slice(0,-2)];
+            if(clean.endsWith('ing') && dictionary[clean.slice(0,-3)]) return dictionary[clean.slice(0,-3)];
+            return ""; 
+        }
+
+        const groupsData = [
+            {
+                title: "المجموعة الأولى",
+                sentences: [
+                    { en: "What do youth usually do in their free time?", ar: "ماذا يفعل الشباب عادة في وقت فراغهم؟" },
+                    { en: "They hang out with friends.", ar: "هم يخرجون مع الأصدقاء." },
+                    { en: "They just meet and talk.", ar: "هم فقط يلتقون ويتحدثون." },
+                    { en: "They play sports or work out.", ar: "هم يلعبون الرياضة أو يتمرنون." },
+                    { en: "They eat in food courts or restaurants.", ar: "هم يأكلون في صالات الطعام أو المطاعم." },
+                    { en: "They play video games or board games.", ar: "هم يلعبون ألعاب الفيديو أو الألعاب اللوحية." },
+                    { en: "They have a hobby.", ar: "لديهم هواية." },
+                    { en: "For example, they cook, paint, read, or make things.", ar: "على سبيل المثال، يطبخون، يرسمون، يقرأون، أو يصنعون الأشياء." },
+                    { en: "Teens participate in social networks.", ar: "المراهقون يشاركون في الشبكات الاجتماعية." },
+                    { en: "They send and receive emails.", ar: "هم يرسلون ويستقبلون رسائل البريد الإلكتروني." }
+                ]
+            },
+            {
+                title: "المجموعة الثانية",
+                sentences: [
+                    { en: "How often do you play basketball?", ar: "كم مرة تلعب كرة السلة؟" },
+                    { en: "I usually practice three times a week.", ar: "أنا عادة أتدرب ثلاث مرات في الأسبوع." },
+                    { en: "It is my favorite thing to do in my free time.", ar: "إنه الشيء المفضل لدي لأفعله في وقت فراغي." },
+                    { en: "I like to play hockey.", ar: "أنا أحب أن ألعب الهوكي." },
+                    { en: "I know how to ice-skate very well.", ar: "أنا أعرف كيف أتزلج على الجليد بشكل جيد جداً." },
+                    { en: "I usually go to the rink on weekends.", ar: "أنا عادة أذهب إلى حلبة التزلج في عطلات نهاية الأسبوع." },
+                    { en: "How often does she take a shower?", ar: "كم مرة تستحم هي؟" },
+                    { en: "She always takes a shower in the morning.", ar: "هي دائماً تستحم في الصباح." },
+                    { en: "She makes her bed twice a week.", ar: "هي ترتب سريرها مرتين في الأسبوع." },
+                    { en: "She seldom watches TV.", ar: "هي نادراً ما تشاهد التلفاز." }
+                ]
+            },
+            {
+                title: "المجموعة الثالثة",
+                sentences: [
+                    { en: "What does she usually do on Thursdays?", ar: "ماذا تفعل هي عادة أيام الخميس؟" },
+                    { en: "She usually goes shopping.", ar: "هي عادة تذهب للتسوق." },
+                    { en: "What do you sometimes do at night?", ar: "ماذا تفعل أحياناً في الليل؟" },
+                    { en: "I sometimes go out.", ar: "أنا أحياناً أخرج." },
+                    { en: "I know how to ski.", ar: "أنا أعرف كيف أتزلج." },
+                    { en: "I do not know how to ski.", ar: "أنا لا أعرف كيف أتزلج." },
+                    { en: "She does her homework five times a week.", ar: "هي تحل واجباتها خمس مرات في الأسبوع." },
+                    { en: "I do it all the time.", ar: "أنا أفعل ذلك طوال الوقت." },
+                    { en: "He goes indoor climbing every day.", ar: "هو يذهب للتسلق الداخلي كل يوم." },
+                    { en: "She can cook well.", ar: "هي تستطيع الطبخ جيداً." }
+                ]
+            },
+            {
+                title: "المجموعة الرابعة",
+                sentences: [
+                    { en: "I have an unusual hobby.", ar: "لدي هواية غير عادية." },
+                    { en: "I fly planes.", ar: "أنا أطير بالطائرات." },
+                    { en: "That sounds exciting.", ar: "هذا يبدو مثيراً." },
+                    { en: "I normally do it on the weekend.", ar: "أنا عادة أفعل ذلك في عطلة نهاية الأسبوع." },
+                    { en: "I really like to do aerobatics.", ar: "أنا حقاً أحب القيام بالألعاب البهلوانية الجوية." },
+                    { en: "You perform stunts and stuff like that.", ar: "أنت تؤدي حركات بهلوانية وأشياء من هذا القبيل." },
+                    { en: "But isn't it dangerous?", ar: "ولكن أليس هذا خطيراً؟" },
+                    { en: "No, not at all, it's really very safe.", ar: "لا، على الإطلاق، إنه آمن جداً حقاً." },
+                    { en: "You should come along to the flying club sometime.", ar: "يجب أن تأتي إلى نادي الطيران في وقت ما." },
+                    { en: "I would love to go up in the air with you.", ar: "أود أن أصعد في الهواء معك." }
+                ]
+            },
+            {
+                title: "المجموعة الخامسة",
+                sentences: [
+                    { en: "Aeromodelling is an exciting hobby.", ar: "صنع نماذج الطائرات هواية مثيرة." },
+                    { en: "It attracts people of all ages.", ar: "إنها تجذب الناس من جميع الأعمار." },
+                    { en: "They all have one common interest.", ar: "جميعهم لديهم اهتمام مشترك واحد." },
+                    { en: "With the advances in technology, the big thing is radio-controlled airplanes.", ar: "مع التقدم في التكنولوجيا، الشيء الكبير هو الطائرات التي يتم التحكم فيها عن بعد." },
+                    { en: "These models fly like real aircraft.", ar: "هذه النماذج تطير مثل الطائرات الحقيقية." },
+                    { en: "People control the movement through radio signals.", ar: "يتحكم الناس في الحركة من خلال إشارات الراديو." },
+                    { en: "The price of the airplanes varies.", ar: "سعر الطائرات يختلف." },
+                    { en: "There are different methods of propulsion.", ar: "هناك طرق مختلفة للدفع." },
+                    { en: "Jet-powered models are sophisticated aircraft.", ar: "النماذج التي تعمل بالطاقة النفاثة هي طائرات متطورة." },
+                    { en: "Their engines sound like those of full-size jet planes.", ar: "تبدو محركاتها مثل محركات الطائرات النفاثة بالحجم الكامل." }
+                ]
+            },
+            {
+                title: "المجموعة السادسة",
+                sentences: [
+                    { en: "Jet models always attract large crowds.", ar: "نماذج الطائرات النفاثة تجذب دائماً حشوداً كبيرة." },
+                    { en: "Fliers usually do a series of actions with their planes.", ar: "يقوم الطيارون عادة بسلسلة من الإجراءات بطائراتهم." },
+                    { en: "Aeromodelling is a popular hobby all over the world.", ar: "صنع نماذج الطائرات هواية شائعة في جميع أنحاء العالم." },
+                    { en: "Painting is a relaxing hobby.", ar: "الرسم هواية مريحة." },
+                    { en: "Playing football is a lot of fun.", ar: "لعب كرة القدم ممتع جداً." },
+                    { en: "Do you like playing sports?", ar: "هل تحب لعب الرياضة؟" },
+                    { en: "Or do you prefer watching TV?", ar: "أو هل تفضل مشاهدة التلفاز؟" },
+                    { en: "He spends his free time working out at the gym.", ar: "هو يقضي وقت فراغه في التمرن في الصالة الرياضية." },
+                    { en: "She likes to cook in her free time.", ar: "هي تحب أن تطبخ في وقت فراغها." },
+                    { en: "She prefers to make ethnic foods.", ar: "هي تفضل صنع الأطعمة العرقية." }
+                ]
+            },
+            {
+                title: "المجموعة السابعة",
+                sentences: [
+                    { en: "Painting is my hobby.", ar: "الرسم هو هوايتي." },
+                    { en: "I enjoy drawing and painting pictures in my free time.", ar: "أنا أستمتع برسم وتلوين الصور في وقت فراغي." },
+                    { en: "I just need some paper, my paints, and brushes.", ar: "أنا فقط أحتاج إلى بعض الورق وألواني وفرشي." },
+                    { en: "I do not have much free time.", ar: "ليس لدي الكثير من وقت الفراغ." },
+                    { en: "I usually paint on weekends.", ar: "أنا عادة أرسم في عطلات نهاية الأسبوع." },
+                    { en: "I often spend two or three hours creating a picture.", ar: "أنا غالباً أقضي ساعتين أو ثلاث ساعات في ابتكار صورة." },
+                    { en: "I paint in my room or in the garden.", ar: "أنا أرسم في غرفتي أو في الحديقة." },
+                    { en: "I like painting flowers and trees.", ar: "أنا أحب رسم الأزهار والأشجار." },
+                    { en: "I usually feel like painting alone.", ar: "أنا عادة أرغب في الرسم بمفردي." },
+                    { en: "I love painting because it is a relaxing pastime.", ar: "أنا أحب الرسم لأنه هواية مريحة." }
+                ]
+            },
+            {
+                title: "المجموعة الثامنة",
+                sentences: [
+                    { en: "I recommend playing basketball as a hobby.", ar: "أنا أوصي بلعب كرة السلة كهواية." },
+                    { en: "He enjoys skateboarding in the park.", ar: "هو يستمتع بالتزلج على اللوح في المتنزه." },
+                    { en: "I can't stand losing.", ar: "أنا لا أطيق الخسارة." },
+                    { en: "I dislike watching boring films.", ar: "أنا أكره مشاهدة الأفلام المملة." },
+                    { en: "I feel like eating out tonight.", ar: "أنا أرغب في الأكل بالخارج الليلة." },
+                    { en: "She hates waiting for the bus.", ar: "هي تكره انتظار الحافلة." },
+                    { en: "I love swimming in the sea.", ar: "أنا أحب السباحة في البحر." },
+                    { en: "We prefer going to the mall.", ar: "نحن نفضل الذهاب إلى المركز التجاري." },
+                    { en: "My teammates and I love winning.", ar: "زملائي في الفريق وأنا نحب الفوز." },
+                    { en: "When it is raining, we prefer to go inside.", ar: "عندما تمطر، نفضل الدخول إلى الداخل." }
+                ]
+            },
+            {
+                title: "المجموعة التاسعة",
+                sentences: [
+                    { en: "I like to watch TV.", ar: "أنا أحب أن أشاهد التلفاز." },
+                    { en: "I prefer to play games online.", ar: "أنا أفضل أن ألعب الألعاب على الإنترنت." },
+                    { en: "I spend a lot of time practicing.", ar: "أنا أقضي الكثير من الوقت في التدريب." },
+                    { en: "I would like to be a professional football player.", ar: "أود أن أكون لاعب كرة قدم محترف." },
+                    { en: "Our coach recommends working out twice a week.", ar: "يوصي مدربنا بالتمرن مرتين في الأسبوع." },
+                    { en: "We hope to win the cup this year.", ar: "نحن نأمل أن نفوز بالكأس هذا العام." },
+                    { en: "In my free time, I enjoy hanging out with my friends.", ar: "في وقت فراغي، أستمتع بالخروج مع أصدقائي." },
+                    { en: "On Saturdays, we like riding our bikes.", ar: "أيام السبت، نحن نحب ركوب دراجاتنا." },
+                    { en: "We like to look in the stores.", ar: "نحن نحب أن ننظر في المتاجر." },
+                    { en: "We want to buy things like magazines.", ar: "نحن نريد أن نشتري أشياء مثل المجلات." }
+                ]
+            },
+            {
+                title: "المجموعة العاشرة",
+                sentences: [
+                    { en: "They travel and meet people.", ar: "هم يسافرون ويلتقون بالناس." },
+                    { en: "What are the similarities and the differences?", ar: "ما هي أوجه التشابه والاختلاف؟" },
+                    { en: "Teens seldom buy things online.", ar: "المراهقون نادراً ما يشترون الأشياء عبر الإنترنت." },
+                    { en: "I don't know how to cook.", ar: "أنا لا أعرف كيف أطبخ." },
+                    { en: "She studies French three times a week.", ar: "هي تدرس الفرنسية ثلاث مرات في الأسبوع." },
+                    { en: "He knows how to climb very well.", ar: "هو يعرف كيف يتسلق جيداً جداً." },
+                    { en: "I fly model airplanes.", ar: "أنا أطير طائرات نموذجية." },
+                    { en: "People control the movement through radio signals.", ar: "يتحكم الناس في الحركة عبر إشارات الراديو." },
+                    { en: "Fliers do maneuvers in the air.", ar: "الطيارون يقومون بمناورات في الهواء." },
+                    { en: "I spend my free time working out at the gym.", ar: "أنا أقضي وقت فراغي في التمرن في الصالة الرياضية." }
+                ]
+            }
+        ];
+
+        function renderClickableHtml(text) {
+            let pairs = text.split(' ').map(p => p.trim()).filter(p => p !== '');
+            return pairs.map(pair => {
+                let cleanW = pair.replace(/[^a-zA-Z0-9'-]/g, '');
+                let arW = getTranslation(cleanW);
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let arHtml = arW !== "" ? `<span class="ar">${arW}</span>` : `<span class="ar" style="display:none;"></span>`;
+                return `<span class="word-group" data-speak="${safeWord}">${arHtml}<span class="en">${pair}</span></span>`;
+            }).join(' ');
+        }
+
+        function buildApp() {
+            let container = document.getElementById('content-container');
+            container.innerHTML = '';
+
+            groupsData.forEach((group, gIdx) => {
+                let section = document.createElement('div');
+                section.className = 'group-section';
+                section.id = `group-${gIdx}`;
+                
+                let header = document.createElement('div');
+                header.className = 'group-header';
+                header.innerHTML = `<h2 class="group-title">${group.title}</h2>`;
+                section.appendChild(header);
+
+                let audioBar = document.createElement('div');
+                audioBar.className = 'audio-controls-row';
+                audioBar.innerHTML = `
+                    <button class="btn-group" onclick="playGroup(this, 'group-${gIdx}')">🎧 قراءة المجموعة كاملة</button>
+                    <button class="btn-test" onclick="toggleReadingTest(this, '#group-${gIdx}')">🎤 اختبر نفسك</button>
+                `;
+                section.appendChild(audioBar);
+
+                let sentencesContainer = document.createElement('div');
+                sentencesContainer.className = 'sentences-container';
+
+                group.sentences.forEach((s, sIdx) => {
+                    let rowId = `row-${gIdx}-${sIdx}`;
+                    let row = document.createElement('div');
+                    row.className = 'sentence-row';
+                    row.id = rowId;
+                    
+                    row.innerHTML = `
+                        <div class="ar-full-translation">${s.ar}</div>
+                        <div class="en-sentence-part">
+                            <div class="sentence-header">
+                                <span class="num-badge">${(gIdx * 10) + sIdx + 1}</span>
+                                <div class="words-wrapper">${renderClickableHtml(s.en)}</div>
+                            </div>
+                            <div class="sentence-actions">
+                                <button class="btn-s-action btn-wbw" onclick="playSentenceWBW(this, '${rowId}')">🐢 قراءة كلمة كلمة</button>
+                                <button class="btn-s-action btn-nat" onclick="playSentenceNatural(this, '${rowId}')">🗣️ قراءة طبيعية (تكرار)</button>
+                            </div>
+                        </div>
+                    `;
+                    sentencesContainer.appendChild(row);
+                });
+
+                section.appendChild(sentencesContainer);
+                container.appendChild(section);
+            });
+        }
+
+        window.toggleReadingTest = function(btn, groupSelector) {
+            let groupEl = document.querySelector(groupSelector);
+            if (groupEl.classList.contains('test-mode-active')) {
+                groupEl.classList.remove('test-mode-active');
+                btn.innerHTML = '🎤 اختبر نفسك';
+                btn.classList.remove('active');
+            } else {
+                groupEl.classList.add('test-mode-active');
+                btn.innerHTML = '👁️ إنهاء الاختبار';
+                btn.classList.add('active');
+            }
+        };
+
+        window.applyVoiceSettings = function(u) {
+            u.pitch = 1.0;
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                let engVoices = voices.filter(v => v.lang.startsWith('en'));
+                if (engVoices.length > 0) {
+                    let defaultVoice = engVoices.find(v => v.default) || engVoices.find(v => v.lang === 'en-US') || engVoices[0];
+                    u.voice = defaultVoice;
+                }
+            }
+        };
+
+        window.currentAudio = { type: null, btn: null, targetId: null, queue: [], currentIndex: 0, text: '' };
+
+        function stopAudio() {
+            if(window.speechSynthesis) window.speechSynthesis.cancel();
+            clearHighlights();
+            if(window.currentAudio.btn) {
+                window.currentAudio.btn.classList.remove('playing');
+                if(window.currentAudio.btn.hasAttribute('data-original-text')) {
+                    window.currentAudio.btn.innerHTML = window.currentAudio.btn.getAttribute('data-original-text');
+                }
+            }
+            window.currentAudio.type = null;
+            window.currentAudio.btn = null;
+        }
+
+        function setBtnPlaying(btn, type) {
+            btn.classList.add('playing');
+            if(!btn.hasAttribute('data-original-text')) {
+                btn.setAttribute('data-original-text', btn.innerHTML);
+            }
+            btn.innerHTML = type === 'GROUP' ? '⏹ إيقاف القراءة' : '⏹ إيقاف';
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.audio-highlight').forEach(el => el.classList.remove('audio-highlight'));
+            document.querySelectorAll('.sentence-row.line-highlight').forEach(el => el.classList.remove('line-highlight'));
+        }
+
+        window.playSentenceWBW = function(btn, rowId) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            if (window.currentAudio.btn === btn) { stopAudio(); return; }
+            
+            stopAudio();
+            let queue = Array.from(document.getElementById(rowId).querySelectorAll('.word-group'));
+            window.currentAudio = { type: 'WBW', btn: btn, targetId: rowId, queue: queue, currentIndex: 0 };
+            setBtnPlaying(btn, 'WBW');
+            speakNextWBW();
+        };
+
+        function speakNextWBW() {
+            if(window.currentAudio.type !== 'WBW') return;
+            
+            if(window.currentAudio.currentIndex >= window.currentAudio.queue.length) {
+                window.currentAudio.currentIndex = 0; 
+                setTimeout(speakNextWBW, 1000); 
+                return;
+            }
+
+            clearHighlights();
+            let wordEl = window.currentAudio.queue[window.currentAudio.currentIndex];
+            wordEl.classList.add('audio-highlight');
+            
+            let text = wordEl.querySelector('.en').textContent.trim();
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.8;
+            applyVoiceSettings(u);
+            
+            u.onend = function() {
+                if(window.currentAudio.type === 'WBW') {
+                    window.currentAudio.currentIndex++;
+                    speakNextWBW();
+                }
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        window.playSentenceNatural = function(btn, rowId) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            if (window.currentAudio.btn === btn) { stopAudio(); return; }
+            
+            stopAudio();
+            let wordEls = Array.from(document.getElementById(rowId).querySelectorAll('.word-group .en'));
+            let text = wordEls.map(w => w.textContent.trim()).join(' ');
+            
+            window.currentAudio = { type: 'NAT', btn: btn, targetId: rowId, text: text };
+            setBtnPlaying(btn, 'NAT');
+            speakNAT();
+        };
+
+        function speakNAT() {
+            if(window.currentAudio.type !== 'NAT') return;
+            
+            clearHighlights();
+            document.getElementById(window.currentAudio.targetId).classList.add('line-highlight');
+
+            let u = new SpeechSynthesisUtterance(window.currentAudio.text);
+            u.lang = 'en-US';
+            u.rate = 0.9;
+            applyVoiceSettings(u);
+            
+            u.onend = function() {
+                if(window.currentAudio.type === 'NAT') {
+                    setTimeout(speakNAT, 1000); 
+                }
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        window.playGroup = function(btn, groupId) {
+            if (!window.speechSynthesis) return alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            if (window.currentAudio.btn === btn) { stopAudio(); return; }
+            
+            stopAudio();
+            let queue = Array.from(document.getElementById(groupId).querySelectorAll('.sentence-row'));
+            window.currentAudio = { type: 'GROUP', btn: btn, targetId: groupId, queue: queue, currentIndex: 0 };
+            setBtnPlaying(btn, 'GROUP');
+            speakNextGroup();
+        };
+
+        function speakNextGroup() {
+            if(window.currentAudio.type !== 'GROUP') return;
+            
+            if(window.currentAudio.currentIndex >= window.currentAudio.queue.length) {
+                stopAudio(); 
+                return;
+            }
+
+            clearHighlights();
+            let rowEl = window.currentAudio.queue[window.currentAudio.currentIndex];
+            rowEl.classList.add('line-highlight');
+            rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            let wordEls = Array.from(rowEl.querySelectorAll('.word-group .en'));
+            let text = wordEls.map(w => w.textContent.trim()).join(' ');
+
+            let u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.9;
+            applyVoiceSettings(u);
+            
+            u.onend = function() {
+                if(window.currentAudio.type === 'GROUP') {
+                    window.currentAudio.currentIndex++;
+                    speakNextGroup();
+                }
+            };
+            window.speechSynthesis.speak(u);
+        }
+
+        document.addEventListener('click', function(e) {
+            let wg = e.target.closest('.word-group');
+            if (wg && !e.target.closest('button')) {
+                stopAudio(); 
+                
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && window.speechSynthesis) {
+                    wg.classList.add('highlight');
+                    let txt = speakTextAttr.replace(/[\._\?\,]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; 
+                        u.rate = 0.85;
+                        applyVoiceSettings(u);
+                        u.onend = () => wg.classList.remove('highlight');
+                        u.onerror = () => wg.classList.remove('highlight');
+                        window.speechSynthesis.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), 1200);
+                    } else {
+                        wg.classList.remove('highlight');
+                    }
+                }
+            }
+        });
+
+        if(window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+    }
+})();
+</script>
+
+</body>
+</html>
