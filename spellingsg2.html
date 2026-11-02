@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الإملاء - إعداد مستر حماده الديب</title>
+    <style>
+        :root {
+            --success: #10B981;
+            --danger: #EF4444;
+            --text: #1F2937;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* خلفية مبهجة للأطفال */
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .header h1 {
+            color: #4F46E5;
+            margin-bottom: 5px;
+            font-size: 32px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .game-area {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 650px;
+            direction: ltr;
+            margin-bottom: 25px;
+            border: 4px solid #FF9A9E;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            /* الترتيب من اليسار لليمين */
+            direction: ltr;
+            width: 100%;
+            max-width: 700px;
+        }
+        .controls button {
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+        }
+        .controls button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .controls button:active {
+            transform: translateY(1px);
+        }
+        
+        /* ألوان الأزرار المبهجة */
+        .btn-prev { background-color: #3B82F6; } /* أزرق */
+        .btn-next { background-color: #10B981; } /* أخضر */
+        .btn-show { background-color: #9333EA; } /* موف / بنفسجي */
+        .btn-reset { background-color: #F59E0B; } /* برتقالي */
+        
+        .btn-active {
+            background-color: #EF4444 !important; /* أحمر عند الإيقاف */
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .word-display-container {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+            direction: ltr;
+            border: 3px dashed #9333EA;
+        }
+        .show-word-letters {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: bold;
+            text-transform: lowercase;
+        }
+        .show-letter {
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .show-letter.highlight {
+            background-color: #9333EA;
+            color: white;
+            transform: scale(1.2) translateY(-5px);
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.4);
+        }
+
+        .slots-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+        .slot {
+            width: 55px;
+            height: 55px;
+            border: 3px dashed #9CA3AF;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: lowercase;
+            background-color: #F9FAFB;
+            transition: all 0.3s;
+            color: #4B5563;
+        }
+        .slot.filled {
+            border: 3px solid var(--success);
+            background-color: #D1FAE5;
+            color: #065F46;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        .letters-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .scrambled-letter {
+            width: 55px;
+            height: 55px;
+            background-color: #3B82F6;
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: lowercase;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        .scrambled-letter:hover {
+            transform: translateY(-5px) scale(1.05);
+            background-color: #2563EB;
+        }
+        .scrambled-letter.hidden {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px) rotate(-5deg); }
+            50% { transform: translateX(6px) rotate(5deg); }
+            75% { transform: translateX(-6px) rotate(-5deg); }
+        }
+        .shake-error-letter {
+            animation: shake 0.4s;
+            background-color: var(--danger) !important;
+            box-shadow: 0 0 15px var(--danger);
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            color: #D97706;
+            font-size: 36px;
+            font-weight: 900;
+            margin-top: 25px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* حاوية الاحتفالات */
+        #confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="confetti-container"></div>
+
+    <div class="header">
+        <h1>Vocabulary Fun! 🎈</h1>
+        <p style="font-weight: bold; color: #4B5563;">إعداد: مستر حماده الديب</p>
+    </div>
+
+    <div id="wordDisplayContainer" class="word-display-container">
+        <div id="showWordLetters" class="show-word-letters"></div>
+    </div>
+
+    <!-- مساحة اللعب -->
+    <div class="game-area">
+        <div id="slotsContainer" class="slots-container"></div>
+        <div id="lettersContainer" class="letters-container"></div>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <!-- الأزرار بالأسفل ومن اليسار لليمين -->
+    <div class="controls">
+        <button class="btn-prev" onclick="prevWord()">&laquo; السابق</button>
+        <button class="btn-next" onclick="nextWord()">التالي &raquo;</button>
+        <button class="btn-show" id="showWordBtn" onclick="toggleShowWord()">إظهار الكلمة / نطق &#128266;</button>
+        <button class="btn-reset" onclick="resetWord()">إعادة الكلمة &#x21bb;</button>
+    </div>
+
+    <script>
+        const vocabulary = [
+            "potato", "tomato", "appetizer", "apple pie", "bean", "beverage", 
+            "carrot", "cheesecake", "chicken", "chocolate", "coffee", "cookie", 
+            "cucumber", "dessert", "dish", "fish", "fruit", "ice cream", "juice", 
+            "lettuce", "menu", "milk", "onion", "order", "pasta", "rice", 
+            "salad", "sandwich", "sauce", "seafood", "shrimp", "soup", "steak", 
+            "tea", "turkey", "vegetable", "water"
+        ];
+
+        const feedbackMessages = [
+            "Excellent! 🏆",
+            "Perfect! 🌺",
+            "Brilliant! 🌟",
+            "Super! 🎉",
+            "Genius! 👑",
+            "Awesome! 🚀"
+        ];
+
+        let currentIndex = 0;
+        let currentWord = "";
+        
+        let isSpeakingMode = false;
+        let spellingIndex = 0;
+        let dictationTimeout = null;
+        let synth = window.speechSynthesis;
+
+        function initGame() {
+            stopSpeakingMode();
+            document.getElementById('confetti-container').innerHTML = '';
+            currentWord = vocabulary[currentIndex].toLowerCase();
+            document.getElementById('successMessage').style.display = 'none';
+            
+            createSlots();
+            createScrambledLetters();
+            prepareShowWord();
+        }
+
+        function createSlots() {
+            const slotsContainer = document.getElementById('slotsContainer');
+            slotsContainer.innerHTML = '';
+            
+            for (let i = 0; i < currentWord.length; i++) {
+                const char = currentWord[i];
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.dataset.index = i;
+                slot.dataset.char = char;
+                
+                if (char === ' ') {
+                    slot.classList.add('filled');
+                    slot.innerText = '-';
+                    slot.style.border = 'none';
+                    slot.style.backgroundColor = 'transparent';
+                    slot.style.boxShadow = 'none';
+                }
+                slotsContainer.appendChild(slot);
+            }
+        }
+
+        function createScrambledLetters() {
+            const container = document.getElementById('lettersContainer');
+            container.innerHTML = '';
+            
+            let chars = currentWord.replace(/ /g, '').split('');
+            
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+
+            chars.forEach((char) => {
+                const letterObj = document.createElement('div');
+                letterObj.className = 'scrambled-letter';
+                letterObj.innerText = char;
+                letterObj.onclick = () => selectLetter(letterObj, char);
+                container.appendChild(letterObj);
+            });
+        }
+
+        function selectLetter(element, char) {
+            if (element.classList.contains('hidden')) return;
+            
+            const nextSlot = document.querySelector('.slot:not(.filled)');
+            if (!nextSlot) return;
+
+            const expectedChar = nextSlot.dataset.char;
+
+            if (expectedChar === char) {
+                nextSlot.innerText = char;
+                nextSlot.classList.add('filled');
+                element.classList.add('hidden');
+                
+                setTimeout(() => {
+                    nextSlot.style.transform = 'scale(1)';
+                }, 300);
+                
+                checkWin();
+            } else {
+                element.classList.add('shake-error-letter');
+                setTimeout(() => element.classList.remove('shake-error-letter'), 400);
+            }
+        }
+
+        function checkWin() {
+            const slots = document.querySelectorAll('.slot:not(.filled)');
+            if (slots.length === 0) {
+                const successMsg = document.getElementById('successMessage');
+                const randomMsg = feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)];
+                successMsg.innerText = randomMsg;
+                successMsg.style.display = 'block';
+                
+                stopSpeakingMode();
+                fireConfetti();
+            }
+        }
+
+        function fireConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#FFC700', '#FF0000', '#2E3192', '#41BBC7', '#10B981', '#9333EA'];
+            const emojis = ['🎈', '🎊', '🎉', '⭐', '🌺', '🏆'];
+
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                
+                if (Math.random() > 0.4) {
+                    piece.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    piece.style.fontSize = Math.random() * 20 + 20 + 'px';
+                } else {
+                    piece.style.width = Math.random() * 12 + 8 + 'px';
+                    piece.style.height = Math.random() * 25 + 10 + 'px';
+                    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.borderRadius = (Math.random() > 0.5) ? '50%' : '2px';
+                }
+
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.top = -50 + 'px';
+                piece.style.opacity = Math.random() + 0.6;
+
+                const duration = Math.random() * 3 + 2;
+                piece.style.animation = `fall ${duration}s linear forwards`;
+
+                container.appendChild(piece);
+            }
+        }
+
+        function toggleShowWord() {
+            isSpeakingMode = !isSpeakingMode;
+            const btn = document.getElementById('showWordBtn');
+            const container = document.getElementById('wordDisplayContainer');
+
+            if (isSpeakingMode) {
+                btn.classList.add('btn-active');
+                btn.innerHTML = 'إيقاف النطق &#9209;';
+                container.style.display = 'block';
+                spellingIndex = 0;
+                playDictationLoop();
+            } else {
+                stopSpeakingMode();
+            }
+        }
+
+        function stopSpeakingMode() {
+            isSpeakingMode = false;
+            const btn = document.getElementById('showWordBtn');
+            const container = document.getElementById('wordDisplayContainer');
+            
+            btn.classList.remove('btn-active');
+            btn.innerHTML = 'إظهار الكلمة / نطق &#128266;';
+            container.style.display = 'none';
+            
+            synth.cancel();
+            clearTimeout(dictationTimeout);
+            
+            document.querySelectorAll('.show-letter').forEach(el => el.classList.remove('highlight'));
+        }
+
+        function prepareShowWord() {
+            const container = document.getElementById('showWordLetters');
+            container.innerHTML = '';
+            for (let i = 0; i < currentWord.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'show-letter';
+                span.innerText = currentWord[i] === ' ' ? '\u00A0' : currentWord[i];
+                container.appendChild(span);
+            }
+        }
+
+        function playDictationLoop() {
+            if (!isSpeakingMode) return;
+            
+            const letters = document.querySelectorAll('.show-letter');
+            letters.forEach(el => el.classList.remove('highlight'));
+
+            if (spellingIndex < currentWord.length) {
+                let char = currentWord[spellingIndex];
+                
+                if (char === ' ') {
+                    spellingIndex++;
+                    playDictationLoop();
+                    return;
+                }
+
+                letters[spellingIndex].classList.add('highlight');
+                
+                let utterance = new SpeechSynthesisUtterance(char);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.5;
+                
+                utterance.onend = function() {
+                    if(!isSpeakingMode) return;
+                    spellingIndex++;
+                    dictationTimeout = setTimeout(playDictationLoop, 800); 
+                };
+                
+                synth.speak(utterance);
+            } else {
+                letters.forEach(el => {
+                    if (el.innerText !== '\u00A0') el.classList.add('highlight');
+                });
+                
+                let utterance = new SpeechSynthesisUtterance(currentWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.3; 
+                
+                utterance.onend = function() {
+                    if(!isSpeakingMode) return;
+                    spellingIndex = 0;
+                    dictationTimeout = setTimeout(playDictationLoop, 2000);
+                };
+                
+                synth.speak(utterance);
+            }
+        }
+
+        function nextWord() {
+            currentIndex++;
+            if (currentIndex >= vocabulary.length) currentIndex = 0;
+            initGame();
+        }
+
+        function prevWord() {
+            currentIndex--;
+            if (currentIndex < 0) currentIndex = vocabulary.length - 1;
+            initGame();
+        }
+
+        function resetWord() {
+            initGame();
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
+</html>
