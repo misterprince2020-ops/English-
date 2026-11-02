@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كلمات Top Goal 2</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        p.instructions {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .unit-title {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: white;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #3498db;
+        }
+        .card.active {
+            background-color: #d5f5e3;
+            border-color: #2ecc71;
+            animation: pulse 1s infinite;
+        }
+        .en-word {
+            font-size: 1.2em;
+            color: #2980b9;
+            font-weight: bold;
+            margin-bottom: 10px;
+            direction: ltr;
+        }
+        .ar-word {
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>مراجعة كلمات منهج Top Goal 2</h1>
+    <p class="instructions">اضغط على أي كلمة ليتم تكرار نطقها بلا نهاية. اضغط عليها مرة أخرى لإيقاف النطق.</p>
+
+    <div id="content"></div>
+
+    <script>
+        // الكلمات مرتبة حسب الوحدات من الملف المرفق
+        const vocabularyData = [
+            {
+                unit: "كلمات عامة (General Words)",
+                words: [
+                    { en: "Tall child", ar: "طفل طويل" },
+                    { en: "tired child", ar: "طفل متعب" },
+                    { en: "comic book", ar: "قصص مصورة" },
+                    { en: "lion", ar: "أسد" },
+                    { en: "mountain", ar: "جبل" },
+                    { en: "rainbow", ar: "قوس المطر" },
+                    { en: "snail", ar: "حلزون" },
+                    { en: "date", ar: "تاريخ" },
+                    { en: "late", ar: "متأخر" },
+                    { en: "calendar", ar: "تقويم" }
+                ]
+            },
+            {
+                unit: "Unit 1: Personal Interests",
+                words: [
+                    { en: "interesting", ar: "مثير" },
+                    { en: "popular", ar: "مشهور" },
+                    { en: "frightening", ar: "مرعب / مخيف" },
+                    { en: "lucky", ar: "محظوظ" },
+                    { en: "special", ar: "مميز" },
+                    { en: "amazing", ar: "رائع" },
+                    { en: "friendly", ar: "محبوب / لطيف" },
+                    { en: "excellent", ar: "ممتاز" },
+                    { en: "important", ar: "مهم جداً" },
+                    { en: "lovely", ar: "محبوب / مهذب" },
+                    { en: "enormous", ar: "هائل / كبير جداً" },
+                    { en: "tidy", ar: "مرتب" },
+                    { en: "noisy", ar: "مزعج" },
+                    { en: "ride", ar: "لعبة / مركبة ملاهي" },
+                    { en: "enjoy", ar: "يستمتع" },
+                    { en: "horrible", ar: "مرعب" },
+                    { en: "excited", ar: "متحمس" },
+                    { en: "unfriendly", ar: "غير ودود" },
+                    { en: "unusual", ar: "غير عادي" },
+                    { en: "unlucky", ar: "غير محظوظ" },
+                    { en: "messy", ar: "فوضوي / متسخ" },
+                    { en: "unkind", ar: "غير ودود" },
+                    { en: "untidy", ar: "غير مرتب" },
+                    { en: "carving", ar: "نحت / حفر" },
+                    { en: "fair", ar: "مدينة ألعاب" },
+                    { en: "hobby", ar: "هواية" },
+                    { en: "origami", ar: "فن طي الورق" },
+                    { en: "yarn bombing", ar: "فن التزيين بالخيوط" }
+                ]
+            },
+            {
+                unit: "Unit 2: House Designs",
+                words: [
+                    { en: "Phone", ar: "تليفون" },
+                    { en: "key", ar: "مفتاح" },
+                    { en: "entrance", ar: "مدخل" },
+                    { en: "gate", ar: "بوابة" },
+                    { en: "Wi-Fi", ar: "إنترنت لاسلكي" },
+                    { en: "Layout", ar: "مخطط" },
+                    { en: "design", ar: "تصميم" },
+                    { en: "architect", ar: "مهندس معماري" },
+                    { en: "materials", ar: "مواد" },
+                    { en: "screen", ar: "شاشة" },
+                    { en: "Measurements", ar: "مقاسات" },
+                    { en: "oven", ar: "فرن" },
+                    { en: "fridge", ar: "ثلاجة" },
+                    { en: "Shelf", ar: "رف" },
+                    { en: "basement", ar: "القبو" },
+                    { en: "corner", ar: "زاوية" },
+                    { en: "cushion", ar: "وسادة" },
+                    { en: "instead", ar: "بدلاً من ذلك" },
+                    { en: "else", ar: "شيء آخر" },
+                    { en: "empty", ar: "فارغ" },
+                    { en: "front", ar: "أمام" },
+                    { en: "later", ar: "لاحقاً" },
+                    { en: "actually", ar: "في الحقيقة" }
+                ]
+            },
+            {
+                unit: "Unit 3: Job Paths",
+                words: [
+                    { en: "Photographer", ar: "مصور" },
+                    { en: "driver", ar: "سائق" },
+                    { en: "actor", ar: "ممثل" },
+                    { en: "singer", ar: "مغنية" },
+                    { en: "journalist", ar: "مذيع / صحفي" },
+                    { en: "engineer", ar: "مهندس" },
+                    { en: "business woman", ar: "سيدة أعمال" },
+                    { en: "manager", ar: "مدير" },
+                    { en: "pilot", ar: "طيار" },
+                    { en: "flight attendant", ar: "مضيفة طيران" },
+                    { en: "waiter", ar: "نادل" },
+                    { en: "mechanic", ar: "ميكانيكي" },
+                    { en: "fashion designer", ar: "مصممة أزياء" },
+                    { en: "artist", ar: "فنان" },
+                    { en: "jobs", ar: "وظائف" },
+                    { en: "work", ar: "عمل" },
+                    { en: "meetings", ar: "اجتماعات" },
+                    { en: "airport", ar: "مطار" },
+                    { en: "news studio", ar: "استوديو اخبار" },
+                    { en: "gallery", ar: "معرض" },
+                    { en: "stage", ar: "مسرح" },
+                    { en: "office", ar: "مكتب" },
+                    { en: "factory", ar: "مصنع" },
+                    { en: "specialist", ar: "متخصص" },
+                    { en: "receptionist", ar: "موظف استقبال" },
+                    { en: "scientist", ar: "عالم" },
+                    { en: "therapist", ar: "معالج" },
+                    { en: "psychologist", ar: "اخصائي / طبيب نفسي" },
+                    { en: "Cyclist", ar: "سائق دراجات" },
+                    { en: "pharmacist", ar: "صيدلاني" }
+                ]
+            },
+            {
+                unit: "Unit 4: Glorious Food",
+                words: [
+                    { en: "Bake", ar: "يخبز" },
+                    { en: "flour", ar: "طحين" },
+                    { en: "butter", ar: "زبدة" },
+                    { en: "sugar", ar: "سكر" },
+                    { en: "honey", ar: "عسل" },
+                    { en: "recipe", ar: "وصفة" },
+                    { en: "cookies", ar: "كوكيز" },
+                    { en: "fetch", ar: "يحضر / يجلب" },
+                    { en: "snacks", ar: "وجبات خفيفة" },
+                    { en: "topping", ar: "إضافة / طبقة علوية" },
+                    { en: "countertop", ar: "سطح طاولة المطبخ" },
+                    { en: "yogurt", ar: "زبادي" },
+                    { en: "enough", ar: "يكفي" },
+                    { en: "taste", ar: "يتذوق" },
+                    { en: "measure", ar: "مقياس" },
+                    { en: "cut", ar: "يقطع" },
+                    { en: "dough", ar: "عجينة" },
+                    { en: "smell", ar: "يشم" },
+                    { en: "roll", ar: "يفرد العجين" },
+                    { en: "pour", ar: "يسكب" },
+                    { en: "stir", ar: "يحرك / يقلب" },
+                    { en: "mix", ar: "يخلط" },
+                    { en: "melt", ar: "يذيب" },
+                    { en: "fruit and vegetables", ar: "فواكه وخضروات" },
+                    { en: "starches", ar: "نشويات" },
+                    { en: "dairy", ar: "منتجات الألبان" },
+                    { en: "proteins", ar: "البروتينات" },
+                    { en: "fatty food", ar: "الأطعمة الدسمة" }
+                ]
+            }
+        ];
+
+        let isSpeaking = false;
+        let activeWord = "";
+        let currentCardElement = null;
+        let speechTimeout = null;
+
+        const contentDiv = document.getElementById('content');
+
+        // بناء الصفحة
+        vocabularyData.forEach(unitData => {
+            const unitTitle = document.createElement('div');
+            unitTitle.className = 'unit-title';
+            unitTitle.innerText = unitData.unit;
+            contentDiv.appendChild(unitTitle);
+
+            const grid = document.createElement('div');
+            grid.className = 'grid';
+
+            unitData.words.forEach(wordObj => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const enDiv = document.createElement('div');
+                enDiv.className = 'en-word';
+                enDiv.innerText = wordObj.en;
+
+                const arDiv = document.createElement('div');
+                arDiv.className = 'ar-word';
+                arDiv.innerText = wordObj.ar;
+
+                card.appendChild(enDiv);
+                card.appendChild(arDiv);
+
+                card.onclick = () => toggleSpeech(wordObj.en, card);
+                
+                grid.appendChild(card);
+            });
+
+            contentDiv.appendChild(grid);
+        });
+
+        function toggleSpeech(word, cardElement) {
+            // إذا ضغط الطالب على نفس الكلمة المفعّلة، نوقف النطق
+            if (isSpeaking && activeWord === word) {
+                stopSpeaking();
+            } else {
+                // إذا ضغط على كلمة جديدة، نوقف القديمة ونبدأ الجديدة
+                stopSpeaking();
+                
+                isSpeaking = true;
+                activeWord = word;
+                currentCardElement = cardElement;
+                currentCardElement.classList.add('active');
+                
+                speakContinuously();
+            }
+        }
+
+        function stopSpeaking() {
+            window.speechSynthesis.cancel();
+            clearTimeout(speechTimeout);
+            isSpeaking = false;
+            activeWord = "";
+            if (currentCardElement) {
+                currentCardElement.classList.remove('active');
+                currentCardElement = null;
+            }
+        }
+
+        function speakContinuously() {
+            if (!isSpeaking) return;
+
+            const utterance = new SpeechSynthesisUtterance(activeWord);
+            utterance.lang = 'en-US'; // نطق أمريكي
+            utterance.rate = 0.9; // سرعة نطق مناسبة للطلاب
+
+            utterance.onend = function() {
+                // عند انتهاء النطق، انتظر ثانية واحدة ثم أعد النطق (إلى ما لا نهاية)
+                if (isSpeaking) {
+                    speechTimeout = setTimeout(speakContinuously, 1000);
+                }
+            };
+
+            utterance.onerror = function(event) {
+                // في حالة قطع النطق يدوياً
+                if(event.error !== 'canceled' && event.error !== 'interrupted') {
+                     console.error('Speech error:', event);
+                }
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // إيقاف النطق إذا قام المستخدم بإغلاق الصفحة أو تحديثها
+        window.onbeforeunload = function () {
+            window.speechSynthesis.cancel();
+        };
+    </script>
+</body>
+</html>
