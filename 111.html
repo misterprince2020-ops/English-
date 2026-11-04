@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الإملاء - إعداد مستر حمادة الديب</title>
+    <style>
+        :root {
+            --success: #10B981;
+            --danger: #EF4444;
+            --text: #1F2937;
+            --primary: #4F46E5;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+        }
+        
+        .btn-list { 
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        .btn-list:hover { background-color: #3730A3; transform: translateY(-2px); }
+
+        /* عنوان ملون وبارز */
+        .colorful-title {
+            margin-bottom: 15px;
+            margin-top: 25px;
+            font-size: 34px;
+            font-weight: 900;
+            line-height: 1.5;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+        }
+        .colorful-title span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .colorful-title span:hover {
+            transform: scale(1.1);
+        }
+
+        /* تنسيق اسم المعلم والمدرسة بشكل ضخم وبارز */
+        .author-name {
+            font-size: 28px;
+            font-weight: 900;
+            color: #4F46E5;
+            margin: 15px 0 5px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .school-name {
+            font-size: 32px;
+            font-weight: 900;
+            color: #10B981;
+            margin: 5px 0 15px 0;
+            line-height: 1.4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+        }
+        .school-stage {
+            font-size: 24px;
+            color: #D97706;
+        }
+        
+        .word-counter {
+            font-size: 20px;
+            font-weight: bold;
+            color: #9333EA;
+            background: #F3E8FF;
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            border: 2px solid #D8B4FE;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .game-area {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 30px 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            direction: ltr;
+            margin-bottom: 25px;
+            border: 4px solid #FF9A9E;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .arabic-meaning {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 20px;
+            direction: rtl;
+            background: #EEF2FF;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 2px dashed #C7D2FE;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            direction: ltr;
+            width: 100%;
+            max-width: 700px;
+        }
+        .controls button {
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+        }
+        .controls button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .btn-prev { background-color: #3B82F6; } 
+        .btn-next { background-color: #10B981; } 
+        .btn-show { background-color: #9333EA; } 
+        
+        .btn-active {
+            background-color: #EF4444 !important; 
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .word-display-container {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+            direction: ltr;
+            border: 3px dashed #9333EA;
+        }
+        .show-word-letters {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: bold;
+            text-transform: lowercase;
+            flex-wrap: wrap;
+        }
+        .show-letter {
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .show-letter.highlight {
+            background-color: #9333EA;
+            color: white;
+            transform: scale(1.2) translateY(-5px);
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.4);
+        }
+
+        .slots-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .slot {
+            width: 50px;
+            height: 50px;
+            border: 3px dashed #9CA3AF;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: lowercase;
+            background-color: #F9FAFB;
+            transition: all 0.3s;
+            color: #4B5563;
+        }
+        .slot.filled {
+            border: 3px solid var(--success);
+            background-color: #D1FAE5;
+            color: #065F46;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        .letters-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .scrambled-letter {
+            width: 50px;
+            height: 50px;
+            background-color: #3B82F6;
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: lowercase;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        .scrambled-letter:hover {
+            transform: translateY(-5px) scale(1.05);
+            background-color: #2563EB;
+        }
+        .scrambled-letter.hidden {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px) rotate(-5deg); }
+            50% { transform: translateX(6px) rotate(5deg); }
+            75% { transform: translateX(-6px) rotate(-5deg); }
+        }
+        .shake-error-letter {
+            animation: shake 0.4s;
+            background-color: var(--danger) !important;
+            box-shadow: 0 0 15px var(--danger);
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            color: #D97706;
+            font-size: 36px;
+            font-weight: 900;
+            margin-top: 25px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            width: 100%;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #confetti-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute; animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            border-radius: 20px;
+            padding: 20px;
+            overflow-y: auto;
+            direction: rtl;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #E5E7EB;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .modal-header h2 {
+            margin: 0; color: var(--primary); font-size: 24px;
+        }
+        .close-modal {
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px; height: 35px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .word-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+        .word-list-item:hover {
+            background-color: #F9FAFB;
+        }
+        .word-en { font-weight: bold; color: var(--text); direction: ltr; }
+        .word-ar { color: var(--primary); }
+        .word-index { color: #9CA3AF; font-size: 14px; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="confetti-container"></div>
+
+    <!-- نافذة القائمة النصية للكلمات -->
+    <div id="wordsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>قائمة الكلمات (30 كلمة)</h2>
+                <button class="close-modal" onclick="toggleModal('wordsModal')">✖</button>
+            </div>
+            <div id="wordsListContainer"></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <button class="btn-list" onclick="toggleModal('wordsModal')">قائمة الكلمات 📋</button>
+        
+        <!-- عنوان ملون وبارز -->
+        <h1 class="colorful-title">
+            <span style="color: #EF4444;">كلمات</span> 
+            <span style="color: #3B82F6;">الوحدة</span> 
+            <span style="color: #10B981;">الثالثة:</span><br>
+            <span style="color: #8B5CF6;">مسارات</span> 
+            <span style="color: #F59E0B;">الوظائف</span> 
+            <span style="color: #EC4899;">(Job Paths)</span>
+        </h1>
+        
+        <p style="font-weight: 900; color: #4B5563; font-size: 22px; margin-bottom: 5px;">للصف الخامس الابتدائي</p>
+        
+        <div class="author-name">إعداد الأستاذ/ حمادة الديب</div>
+        
+        <div class="school-name">
+            مدارس آفاق الهداية الحديثة للبنين<br>
+            <span class="school-stage">(المرحلة الابتدائية)</span>
+        </div>
+        
+        <div id="wordCounter" class="word-counter"></div>
+    </div>
+
+    <div id="wordDisplayContainer" class="word-display-container">
+        <div id="showWordLetters" class="show-word-letters"></div>
+    </div>
+
+    <div class="game-area">
+        <div id="arabicMeaning" class="arabic-meaning"></div>
+        
+        <div id="slotsContainer" class="slots-container"></div>
+        <div id="lettersContainer" class="letters-container"></div>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-prev" onclick="prevWord()">&laquo; السابق</button>
+        <button class="btn-next" onclick="nextWord()">التالي &raquo;</button>
+        <button class="btn-show" id="showWordBtn" onclick="toggleShowWord()">إظهار الكلمة / نطق &#128266;</button>
+    </div>
+
+    <script>
+        // كلمات الوحدة الثالثة
+        const vocabulary = [
+            { en: "jobs", ar: "وظائف" },
+            { en: "work", ar: "عمل" },
+            { en: "actor", ar: "ممثل" },
+            { en: "pilot", ar: "طيار" },
+            { en: "stage", ar: "مسرح" },
+            { en: "driver", ar: "سائق" },
+            { en: "singer", ar: "مغنية" },
+            { en: "waiter", ar: "نادل" },
+            { en: "artist", ar: "فنان" },
+            { en: "office", ar: "مكتب" },
+            { en: "manager", ar: "مدير" },
+            { en: "airport", ar: "مطار" },
+            { en: "gallery", ar: "معرض" },
+            { en: "factory", ar: "مصنع" },
+            { en: "cyclist", ar: "سائق دراجات" },
+            { en: "engineer", ar: "مهندس" },
+            { en: "mechanic", ar: "ميكانيكي" },
+            { en: "meetings", ar: "اجتماعات" },
+            { en: "scientist", ar: "عالم" },
+            { en: "therapist", ar: "اخصائي نفسي" },
+            { en: "journalist", ar: "صحفي" },
+            { en: "specialist", ar: "متخصص" },
+            { en: "pharmacist", ar: "صيدلاني" },
+            { en: "news studio", ar: "استوديو اخبار" },
+            { en: "photographer", ar: "مصور" },
+            { en: "psychologist", ar: "طبيب نفسي" },
+            { en: "receptionist", ar: "موظف استقبال" },
+            { en: "business women", ar: "سيدة أعمال" },
+            { en: "fashion designer", ar: "مصممة أزياء" },
+            { en: "flight attendant", ar: "مضيفة طيران" }
+        ];
+
+        const feedbackMessages = [
+            "Excellent! 🏆", "Perfect! 🌺", "Brilliant! 🌟", 
+            "Super! 🎉", "Genius! 👑", "Awesome! 🚀"
+        ];
+
+        let currentIndex = 0;
+        let currentWord = "";
+        let isSpeakingMode = false;
+        let spellingIndex = -1;
+        let dictationTimeout = null;
+        let synth = window.speechSynthesis;
+
+        function buildWordList() {
+            const container = document.getElementById('wordsListContainer');
+            container.innerHTML = '';
+            vocabulary.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'word-list-item';
+                div.innerHTML = `
+                    <div>
+                        <span class="word-index">${index + 1}-</span>
+                        <span class="word-ar">${item.ar}</span>
+                    </div>
+                    <span class="word-en">${item.en}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // دالة موحدة لفتح وإغلاق النوافذ المنبثقة
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function initGame() {
+            stopSpeakingMode();
+            document.getElementById('confetti-container').innerHTML = '';
+            
+            const currentItem = vocabulary[currentIndex];
+            currentWord = currentItem.en.toLowerCase();
+            
+            document.getElementById('arabicMeaning').innerText = currentItem.ar;
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('wordCounter').innerText = `${currentIndex + 1} من ${vocabulary.length}`;
+            
+            createSlots();
+            createScrambledLetters();
+            prepareShowWord();
+        }
+
+        function createSlots() {
+            const slotsContainer = document.getElementById('slotsContainer');
+            slotsContainer.innerHTML = '';
+            for (let i = 0; i < currentWord.length; i++) {
+                const char = currentWord[i];
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.dataset.index = i;
+                slot.dataset.char = char;
+                if (char === ' ') {
+                    slot.classList.add('filled');
+                    slot.innerText = '-';
+                    slot.style.border = 'none';
+                    slot.style.backgroundColor = 'transparent';
+                    slot.style.boxShadow = 'none';
+                    slot.style.width = '20px';
+                }
+                slotsContainer.appendChild(slot);
+            }
+        }
+
+        function createScrambledLetters() {
+            const container = document.getElementById('lettersContainer');
+            container.innerHTML = '';
+            let chars = currentWord.replace(/ /g, '').split('');
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+            chars.forEach((char) => {
+                const letterObj = document.createElement('div');
+                letterObj.className = 'scrambled-letter';
+                letterObj.innerText = char;
+                letterObj.onclick = () => selectLetter(letterObj, char);
+                container.appendChild(letterObj);
+            });
+        }
+
+        function selectLetter(element, char) {
+            if (element.classList.contains('hidden')) return;
+            const nextSlot = document.querySelector('.slot:not(.filled)');
+            if (!nextSlot) return;
+            const expectedChar = nextSlot.dataset.char;
+
+            if (expectedChar === char) {
+                nextSlot.innerText = char;
+                nextSlot.classList.add('filled');
+                element.classList.add('hidden');
+                setTimeout(() => nextSlot.style.transform = 'scale(1)', 300);
+                checkWin();
+            } else {
+                element.classList.add('shake-error-letter');
+                setTimeout(() => element.classList.remove('shake-error-letter'), 400);
+            }
+        }
+
+        function checkWin() {
+            const slots = document.querySelectorAll('.slot:not(.filled)');
+            if (slots.length === 0) {
+                const successMsg = document.getElementById('successMessage');
+                const randomMsg = feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)];
+                successMsg.innerText = randomMsg;
+                successMsg.style.display = 'block';
+                
+                stopSpeakingMode();
+                fireConfetti();
+                
+                let utterance = new SpeechSynthesisUtterance(currentWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                synth.speak(utterance);
+                
+                setTimeout(() => initGame(), 3000);
+            }
+        }
+
+        function fireConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#FFC700', '#FF0000', '#2E3192', '#41BBC7', '#10B981', '#9333EA'];
+            const emojis = ['🎈', '🎊', '🎉', '⭐', '🌺', '🏆'];
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                if (Math.random() > 0.4) {
+                    piece.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    piece.style.fontSize = Math.random() * 20 + 20 + 'px';
+                } else {
+                    piece.style.width = Math.random() * 12 + 8 + 'px';
+                    piece.style.height = Math.random() * 25 + 10 + 'px';
+                    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.borderRadius = (Math.random() > 0.5) ? '50%' : '2px';
+                }
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.top = -50 + 'px';
+                piece.style.opacity = Math.random() + 0.6;
+                const duration = Math.random() * 3 + 2;
+                piece.style.animation = `fall ${duration}s linear forwards`;
+                container.appendChild(piece);
+            }
+        }
+
+        function toggleShowWord() {
+            isSpeakingMode = !isSpeakingMode;
+            const btn = document.getElementById('showWordBtn');
+            const container = document.getElementById('wordDisplayContainer');
+            if (isSpeakingMode) {
+                btn.classList.add('btn-active');
+                btn.innerHTML = 'إيقاف النطق &#9209;';
+                container.style.display = 'block';
+                spellingIndex = -1;
+                playDictationLoop();
+            } else {
+                stopSpeakingMode();
+            }
+        }
+
+        function stopSpeakingMode() {
+            isSpeakingMode = false;
+            const btn = document.getElementById('showWordBtn');
+            const container = document.getElementById('wordDisplayContainer');
+            btn.classList.remove('btn-active');
+            btn.innerHTML = 'إظهار الكلمة / نطق &#128266;';
+            container.style.display = 'none';
+            synth.cancel();
+            clearTimeout(dictationTimeout);
+            document.querySelectorAll('.show-letter').forEach(el => el.classList.remove('highlight'));
+        }
+
+        function prepareShowWord() {
+            const container = document.getElementById('showWordLetters');
+            container.innerHTML = '';
+            for (let i = 0; i < currentWord.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'show-letter';
+                span.innerText = currentWord[i] === ' ' ? '\u00A0' : currentWord[i];
+                container.appendChild(span);
+            }
+        }
+
+        function playDictationLoop() {
+            if (!isSpeakingMode) return;
+            const letters = document.querySelectorAll('.show-letter');
+            letters.forEach(el => el.classList.remove('highlight'));
+            if (spellingIndex === -1) {
+                letters.forEach(el => { if (el.innerText !== '\u00A0') el.classList.add('highlight'); });
+                let utterance = new SpeechSynthesisUtterance(currentWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                utterance.onend = function() {
+                    if(!isSpeakingMode) return;
+                    spellingIndex = 0;
+                    dictationTimeout = setTimeout(playDictationLoop, 600);
+                };
+                synth.speak(utterance);
+            } else if (spellingIndex < currentWord.length) {
+                let char = currentWord[spellingIndex];
+                if (char === ' ') {
+                    spellingIndex++;
+                    playDictationLoop();
+                    return;
+                }
+                letters[spellingIndex].classList.add('highlight');
+                let utterance = new SpeechSynthesisUtterance(char);
+                utterance.lang = 'en-US';
+                utterance.rate = 1.0; 
+                utterance.onend = function() {
+                    if(!isSpeakingMode) return;
+                    spellingIndex++;
+                    dictationTimeout = setTimeout(playDictationLoop, 300);
+                };
+                synth.speak(utterance);
+            } else {
+                letters.forEach(el => { if (el.innerText !== '\u00A0') el.classList.add('highlight'); });
+                let utterance = new SpeechSynthesisUtterance(currentWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8; 
+                utterance.onend = function() {
+                    if(!isSpeakingMode) return;
+                    spellingIndex = -1;
+                    dictationTimeout = setTimeout(playDictationLoop, 1500);
+                };
+                synth.speak(utterance);
+            }
+        }
+
+        function nextWord() {
+            currentIndex++;
+            if (currentIndex >= vocabulary.length) currentIndex = 0;
+            initGame();
+        }
+
+        function prevWord() {
+            currentIndex--;
+            if (currentIndex < 0) currentIndex = vocabulary.length - 1;
+            initGame();
+        }
+
+        window.onload = () => {
+            buildWordList();
+            initGame();
+        };
+    </script>
+</body>
+</html>
