@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تدريب مفردات STEP - إعداد الأستاذ حمادة الديب</title>
+    <style>
+        :root {
+            --primary: #1E3A8A; 
+            --secondary: #3B82F6; 
+            --success: #059669; 
+            --danger: #DC2626; 
+            --bg-color: #F1F5F9;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .credits {
+            font-size: 13px;
+            color: #DBEAFE;
+            margin-bottom: 15px;
+        }
+
+        .btn-list {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-list:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F8FAFC;
+            padding: 10px 20px;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .progress-wrapper {
+            flex-grow: 1;
+            margin: 0 15px;
+            background: #E2E8F0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .score-badge {
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .game-area {
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .english-word {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px; 
+            direction: ltr;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            padding: 10px 30px;
+            border-radius: 12px;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+        }
+
+        .audio-icon {
+            font-size: 24px;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.5; }
+        }
+
+        .example-sentence {
+            font-size: 19px;
+            color: #334155;
+            margin-bottom: 25px;
+            text-align: left;
+            direction: ltr;
+            background: #F1F5F9;
+            padding: 12px 20px;
+            border-radius: 8px;
+            width: 90%;
+            box-sizing: border-box;
+            border: 1px solid #E2E8F0;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .highlight-word {
+            color: var(--danger);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .options-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #CBD5E1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            border-color: var(--secondary);
+            background: #EFF6FF;
+        }
+
+        .option-correct {
+            background: #ECFDF5 !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        .option-wrong {
+            background: #FEF2F2 !important;
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: #F8FAFC;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .controls button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--secondary);
+            color: white;
+        }
+
+        .controls button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h2 { margin: 0; color: var(--primary); font-size: 18px; }
+
+        .close-modal {
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .word-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 15px;
+        }
+        .word-list-item:nth-child(even) { background: #F8FAFC; }
+        .word-en { font-weight: bold; color: var(--primary); direction: ltr; }
+    </style>
+</head>
+<body>
+
+    <div id="wordsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>قائمة مفردات STEP (100 كلمة)</h2>
+                <button class="close-modal" onclick="toggleModal()">إغلاق ✖</button>
+            </div>
+            <div id="wordsListContainer"></div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="header">
+            <button class="btn-list" onclick="toggleModal()">القاموس 📚</button>
+            <h1>اختبار كفايات الإنجليزية (STEP)</h1>
+            <div class="credits">
+                إعداد الأستاذ حمادة الديب | مدارس آفاق الهداية الحديثة للبنين
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <span id="wordCounter">1 / 100</span>
+            <div class="progress-wrapper">
+                <div id="progressBar" class="progress-fill"></div>
+            </div>
+            <span class="score-badge">النقاط: <span id="scoreDisplay">0</span></span>
+        </div>
+
+        <div class="game-area">
+            <div id="englishWord" class="english-word" onclick="restartLoop()" title="اضغط لإعادة النطق الآن">
+                <span id="theWordText">Word</span>
+                <span class="audio-icon">🔊</span>
+            </div>
+            
+            <div id="exampleSentence" class="example-sentence" onclick="restartLoop()">
+                <span id="theSentenceText">Example sentence</span>
+            </div>
+            
+            <div id="optionsContainer" class="options-container"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-next" onclick="nextWord()">التالي &laquo;</button>
+            <button class="btn-prev" onclick="prevWord()">السابق &raquo;</button>
+        </div>
+    </div>
+
+    <script>
+        const stepVocabulary = [
+            { en: "achieve", ar: "يحقق / ينجز", ex: "I want to <span class='highlight-word'>achieve</span> my goals." },
+            { en: "acquire", ar: "يكتسب / يحصل على", ex: "He will <span class='highlight-word'>acquire</span> new skills." },
+            { en: "adapt", ar: "يتكيف / يتأقلم", ex: "We must <span class='highlight-word'>adapt</span> to the weather." },
+            { en: "analyze", ar: "يحلل", ex: "Let's <span class='highlight-word'>analyze</span> the data." },
+            { en: "approach", ar: "نهج / يقترب", ex: "This is a new <span class='highlight-word'>approach</span> to study." },
+            { en: "assess", ar: "يقيم / يقدر", ex: "The teacher will <span class='highlight-word'>assess</span> your test." },
+            { en: "benefit", ar: "فائدة / يستفيد", ex: "You will <span class='highlight-word'>benefit</span> from this book." },
+            { en: "category", ar: "فئة / صنف", ex: "This falls into a different <span class='highlight-word'>category</span>." },
+            { en: "complex", ar: "معقد", ex: "The math problem is very <span class='highlight-word'>complex</span>." },
+            { en: "conclude", ar: "يستنتج / يختتم", ex: "What can we <span class='highlight-word'>conclude</span> from this?" },
+            { en: "conduct", ar: "يجري / ينفذ", ex: "They will <span class='highlight-word'>conduct</span> a test." },
+            { en: "consequence", ar: "نتيجة / عاقبة", ex: "Think about the <span class='highlight-word'>consequence</span> of your action." },
+            { en: "construct", ar: "يبني / يشيد", ex: "They will <span class='highlight-word'>construct</span> a new bridge." },
+            { en: "consume", ar: "يستهلك", ex: "Do not <span class='highlight-word'>consume</span> too much sugar." },
+            { en: "create", ar: "ينشئ / يبتكر", ex: "Let's <span class='highlight-word'>create</span> a new game." },
+            { en: "decline", ar: "ينخفض / يرفض", ex: "I had to <span class='highlight-word'>decline</span> his invitation." },
+            { en: "define", ar: "يعرّف / يحدد", ex: "Can you <span class='highlight-word'>define</span> this word?" },
+            { en: "demonstrate", ar: "يوضح / يبرهن", ex: "She will <span class='highlight-word'>demonstrate</span> how to use it." },
+            { en: "design", ar: "يصمم / تصميم", ex: "I love the <span class='highlight-word'>design</span> of your room." },
+            { en: "document", ar: "وثيقة / يوثق", ex: "Please sign this <span class='highlight-word'>document</span>." },
+            { en: "environment", ar: "بيئة", ex: "We must protect the <span class='highlight-word'>environment</span>." },
+            { en: "establish", ar: "يؤسس / ينشئ", ex: "They plan to <span class='highlight-word'>establish</span> a new school." },
+            { en: "estimate", ar: "يقدر / يخمن", ex: "Can you <span class='highlight-word'>estimate</span> the cost?" },
+            { en: "evaluate", ar: "يقيم", ex: "The doctor will <span class='highlight-word'>evaluate</span> your health." },
+            { en: "evidence", ar: "دليل / إثبات", ex: "We need <span class='highlight-word'>evidence</span> to prove it." },
+            { en: "focus", ar: "يركز / تركيز", ex: "Please <span class='highlight-word'>focus</span> on your studies." },
+            { en: "function", ar: "وظيفة / مهمة", ex: "What is the <span class='highlight-word'>function</span> of this key?" },
+            { en: "generate", ar: "يولد / ينتج", ex: "Wind can <span class='highlight-word'>generate</span> power." },
+            { en: "identify", ar: "يحدد / يتعرف على", ex: "Can you <span class='highlight-word'>identify</span> the thief?" },
+            { en: "impact", ar: "تأثير / أثر", ex: "The internet has a big <span class='highlight-word'>impact</span> on us." },
+            { en: "indicate", ar: "يشير إلى / يوضح", ex: "The sign will <span class='highlight-word'>indicate</span> the way." },
+            { en: "individual", ar: "فرد / شخصي", ex: "Every <span class='highlight-word'>individual</span> has rights." },
+            { en: "interpret", ar: "يفسر / يترجم", ex: "Please <span class='highlight-word'>interpret</span> this message." },
+            { en: "involve", ar: "يتضمن / يشمل", ex: "The game will <span class='highlight-word'>involve</span> all students." },
+            { en: "issue", ar: "قضية / مشكلة", ex: "Money is not the main <span class='highlight-word'>issue</span>." },
+            { en: "major", ar: "رئيسي / تخصص", ex: "English is my <span class='highlight-word'>major</span> in college." },
+            { en: "method", ar: "طريقة / أسلوب", ex: "This is a good <span class='highlight-word'>method</span> for teaching." },
+            { en: "occur", ar: "يحدث / يقع", ex: "When did the accident <span class='highlight-word'>occur</span>?" },
+            { en: "policy", ar: "سياسة / مبدأ", ex: "Honesty is the best <span class='highlight-word'>policy</span>." },
+            { en: "potential", ar: "محتمل / إمكانية", ex: "He has the <span class='highlight-word'>potential</span> to win." },
+            { en: "previous", ar: "سابق", ex: "I liked the <span class='highlight-word'>previous</span> lesson." },
+            { en: "primary", ar: "أساسي / أولي", ex: "My <span class='highlight-word'>primary</span> goal is to pass." },
+            { en: "process", ar: "عملية / يعالج", ex: "Learning is a slow <span class='highlight-word'>process</span>." },
+            { en: "require", ar: "يتطلب / يحتاج", ex: "Plants <span class='highlight-word'>require</span> water to grow." },
+            { en: "research", ar: "بحث / يجري بحثاً", ex: "I am doing <span class='highlight-word'>research</span> on space." },
+            { en: "significant", ar: "هام / بارز", ex: "There is a <span class='highlight-word'>significant</span> change in weather." },
+            { en: "specific", ar: "محدد / معين", ex: "Give me a <span class='highlight-word'>specific</span> example." },
+            { en: "strategy", ar: "استراتيجية / خطة", ex: "We need a new <span class='highlight-word'>strategy</span> to win." },
+            { en: "structure", ar: "هيكل / بناء", ex: "The building has a strong <span class='highlight-word'>structure</span>." },
+            { en: "theory", ar: "نظرية", ex: "Einstein developed a famous <span class='highlight-word'>theory</span>." },
+            { en: "access", ar: "يصل إلى / وصول", ex: "I need <span class='highlight-word'>access</span> to the internet." },
+            { en: "adequate", ar: "كافٍ / مناسب", ex: "Make sure you drink <span class='highlight-word'>adequate</span> water." },
+            { en: "apparent", ar: "واضح / ظاهر", ex: "It was <span class='highlight-word'>apparent</span> that he was sad." },
+            { en: "approximate", ar: "تقريبي", ex: "What is the <span class='highlight-word'>approximate</span> time?" },
+            { en: "attitude", ar: "موقف / سلوك", ex: "She has a positive <span class='highlight-word'>attitude</span>." },
+            { en: "civil", ar: "مدني", ex: "He works in <span class='highlight-word'>civil</span> engineering." },
+            { en: "code", ar: "رمز / شفرة", ex: "I forgot the secret <span class='highlight-word'>code</span>." },
+            { en: "commit", ar: "يرتكب / يلتزم", ex: "Do not <span class='highlight-word'>commit</span> a crime." },
+            { en: "communicate", ar: "يتواصل", ex: "We <span class='highlight-word'>communicate</span> by email." },
+            { en: "concentrate", ar: "يركز", ex: "I cannot <span class='highlight-word'>concentrate</span> on my work." },
+            { en: "contrast", ar: "تباين / اختلاف", ex: "There is a big <span class='highlight-word'>contrast</span> between them." },
+            { en: "cycle", ar: "دورة", ex: "The water <span class='highlight-word'>cycle</span> is important." },
+            { en: "debate", ar: "نقاش / جدال", ex: "We had a long <span class='highlight-word'>debate</span> about it." },
+            { en: "despite", ar: "على الرغم من", ex: "He ran fast <span class='highlight-word'>despite</span> the pain." },
+            { en: "dimension", ar: "بُعد / حجم", ex: "Measure the <span class='highlight-word'>dimension</span> of the room." },
+            { en: "domestic", ar: "محلي / منزلي", ex: "They sell <span class='highlight-word'>domestic</span> products." },
+            { en: "emerge", ar: "يظهر / ينبثق", ex: "The sun will <span class='highlight-word'>emerge</span> from the clouds." },
+            { en: "error", ar: "خطأ", ex: "There is an <span class='highlight-word'>error</span> in the system." },
+            { en: "goal", ar: "هدف", ex: "My <span class='highlight-word'>goal</span> is to learn English." },
+            { en: "grant", ar: "يمنح / منحة", ex: "The school will <span class='highlight-word'>grant</span> him a prize." },
+            { en: "implement", ar: "ينفذ / يطبق", ex: "We must <span class='highlight-word'>implement</span> the new rules." },
+            { en: "integrate", ar: "يدمج", ex: "We should <span class='highlight-word'>integrate</span> tech into education." },
+            { en: "internal", ar: "داخلي", ex: "The body has <span class='highlight-word'>internal</span> organs." },
+            { en: "investigate", ar: "يحقق في", ex: "The police will <span class='highlight-word'>investigate</span> the case." },
+            { en: "job", ar: "وظيفة / عمل", ex: "He is looking for a new <span class='highlight-word'>job</span>." },
+            { en: "label", ar: "ملصق / يصنف", ex: "Read the <span class='highlight-word'>label</span> on the bottle." },
+            { en: "mechanism", ar: "آلية", ex: "How does this <span class='highlight-word'>mechanism</span> work?" },
+            { en: "obvious", ar: "واضح", ex: "It is <span class='highlight-word'>obvious</span> that you are tired." },
+            { en: "output", ar: "إنتاج / مخرجات", ex: "The factory increased its <span class='highlight-word'>output</span>." },
+            { en: "overall", ar: "إجمالي / بشكل عام", ex: "The <span class='highlight-word'>overall</span> result was good." },
+            { en: "parallel", ar: "موازٍ", ex: "The two lines are <span class='highlight-word'>parallel</span>." },
+            { en: "phase", ar: "مرحلة", ex: "This is the first <span class='highlight-word'>phase</span> of the project." },
+            { en: "predict", ar: "يتنبأ / يتوقع", ex: "Can you <span class='highlight-word'>predict</span> the weather?" },
+            { en: "principal", ar: "مدير / رئيسي", ex: "The <span class='highlight-word'>principal</span> spoke to the students." },
+            { en: "prior", ar: "سابق / مسبق", ex: "Do you have <span class='highlight-word'>prior</span> experience?" },
+            { en: "project", ar: "مشروع", ex: "I am working on a new <span class='highlight-word'>project</span>." },
+            { en: "promote", ar: "يرقي / يعزز", ex: "They will <span class='highlight-word'>promote</span> him to manager." },
+            { en: "resolve", ar: "يحل / يسوي", ex: "We need to <span class='highlight-word'>resolve</span> this problem." },
+            { en: "retain", ar: "يحتفظ بـ", ex: "Try to <span class='highlight-word'>retain</span> the new words." },
+            { en: "series", ar: "سلسلة", ex: "I watched a new <span class='highlight-word'>series</span> on TV." },
+            { en: "statistic", ar: "إحصائية", ex: "This <span class='highlight-word'>statistic</span> shows the population." },
+            { en: "status", ar: "حالة / وضع", ex: "Check the <span class='highlight-word'>status</span> of your flight." },
+            { en: "stress", ar: "ضغط / يشدد", ex: "Do not let <span class='highlight-word'>stress</span> control you." },
+            { en: "subsequent", ar: "لاحق / تالي", ex: "The <span class='highlight-word'>subsequent</span> events were strange." },
+            { en: "sum", ar: "مجموع / مبلغ", ex: "He paid a large <span class='highlight-word'>sum</span> of money." },
+            { en: "summary", ar: "ملخص", ex: "Write a <span class='highlight-word'>summary</span> of the story." },
+            { en: "undertake", ar: "يتولى / يأخذ على عاتقه", ex: "I will <span class='highlight-word'>undertake</span> this task." },
+            { en: "valid", ar: "صالح / ساري", ex: "My passport is still <span class='highlight-word'>valid</span>." },
+            { en: "volume", ar: "حجم / مقدار", ex: "Turn down the <span class='highlight-word'>volume</span>, please." },
+            { en: "maintain", ar: "يحافظ على", ex: "You must <span class='highlight-word'>maintain</span> a healthy diet." }
+        ];
+
+        let currentIndex = 0;
+        let currentItem = null;
+        let synth = window.speechSynthesis;
+        let canPlay = true;
+        let score = 0;
+        let isLooping = false;
+        let loopTimeout = null;
+
+        function buildWordList() {
+            const container = document.getElementById('wordsListContainer');
+            stepVocabulary.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'word-list-item';
+                div.innerHTML = `
+                    <span><span style="color:#94A3B8; margin-left:8px;">${index + 1}-</span> ${item.ar}</span>
+                    <span class="word-en">${item.en}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleModal() {
+            const modal = document.getElementById('wordsModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function initGame() {
+            stopAudioLoop();
+            canPlay = true;
+            currentItem = stepVocabulary[currentIndex];
+            
+            document.getElementById('theWordText').innerText = currentItem.en.toLowerCase();
+            document.getElementById('theSentenceText').innerHTML = currentItem.ex; 
+            document.getElementById('wordCounter').innerText = `${currentIndex + 1} / ${stepVocabulary.length}`;
+            
+            const progressPercent = ((currentIndex + 1) / stepVocabulary.length) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            
+            generateOptions();
+            
+            // بدء التكرار الصوتي المستمر
+            isLooping = true;
+            setTimeout(playAudioSequence, 300);
+        }
+
+        function generateOptions() {
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            let options = [currentItem];
+            let wrongOptionsPool = stepVocabulary.filter(v => v.en !== currentItem.en);
+            
+            wrongOptionsPool.sort(() => 0.5 - Math.random());
+            options.push(wrongOptionsPool[0], wrongOptionsPool[1]);
+
+            options.sort(() => 0.5 - Math.random());
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.ar;
+                btn.onclick = () => checkAnswer(btn, opt.ar);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btnElement, selectedAr) {
+            if (!canPlay) return;
+
+            if (selectedAr === currentItem.ar) {
+                canPlay = false; // يمنع النقر مرة أخرى، لكن التكرار الصوتي سيستمر
+                btnElement.classList.add('option-correct');
+                
+                score += 10;
+                document.getElementById('scoreDisplay').innerText = score;
+                // تم إلغاء النقل التلقائي! التكرار سيستمر حتى يضغط الطالب "التالي"
+            } else {
+                btnElement.classList.add('option-wrong');
+                setTimeout(() => btnElement.classList.remove('option-wrong'), 400);
+                if(score > 0) {
+                    score -= 5;
+                    document.getElementById('scoreDisplay').innerText = score;
+                }
+            }
+        }
+
+        // دالة التكرار (تقرأ الكلمة ثم الجملة، ثم تعيد)
+        function playAudioSequence() {
+            if (!isLooping || !currentItem) return;
+            synth.cancel();
+
+            let wordUtterance = new SpeechSynthesisUtterance(currentItem.en);
+            let cleanText = currentItem.ex.replace(/<[^>]*>?/gm, '');
+            let sentenceUtterance = new SpeechSynthesisUtterance(cleanText);
+
+            wordUtterance.lang = 'en-US';
+            sentenceUtterance.lang = 'en-US';
+            
+            wordUtterance.rate = 0.9;
+            sentenceUtterance.rate = 0.85;
+
+            // عندما تنتهي الجملة، انتظر ثانية ونصف ثم كرر
+            sentenceUtterance.onend = function() {
+                if (isLooping) {
+                    loopTimeout = setTimeout(playAudioSequence, 1500); 
+                }
+            };
+
+            synth.speak(wordUtterance);
+            synth.speak(sentenceUtterance);
+        }
+
+        function stopAudioLoop() {
+            isLooping = false;
+            clearTimeout(loopTimeout);
+            synth.cancel();
+        }
+
+        function restartLoop() {
+            stopAudioLoop();
+            isLooping = true;
+            playAudioSequence();
+        }
+
+        function nextWord() {
+            currentIndex++;
+            if (currentIndex >= stepVocabulary.length) {
+                alert(`أكملت التدريب بنجاح! مجموع نقاطك: ${score}`);
+                currentIndex = 0;
+                score = 0;
+                document.getElementById('scoreDisplay').innerText = score;
+            }
+            initGame(); // initGame ستقوم بإيقاف الصوت القديم وتبدأ الجديد تلقائياً
+        }
+
+        function prevWord() {
+            currentIndex--;
+            if (currentIndex < 0) currentIndex = stepVocabulary.length - 1;
+            initGame();
+        }
+
+        window.onload = () => {
+            buildWordList();
+            initGame();
+        };
+    </script>
+</body>
+</html>
