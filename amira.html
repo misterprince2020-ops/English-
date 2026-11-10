@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مراجعة الطالبة أميرة - إنجليزي</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Tajawal', 'Segoe UI', sans-serif; 
+            background: #111827;
+            display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh;
+        }
+        
+        .page { 
+            background-color: #ffffff; width: 100%; max-width: 1200px; padding: 35px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-radius: 12px; border: 4px solid #facc15; 
+        }
+        
+        .main-title { text-align: center; color: #1e3a8a; font-size: 2.5em; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .sub-title { text-align: center; color: #475569; font-size: 1.4em; margin-bottom: 30px; font-weight: bold; }
+        .creator-info { text-align: center; color: #facc15; background-color: #1e3a8a; font-size: 1.2em; font-weight: bold; margin-bottom: 30px; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+
+        /* التبويبات */
+        .tab-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab-btn { background-color: #ffffff; border: 2px solid #cbd5e1; cursor: pointer; padding: 12px 25px; font-size: 1.2em; font-weight: 900; color: #475569; border-radius: 10px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+        .tab-btn:hover { background-color: #f1f5f9; border-color: #94a3b8; }
+        .tab-btn.active { background-color: #1e3a8a; color: #facc15; border-color: #1e3a8a; box-shadow: 0 6px 12px rgba(30, 58, 138, 0.4); transform: scale(1.05);}
+        
+        .tab-content { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* لوحة التحكم الذكية */
+        .group-control-bar { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 15px; border: 2px solid #e2e8f0; gap:15px;}
+        .control-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        
+        .mode-btn { color: white; border: none; padding: 15px 30px; font-size: 1.3em; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .btn-study { background-color: #3b82f6; } 
+        .btn-exam { background-color: #64748b; } 
+        
+        .btn-study.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+        .btn-exam.active-mode { outline: 3px solid #facc15; outline-offset: 2px; }
+
+        .action-buttons-row { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;}
+        .action-btn { color: white; border: none; padding: 15px 25px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; flex: 1; max-width: 915px;}
+        .btn-play-all { background-color: #10b981; } .btn-play-all:hover { background-color: #059669; }
+        .btn-result { background-color: #f59e0b; display: none; } .btn-result:hover { background-color: #d97706; }
+
+        .section-result { font-weight: 900; font-size: 1.8em; color: #1e3a8a; background: #eff6ff; padding: 20px 30px; border-radius: 8px; display: none; text-align: center; width: 100%; border: 2px solid #3b82f6; margin-top: 15px; line-height: 1.5;}
+
+        /* الأسئلة والخيارات */
+        .question-row { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px; transition: 0.3s; position: relative;}
+        .question-row:hover { border-color: #cbd5e1; box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        
+        .q-header { display: flex; justify-content: flex-end; margin-bottom: 5px; width: 100%;}
+        .btn-toggle { background-color: #10b981; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 15px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-toggle:hover { background-color: #059669; transform: translateY(-2px);}
+        .btn-toggle.playing { background-color: #f59e0b; }
+
+        .q-text-container { display: flex; align-items: flex-start; gap: 15px; width: 100%; direction: ltr;}
+        .q-number-span { font-size: 26px; font-weight: 900; color: #dc2626; flex-shrink: 0; padding-top: 25px; min-width: 40px; text-align: left; font-family: Arial, sans-serif;}
+        
+        .q-text { font-size: 1.4em; font-weight: bold; color: #0f172a; text-align: left; width: 100%; line-height: 2.8; transition: 0.3s; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;}
+        
+        .full-sentence-translation { color: #b91c1c; font-size: 1.25em; font-weight: 900; background-color: #fef2f2; border-right: 4px solid #ef4444; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; direction: rtl; text-align: right; }
+
+        .options-inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; direction: ltr; width: 100%; margin-top: 10px;}
+        
+        .opt-item { display: flex; align-items: stretch; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 10px; transition: 0.2s; cursor: pointer; overflow: visible !important; min-height: 80px;}
+        .choice-badge { background: #e2e8f0; color: #1e293b; padding: 15px; font-weight: bold; font-size: 1.2em; border-right: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; min-width: 50px; border-radius: 8px 0 0 8px;}
+        
+        .question-row:not(.answered) .opt-item:hover { border-color: #3b82f6; background: #eff6ff;}
+        .choice-text { padding: 20px 15px 15px 15px; font-weight: bold; font-size: 1.2em; color: #334155; display: flex; align-items: center; width:100%; flex-wrap: wrap; gap: 10px;}
+
+        /* التصحيح الفوري الآلي */
+        .opt-item.selected { border-color: #3b82f6 !important; background-color: #eff6ff !important;}
+        .opt-item.selected .choice-badge { background-color: #3b82f6 !important; color: white !important; }
+        
+        .opt-item.correct { background-color: #22c55e !important; border-color: #16a34a !important; }
+        .opt-item.correct .choice-badge, .opt-item.correct .choice-text, .opt-item.correct .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.correct .word-group .ar { color: #fef08a !important; } 
+        
+        .opt-item.wrong { background-color: #ef4444 !important; border-color: #dc2626 !important; }
+        .opt-item.wrong .choice-badge, .opt-item.wrong .choice-text, .opt-item.wrong .word-group .en { color: white !important; background: transparent !important; }
+        .opt-item.wrong .word-group .ar { color: #fef08a !important; }
+
+        /* الكلمات التفاعلية - توسيط دقيق وتقليل المسافة بين الكلمة وترجمتها */
+        .word-group { display: inline-flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-end !important; cursor: pointer; margin: 0 4px; position: relative; vertical-align: bottom; }
+        .word-group .ar { color: #b91c1c; font-size: 16px; font-family: 'Tajawal', sans-serif; font-weight: 900; white-space: nowrap; pointer-events: none; margin-bottom: -4px; width: 100%; text-align: center !important; direction: rtl; line-height: 1;}
+        .word-group .en { font-size: 22px; font-weight: bold; padding: 2px 6px 4px 6px; border-radius: 6px; transition: 0.2s; color: #1e293b; direction: ltr; font-family: Arial, sans-serif; width: 100%; text-align: center !important; line-height: 1;}
+        
+        .word-group.highlight .en { background-color: #fde047 !important; color: #000 !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        .missing-letter { color: #dc2626 !important; border-bottom: 2px dashed #dc2626; padding-bottom: 2px;}
+        .blank-space { letter-spacing: 2px; color: #000; }
+
+        /* أزرار الشرح */
+        .answer-action-container { width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;}
+        .btn-answer { background-color: #8b5cf6; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; font-size: 16px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-answer:hover { background-color: #7c3aed; transform: translateY(-2px);}
+        
+        .answer-box { margin-top: 15px; padding: 20px; background-color: #fefce8; border-right: 5px solid #eab308; border-radius: 8px; display: none; direction: rtl; text-align: right; animation: fadeIn 0.4s;}
+        .correct-word-text { font-weight: bold; font-size: 20px; color: #1e293b; margin-bottom: 15px; line-height: 2.5;}
+        .en-ans { display: inline-flex; align-items: flex-end; gap: 5px; flex-wrap: wrap; direction: ltr; margin-right: 10px;}
+        .grammar-explanation { padding: 15px; background-color: #eff6ff; border-right: 4px solid #3b82f6; border-radius: 6px; color: #1e293b; font-size: 18px; line-height: 2.2; font-weight:bold; }
+
+        /* ================= وضع الاختبار الصارم ================= */
+        .exam-mode { background-color: #fffcfc; border-color: #fca5a5;}
+        .exam-mode .full-sentence-translation { display: none !important; }
+        .exam-mode .answer-action-container { display: none !important; }
+        .exam-mode .answer-box { display: none !important; }
+        .exam-mode .q-header { display: none !important; } 
+        .exam-mode .word-group .ar { display: none !important; } 
+        .exam-mode .word-group { pointer-events: none !important; } 
+        .exam-mode .q-text { line-height: 1.8 !important; }
+        .exam-mode .choice-text { line-height: 1.5 !important; }
+        .exam-mode .q-number-span { padding-top: 5px; }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <div class="main-title">مراجعة الطالبة أميرة - أولى ثانوي</div>
+    <div class="sub-title">القواعد والمفردات - Grammar & Vocabulary</div>
+    <div class="creator-info">إعداد الأستاذ: حمادة الديب</div>
+
+    <div class="tab-buttons" id="tabs-container"></div>
+    <div id="units-container"></div>
+</div>
+
+<script>
+(function initImperialApp() {
+    try {
+        const sectionsData = {
+            grammar: { title: "القسم الأول: القواعد (Grammar)" },
+            vocab: { title: "القسم الثاني: المفردات (Vocabulary)" }
+        };
+
+        const db = {
+            grammar: [
+                {q:"Maybe,|ربما she|هي ........|........ a|ـ language|لغة course|دورة in|في London.|لندن", o:["is|تكون going|ذاهبة to|أن do|تؤدي", "will|سوف do|تؤدي", "will|سوف be|تكون doing|تؤدي", "is|تكون doing|تؤدي"], c:1, t:"ربما هي سوف تؤدي دورة لغة في لندن.", e:"بعد Maybe نستخدم will + الفعل الأساسي."},
+                {q:"At|في this|هذا time|الوقت tomorrow,|غداً ........|........", o:["I|أنا will|سوف swim|أسبح", "I|أنا will|سوف be|أكون swimming|أسبح", "I|أنا will|سوف have|أكون swum|قد_سبحت", "I|أنا am|أكون swimming|أسبح"], c:1, t:"في هذا الوقت غداً، سأكون أسبح.", e:"لأنها تدل على حدث مستمر في وقت محدد في المستقبل، نستخدم will be + v-ing."},
+                {q:"Mr.|السيد Huston:|هيوستن Tell|أخبر me,|ـني Adnan,|عدنان what|ما are|تكون your|ـك plans|خطط for|لـ next|القادم year,|عام after|بعد you|أنت graduate.|تتخرج Adnan:|عدنان Well,|حسنا ........|........ in|في the|الـ summer.|صيف", o:["I|أنا will|سوف travel|أسافر", "I|أنا traveled|سافرت", "I|أنا am|أكون going|ذاهب to|لكي travel|أسافر", "I|أنا travel|أسافر"], c:2, t:"السيد هيوستن: أخبرني يا عدنان، ما هي خططك للعام القادم بعد أن تتخرج؟ عدنان: حسناً، أنا ذاهب لأسافر في الصيف.", e:"لأن I am going to تستخدم للتعبير عن خطة أو نية مستقبلية واضحة."},
+                {q:"They|هم ........|........ probably|من_المحتمل go|يذهبون to|إلى the|الـ party.|حفلة", o:["will|سوف", "am|أكون", "do|يفعلون", "have|يملكون"], c:0, t:"هم من المحتمل سوف يذهبون إلى الحفلة.", e:"لأن probably تأتي قبل will للتعبير عن احتمال في المستقبل."},
+                {q:"........|........ to|إلى the|الـ exhibition|معرض with|مع me|ـي tomorrow?|غداً", o:["Do|هل you|أنت come|تأتي", "You|أنت come|تأتي", "Were|هل_كنت you|أنت came|أتيت", "Are|هل you|أنت coming|قادم"], c:3, t:"هل أنت قادم إلى المعرض معي غداً؟", e:"للسؤال عن حدث مخطط له في المستقبل القريب نستخدم ?Are you + v-ing."},
+                {q:"........|........ his|له car|سيارة to|إلى college|كلية every|كل day?|يوم", o:["Ali|علي drives|يقود", "Is|هل Ali|علي driving|يقود", "Does|هل Ali|علي drive|يقود", "Did|هل Ali|علي drive|قاد"], c:2, t:"هل علي يقود سيارته إلى الكلية كل يوم؟", e:"لأن الجملة في الزمن الحاضر البسيط (عادة / تكرار). نستخدم Does + الفعل الأساسي."},
+                {q:"Dr.|الدكتور Ali:|علي Actually,|في_الواقع in|في this|هذا century,|قرن robots|الروبوتات ........|........ going|ذاهبة to|لكي pass|تتجاوز humans|البشر in|في intelligence.|الذكاء", o:["is|تكون", "am|أكون", "were|كانوا", "are|تكون"], c:3, t:"الدكتور علي: في الواقع، في هذا القرن، الروبوتات ذاهبة لتتجاوز البشر في الذكاء.", e:"لأن robots جمع، فنستخدم are."},
+                {q:"Let's|دعنا ........|........ for|عن the|الـ hidden|المخفي treasure.|كنز", o:["look|نبحث", "looking|نبحث", "looks|يبحث", "looked|بحث"], c:0, t:"دعنا نبحث عن الكنز المخفي.", e:"بعد Let's نستخدم الفعل في صورته الأساسية (المصدر)."},
+                {q:"You|أنت are|تكون from|من Riyadh,|الرياض ........|........ ?|؟", o:["are|هل you|أنت", "aren't|أليس you|كذلك", "don't|ألا you|تفعل", "do|هل you|أنت"], c:1, t:"أنت من الرياض، أليس كذلك؟", e:"لأن الجملة مثبتة (... You are)، فنستخدم السؤال المذيل المنفي (?aren't you)."},
+                {q:"A)|أ Why|لماذا don't|لا we|نحن watch|نشاهد a|ـ movie|فيلم ?|؟ B)|ب ........|........ I|أنا have|لدي an|ـ exam.|امتحان", o:["Ok|حسناً", "Great|عظيم", "Why|لماذا not|لا", "Sorry|آسف"], c:3, t:"أ) لماذا لا نشاهد فيلماً؟ ب) آسف، لدي امتحان.", e:"نستخدم Sorry للرفض بسبب وجود امتحان."}
+            ],
+            vocab: [
+                {q:"We|نحن thought|اعتقدنا he|أنه was|كان a|ـ dreamer|حالم and|و ........|........", o:["ostrich|نعامة", "prediction|توقع", "visionary|صاحب_رؤية", "exploration|استكشاف"], c:2, t:"اعتقدنا أنه كان حالمًا وصاحب رؤية.", e:"لأن كلمة visionary تعني شخص صاحب رؤية للمستقبل، وتتناسب مع كلمة dreamer."},
+                {q:"Visionary|صاحب_الرؤية means|يعني having|أن_تمتلك clear|واضحة ideas|أفكار of|عن what|كيف the|الـ world|عالم should|يجب_أن be|يكون like|مثل in|في the|الـ future.|مستقبل", o:["True|صح", "False|خطأ"], c:0, t:"صاحب الرؤية يعني أن تمتلك أفكاراً واضحة عن كيف يجب أن يكون العالم في المستقبل. (صح أم خطأ؟)", e:"لأن كلمة visionary تعني شخصاً لديه أفكار واضحة عن شكل العالم في المستقبل، فالعبارة صحيحة."},
+                {q:"A:|أ Can|هل I|أنا have|أحظى a|ـ word|بكلمة with|مع you?|أنت B:|ب ........|........ I|أنا am|أكون all|كلي ears.|آذان_صاغية", o:["Poorly|بشكل_سيء", "Certainly|بالتأكيد", "Scarcely|نادراً", "Sorry|آسف"], c:1, t:"أ: هل يمكنني التحدث معك بكلمة؟ ب: بالتأكيد. أنا كلي آذان صاغية.", e:"لأن Certainly تعني بالتأكيد، وهي مناسبة للرد الإيجابي."},
+                {q:"The|الـ ........|........ of|عن the|الـ crime|جريمة told|أخبر the|الـ judge|قاضي about|عن the|الـ criminal.|مجرم", o:["thief|لص", "gather|يجمع", "witness|شاهد", "people|ناس"], c:2, t:"شاهد الجريمة أخبر القاضي عن المجرم.", e:"لأن الشاهد (witness) هو من يخبر القاضي عن المجرم."},
+                {q:"You|أنت could|تستطيع be|أن_تكون the|الـ hero|بطل in|في ........|........", o:["a|ـ hair|شعر cut|قصة", "a|ـ Fast|سريع restaurant|مطعم", "a|ـ kitchen|مطبخ appliance|أداة", "an|ـ adventure|مغامرة novel|رواية"], c:3, t:"تستطيع أن تكون البطل في رواية مغامرة.", e:"لأن البطل يكون عادة في رواية مغامرات (an adventure novel)."},
+                {q:"I|أنا left|تركته him|هو to|لكي invent|يخترع his|له story.|قصة The|الـ synonym|مرادف for|لكلمة invent|يخترع is|يكون = ........|........", o:["stop|يتوقف", "create|يبتكر", "travel|يسافر", "fly|يطير"], c:1, t:"تركته لكي يؤلف قصته. مرادف كلمة يبتكر (invent) هو...", e:"لأن invent تعني يبتكر، ومترادفها create وتعني يخلق أو يصنع."},
+                {q:"In|في the|الـ story,|قصة the|الـ main|رئيسية ........|........ is|تكون a|ـ baby|طفل moving|يتحرك around|حول the|الـ city|مدينة alone.|وحده", o:["news|أخبار", "prediction|توقع", "character|شخصية", "machine|آلة"], c:2, t:"في القصة، الشخصية الرئيسية هي طفل يتحرك حول المدينة بمفرده.", e:"لأن character تعني الشخصية الرئيسية في القصة."},
+                {q:"........|........ are|تعتبر considered|تعتبر as|كـ the|الـ fastest|أسرع transportation|وسائل_نقل nowadays.|في_وقتنا_الحاضر", o:["Bikes|دراجات", "Automobiles|سيارات", "High|عالية speed|سرعة trains|قطارات", "Used|مستعملة cars|سيارات"], c:2, t:"تعتبر القطارات عالية السرعة أسرع وسائل النقل في وقتنا الحاضر.", e:"لأن القطارات عالية السرعة (High speed trains) تُعَد أسرع وسائل النقل في الوقت الحالي."},
+                {q:"John:|جون Guess|خمن what!|ماذا I'll|سوف get|أحصل_على a|ـ Xbox|إكس_بوكس 360|360 tomorrow!|غدا Joey:|جوي No|لا kidding!|أمزح You'll|سوف invite|تدعوني me|أنا over|إليك to|لكي play,|نلعب won't|أليس_كذلك you?|أنت Synonym|مرادف of|كلمة = no|لا kidding|أمزح", o:["Really|حقا", "Nope|لا", "Great|عظيم", "Poorly|بشكل_سيء"], c:0, t:"جون: خمن ماذا! سأحصل على إكس بوكس 360 غدًا! جوي: لا تمزح! سوف تدعوني للعب، أليس كذلك؟ مرادف = لا أمزح", e:"لأن Really تعني حقا أو بجد، وهي مرادف لعبارة no kidding."},
+                {q:"Choose|اختر the|الـ correct|صحيحة word:|كلمة Would|هل you|أنت tell|تخبرني me|أنا how|كيف does|هل this|هذا mobile|جوال work?|يعمل ........|........ ,|، you|أنت need|تحتاج to|أن push|تضغط this|هذا button.|زر", o:["Sorry|آسف", "Certainly|بالتأكيد", "No|لا way|طريقة", "Never|أبداً"], c:1, t:"اختر الكلمة الصحيحة: هل يمكنك إخباري كيف يعمل هذا الجوال؟ بالتأكيد، تحتاج إلى الضغط على هذا الزر.", e:"لأن Certainly تعني بالتأكيد، وهي مناسبة للرد هنا."}
+            ]
+        };
+
+        let synth = window.speechSynthesis;
+        let activeQuestionId = null; 
+        let isPaused = false; 
+        let currentSequence = []; 
+        let currentSeqIndex = 0;
+        let cancelForPause = false;
+        let isAutoPlayingAll = false;
+        let autoPlayQueue = [];
+        let autoPlayCurrentIndex = 0;
+        let currentContainerId = null;
+
+        function buildApp() {
+            const tabsContainer = document.getElementById('tabs-container');
+            const unitsContainer = document.getElementById('units-container');
+
+            Object.keys(sectionsData).forEach((key, index) => {
+                let sInfo = sectionsData[key];
+                
+                let tabBtn = document.createElement('button');
+                tabBtn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                tabBtn.innerText = sInfo.title;
+                tabBtn.onclick = (e) => openTab(e, `sec-${key}`);
+                tabsContainer.appendChild(tabBtn);
+
+                let secDiv = document.createElement('div');
+                secDiv.className = `tab-content ${index === 0 ? 'active' : ''}`;
+                secDiv.id = `sec-${key}`;
+
+                let controlBar = document.createElement('div');
+                controlBar.className = 'group-control-bar';
+                controlBar.innerHTML = `
+                    <div class="control-buttons-row">
+                        <button id="btn-study-${key}" class="mode-btn btn-study active-mode" onclick="setMode('${key}', 'train')">🎓 وضع التدريب (ترتيب كالملف + مساعدة)</button>
+                        <button id="btn-exam-${key}" class="mode-btn btn-exam" onclick="setMode('${key}', 'exam')"><span style="color:#ef4444;">🔴</span> وضع الاختبار (ترتيب عشوائي + بدون مساعدة)</button>
+                    </div>
+                    <div class="action-buttons-row">
+                        <button id="play-all-btn-${key}" class="action-btn btn-play-all" onclick="togglePlayAll('${key}')">▶ تشغيل جميع الأسئلة تلقائياً</button>
+                        <button id="btn-result-${key}" class="action-btn btn-result" onclick="showSectionResult('${key}')">📋 إظهار النتيجة للطالبة أميرة</button>
+                    </div>
+                    <div class="section-result" id="res-${key}"></div>
+                `;
+                secDiv.appendChild(controlBar);
+
+                let qContainer = document.createElement('div');
+                qContainer.className = 'questions-container train-mode';
+                qContainer.id = `q-container-${key}`;
+
+                let qWrapper = document.createElement('div');
+                qWrapper.className = 'section-wrapper';
+                db[key].forEach((qObj, idx) => {
+                    qObj.originalIndex = idx;
+                    qObj.globalId = key + '-q-' + Math.random().toString(36).substr(2, 5); 
+                    qWrapper.appendChild(createQuestionBlock(qObj));
+                });
+                qContainer.appendChild(qWrapper);
+
+                secDiv.appendChild(qContainer);
+                unitsContainer.appendChild(secDiv);
+                
+                refreshNumberingAndLetters(qContainer);
+            });
+        }
+
+        function createQuestionBlock(qObj) {
+            let block = document.createElement('div');
+            block.className = 'question-row';
+            block.id = `q-${qObj.globalId}`;
+            block.setAttribute('data-ans', qObj.o[qObj.c].split('|')[0].replace(/_/g, ' ').trim());
+            block.setAttribute('data-base-id', qObj.globalId);
+            block.setAttribute('data-original-index', qObj.originalIndex); 
+
+            let pairs = qObj.q.split(' ').map(p => p.trim()).filter(p => p !== '');
+            
+            let wordsHtml = pairs.map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; let arW = pSplit[1] || '&nbsp;'; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, ''); 
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;'); 
+                
+                if(enW === '........') {
+                    return `<span class="word-group" data-speak=""><span class="ar">&nbsp;</span><span class="en blank-space">........</span></span>`;
+                }
+                let missingHtml = enW.replace(/_/g, '<span class="missing-letter">_</span>');
+                return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arW.replace(/_/g, ' ')}</span><span class="en">${missingHtml}</span></span>`;
+            }).join(' ');
+
+            let letters = ["A", "B", "C", "D"];
+            let optsHtml = `<div class="options-inline" id="opts-area-${qObj.globalId}">` + qObj.o.map((opt, i) => {
+                let optPairs = opt.trim().split(' ').filter(p => p !== '');
+                let optWordsHtml = optPairs.map(op => {
+                    let pSplit = op.split('|');
+                    let enO = pSplit[0]; let arO = pSplit[1] || '&nbsp;'; 
+                    let cw = enO.replace(/[^a-zA-Z0-9'-]/g, '');
+                    let safeWord = cw.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                    return `<span class="word-group" data-speak="${safeWord}"><span class="ar">${arO.replace(/_/g, ' ')}</span><span class="en">${enO.replace(/_/g, ' ')}</span></span>`;
+                }).join(' ');
+                
+                return `<div class="opt-item" data-original-index="${i}" onclick="selectOption(this, event)"><div class="choice-badge">${letters[i]}</div><div class="choice-text">${optWordsHtml}</div></div>`;
+            }).join('') + `</div>`;
+
+            let correctOpt = qObj.o[qObj.c];
+            let correctAnsHtml = correctOpt.split(' ').filter(p=>p!=='').map(pair => {
+                let pSplit = pair.split('|');
+                let enW = pSplit[0]; let arW = pSplit[1] || '&nbsp;'; 
+                let cleanW = enW.replace(/[^a-zA-Z0-9'-]/g, '');
+                let safeWord = cleanW.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                return `<span class="word-group explanation-word" data-speak="${safeWord}"><span class="ar">${arW.replace(/_/g, ' ')}</span><span class="en">${enW.replace(/_/g, ' ')}</span></span>`;
+            }).join(' ');
+
+            let explanationHtml = qObj.e.replace(/([a-zA-Z0-9\-']+)\|([\u0600-\u06FF_]+)/g, function(match, en, ar) {
+                let safeWord = en.replace(/'/g, '&apos;');
+                return `<span class="word-group explanation-word" data-speak="${safeWord}"><span class="ar">${ar.replace(/_/g, ' ')}</span><span class="en">${en.replace(/_/g, ' ')}</span></span>`;
+            });
+            
+            let translationHtml = (qObj.t) ? `<div class="full-sentence-translation">📝 ${qObj.t}</div>` : '';
+            let btnPlayHtml = `<button id="toggle-btn-${qObj.globalId}" class="btn-toggle" onclick="window.togglePlayQuestion('${qObj.globalId}')">▶ تشغيل الصوت (مع الترجمة)</button>`;
+            
+            block.innerHTML = `
+                <div class="q-header">${btnPlayHtml}</div>
+                <div class="q-text-container">
+                    <span class="q-number-span" id="num-${qObj.globalId}"></span>
+                    <div class="q-text" id="sent-area-${qObj.globalId}">${wordsHtml}</div>
+                </div>
+                ${translationHtml}
+                ${optsHtml}
+                <div class="answer-action-container">
+                    <button class="btn-answer" id="btn-ans-${qObj.globalId}" onclick="window.revealAnswer('${qObj.globalId}')">👁️ إظهار الإجابة والشرح</button>
+                </div>
+                <div class="answer-box" id="ans-box-${qObj.globalId}">
+                    <div class="correct-word-text">إجابتك صحيحة! <span class="en-ans">${correctAnsHtml}</span></div>
+                    <div class="grammar-explanation">💡 <strong>السبب:</strong> <span dir="rtl">${explanationHtml}</span></div>
+                </div>
+            `;
+            return block;
+        }
+
+        window.openTab = function(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+            
+            if(synth) synth.cancel();
+            isAutoPlayingAll = false;
+        };
+
+        window.setMode = function(key, mode) {
+            let container = document.getElementById(`q-container-${key}`);
+            let btnStudy = document.getElementById(`btn-study-${key}`);
+            let btnExam = document.getElementById(`btn-exam-${key}`);
+            let btnPlayAll = document.getElementById(`play-all-btn-${key}`);
+            let btnResult = document.getElementById(`btn-result-${key}`);
+            
+            if(synth) synth.cancel();
+            isAutoPlayingAll = false;
+            activeQuestionId = null;
+            btnPlayAll.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+            btnPlayAll.style.backgroundColor = '#10b981';
+            document.getElementById(`res-${key}`).style.display = 'none';
+
+            if (mode === 'exam') {
+                container.classList.add('exam-mode');
+                btnExam.classList.add('active-mode');
+                btnStudy.classList.remove('active-mode');
+                btnPlayAll.style.display = 'none';
+                btnResult.style.display = 'block'; 
+            } else {
+                container.classList.remove('exam-mode');
+                btnStudy.classList.add('active-mode');
+                btnExam.classList.remove('active-mode');
+                btnPlayAll.style.display = 'block';
+                btnResult.style.display = 'none'; 
+            }
+            
+            reorderQuestions(container, mode);
+        };
+
+        function reorderQuestions(container, mode) {
+            let sections = container.querySelectorAll('.section-wrapper');
+            
+            sections.forEach(section => {
+                let rows = Array.from(section.querySelectorAll('.question-row'));
+                
+                rows.forEach(row => {
+                    row.classList.remove('answered');
+                    row.querySelectorAll('.opt-item').forEach(item => {
+                        item.classList.remove('selected', 'correct', 'wrong');
+                    });
+                    let ansBox = row.querySelector('.answer-box');
+                    if (ansBox) ansBox.style.display = 'none';
+                    let btnAns = row.querySelector('.btn-answer');
+                    if (btnAns) btnAns.innerHTML = '👁️ إظهار الإجابة والشرح';
+                });
+
+                if (mode === 'exam') {
+                    rows.forEach(row => {
+                        let optContainer = row.querySelector('.options-inline');
+                        let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                        opts.sort(() => Math.random() - 0.5);
+                        opts.forEach(opt => optContainer.appendChild(opt)); 
+                    });
+                    for (let i = rows.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        section.appendChild(rows[j]);
+                        let temp = rows[i]; rows[i] = rows[j]; rows[j] = temp;
+                    }
+                } else {
+                    rows.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                    rows.forEach(row => {
+                        section.appendChild(row); 
+                        let optContainer = row.querySelector('.options-inline');
+                        let opts = Array.from(optContainer.querySelectorAll('.opt-item'));
+                        opts.sort((a, b) => parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index')));
+                        opts.forEach(opt => optContainer.appendChild(opt)); 
+                    });
+                }
+            });
+            
+            refreshNumberingAndLetters(container);
+        }
+
+        function refreshNumberingAndLetters(container) {
+            let allRows = container.querySelectorAll('.question-row');
+            let letters = ["A", "B", "C", "D"];
+            
+            allRows.forEach((row, index) => {
+                let qNumSpan = row.querySelector('.q-number-span');
+                if (qNumSpan) qNumSpan.textContent = (index + 1) + ". ";
+                
+                let opts = row.querySelectorAll('.opt-item');
+                opts.forEach((opt, oIdx) => {
+                    opt.querySelector('.choice-badge').textContent = letters[oIdx];
+                });
+            });
+        }
+
+        window.selectOption = function(optItem, event) {
+            if (event && event.target.closest('.word-group')) {
+                return; 
+            }
+            
+            let row = optItem.closest('.question-row');
+            if(row.classList.contains('answered')) return; 
+            
+            let targetAns = row.getAttribute('data-ans').toLowerCase().replace(/[^a-z0-9]/g, '');
+            let selectedTextEl = optItem.querySelector('.choice-text');
+            let selectedText = selectedTextEl.textContent.trim().toLowerCase().replace(/_/g, ' ').replace(/[^a-z0-9]/g, '');
+
+            row.classList.add('answered'); 
+            optItem.classList.add('selected');
+            
+            let items = row.querySelectorAll('.opt-item');
+            items.forEach(item => {
+                let text = item.querySelector('.choice-text').textContent.trim().toLowerCase().replace(/_/g, ' ').replace(/[^a-z0-9]/g, ''); 
+                if (text === targetAns) item.classList.add('correct');
+            });
+            
+            if (selectedText !== targetAns) optItem.classList.add('wrong');
+        };
+
+        document.addEventListener('click', function(e) {
+            let container = e.target.closest('.questions-container');
+            if(container && container.classList.contains('exam-mode')) return;
+
+            let wg = e.target.closest('.word-group');
+            if (wg) {
+                let speakTextAttr = wg.getAttribute('data-speak');
+                if (speakTextAttr && synth) {
+                    if(activeQuestionId !== null && !isPaused) return; 
+                    synth.cancel();
+                    document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                    wg.classList.add('highlight');
+                    
+                    let txt = speakTextAttr.replace(/[\._]/g, '').trim();
+                    if(txt) {
+                        let u = new SpeechSynthesisUtterance(txt);
+                        u.lang = 'en-US'; u.rate = 0.85;
+                        u.onend = function() { wg.classList.remove('highlight'); };
+                        u.onerror = function() { wg.classList.remove('highlight'); };
+                        synth.speak(u);
+                        setTimeout(() => wg.classList.remove('highlight'), Math.max(1000, txt.length * 100));
+                    } else {
+                        wg.classList.remove('highlight');
+                    }
+                }
+            }
+        });
+
+        window.togglePlayAll = function(key) {
+            let btn = document.getElementById(`play-all-btn-${key}`);
+            let container = document.getElementById(`q-container-${key}`);
+            
+            if (isAutoPlayingAll && currentContainerId === key) {
+                isAutoPlayingAll = false;
+                synth.cancel();
+                btn.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+                btn.style.backgroundColor = '#10b981';
+                
+                if (activeQuestionId) {
+                    let activeBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                    if (activeBtn) {
+                        activeBtn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                        activeBtn.classList.remove('playing', 'paused');
+                    }
+                    activeQuestionId = null;
+                }
+            } else {
+                if (isAutoPlayingAll) {
+                     let prevBtn = document.getElementById(`play-all-btn-${currentContainerId}`);
+                     if(prevBtn) {
+                         prevBtn.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+                         prevBtn.style.backgroundColor = '#10b981';
+                     }
+                     synth.cancel();
+                }
+                
+                let rows = Array.from(container.querySelectorAll('.question-row'));
+                autoPlayQueue = rows.map(r => r.getAttribute('data-base-id'));
+                autoPlayCurrentIndex = 0;
+                isAutoPlayingAll = true;
+                currentContainerId = key;
+                
+                btn.innerHTML = '⏹ إيقاف التشغيل';
+                btn.style.backgroundColor = '#f59e0b';
+                
+                playQuestionFromQueue();
+            }
+        };
+
+        function playQuestionFromQueue() {
+            if(!isAutoPlayingAll || autoPlayCurrentIndex >= autoPlayQueue.length) {
+                isAutoPlayingAll = false;
+                let btn = document.getElementById(`play-all-btn-${currentContainerId}`);
+                if(btn) {
+                    btn.innerHTML = '▶ تشغيل جميع الأسئلة تلقائياً';
+                    btn.style.backgroundColor = '#10b981';
+                }
+                return;
+            }
+            
+            let nextId = autoPlayQueue[autoPlayCurrentIndex];
+            let row = document.getElementById(`q-${nextId}`);
+            if(row) row.scrollIntoView({behavior: 'smooth', block: 'center'});
+            
+            if (activeQuestionId && activeQuestionId !== nextId) {
+                synth.cancel();
+                let prevBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(prevBtn) {
+                    prevBtn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                    prevBtn.classList.remove('playing', 'paused');
+                }
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+            }
+            
+            activeQuestionId = nextId; 
+            isPaused = false;
+            cancelForPause = false;
+            
+            let btn = document.getElementById(`toggle-btn-${nextId}`);
+            if(btn) {
+                btn.innerHTML = '⏸ إيقاف مؤقت'; 
+                btn.classList.add('playing');
+            }
+            
+            buildSequenceForQuestion(nextId);
+            currentSeqIndex = 0;
+            playNextInSequence();
+        }
+
+        window.togglePlayQuestion = function(id) {
+            if(!synth) return;
+            let btn = document.getElementById(`toggle-btn-${id}`);
+            
+            if (activeQuestionId === id) {
+                if (isPaused) { 
+                    isPaused = false; 
+                    btn.innerHTML = '⏸ إيقاف مؤقت'; 
+                    btn.classList.remove('paused');
+                    btn.classList.add('playing'); 
+                    playNextInSequence(); 
+                } else { 
+                    isPaused = true; 
+                    btn.innerHTML = '▶ استئناف'; 
+                    btn.classList.remove('playing'); 
+                    btn.classList.add('paused');
+                    cancelForPause = true; 
+                    synth.cancel(); 
+                }
+                return;
+            }
+            
+            if (activeQuestionId !== null) { 
+                synth.cancel(); 
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight')); 
+                let prevBtn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(prevBtn) {
+                    prevBtn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                    prevBtn.classList.remove('playing', 'paused');
+                }
+            }
+            
+            activeQuestionId = id; 
+            isPaused = false;
+            btn.innerHTML = '⏸ إيقاف مؤقت'; 
+            btn.classList.add('playing');
+            cancelForPause = false;
+            
+            buildSequenceForQuestion(id);
+            currentSeqIndex = 0;
+            playNextInSequence();
+        }
+
+        window.buildSequenceForQuestion = function(id) {
+            currentSequence = [];
+            let sentArea = document.getElementById(`sent-area-${id}`);
+            let optsArea = document.getElementById(`opts-area-${id}`);
+            
+            let questionRow = document.getElementById(`q-${id}`);
+            let isExamMode = questionRow ? questionRow.closest('.questions-container').classList.contains('exam-mode') : false;
+            
+            let correctOptItem = null;
+            let correctSpeakText = "";
+            let targetAnsText = questionRow.getAttribute('data-ans');
+
+            if(sentArea) {
+                sentArea.querySelectorAll('.word-group').forEach(w => {
+                    let speakText = w.getAttribute('data-speak');
+                    if (speakText) speakText = speakText.replace(/[\._]/g, '').trim();
+                    if(speakText) currentSequence.push({type: 'word', text: speakText, element: w});
+                });
+            }
+
+            if(optsArea) {
+                optsArea.querySelectorAll('.opt-item').forEach((optItem) => {
+                    let textEl = optItem.querySelector('.choice-text');
+                    let cleanText = textEl.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, ''); 
+                    let isCorrect = (cleanText === targetAnsText);
+                    let optWords = [];
+
+                    optItem.querySelectorAll('.word-group').forEach(w => {
+                        let speakText = w.getAttribute('data-speak');
+                        if (speakText) {
+                            speakText = speakText.replace(/[\._]/g, '').trim();
+                            if(speakText) {
+                                currentSequence.push({type: 'word', text: speakText, element: w, container: optItem});
+                                optWords.push(speakText);
+                            }
+                        }
+                    });
+
+                    if (isCorrect) {
+                        correctOptItem = optItem;
+                        correctSpeakText = optWords.join(' ');
+                    }
+                });
+            }
+
+            if (!isExamMode && correctOptItem) {
+                currentSequence.push({ type: 'delay', delayMs: 2500, text: null });
+                currentSequence.push({ type: 'reveal_correct', text: "The correct answer is, " + correctSpeakText, element: correctOptItem });
+            }
+        };
+
+        window.playNextInSequence = function() {
+            if(!synth || isPaused || activeQuestionId === null) return; 
+
+            if (currentSeqIndex >= currentSequence.length) { 
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                let btn = document.getElementById(`toggle-btn-${activeQuestionId}`);
+                if(btn) { 
+                    btn.innerHTML = '▶ تشغيل الصوت (مع الترجمة)';
+                    btn.classList.remove('playing', 'paused'); 
+                }
+                activeQuestionId = null;
+                
+                if (isAutoPlayingAll) {
+                    autoPlayCurrentIndex++;
+                    setTimeout(() => { playQuestionFromQueue(); }, 2000); 
+                }
+                return; 
+            }
+
+            let item = currentSequence[currentSeqIndex];
+
+            if (item.type === 'delay') {
+                document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+                setTimeout(() => {
+                    if (cancelForPause) { cancelForPause = false; return; }
+                    currentSeqIndex++;
+                    if(!isPaused) playNextInSequence();
+                }, item.delayMs);
+                return;
+            }
+
+            if (!item.text) {
+                currentSeqIndex++;
+                playNextInSequence();
+                return;
+            }
+
+            document.querySelectorAll('.word-group.highlight').forEach(el => el.classList.remove('highlight'));
+
+            if (item.type === 'reveal_correct') {
+                if (item.element) {
+                    item.element.classList.add('selected', 'correct');
+                    let row = item.element.closest('.question-row');
+                    if(row) {
+                        row.classList.add('answered');
+                        let ansBox = row.querySelector('.answer-box');
+                        let btnAns = row.querySelector('.btn-answer');
+                        if (ansBox) ansBox.style.display = 'block';
+                        if (btnAns) btnAns.innerHTML = '🙈 إخفاء الإجابة والشرح';
+                    }
+                }
+            } else if (item.element) {
+                item.element.classList.add('highlight'); 
+            }
+
+            let u = new SpeechSynthesisUtterance(item.text); u.lang = 'en-US'; u.rate = 0.85;
+            
+            u.onend = function() {
+                if (cancelForPause) { cancelForPause = false; return; }
+                if (item.element && item.type !== 'reveal_correct') item.element.classList.remove('highlight');
+                currentSeqIndex++; 
+                if(!isPaused) playNextInSequence();
+            };
+            u.onerror = function() { 
+                if (cancelForPause) { cancelForPause = false; return; }
+                if (item.element && item.type !== 'reveal_correct') item.element.classList.remove('highlight');
+                currentSeqIndex++; 
+                if(!isPaused) playNextInSequence(); 
+            };
+            synth.speak(u);
+        };
+
+        window.revealAnswer = function(id) {
+            let box = document.getElementById(`ans-box-${id}`); 
+            let btn = document.getElementById(`btn-ans-${id}`);
+            
+            if (box.style.display === 'none' || box.style.display === '') { 
+                box.style.display = 'block'; 
+                btn.innerHTML = '🙈 إخفاء الإجابة والشرح'; 
+            } else { 
+                box.style.display = 'none'; 
+                btn.innerHTML = '👁️ إظهار الإجابة والشرح'; 
+            }
+        };
+
+        window.showSectionResult = function(key) {
+            let container = document.getElementById(`q-container-${key}`);
+            let rows = container.querySelectorAll('.question-row');
+            let correctCount = 0; let answeredCount = 0; let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                let selectedOpt = row.querySelector('.opt-item.selected');
+                if (selectedOpt) {
+                    answeredCount++;
+                    if(selectedOpt.classList.contains('correct')) correctCount++;
+                }
+            });
+            
+            let resEl = document.getElementById(`res-${key}`);
+            let msg = "";
+            if (answeredCount < totalCount) {
+                msg = `⚠️ راجعي جميع الأسئلة يا أميرة، لقد أجبتِ على ${answeredCount} من ${totalCount}.<br> النتيجة الحالية: ${correctCount} / ${totalCount}`;
+            } else {
+                msg = `نتيجتك النهائية: ${correctCount} / ${totalCount}<br>`;
+                if(correctCount === totalCount) msg += "🏆 ممتازة يا أميرة! رائعة جداً، برافو عليكِ!";
+                else if(correctCount >= totalCount/2) msg += "🌟 شاطرة يا أميرة! مستواك جميل واستمري في المراجعة!";
+                else msg += "💪 تقدري تكوني أفضل يا أميرة، راجعي الأسباب وحاولي مرة ثانية!";
+            }
+            resEl.innerHTML = msg;
+            resEl.style.display = "block";
+        };
+
+        buildApp();
+
+    } catch (e) {
+        document.body.innerHTML += '<div style="color:white; background:#e74c3c; padding:20px; font-size:18px; text-align:right; direction:rtl; margin-top:20px; border-radius:10px;"><b>خطأ برمجي:</b><br>' + e.message + '</div>';
+        console.error(e);
+    }
+})();
+</script>
+
+</body>
+</html>
