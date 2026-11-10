@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Match Synonyms, Antonyms & Definitions</title>
+    <!-- مكتبة SortableJS المعتمدة للسحب والترتيب الحر -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        /* منع ظهور القائمة المنبثقة ومنع التحديد غير المرغوب به على شاشات اللمس */
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.35rem;
+        }
+
+        .mode-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #27ae60;
+        }
+
+        .game-container {
+            max-width: 1250px;
+            margin: 0 auto 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            border-top: 6px solid #27ae60;
+        }
+
+        .columns-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 25px;
+        }
+
+        .column {
+            width: 48%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* مسافة رأسية موحدة بين المستطيلات */
+        }
+
+        /* تنسيق المستطيلات - ارتفاع متطابق ومتحكم به برمجياً */
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #2c3e50;
+            position: relative;
+            transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* محاذاة النص في مستطيلات العمود الأيمن وتوسيطها */
+        .col-sortable .item {
+            cursor: grab;
+            touch-action: none;
+            background-color: #fafbfc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .col-sortable .item:active {
+            cursor: grabbing;
+        }
+
+        .sortable-ghost {
+            opacity: 0.35;
+            background-color: #d6eaf8 !important;
+            border: 2px dashed #3498db !important;
+        }
+        .sortable-chosen {
+            background-color: #ebf5fb;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+        }
+
+        /* التقييم والتصحيح */
+        .item.correct {
+            background-color: #d5f5e3 !important;
+            border-color: #2ecc71 !important;
+        }
+        .item.wrong {
+            background-color: #fadbd8 !important;
+            border-color: #e74c3c !important;
+        }
+
+        .item-prefix {
+            margin-right: 15px;
+            color: #2c3e50;
+            font-weight: 900;
+            font-size: 1.25rem;
+            background: rgba(0,0,0,0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            align-self: center;
+        }
+
+        /* أيقونة بصرية مدمجة SVG */
+        .icon-badge {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #edf2f7;
+            border-radius: 10px;
+            padding: 6px;
+            align-self: center;
+        }
+        .icon-badge svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* التفسير والسبب الثابت أسفل كل فقرة */
+        .fixed-reason {
+            color: #2980b9;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 5px;
+            direction: rtl;
+            border-top: 1px dashed #d5dbdb;
+            padding-top: 4px;
+        }
+
+        .fixed-reason span.reason-tag {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* تمييز الكلمات المستهدفة بخط تحتها */
+        .target-word {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            color: #2c3e50;
+        }
+
+        /* الكلمات التفاعلية للنطق والترجمة المنبثقة */
+        .clickable-word {
+            position: relative;
+            display: inline-block;
+            margin: 0 2px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .clickable-word.highlighted {
+            background-color: #ffeb3b;
+        }
+
+        /* الترجمة الحمراء العائمة فوق الكلمة */
+        .translation-text {
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e74c3c;
+            font-size: 0.9rem;
+            font-weight: bold;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .clickable-word.highlighted .translation-text {
+            opacity: 1;
+        }
+
+        /* الأزرار */
+        .buttons-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 12px 26px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.96); }
+        .btn-check { background-color: #27ae60; }
+        .btn-check:hover { background-color: #219653; }
+        .btn-show { background-color: #f39c12; }
+        .btn-show:hover { background-color: #d68910; }
+        .btn-reset { background-color: #e74c3c; }
+        .btn-reset:hover { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="matching-game">
+        <h2>Match the underlined word in column A with its synonym, antonym or definition in column B</h2>
+        <div class="mode-title">PRACTICE MODE (Drag & Drop + Perfectly Aligned Rows)</div>
+        <div class="columns-wrapper">
+            <div class="column col-left" id="col-game-left"></div>
+            <div class="column col-right col-sortable" id="col-game-right"></div>
+        </div>
+        <div class="buttons-group">
+            <button class="action-btn btn-check" onclick="checkAnswers('matching-game')">Check Answer</button>
+            <button class="action-btn btn-show" onclick="showAnswers('matching-game')">Show Answer</button>
+            <button class="action-btn btn-reset" onclick="resetGame('matching-game')">Reset (Shuffle)</button>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('contextmenu', e => e.preventDefault());
+
+        const dictionary = {
+            "the": "الـ", "synonym": "مرادف", "for": "لـ", "predictions": "توقعات/تخمينات",
+            "is": "يكون", "to": "أن / إلى", "optimize": "يحسن/يطور", "antonym": "مضاد/عكس",
+            "of": "من", "fiction": "خيال", "certainly": "بالتأكيد", "means": "يعني",
+            "monitor": "يراقب", "i": "أنا", "left": "تركت", "him": "هو/إياه",
+            "invent": "يخترع/يبتكر", "his": "له", "story": "قصة", "creations": "اختراعات/ابتكارات",
+            "expectations": "توقعات/تخمينات", "reality": "واقع/حقيقة", "used": "تُستخدم",
+            "say": "يقول", "yes": "نعم", "improve": "يُحسّن", "ignore": "يتجاهل",
+            "create": "يخلق/يبتكر", "inventions": "اختراعات"
+        };
+
+        const svgIcons = {
+            "forecast": `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#3498db" opacity="0.15"/><path d="M16,42 L26,32 L36,38 L48,22" stroke="#2980b9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><polygon points="48,22 40,22 48,30" fill="#2980b9"/></svg>`,
+            "optimize": `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#2ecc71" opacity="0.15"/><path d="M32,16 L32,48 M20,28 L32,16 L44,28" stroke="#27ae60" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+            "fiction": `<svg viewBox="0 0 64 64"><rect x="14" y="16" width="36" height="32" rx="4" fill="#9b59b6" opacity="0.2"/><path d="M18,44 C26,40 38,40 46,44 L46,20 C38,16 26,16 18,20 Z" fill="#8e44ad"/><line x1="32" y1="18" x2="32" y2="42" stroke="#ffffff" stroke-width="2"/></svg>`,
+            "certainly": `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#f1c40f" opacity="0.2"/><circle cx="32" cy="32" r="22" fill="#f39c12"/><path d="M22,32 L29,39 L42,24" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+            "monitor": `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="24" ry="16" fill="#e67e22" opacity="0.2"/><path d="M10,32 Q32,14 54,32 Q32,50 10,32 Z" stroke="#d35400" stroke-width="3" fill="none"/><circle cx="32" cy="32" r="9" fill="#2c3e50"/><circle cx="35" cy="29" r="3" fill="#ffffff"/></svg>`,
+            "invent": `<svg viewBox="0 0 64 64"><path d="M24,26 C24,18 40,18 40,26 C40,32 34,34 34,40 L30,40 C30,34 24,32 24,26 Z" fill="#f1c40f"/><rect x="28" y="42" width="8" height="4" fill="#7f8c8d"/><rect x="30" y="48" width="4" height="2" fill="#7f8c8d"/></svg>`,
+            "creations": `<svg viewBox="0 0 64 64"><polygon points="32,8 38,24 54,24 41,34 46,50 32,40 18,50 23,34 10,24 26,24" fill="#e74c3c"/></svg>`
+        };
+
+        const exerciseData = [
+            {
+                id: "1",
+                leftHtml: "The synonym for <span class='target-word'>predictions</span> is = توقعات/ تخمينات",
+                reason: "السبب: لأن predictions تعني تخمينات، وهي نفس معنى expectations.",
+                rightAnswer: "Expectations توقعات/ تخمينات",
+                icon: "forecast"
+            },
+            {
+                id: "2",
+                leftHtml: "The synonym of <span class='target-word'>To optimize</span> is =",
+                reason: "السبب: لأن to optimize تعني تحسين أو تطوير، وهي نفس معنى to improve.",
+                rightAnswer: "= to improve",
+                icon: "optimize"
+            },
+            {
+                id: "3",
+                leftHtml: "The antonym of <span class='target-word'>fiction</span> is # .....",
+                reason: "السبب: لأن fiction تعني خيال، وعكسها reality (الواقع).",
+                rightAnswer: "# reality",
+                icon: "fiction"
+            },
+            {
+                id: "4",
+                leftHtml: "<span class='target-word'>certainly</span> means ........",
+                reason: "السبب: لأن certainly تُستخدم للتأكيد وتساوي used to say yes (أي نعم بالتأكيد).",
+                rightAnswer: "Used to say yes",
+                icon: "certainly"
+            },
+            {
+                id: "5",
+                leftHtml: "<span class='target-word'>Monitor</span> #",
+                reason: "السبب: لأن monitor تعني يراقب، وعكسها ignore (يتجاهل).",
+                rightAnswer: "# ignore",
+                icon: "monitor"
+            },
+            {
+                id: "6",
+                leftHtml: "I left him to <span class='target-word'>invent</span> his story. The synonym of <span class='target-word'>To invent</span> is =",
+                reason: "السبب: لأن to invent تعني يبتكر أو يخترع، وهي نفس معنى to create.",
+                rightAnswer: "= To create",
+                icon: "invent"
+            },
+            {
+                id: "7",
+                leftHtml: "<span class='target-word'>Creations</span> = اختراعات",
+                reason: "السبب: لأن creations تعني اختراعات، وهي نفس معنى inventions.",
+                rightAnswer: "Inventions اختراعات",
+                icon: "creations"
+            }
+        ];
+
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let cleanWord = word.replace(/[^a-zA-Z]/g, "");
+                if (!cleanWord) return;
+                let utterance = new SpeechSynthesisUtterance(cleanWord);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function processText(htmlString) {
+            let temp = document.createElement('div');
+            temp.innerHTML = htmlString;
+            
+            function wrapWords(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    let text = node.textContent;
+                    let words = text.split(/(\s+)/);
+                    let frag = document.createDocumentFragment();
+                    words.forEach(w => {
+                        let clean = w.replace(/[^a-zA-Z]/g, "").toLowerCase();
+                        if (clean && dictionary[clean]) {
+                            let span = document.createElement('span');
+                            span.className = 'clickable-word';
+                            span.setAttribute('onclick', `handleWordClick(event, this, '${clean}')`);
+                            span.innerHTML = `${w}<span class="translation-text">${dictionary[clean]}</span>`;
+                            frag.appendChild(span);
+                        } else {
+                            frag.appendChild(document.createTextNode(w));
+                        }
+                    });
+                    node.parentNode.replaceChild(frag, node);
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    Array.from(node.childNodes).forEach(wrapWords);
+                }
+            }
+
+            Array.from(temp.childNodes).forEach(wrapWords);
+            return temp.innerHTML;
+        }
+
+        window.handleWordClick = function(event, element, word) {
+            event.stopPropagation();
+            document.querySelectorAll('.clickable-word').forEach(el => el.classList.remove('highlighted'));
+            element.classList.add('highlighted');
+            speakWord(word);
+        };
+
+        // دالة ضبط ارتفاع المستطيلات لتكون متطابقة ومتقابلة بدقة 100%
+        function equalizeHeights() {
+            const allItems = document.querySelectorAll('.item');
+            allItems.forEach(el => el.style.height = 'auto'); // تصفير مؤقت للقياس
+
+            let maxHeight = 0;
+            allItems.forEach(el => {
+                if (el.offsetHeight > maxHeight) {
+                    maxHeight = el.offsetHeight;
+                }
+            });
+
+            // ضمان حد أدنى للارتفاع لجمال التصميم
+            if (maxHeight < 115) maxHeight = 115;
+
+            // توحيد الارتفاع على جميع المستطيلات يساراً ويميناً
+            allItems.forEach(el => {
+                el.style.height = `${maxHeight}px`;
+            });
+        }
+
+        function buildGame() {
+            const leftCol = document.getElementById('col-game-left');
+            const rightCol = document.getElementById('col-game-right');
+
+            leftCol.innerHTML = "";
+            rightCol.innerHTML = "";
+
+            // بناء العمود الأيسر
+            exerciseData.forEach((item, index) => {
+                let div = document.createElement('div');
+                div.className = 'item';
+                div.dataset.id = item.id;
+
+                div.innerHTML = `<span class="item-prefix">${index + 1}.</span>
+                                 <div class="icon-badge">${svgIcons[item.icon]}</div>
+                                 <div style="flex-grow: 1;">
+                                     <div>${processText(item.leftHtml)}</div>
+                                     <div class="fixed-reason"><span class="reason-tag">السبب:</span> ${item.reason.replace('السبب: ', '')}</div>
+                                 </div>`;
+                leftCol.appendChild(div);
+            });
+
+            // بناء العمود الأيمن مبعثراً
+            let shuffled = [...exerciseData].sort(() => Math.random() - 0.5);
+            shuffled.forEach((item) => {
+                let div = document.createElement('div');
+                div.className = 'item';
+                div.dataset.match = item.id;
+
+                div.innerHTML = `<div style="flex-grow: 1;">
+                                     <div>${processText(item.rightAnswer)}</div>
+                                 </div>`;
+                rightCol.appendChild(div);
+            });
+
+            // تفعيل السحب الحر
+            new Sortable(rightCol, {
+                animation: 200,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                filter: '.clickable-word',
+                preventOnFilter: false,
+                onEnd: () => clearStatus()
+            });
+
+            // توحيد ومحاذاة الارتفاع بعد اكتمال العناصر
+            setTimeout(equalizeHeights, 50);
+        }
+
+        function clearStatus() {
+            const leftItems = document.querySelectorAll('#col-game-left .item');
+            const rightItems = document.querySelectorAll('#col-game-right .item');
+            [...leftItems, ...rightItems].forEach(el => el.classList.remove('correct', 'wrong'));
+        }
+
+        window.checkAnswers = function(containerId) {
+            const leftItems = document.getElementById('col-game-left').children;
+            const rightItems = document.getElementById('col-game-right').children;
+
+            for (let i = 0; i < leftItems.length; i++) {
+                let lItem = leftItems[i];
+                let rItem = rightItems[i];
+                if (!rItem) continue;
+
+                if (lItem.dataset.id === rItem.dataset.match) {
+                    lItem.classList.add('correct');
+                    lItem.classList.remove('wrong');
+                    rItem.classList.add('correct');
+                    rItem.classList.remove('wrong');
+                } else {
+                    lItem.classList.add('wrong');
+                    lItem.classList.remove('correct');
+                    rItem.classList.add('wrong');
+                    rItem.classList.remove('correct');
+                }
+            }
+        };
+
+        window.showAnswers = function(containerId) {
+            const leftItems = Array.from(document.getElementById('col-game-left').children);
+            const rightCol = document.getElementById('col-game-right');
+            const rightItems = Array.from(rightCol.children);
+
+            leftItems.forEach(lItem => {
+                let matchId = lItem.dataset.id;
+                let targetR = rightItems.find(r => r.dataset.match === matchId);
+                if (targetR) {
+                    rightCol.appendChild(targetR);
+                    lItem.classList.add('correct');
+                    lItem.classList.remove('wrong');
+                    targetR.classList.add('correct');
+                    targetR.classList.remove('wrong');
+                }
+            });
+        };
+
+        window.resetGame = function(containerId) {
+            clearStatus();
+            const rightCol = document.getElementById('col-game-right');
+            const items = Array.from(rightCol.children);
+            items.sort(() => Math.random() - 0.5);
+            items.forEach(item => rightCol.appendChild(item));
+        };
+
+        window.onload = function() {
+            buildGame();
+        };
+
+        // إعادة ضبط المحاذاة فوراً عند تغيير حجم الشاشة أو تدوير الجهاز
+        window.addEventListener('resize', equalizeHeights);
+    </script>
+</body>
+</html>
