@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الكلمات الشامل - إعداد الأستاذ حمادة الديب</title>
+    <style>
+        :root {
+            --primary: #4F46E5; 
+            --secondary: #10B981; 
+            --danger: #EF4444; 
+            --warning: #F59E0B;
+            --highlight: #FEF08A; 
+            --bg-color: #EEF2FF;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 550px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 4px solid white;
+            position: relative;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .credits {
+            font-size: 13px;
+            color: #E0E7FF;
+            font-weight: bold;
+        }
+
+        .btn-report {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-report:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .parts-container {
+            background: #F8FAFC;
+            padding: 10px 20px;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .parts-container select {
+            padding: 6px;
+            border-radius: 8px;
+            border: 2px solid #CBD5E1;
+            font-weight: bold;
+            color: var(--primary);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F3F4F6;
+            padding: 10px 20px;
+            border-bottom: 2px solid #E5E7EB;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .progress-text {
+            color: var(--primary);
+            background: #E0E7FF;
+            padding: 5px 12px;
+            border-radius: 12px;
+            direction: ltr;
+        }
+
+        .score-board {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+        }
+        .score-correct { color: var(--secondary); font-size: 14px; font-weight: bold;}
+        .score-wrong { color: var(--danger); font-size: 14px; font-weight: bold;}
+        
+        .btn-reset {
+            background: #FEE2E2;
+            color: var(--danger);
+            border: 1px solid #FCA5A5;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-area {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .english-word {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px; 
+            direction: ltr;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: #F8FAFC;
+            padding: 10px 25px;
+            border-radius: 15px;
+            border: 2px dashed #CBD5E1;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 90%;
+            box-sizing: border-box;
+        }
+        .english-word:hover {
+            background: #E0E7FF;
+            transform: scale(1.02);
+        }
+
+        .repeat-icon {
+            font-size: 24px;
+            background: #E0E7FF;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .example-sentence {
+            font-size: 19px;
+            color: #334155;
+            margin-bottom: 20px;
+            text-align: left;
+            direction: ltr;
+            background: #F1F5F9;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            box-sizing: border-box;
+            border: 1px solid #E2E8F0;
+            border-left: 5px solid var(--secondary);
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .example-sentence:hover {
+            transform: scale(1.02);
+        }
+
+        .highlight-yellow {
+            background-color: var(--highlight) !important;
+            border-color: #FACC15 !important;
+            color: #000;
+            box-shadow: 0 4px 10px rgba(250, 204, 21, 0.2);
+        }
+
+        .highlight-word {
+            color: var(--danger);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .options-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #CBD5E1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-main);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .option-correct { background: #D1FAE5 !important; border-color: var(--secondary) !important; color: #065F46 !important; }
+        .option-wrong { background: #FEE2E2 !important; border-color: var(--danger) !important; color: #991B1B !important; }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #F8FAFC;
+            border-top: 2px solid #E2E8F0;
+            direction: rtl; /* لضمان الترتيب الصحيح للأزرار */
+        }
+        .btn-nav, .btn-toggle {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+        }
+        .btn-next { background: var(--secondary); } 
+        .btn-prev { background: #94A3B8; }
+        .btn-next:hover, .btn-prev:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-next.disabled { background: #CBD5E1; cursor: not-allowed; transform: none; }
+        
+        .btn-toggle { background: var(--primary); width: 170px; }
+        .btn-toggle.inactive { background: var(--danger); }
+        .btn-toggle:hover { opacity: 0.9; }
+
+        /* النوافذ المنبثقة */
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(31, 41, 55, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .modal-content h2 { margin-top: 0; color: var(--primary); font-size: 24px; }
+
+        .modal-buttons-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-continue {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-retry-part {
+            background: #F1F5F9;
+            color: var(--danger);
+            border: 2px solid #CBD5E1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .report-summary {
+            background: #F8FAFC;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            margin-bottom: 15px;
+        }
+        .report-summary h3 { margin: 0 0 10px 0; color: var(--primary); }
+        .report-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .report-item {
+            background: #F1F5F9;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-right: 4px solid var(--secondary);
+        }
+        .close-modal {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="partResultModal" class="modal-overlay">
+            <div class="modal-content">
+                <h2 id="partResultTitle">نهاية الجزء</h2>
+                <div style="font-size: 40px; font-weight: 900; color: var(--secondary); margin: 10px 0; direction: ltr;" id="partResultScore">20 / 20</div>
+                
+                <div class="modal-buttons-group">
+                    <button class="btn-continue" id="btnNextPart" onclick="startNextPart()">الانتقال إلى الجزء التالي 🚀</button>
+                    <button class="btn-retry-part" onclick="retryCurrentPart()">🔄 إعادة الجزء الحالي</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="finalReportModal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>تقرير النتيجة الشامل 📊</h2>
+                <div class="report-summary">
+                    <h3>الإجمالي من 300</h3>
+                    <div style="font-size: 20px; font-weight: bold;">
+                        <span style="color:var(--secondary)">✔ إجابات صحيحة: <span id="reportTotalCorrect">0</span></span><br>
+                        <span style="color:var(--danger)">✖ إجابات خاطئة: <span id="reportTotalWrong">0</span></span>
+                    </div>
+                </div>
+                <div class="report-list" id="reportPartsList"></div>
+                <button class="close-modal" onclick="closeReport()">إغلاق التقرير ✖</button>
+            </div>
+        </div>
+
+        <div class="header">
+            <button class="btn-report" onclick="showFinalReport()">📊 التقرير</button>
+            <h1>اختبار المفردات (300 كلمة)</h1>
+            <div class="credits">إعداد الأستاذ حمادة الديب | مدارس آفاق الهداية</div>
+        </div>
+
+        <div class="parts-container">
+            <label for="partSelect">اختر الجزء:</label>
+            <select id="partSelect" onchange="changePart(this.value)"></select>
+        </div>
+
+        <div class="stats-bar">
+            <div class="score-board">
+                <span class="score-correct" id="correctScore">✔ 0</span>
+                <span style="color: #CBD5E1;">|</span>
+                <span class="score-wrong" id="wrongScore">✖ 0</span>
+                <button class="btn-reset" onclick="resetAllScores()" title="إعادة من البداية">🔄 تصفير</button>
+            </div>
+            <span class="progress-text" id="wordCounter">1 / 20</span>
+        </div>
+
+        <div class="game-area">
+            <div class="english-word" onclick="speakSequence()" title="اضغط لسماع الكلمة والجملة">
+                <span id="theWordText">Word</span>
+                <div class="repeat-icon">🔊</div>
+            </div>
+            
+            <div id="exampleSentence" class="example-sentence" onclick="speakSequence()" title="اضغط لسماع الكلمة والجملة">
+                <span id="theSentenceText">Sentence</span>
+            </div>
+            
+            <div id="optionsContainer" class="options-container"></div>
+        </div>
+
+        <div class="controls">
+            <!-- الترتيب المضبوط 100%: السابق (يمين) - الزر (وسط) - التالي (يسار) -->
+            <button class="btn-nav btn-prev" onclick="prevWord()">السابق &raquo;</button>
+            
+            <button id="btnAutoToggle" class="btn-toggle" onclick="toggleAutoPlay()">
+                الانتقال: <span>تلقائي ⚡</span>
+            </button>
+
+            <button id="btnNext" class="btn-nav btn-next disabled" onclick="nextWord()">&laquo; التالي</button>
+        </div>
+    </div>
+
+    <script>
+        function H(word) { return `<span class='highlight-word'>${word}</span>`; }
+
+        const wordsList = [
+            {e:"Technology", a:"تكنولوجيا", ex:`I use modern ${H('technology')} to study.`},
+            {e:"World", a:"عالم", ex:`There are many countries in the ${H('world')}.`},
+            {e:"Wonder", a:"عجب/دهشة", ex:`I ${H('wonder')} what is inside the box.`},
+            {e:"Magazine", a:"مجلة", ex:`My dad is reading a sports ${H('magazine')}.`},
+            {e:"Welcome", a:"مرحباً", ex:`${H('Welcome')} to our new house!`},
+            {e:"Book", a:"كتاب", ex:`I have an interesting story ${H('book')}.`},
+            {e:"Club", a:"نادي", ex:`We play football at the sports ${H('club')}.`},
+            {e:"Culture", a:"ثقافة", ex:`Saudi Arabia has a rich ${H('culture')}.`},
+            {e:"Home", a:"منزل", ex:`I feel safe at ${H('home')}.`},
+            {e:"School", a:"مدرسة", ex:`I go to ${H('school')} every morning.`},
+            {e:"Picture", a:"صورة", ex:`Draw a beautiful ${H('picture')} of a tree.`},
+            {e:"ICT", a:"تقنية المعلومات", ex:`We learn about computers in ${H('ICT')} class.`},
+            {e:"Question", a:"سؤال", ex:`Can I ask you a ${H('question')}?`},
+            {e:"Learn", a:"يتعلم", ex:`I want to ${H('learn')} English.`},
+            {e:"Word", a:"كلمة", ex:`How do you spell this ${H('word')}?`},
+            {e:"Use", a:"يستخدم", ex:`You can ${H('use')} my pen.`},
+            {e:"Read", a:"يقرأ", ex:`I like to ${H('read')} stories before bed.`},
+            {e:"Poem", a:"قصيدة", ex:`The teacher asked us to memorize a ${H('poem')}.`},
+            {e:"Discover", a:"يكتشف", ex:`Scientists want to ${H('discover')} new planets.`},
+            {e:"Help", a:"يساعد", ex:`Please ${H('help')} me carry this bag.`},
+            {e:"Children", a:"أطفال", ex:`The ${H('children')} are playing outside.`},
+            {e:"Group", a:"مجموعة", ex:`Work together in a small ${H('group')}.`},
+            {e:"Spider", a:"عنكبوت", ex:`The ${H('spider')} has eight legs.`},
+            {e:"Diagram", a:"مخطط", ex:`Look at the ${H('diagram')} to understand.`},
+            {e:"Find", a:"يجد", ex:`I cannot ${H('find')} my keys.`},
+            {e:"Ask", a:"يسأل", ex:`Don't be shy to ${H('ask')} for help.`},
+            {e:"Write", a:"يكتب", ex:`Please ${H('write')} your name here.`},
+            {e:"Review", a:"مراجعة", ex:`We have a quick ${H('review')} before the exam.`},
+            {e:"Games", a:"ألعاب", ex:`My brother plays video ${H('games')}.`},
+            {e:"Apps", a:"تطبيقات", ex:`I have many useful ${H('apps')} on my phone.`},
+            {e:"Password", a:"كلمة مرور", ex:`Keep your ${H('password')} a secret.`},
+            {e:"App", a:"تطبيق", ex:`This translation ${H('app')} is very fast.`},
+            {e:"Laptop", a:"حاسوب محمول", ex:`My dad bought a new ${H('laptop')}.`},
+            {e:"Earphones", a:"سماعات أذن", ex:`I listen to music with my ${H('earphones')}.`},
+            {e:"Digital", a:"رقمي", ex:`I have a ${H('digital')} watch.`},
+            {e:"Camera", a:"كاميرا", ex:`Smile for the ${H('camera')}!`},
+            {e:"Speaker", a:"مكبر صوت", ex:`The sound from the ${H('speaker')} is loud.`},
+            {e:"Smartphone", a:"هاتف ذكي", ex:`He has the newest ${H('smartphone')}.`},
+            {e:"Website", a:"موقع إلكتروني", ex:`Visit our ${H('website')} for more info.`},
+            {e:"E-reader", a:"قارئ إلكتروني", ex:`I read books on my ${H('e-reader')}.`},
+            {e:"Screen", a:"شاشة", ex:`The TV ${H('screen')} is very big.`},
+            {e:"Printer", a:"طابعة", ex:`We need ink for the ${H('printer')}.`},
+            {e:"Devices", a:"أجهزة", ex:`Turn off all electronic ${H('devices')}.`},
+            {e:"Blog", a:"مدونة", ex:`She writes about travel in her ${H('blog')}.`},
+            {e:"Watch", a:"يشاهد", ex:`Let's ${H('watch')} a movie tonight.`},
+            {e:"TV", a:"تلفاز", ex:`Turn on the ${H('TV')}, please.`},
+            {e:"Tablet", a:"جهاز لوحي", ex:`The child is playing on the ${H('tablet')}.`},
+            {e:"Parents", a:"والدين", ex:`I respect my ${H('parents')}.`},
+            {e:"Want", a:"يريد", ex:`I ${H('want')} to drink some water.`},
+            {e:"Something", a:"شيء ما", ex:`I have ${H('something')} to tell you.`},
+            {e:"Best", a:"أفضل", ex:`Ali is my ${H('best')} friend.`},
+            {e:"Bigger", a:"أكبر", ex:`An elephant is ${H('bigger')} than a lion.`},
+            {e:"Sofa", a:"أريكة", ex:`Sit down on the comfortable ${H('sofa')}.`},
+            {e:"Love", a:"يحب", ex:`I ${H('love')} my family.`},
+            {e:"Takes", a:"يأخذ", ex:`It ${H('takes')} an hour to get there.`},
+            {e:"Photos", a:"صور", ex:`He took beautiful ${H('photos')} of the sea.`},
+            {e:"Send", a:"يرسل", ex:`I will ${H('send')} you an email.`},
+            {e:"Quickly", a:"بسرعة", ex:`He finished his food very ${H('quickly')}.`},
+            {e:"Friends", a:"أصدقاء", ex:`I play with my ${H('friends')}.`},
+            {e:"Always", a:"دائماً", ex:`I ${H('always')} pray on time.`},
+            {e:"Mum", a:"أمي", ex:`My ${H('mum')} cooks delicious food.`},
+            {e:"Angry", a:"غاضب", ex:`The teacher was ${H('angry')} because of the noise.`},
+            {e:"Dinner", a:"عشاء", ex:`We eat ${H('dinner')} at 8 PM.`},
+            {e:"Room", a:"غرفة", ex:`My ${H('room')} is clean and tidy.`},
+            {e:"Think", a:"يفكر", ex:`I ${H('think')} it is going to rain.`},
+            {e:"Schoolwork", a:"واجبات مدرسية", ex:`I have a lot of ${H('schoolwork')} today.`},
+            {e:"Big", a:"كبير", ex:`That is a very ${H('big')} car.`},
+            {e:"Projects", a:"مشاريع", ex:`We are working on science ${H('projects')}.`},
+            {e:"Homework", a:"واجب منزلي", ex:`Did you do your math ${H('homework')}?`},
+            {e:"Site", a:"موقع", ex:`This is a safe building ${H('site')}.`},
+            {e:"Pairs", a:"أزواج", ex:`Work in ${H('pairs')} to solve this.`},
+            {e:"Kinds", a:"أنواع", ex:`There are many ${H('kinds')} of birds.`},
+            {e:"Pages", a:"صفحات", ex:`Read the first three ${H('pages')}.`},
+            {e:"Answer", a:"إجابة", ex:`Do you know the right ${H('answer')}?`},
+            {e:"Name", a:"اسم", ex:`What is your ${H('name')}?`},
+            {e:"Things", a:"أشياء", ex:`Put your ${H('things')} in the bag.`},
+            {e:"Order", a:"ترتيب", ex:`Put the numbers in the right ${H('order')}.`},
+            {e:"Size", a:"حجم", ex:`What ${H('size')} is your shirt?`},
+            {e:"Start", a:"يبدأ", ex:`The race will ${H('start')} soon.`},
+            {e:"Biggest", a:"الأكبر", ex:`The whale is the ${H('biggest')} animal.`},
+            {e:"Matter", a:"أمر/مسألة", ex:`What is the ${H('matter')} with you?`},
+            {e:"Maths", a:"رياضيات", ex:`I am good at ${H('maths')}.`},
+            {e:"Night", a:"ليل", ex:`The stars shine at ${H('night')}.`},
+            {e:"Forget", a:"ينسى", ex:`Do not ${H('forget')} your books.`},
+            {e:"Stopped", a:"توقف", ex:`The car ${H('stopped')} suddenly.`},
+            {e:"Working", a:"يعمل", ex:`My computer is not ${H('working')}.`},
+            {e:"Brother", a:"أخ", ex:`My little ${H('brother')} is cute.`},
+            {e:"Computer", a:"حاسوب", ex:`I type on the ${H('computer')}.`},
+            {e:"Restart", a:"إعادة تشغيل", ex:`You need to ${H('restart')} the machine.`},
+            {e:"Wi-Fi", a:"واي فاي", ex:`Is there free ${H('Wi-Fi')} here?`},
+            {e:"Give", a:"يعطي", ex:`Please ${H('give')} me the book.`},
+            {e:"Today", a:"اليوم", ex:`The weather is nice ${H('today')}.`},
+            {e:"Here", a:"هنا", ex:`Come ${H('here')}, please.`},
+            {e:"Take", a:"يأخذ", ex:`${H('Take')} an umbrella, it's raining.`},
+            {e:"Pen", a:"قلم", ex:`I write with a blue ${H('pen')}.`},
+            {e:"Paper", a:"ورق", ex:`I need a piece of ${H('paper')}.`},
+            {e:"Joking", a:"يمزح", ex:`Don't be angry, I am just ${H('joking')}.`},
+            {e:"Past", a:"ماضي", ex:`That happened in the ${H('past')}.`},
+            {e:"Times", a:"مرات", ex:`I called him three ${H('times')}.`},
+            {e:"Listen", a:"يستمع", ex:`${H('Listen')} to the teacher.`},
+            {e:"True", a:"صحيح", ex:`Is this story ${H('true')}?`},
+            {e:"False", a:"خاطئ", ex:`The answer is ${H('false')}.`},
+            {e:"Expressions", a:"تعبيرات", ex:`Learn these useful English ${H('expressions')}.`},
+            {e:"Act", a:"يمثل", ex:`He wants to ${H('act')} in a play.`},
+            {e:"Dialogue", a:"حوار", ex:`Read the ${H('dialogue')} with your partner.`},
+            {e:"Left", a:"ترك", ex:`He ${H('left')} his bag at home.`},
+            {e:"Bus", a:"حافلة", ex:`I go to school by ${H('bus')}.`},
+            {e:"Week", a:"أسبوع", ex:`There are seven days in a ${H('week')}.`},
+            {e:"Cat", a:"قطة", ex:`The ${H('cat')} is sleeping on the sofa.`},
+            {e:"Ate", a:"أكل", ex:`I ${H('ate')} a big apple.`},
+            {e:"Saturday", a:"سبت", ex:`We do not have school on ${H('Saturday')}.`},
+            {e:"Problems", a:"مشاكل", ex:`Math ${H('problems')} can be hard.`},
+            {e:"Happened", a:"حدث", ex:`What ${H('happened')} to your arm?`},
+            {e:"Talk", a:"يتحدث", ex:`Do not ${H('talk')} in the library.`},
+            {e:"Partner", a:"شريك", ex:`Work with your ${H('partner')}.`},
+            {e:"Look", a:"ينظر", ex:`${H('Look')} at the whiteboard.`},
+            {e:"Sentences", a:"جمل", ex:`Write three simple ${H('sentences')}.`},
+            {e:"Circle", a:"دائرة", ex:`Draw a red ${H('circle')}.`},
+            {e:"Teacher", a:"معلم", ex:`The ${H('teacher')} explains the lesson.`},
+            {e:"Present", a:"حاضر", ex:`He lives in the ${H('present')}.`},
+            {e:"Simple", a:"بسيط", ex:`This is a very ${H('simple')} task.`},
+            {e:"Go", a:"يذهب", ex:`I will ${H('go')} to the park.`},
+            {e:"Couldn't", a:"لم يستطع", ex:`He ${H("couldn't")} open the door.`},
+            {e:"Didn't", a:"لم يفعل", ex:`I ${H("didn't")} see him today.`},
+            {e:"Have", a:"يملك", ex:`I ${H('have')} a new bike.`},
+            {e:"Computers", a:"حاسبات", ex:`Schools use modern ${H('computers')}.`},
+            {e:"Smarter", a:"أذكى", ex:`He is ${H('smarter')} than me.`},
+            {e:"Latest", a:"الأحدث", ex:`This is the ${H('latest')} news.`},
+            {e:"Faster", a:"أسرع", ex:`A car is ${H('faster')} than a bike.`},
+            {e:"Thinner", a:"أنحف", ex:`This book is ${H('thinner')} than that one.`},
+            {e:"Lighter", a:"أخف", ex:`Cotton is ${H('lighter')} than iron.`},
+            {e:"Brighter", a:"أكثر إشراقاً", ex:`The sun is ${H('brighter')} today.`},
+            {e:"Press", a:"يضغط", ex:`${H('Press')} this key to start.`},
+            {e:"Button", a:"زر", ex:`Push the red ${H('button')}.`},
+            {e:"Turn on", a:"يشغل", ex:`Please ${H('turn on')} the lights.`},
+            {e:"Type", a:"يكتب", ex:`I can ${H('type')} fast on the keyboard.`},
+            {e:"Click", a:"ينقر", ex:`${H('Click')} the mouse to open it.`},
+            {e:"Icon", a:"أيقونة", ex:`Click on the app ${H('icon')}.`},
+            {e:"Internet", a:"إنترنت", ex:`I search for facts on the ${H('internet')}.`},
+            {e:"Shopping", a:"تسوق", ex:`My mom went ${H('shopping')} for food.`},
+            {e:"Time", a:"وقت", ex:`What ${H('time')} is it now?`},
+            {e:"Friend", a:"صديق", ex:`He is my best ${H('friend')}.`},
+            {e:"Town", a:"بلدة", ex:`I live in a small quiet ${H('town')}.`},
+            {e:"Online", a:"عبر الإنترنت", ex:`We play games ${H('online')}.`},
+            {e:"Sitting", a:"جالس", ex:`He is ${H('sitting')} on the chair.`},
+            {e:"Place", a:"مكان", ex:`This is a beautiful ${H('place')}.`},
+            {e:"Late", a:"متأخر", ex:`Don't be ${H('late')} for class.`},
+            {e:"Way", a:"طريق", ex:`Can you show me the ${H('way')}?`},
+            {e:"Easily", a:"بسهولة", ex:`He solved the puzzle ${H('easily')}.`},
+            {e:"Phone", a:"هاتف", ex:`My ${H('phone')} is ringing.`},
+            {e:"Download", a:"تحميل", ex:`I will ${H('download')} the file.`},
+            {e:"Free", a:"مجاني", ex:`This ticket is completely ${H('free')}.`},
+            {e:"Map", a:"خريطة", ex:`Look at the ${H('map')} to find the city.`},
+            {e:"Safely", a:"بأمان", ex:`Drive ${H('safely')} on the road.`},
+            {e:"Photo", a:"صورة", ex:`This is a nice ${H('photo')} of you.`},
+            {e:"Selfie", a:"سيلفي", ex:`Let's take a quick ${H('selfie')}.`},
+            {e:"Face", a:"وجه", ex:`Wash your ${H('face')} in the morning.`},
+            {e:"Famous", a:"مشهور", ex:`He is a ${H('famous')} football player.`},
+            {e:"Lines", a:"أسطر", ex:`Read the first two ${H('lines')}.`},
+            {e:"Long", a:"طويل", ex:`It is a very ${H('long')} street.`},
+            {e:"Short", a:"قصير", ex:`He is wearing ${H('short')} trousers.`},
+            {e:"Rhyme", a:"قافية", ex:`'Cat' and 'Hat' have the same ${H('rhyme')}.`},
+            {e:"Verse", a:"بيت شعر", ex:`Read the second ${H('verse')} of the poem.`},
+            {e:"Match", a:"يطابق", ex:`${H('Match')} the word with the picture.`},
+            {e:"Information", a:"معلومات", ex:`I need more ${H('information')} about this.`},
+            {e:"Exam", a:"امتحان", ex:`I studied hard for the final ${H('exam')}.`},
+            {e:"Team", a:"فريق", ex:`Our ${H('team')} won the match.`},
+            {e:"Facts", a:"حقائق", ex:`Science is based on real ${H('facts')}.`},
+            {e:"Search", a:"بحث", ex:`Use Google to ${H('search')} for it.`},
+            {e:"Quiet", a:"هادئ", ex:`Be ${H('quiet')} in the library.`},
+            {e:"Video", a:"فيديو", ex:`We watched a funny ${H('video')}.`},
+            {e:"Show", a:"عرض", ex:`I will ${H('show')} you my new car.`},
+            {e:"Discuss", a:"يناقش", ex:`Let's ${H('discuss')} this idea.`},
+            {e:"Groups", a:"مجموعات", ex:`Work in ${H('groups')} of four.`},
+            {e:"List", a:"قائمة", ex:`Make a ${H('list')} of what you need.`},
+            {e:"Importance", a:"أهمية", ex:`Water is of great ${H('importance')}.`},
+            {e:"Grammar", a:"قواعد", ex:`We learn English ${H('grammar')}.`},
+            {e:"Comparative", a:"مقارن", ex:`Use the ${H('comparative')} form of the adjective.`},
+            {e:"Adverbs", a:"ظروف", ex:`${H('Adverbs')} describe verbs.`},
+            {e:"Carefully", a:"بحذر", ex:`Hold the glass very ${H('carefully')}.`},
+            {e:"Clearly", a:"بوضوح", ex:`Please speak loudly and ${H('clearly')}.`},
+            {e:"Hard", a:"صعب", ex:`This is a very ${H('hard')} question.`},
+            {e:"Fast", a:"سريع", ex:`The cheetah is a very ${H('fast')} animal.`},
+            {e:"Well", a:"جيداً", ex:`He plays football very ${H('well')}.`},
+            {e:"Badly", a:"بشكل سيء", ex:`He behaved very ${H('badly')}.`},
+            {e:"Rules", a:"قوانين", ex:`You must follow the school ${H('rules')}.`},
+            {e:"Africa", a:"أفريقيا", ex:`Egypt is in ${H('Africa')}.`},
+            {e:"Study", a:"يدرس", ex:`I ${H('study')} English every day.`},
+            {e:"Countries", a:"دول", ex:`There are many ${H('countries')} in Asia.`},
+            {e:"E-books", a:"كتب إلكترونية", ex:`I prefer reading ${H('e-books')}.`},
+            {e:"Library", a:"مكتبة", ex:`I borrowed a book from the ${H('library')}.`},
+            {e:"Expensive", a:"غالي", ex:`This phone is very ${H('expensive')}.`},
+            {e:"Cheaply", a:"بثمن رخيص", ex:`I bought this shirt ${H('cheaply')}.`},
+            {e:"Readers", a:"قراء", ex:`The library is full of ${H('readers')}.`},
+            {e:"Stories", a:"قصص", ex:`Grandpa tells us nice ${H('stories')}.`},
+            {e:"Languages", a:"لغات", ex:`He speaks three different ${H('languages')}.`},
+            {e:"English", a:"إنجليزية", ex:`We are learning the ${H('English')} language.`},
+            {e:"Spend", a:"ينفق", ex:`Do not ${H('spend')} all your money.`},
+            {e:"Lot", a:"الكثير", ex:`I have a ${H('lot')} of homework.`},
+            {e:"Math", a:"حساب", ex:`I like solving ${H('Math')} problems.`},
+            {e:"Messages", a:"رسائل", ex:`I check my phone ${H('messages')}.`},
+            {e:"Teachers", a:"معلمون", ex:`Our ${H('teachers')} are very kind.`},
+            {e:"Marks", a:"علامات", ex:`He got high ${H('marks')} in the test.`},
+            {e:"Enjoy", a:"يستمتع", ex:`I ${H('enjoy')} playing tennis.`},
+            {e:"Fact", a:"حقيقة", ex:`It is a known ${H('fact')} that water boils at 100C.`},
+            {e:"Percent", a:"بالمئة", ex:`He got 90 ${H('percent')} on the test.`},
+            {e:"People", a:"ناس", ex:`Many ${H('people')} live in this city.`},
+            {e:"Mobile", a:"محمول", ex:`I bought a new ${H('mobile')} phone.`},
+            {e:"Poster", a:"ملصق", ex:`Put this ${H('poster')} on the wall.`},
+            {e:"Choose", a:"يختار", ex:`${H('Choose')} the correct answer.`},
+            {e:"Middle", a:"وسط", ex:`He stood in the ${H('middle')} of the room.`},
+            {e:"Add", a:"يضيف", ex:`${H('Add')} some sugar to the tea.`},
+            {e:"Decorate", a:"يزين", ex:`Let's ${H('decorate')} the class for the party.`},
+            {e:"Display", a:"يعرض", ex:`They will ${H('display')} the art on the wall.`},
+            {e:"Classroom", a:"فصل دراسي", ex:`Our ${H('classroom')} is clean.`},
+            {e:"Vote", a:"تصويت", ex:`We will ${H('vote')} for the class leader.`},
+            {e:"Dad", a:"أبي", ex:`My ${H('dad')} is working in his office.`},
+            {e:"Print", a:"يطبع", ex:`I need to ${H('print')} this paper.`},
+            {e:"Show", a:"يظهر", ex:`Can you ${H('show')} me the way?`},
+            {e:"Easy", a:"سهل", ex:`The test was very ${H('easy')}.`},
+            {e:"Next", a:"التالي", ex:`See you ${H('next')} week.`},
+            {e:"Top", a:"أعلى", ex:`The bird is on ${H('top')} of the tree.`},
+            {e:"Thanks", a:"شكراً", ex:`${H('Thanks')} for your help.`},
+            {e:"Revise", a:"يراجع", ex:`You must ${H('revise')} your lessons.`},
+            {e:"Sorry", a:"آسف", ex:`I am ${H('sorry')} I am late.`},
+            {e:"Cook", a:"يطبخ", ex:`My mother likes to ${H('cook')}.`},
+            {e:"Alright", a:"حسناً", ex:`Are you ${H('alright')}?`},
+            {e:"Ideas", a:"أفكار", ex:`He has many good ${H('ideas')}.`},
+            {e:"Pronunciation", a:"نطق", ex:`Listen to the correct ${H('pronunciation')}.`},
+            {e:"Coloured", a:"ملون", ex:`I need ${H('coloured')} pens.`},
+            {e:"Sound", a:"صوت", ex:`I hear a strange ${H('sound')}.`},
+            {e:"Repeat", a:"يكرر", ex:`Please ${H('repeat')} the sentence.`},
+            {e:"Literacy", a:"معرفة القراءة", ex:`Computer ${H('literacy')} is important today.`},
+            {e:"Mentions", a:"يذكر", ex:`The book ${H('mentions')} his name.`},
+            {e:"Treasure", a:"كنز", ex:`The pirates hid the ${H('treasure')}.`},
+            {e:"Buildings", a:"مباني", ex:`The city has tall ${H('buildings')}.`},
+            {e:"Exciting", a:"مثير", ex:`The football match was ${H('exciting')}.`},
+            {e:"Amazing", a:"مذهل", ex:`That magic trick was ${H('amazing')}.`},
+            {e:"Downloaded", a:"تم تحميله", ex:`I have ${H('downloaded')} the game.`},
+            {e:"Month", a:"شهر", ex:`Ramadan is a holy ${H('month')}.`},
+            {e:"Play", a:"يلعب", ex:`Let's ${H('play')} outside.`},
+            {e:"Travel", a:"يسافر", ex:`I like to ${H('travel')} by plane.`},
+            {e:"City", a:"مدينة", ex:`Riyadh is a big ${H('city')}.`},
+            {e:"Looking", a:"يبحث", ex:`I am ${H('looking')} for my glasses.`},
+            {e:"Problem", a:"مشكلة", ex:`What is the ${H('problem')}?`},
+            {e:"Difficult", a:"صعب", ex:`This level is very ${H('difficult')}.`},
+            {e:"Challenge", a:"تحدي", ex:`I like a good ${H('challenge')}.`},
+            {e:"Yourself", a:"نفسك", ex:`Do it by ${H('yourself')}.`},
+            {e:"Move", a:"يتحرك", ex:`Please ${H('move')} the chair.`},
+            {e:"Around", a:"حول", ex:`The earth moves ${H('around')} the sun.`},
+            {e:"Instructions", a:"تعليمات", ex:`Read the ${H('instructions')} first.`},
+            {e:"Programming", a:"برمجة", ex:`He is learning computer ${H('programming')}.`},
+            {e:"Learning", a:"تعلم", ex:`${H('Learning')} is fun.`},
+            {e:"Lots", a:"كثير", ex:`There are ${H('lots')} of apples.`},
+            {e:"Skills", a:"مهارات", ex:`Reading and writing are important ${H('skills')}.`},
+            {e:"Points", a:"نقاط", ex:`He scored 10 ${H('points')} in the game.`},
+            {e:"Playing", a:"لعب", ex:`They are ${H('playing')} in the yard.`},
+            {e:"Upload", a:"رفع", ex:`I will ${H('upload')} the video to YouTube.`},
+            {e:"Graphics", a:"رسومات", ex:`The game has great 3D ${H('graphics')}.`},
+            {e:"Good", a:"جيد", ex:`This is a very ${H('good')} book.`},
+            {e:"Bad", a:"سيء", ex:`Smoking is a ${H('bad')} habit.`},
+            {e:"Value", a:"قيمة", ex:`Gold has a high ${H('value')}.`},
+            {e:"Better", a:"أفضل", ex:`I feel ${H('better')} today.`},
+            {e:"Fun", a:"مرح", ex:`We had a lot of ${H('fun')} at the park.`},
+            {e:"Buy", a:"يشتري", ex:`I want to ${H('buy')} a new shirt.`},
+            {e:"Work", a:"عمل", ex:`He goes to ${H('work')} early.`},
+            {e:"Devices", a:"أدوات", ex:`Smartphones are smart ${H('devices')}.`},
+            {e:"Context", a:"سياق", ex:`Guess the meaning from the ${H('context')}.`},
+            {e:"Solve", a:"يحل", ex:`Can you ${H('solve')} this puzzle?`},
+            {e:"Score", a:"نتيجة", ex:`What is the final ${H('score')} of the match?`},
+            {e:"Tips", a:"نصائح", ex:`The teacher gave us useful ${H('tips')}.`},
+            {e:"Pay", a:"يدفع", ex:`I will ${H('pay')} for the meal.`},
+            {e:"Try", a:"يحاول", ex:`Please ${H('try')} again.`},
+            {e:"Live", a:"يعيش", ex:`I ${H('live')} in Saudi Arabia.`},
+            {e:"Watched", a:"شاهد", ex:`I ${H('watched')} TV yesterday.`},
+            {e:"Activity", a:"نشاط", ex:`Swimming is a healthy ${H('activity')}.`},
+            {e:"Page", a:"صفحة", ex:`Open your book to ${H('page')} ten.`},
+            {e:"Complete", a:"يكمل", ex:`Please ${H('complete')} the sentences.`},
+            {e:"Drawing", a:"رسم", ex:`She made a nice ${H('drawing')} of a flower.`},
+            {e:"Painting", a:"تلوين", ex:`I enjoy ${H('painting')} with water colors.`},
+            {e:"Tools", a:"معدات", ex:`A carpenter uses many ${H('tools')}.`},
+            {e:"Real", a:"حقيقي", ex:`Is this a ${H('real')} diamond?`},
+            {e:"Send", a:"يبعث", ex:`Did you ${H('send')} the letter?`},
+            {e:"Comments", a:"تعليقات", ex:`Leave your ${H('comments')} below.`},
+            {e:"Wait", a:"ينتظر", ex:`Please ${H('wait')} for a minute.`},
+            {e:"Minute", a:"دقيقة", ex:`Give me one ${H('minute')}.`},
+            {e:"Plan", a:"يخطط", ex:`What is your ${H('plan')} for tomorrow?`},
+            {e:"Check", a:"يفحص", ex:`${H('Check')} your answers before giving the paper.`},
+            {e:"Rewrite", a:"يعيد الكتابة", ex:`You must ${H('rewrite')} this paragraph.`},
+            {e:"Introduction", a:"مقدمة", ex:`Read the ${H('introduction')} of the book.`},
+            {e:"Adjective", a:"صفة", ex:`'Tall' is an ${H('adjective')}.`},
+            {e:"Butterfly", a:"فراشة", ex:`The ${H('butterfly')} has colourful wings.`},
+            {e:"Photography", a:"تصوير", ex:`My hobby is digital ${H('photography')}.`},
+            {e:"Prefer", a:"يفضل", ex:`I ${H('prefer')} tea over coffee.`},
+            {e:"Opinion", a:"رأي", ex:`In my ${H('opinion')}, this is the best choice.`},
+            {e:"Ready", a:"مستعد", ex:`Are you ${H('ready')} to go?`},
+            {e:"Listening", a:"استماع", ex:`We have a ${H('listening')} test today.`},
+            {e:"Writing", a:"كتابة", ex:`His English ${H('writing')} is very neat.`},
+            {e:"Correct", a:"صحيح", ex:`That is the ${H('correct')} answer.`},
+            {e:"Hobby", a:"هواية", ex:`Reading is my favorite ${H('hobby')}.`}
+        ];
+
+        const WORDS_PER_PART = 20;
+        const TOTAL_PARTS = 15; 
+
+        let currentPart = 0; 
+        let currentWordInPart = 0; 
+        let hasAnsweredThisWord = false; 
+        let autoPlay = true; 
+        let synth = window.speechSynthesis;
+        let autoTimeout = null;
+        
+        let partsScores = Array.from({length: TOTAL_PARTS}, () => ({correct: 0, wrong: 0}));
+
+        function populateParts() {
+            const select = document.getElementById('partSelect');
+            for(let i = 0; i < TOTAL_PARTS; i++) {
+                let opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = `الجزء ${i + 1} (الكلمات ${(i*WORDS_PER_PART)+1} - ${Math.min((i+1)*WORDS_PER_PART, wordsList.length)})`;
+                select.appendChild(opt);
+            }
+        }
+
+        function changePart(partIndex) {
+            currentPart = parseInt(partIndex);
+            currentWordInPart = 0;
+            updateGlobalScoresUI();
+            initGame();
+        }
+
+        function resetAllScores() {
+            partsScores = Array.from({length: TOTAL_PARTS}, () => ({correct: 0, wrong: 0}));
+            currentPart = 0;
+            document.getElementById('partSelect').value = 0;
+            currentWordInPart = 0;
+            updateGlobalScoresUI();
+            initGame();
+        }
+
+        function updateGlobalScoresUI() {
+            document.getElementById('correctScore').innerText = `✔ ${partsScores[currentPart].correct}`;
+            document.getElementById('wrongScore').innerText = `✖ ${partsScores[currentPart].wrong}`;
+        }
+
+        // --- التعديل الأهم هنا لضمان عمل الزر بفعالية 100% وفي اللحظة ---
+        function toggleAutoPlay() {
+            autoPlay = !autoPlay;
+            const btn = document.getElementById('btnAutoToggle');
+            
+            if (autoPlay) {
+                // تفعيل الوضع التلقائي
+                btn.classList.remove('inactive');
+                btn.innerHTML = 'الانتقال: <span>تلقائي ⚡</span>';
+                
+                // إذا كان الطالب قد أجاب بالفعل، والبرنامج لا يتحدث الآن، ننتقل للكلمة التالية فوراً
+                if (hasAnsweredThisWord && !synth.speaking) {
+                    clearTimeout(autoTimeout);
+                    autoTimeout = setTimeout(nextWord, 1000);
+                }
+            } else {
+                // تفعيل الوضع اليدوي
+                btn.classList.add('inactive');
+                btn.innerHTML = 'الانتقال: <span>يدوي ✋</span>';
+                
+                // إيقاف أي عملية انتقال تلقائي مبرمجة حالياً حتى يأخذ الطالب وقته
+                clearTimeout(autoTimeout); 
+                
+                // نفعل زر (التالي) فوراً حتى لو لم يجب الطالب بعد بناءً على طلبك
+                document.getElementById('btnNext').classList.remove('disabled');
+                hasAnsweredThisWord = true; // للسماح له بتجاوز السؤال والانتقال بحرية
+            }
+        }
+
+        function initGame() {
+            clearTimeout(autoTimeout);
+            hasAnsweredThisWord = false;
+            
+            // قفل زر التالي إلا إذا كان الوضع يدوياً
+            if (!autoPlay) {
+                document.getElementById('btnNext').classList.remove('disabled');
+                hasAnsweredThisWord = true; 
+            } else {
+                document.getElementById('btnNext').classList.add('disabled');
+            }
+            
+            document.getElementById('partResultModal').style.display = 'none'; 
+            document.getElementById('finalReportModal').style.display = 'none';
+            document.getElementById('exampleSentence').classList.remove('highlight-yellow');
+
+            let actualIndex = (currentPart * WORDS_PER_PART) + currentWordInPart;
+            let currentItem = wordsList[actualIndex];
+            
+            document.getElementById('theWordText').innerText = currentItem.e;
+            document.getElementById('theSentenceText').innerHTML = currentItem.ex;
+            document.getElementById('wordCounter').innerText = `${currentWordInPart + 1} / ${WORDS_PER_PART}`;
+            
+            generateOptions(currentItem);
+            
+            setTimeout(() => speakSequence(false), 300);
+        }
+
+        function generateOptions(currentItem) {
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            let options = [currentItem];
+            let wrongOptionsPool = wordsList.filter(v => v.e !== currentItem.e);
+            wrongOptionsPool.sort(() => 0.5 - Math.random());
+            options.push(wrongOptionsPool[0]);
+            options.push(wrongOptionsPool[1]);
+
+            options.sort(() => 0.5 - Math.random());
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.a;
+                btn.onclick = () => checkAnswer(btn, opt.a, currentItem.a);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btnElement, selectedAr, correctAr) {
+            // لمنع تكرار حساب النتيجة
+            if (btnElement.classList.contains('option-correct') || btnElement.classList.contains('option-wrong')) return;
+            
+            hasAnsweredThisWord = true; 
+            document.getElementById('btnNext').classList.remove('disabled');
+
+            if (selectedAr === correctAr) {
+                partsScores[currentPart].correct++;
+                btnElement.classList.add('option-correct');
+            } else {
+                partsScores[currentPart].wrong++;
+                btnElement.classList.add('option-wrong');
+                const allBtns = document.querySelectorAll('.option-btn');
+                allBtns.forEach(btn => {
+                    if (btn.innerText === correctAr) btn.classList.add('option-correct');
+                });
+            }
+
+            updateGlobalScoresUI();
+            
+            // نطق الكلمة والجملة، وإذا كان الوضع تلقائياً سينتقل بعدها
+            speakSequence(true); 
+        }
+
+        function speakSequence(isAfterAnswer = false) {
+            let actualIndex = (currentPart * WORDS_PER_PART) + currentWordInPart;
+            let currentItem = wordsList[actualIndex];
+            
+            synth.cancel();
+            clearTimeout(autoTimeout);
+            document.getElementById('exampleSentence').classList.remove('highlight-yellow');
+
+            let wordUtterance = new SpeechSynthesisUtterance(currentItem.e);
+            wordUtterance.lang = 'en-US';
+            wordUtterance.rate = 0.85;
+
+            let cleanText = currentItem.ex.replace(/<[^>]*>?/gm, '');
+            let sentenceUtterance = new SpeechSynthesisUtterance(cleanText);
+            sentenceUtterance.lang = 'en-US';
+            sentenceUtterance.rate = 0.85;
+
+            sentenceUtterance.onstart = function() {
+                document.getElementById('exampleSentence').classList.add('highlight-yellow');
+            };
+
+            // هنا يكمن السر: نربط الانتقال التلقائي بنهاية نطق الصوت
+            sentenceUtterance.onend = function() {
+                document.getElementById('exampleSentence').classList.remove('highlight-yellow');
+                
+                // إذا كان الطالب قد اختار إجابة والوضع "تلقائي"، ننتظر ثانية واحدة ثم ننتقل!
+                if (isAfterAnswer && autoPlay) {
+                    autoTimeout = setTimeout(nextWord, 1000); 
+                }
+            };
+
+            synth.speak(wordUtterance);
+            synth.speak(sentenceUtterance);
+        }
+
+        function nextWord() {
+            if (!hasAnsweredThisWord) {
+                const allBtns = document.querySelectorAll('.option-btn');
+                allBtns.forEach(btn => {
+                    btn.style.borderColor = "var(--danger)";
+                    setTimeout(() => btn.style.borderColor = "#CBD5E1", 400);
+                });
+                return;
+            }
+            
+            synth.cancel(); 
+            clearTimeout(autoTimeout);
+            
+            currentWordInPart++;
+            
+            if (currentWordInPart >= WORDS_PER_PART) {
+                showPartResultModal();
+                return; 
+            }
+            
+            initGame();
+        }
+
+        function showPartResultModal() {
+            document.getElementById('partResultTitle').innerText = `نتيجة الجزء ${currentPart + 1} 🏆`;
+            
+            let cScore = partsScores[currentPart].correct;
+            const scoreElement = document.getElementById('partResultScore');
+            scoreElement.innerText = `${cScore} / ${WORDS_PER_PART}`;
+            scoreElement.style.color = (cScore >= WORDS_PER_PART / 2) ? 'var(--secondary)' : 'var(--danger)';
+
+            const isLastPart = (currentPart >= TOTAL_PARTS - 1);
+            document.getElementById('btnNextPart').innerText = isLastPart ? "عرض التقرير النهائي 📊" : `الانتقال إلى الجزء ${currentPart + 2} 🚀`;
+
+            document.getElementById('partResultModal').style.display = 'flex';
+        }
+
+        function startNextPart() {
+            document.getElementById('partResultModal').style.display = 'none';
+            
+            if (currentPart >= TOTAL_PARTS - 1) {
+                showFinalReport();
+                return;
+            }
+            
+            currentPart++;
+            currentWordInPart = 0;
+            document.getElementById('partSelect').value = currentPart;
+            updateGlobalScoresUI();
+            initGame();
+        }
+
+        function retryCurrentPart() {
+            document.getElementById('partResultModal').style.display = 'none';
+            partsScores[currentPart] = {correct: 0, wrong: 0};
+            currentWordInPart = 0;
+            updateGlobalScoresUI();
+            initGame();
+        }
+
+        function prevWord() {
+            clearTimeout(autoTimeout);
+            synth.cancel();
+            currentWordInPart--;
+            if (currentWordInPart < 0) {
+                currentWordInPart = WORDS_PER_PART - 1; 
+            }
+            initGame();
+        }
+
+        function showFinalReport() {
+            synth.cancel(); 
+            clearTimeout(autoTimeout);
+            
+            let totalC = 0;
+            let totalW = 0;
+            const listContainer = document.getElementById('reportPartsList');
+            listContainer.innerHTML = '';
+
+            partsScores.forEach((scoreObj, index) => {
+                totalC += scoreObj.correct;
+                totalW += scoreObj.wrong;
+
+                let row = document.createElement('div');
+                row.className = 'report-item';
+                row.innerHTML = `
+                    <span style="font-weight:bold; color:var(--primary)">الجزء ${index + 1}</span>
+                    <span>
+                        <span style="color:var(--secondary); margin-left:15px;">✔ ${scoreObj.correct}</span>
+                        <span style="color:var(--danger)">✖ ${scoreObj.wrong}</span>
+                    </span>
+                `;
+                listContainer.appendChild(row);
+            });
+
+            document.getElementById('reportTotalCorrect').innerText = totalC;
+            document.getElementById('reportTotalWrong').innerText = totalW;
+            
+            document.getElementById('finalReportModal').style.display = 'flex';
+        }
+
+        function closeReport() {
+            document.getElementById('finalReportModal').style.display = 'none';
+        }
+
+        window.onload = () => {
+            populateParts();
+            initGame();
+        };
+    </script>
+</body>
+</html>
