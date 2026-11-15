@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق كود الديب الماسي - Top Goal 2</title>
+    <style>
+        :root {
+            --primary-blue: #004085;
+            --primary-red: #dc3545;
+            --success-green: #28a745;
+            --info-cyan: #17a2b8;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --highlight-yellow: #fff3cd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #start-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 64, 133, 0.95);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #start-overlay h1 { font-size: 3rem; margin-bottom: 20px; text-align: center; }
+        #start-btn {
+            padding: 15px 40px; font-size: 1.5rem;
+            background-color: var(--primary-red);
+            color: white; border: none; border-radius: 10px;
+            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        #start-btn:hover { background-color: #c82333; }
+
+        .app-container {
+            width: 100%; max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none; 
+        }
+
+        .header {
+            background-color: var(--primary-blue);
+            color: white; padding: 20px;
+            text-align: center;
+        }
+        .header select {
+            padding: 10px; font-size: 1.2rem;
+            border-radius: 5px; border: 2px solid white;
+            background: var(--primary-blue); color: white;
+            margin-top: 10px; cursor: pointer;
+        }
+
+        .control-panel {
+            display: flex; justify-content: space-between;
+            padding: 15px 20px; background-color: #e9ecef;
+            border-bottom: 2px solid #ddd; align-items: center;
+            flex-wrap: wrap; gap: 10px;
+        }
+        .score-board { display: flex; gap: 15px; font-size: 1.2rem; font-weight: bold; }
+        .score-correct { color: var(--success-green); }
+        .score-wrong { color: var(--primary-red); }
+        .mode-toggle {
+            padding: 8px 15px; font-size: 1rem;
+            background-color: #6c757d; color: white;
+            border: none; border-radius: 5px; cursor: pointer;
+        }
+        .mode-toggle.auto { background-color: var(--primary-blue); }
+
+        .flashcard { padding: 30px 20px; text-align: center; position: relative; }
+        
+        /* تصميم العداد الجديد */
+        .progress-badge {
+            background-color: var(--info-cyan);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .word-container {
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            margin-bottom: 20px;
+        }
+        .english-word {
+            font-size: 3.5rem; color: var(--primary-blue);
+            font-weight: bold; margin: 0; direction: ltr;
+        }
+        .audio-btn {
+            font-size: 2rem; background: none; border: none; cursor: pointer;
+            color: var(--primary-blue); transition: transform 0.2s;
+        }
+        .audio-btn:hover { transform: scale(1.1); }
+
+        .sentence-wrapper {
+            font-size: 2rem; color: #333; margin-bottom: 30px;
+            direction: ltr; font-weight: bold;
+            padding: 15px; border-radius: 10px;
+            border-left: 5px solid var(--primary-blue);
+            transition: background-color 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .target-word { color: var(--primary-red); font-weight: bold; }
+        .reading-highlight { background-color: yellow !important; }
+
+        .choices {
+            display: flex; flex-direction: column; gap: 15px;
+            max-width: 400px; margin: 0 auto;
+        }
+        .choice-btn {
+            padding: 15px; font-size: 1.3rem; font-weight: bold;
+            background-color: var(--primary-blue); color: white;
+            border: none; border-radius: 8px; cursor: pointer;
+            transition: 0.3s;
+        }
+        .choice-btn:hover { background-color: #0056b3; }
+        .choice-btn.correct { background-color: var(--success-green) !important; }
+        .choice-btn.wrong { background-color: var(--primary-red) !important; }
+
+        #next-btn {
+            display: none; margin: 20px auto 0;
+            padding: 12px 30px; font-size: 1.2rem;
+            background-color: #ffc107; color: #333; font-weight: bold;
+            border: none; border-radius: 8px; cursor: pointer;
+        }
+        
+        .footer { text-align: center; padding: 15px; background: var(--primary-blue); color: white; margin-top: 20px;}
+    </style>
+</head>
+<body>
+
+    <div id="start-overlay">
+        <h1>كود الديب الماسي 💎</h1>
+        <p style="font-size: 1.5rem; margin-bottom: 30px;">منهج Top Goal 2 - الصف السادس</p>
+        <button id="start-btn">اضغط هنا لبدء التعلم بصوت تلقائي</button>
+    </div>
+
+    <div class="app-container" id="app-container">
+        <div class="header">
+            <h2>إعداد الأستاذ / حمادة الديب</h2>
+            <select id="unit-select" onchange="changeUnit()">
+                <option value="Welcome">Unit 1: Welcome</option>
+                <option value="Living_things">Unit 2: Living Things</option>
+                <option value="Lifestyles">Unit 3: Lifestyles</option>
+                <option value="Interests">Unit 4: Interests</option>
+                <option value="Professions">Unit 5: Professions</option>
+            </select>
+        </div>
+
+        <div class="control-panel">
+            <div class="score-board">
+                <span class="score-correct">إجابات صحيحة: <span id="correct-counter">0</span></span>
+                <span> | </span>
+                <span class="score-wrong">أخطاء: <span id="wrong-counter">0</span></span>
+            </div>
+            <button id="mode-btn" class="mode-toggle auto" onclick="toggleMode()">الوضع: تلقائي ⚡</button>
+        </div>
+
+        <div class="flashcard">
+            <!-- عداد تقدم الكلمات -->
+            <div class="progress-badge">الكلمة: <span id="current-word-num">1</span> / <span id="total-word-count">50</span></div>
+
+            <div class="word-container">
+                <h1 class="english-word" id="word-display">Word</h1>
+                <button class="audio-btn" onclick="playAudio()" title="إعادة النطق">🔊</button>
+            </div>
+            
+            <div class="sentence-wrapper" id="sentence-display"></div>
+            
+            <div class="choices" id="choices-container"></div>
+
+            <button id="next-btn" onclick="nextWord()">الكلمة التالية ⏭️</button>
+        </div>
+        
+        <div class="footer">مدارس آفاق الهداية الحديثة للبنين - جدة</div>
+    </div>
+
+    <script>
+        const vocabularyData = {
+            "Welcome": [
+                { word: "Dictionary", sentence: "I open the <span class='target-word'>dictionary</span>.", choices: ["قاموس", "حقيبة", "ممحاة"], answer: "قاموس" },
+                { word: "Library", sentence: "I read in the <span class='target-word'>library</span>.", choices: ["مكتبة", "ملعب", "مقصف"], answer: "مكتبة" },
+                { word: "Subject", sentence: "English is a good <span class='target-word'>subject</span>.", choices: ["مادة دراسية", "رياضة", "هواية"], answer: "مادة دراسية" },
+                { word: "Classmate", sentence: "Ali is my <span class='target-word'>classmate</span>.", choices: ["زميل صف", "معلم", "مدير"], answer: "زميل صف" },
+                { word: "Homework", sentence: "I do my <span class='target-word'>homework</span>.", choices: ["واجب منزلي", "اختبار", "لعبة"], answer: "واجب منزلي" },
+                { word: "Pen", sentence: "I write with a <span class='target-word'>pen</span>.", choices: ["قلم حبر", "مسطرة", "كتاب"], answer: "قلم حبر" },
+                { word: "Pencil", sentence: "I draw with a <span class='target-word'>pencil</span>.", choices: ["قلم رصاص", "دفتر", "سبورة"], answer: "قلم رصاص" },
+                { word: "Book", sentence: "I read a <span class='target-word'>book</span>.", choices: ["كتاب", "باب", "شباك"], answer: "كتاب" },
+                { word: "Bag", sentence: "My <span class='target-word'>bag</span> is big.", choices: ["حقيبة", "مكتب", "كرسي"], answer: "حقيبة" },
+                { word: "Desk", sentence: "I sit at my <span class='target-word'>desk</span>.", choices: ["مكتب", "سرير", "دولاب"], answer: "مكتب" },
+                { word: "Chair", sentence: "I sit on a <span class='target-word'>chair</span>.", choices: ["كرسي", "طاولة", "باب"], answer: "كرسي" },
+                { word: "Board", sentence: "Look at the <span class='target-word'>board</span>.", choices: ["سبورة", "ورقة", "حقيبة"], answer: "سبورة" },
+                { word: "Eraser", sentence: "I use an <span class='target-word'>eraser</span>.", choices: ["ممحاة", "قلم", "مسطرة"], answer: "ممحاة" },
+                { word: "Ruler", sentence: "I have a long <span class='target-word'>ruler</span>.", choices: ["مسطرة", "كتاب", "براية"], answer: "مسطرة" },
+                { word: "Notebook", sentence: "I write in my <span class='target-word'>notebook</span>.", choices: ["دفتر", "شنطة", "مقلمة"], answer: "دفتر" },
+                { word: "Teacher", sentence: "My <span class='target-word'>teacher</span> is nice.", choices: ["معلم", "طبيب", "مهندس"], answer: "معلم" },
+                { word: "Student", sentence: "I am a good <span class='target-word'>student</span>.", choices: ["طالب", "معلم", "مدير"], answer: "طالب" },
+                { word: "School", sentence: "I go to <span class='target-word'>school</span>.", choices: ["مدرسة", "مستشفى", "حديقة"], answer: "مدرسة" },
+                { word: "Classroom", sentence: "My <span class='target-word'>classroom</span> is clean.", choices: ["فصل دراسي", "ملعب", "مكتبة"], answer: "فصل دراسي" },
+                { word: "Math", sentence: "I like <span class='target-word'>math</span>.", choices: ["رياضيات", "علوم", "تاريخ"], answer: "رياضيات" },
+                { word: "Science", sentence: "We learn <span class='target-word'>science</span>.", choices: ["علوم", "لغة", "رسم"], answer: "علوم" },
+                { word: "Art", sentence: "I draw in <span class='target-word'>art</span>.", choices: ["فنية / رسم", "رياضيات", "رياضة"], answer: "فنية / رسم" },
+                { word: "History", sentence: "I read about <span class='target-word'>history</span>.", choices: ["تاريخ", "علوم", "حاسب"], answer: "تاريخ" },
+                { word: "English", sentence: "I speak <span class='target-word'>English</span>.", choices: ["إنجليزي", "عربي", "فرنسي"], answer: "إنجليزي" },
+                { word: "Arabic", sentence: "I read <span class='target-word'>Arabic</span>.", choices: ["عربي", "إنجليزي", "رياضيات"], answer: "عربي" },
+                { word: "Read", sentence: "I <span class='target-word'>read</span> a story.", choices: ["يقرأ", "يكتب", "يلعب"], answer: "يقرأ" },
+                { word: "Write", sentence: "I <span class='target-word'>write</span> my name.", choices: ["يكتب", "يقرأ", "ينام"], answer: "يكتب" },
+                { word: "Listen", sentence: "I <span class='target-word'>listen</span> to the teacher.", choices: ["يستمع", "يتكلم", "يجري"], answer: "يستمع" },
+                { word: "Speak", sentence: "I <span class='target-word'>speak</span> English.", choices: ["يتحدث", "يقرأ", "يأكل"], answer: "يتحدث" },
+                { word: "Open", sentence: "I <span class='target-word'>open</span> the door.", choices: ["يفتح", "يغلق", "يجلس"], answer: "يفتح" },
+                { word: "Close", sentence: "I <span class='target-word'>close</span> the book.", choices: ["يغلق", "يفتح", "يقف"], answer: "يغلق" },
+                { word: "Stand", sentence: "I <span class='target-word'>stand</span> up.", choices: ["يقف", "يجلس", "ينام"], answer: "يقف" },
+                { word: "Sit", sentence: "I <span class='target-word'>sit</span> down.", choices: ["يجلس", "يمشي", "يقف"], answer: "يجلس" },
+                { word: "Ask", sentence: "I <span class='target-word'>ask</span> a question.", choices: ["يسأل", "يجيب", "يلعب"], answer: "يسأل" },
+                { word: "Answer", sentence: "I <span class='target-word'>answer</span> the teacher.", choices: ["يجيب", "يسأل", "يكتب"], answer: "يجيب" },
+                { word: "Help", sentence: "I <span class='target-word'>help</span> my friend.", choices: ["يساعد", "يضرب", "يأخذ"], answer: "يساعد" },
+                { word: "Play", sentence: "I <span class='target-word'>play</span> football.", choices: ["يلعب", "يذاكر", "ينام"], answer: "يلعب" },
+                { word: "Learn", sentence: "I <span class='target-word'>learn</span> new words.", choices: ["يتعلم", "ينسى", "يكتب"], answer: "يتعلم" },
+                { word: "Study", sentence: "I <span class='target-word'>study</span> hard.", choices: ["يذاكر", "يلعب", "يأكل"], answer: "يذاكر" },
+                { word: "Test", sentence: "I have a <span class='target-word'>test</span>.", choices: ["اختبار", "لعبة", "قصة"], answer: "اختبار" },
+                { word: "Paper", sentence: "I need a <span class='target-word'>paper</span>.", choices: ["ورقة", "قلم", "كتاب"], answer: "ورقة" },
+                { word: "Window", sentence: "Open the <span class='target-word'>window</span>.", choices: ["شباك", "باب", "طاولة"], answer: "شباك" },
+                { word: "Door", sentence: "Close the <span class='target-word'>door</span>.", choices: ["باب", "شباك", "كرسي"], answer: "باب" },
+                { word: "Clock", sentence: "Look at the <span class='target-word'>clock</span>.", choices: ["ساعة حائط", "صورة", "حقيبة"], answer: "ساعة حائط" },
+                { word: "Bell", sentence: "I hear the <span class='target-word'>bell</span>.", choices: ["جرس", "صوت", "كلب"], answer: "جرس" },
+                { word: "Morning", sentence: "Good <span class='target-word'>morning</span>!", choices: ["صباح", "مساء", "ليل"], answer: "صباح" },
+                { word: "Afternoon", sentence: "Good <span class='target-word'>afternoon</span>!", choices: ["بعد الظهر", "الصباح", "الليل"], answer: "بعد الظهر" },
+                { word: "Hello", sentence: "<span class='target-word'>Hello</span>, Ali.", choices: ["مرحباً", "وداعاً", "شكراً"], answer: "مرحباً" },
+                { word: "Goodbye", sentence: "<span class='target-word'>Goodbye</span>, teacher.", choices: ["مع السلامة", "أهلاً", "نعم"], answer: "مع السلامة" },
+                { word: "Friend", sentence: "He is my <span class='target-word'>friend</span>.", choices: ["صديق", "عدو", "أخ"], answer: "صديق" }
+            ],
+            "Living_things": [
+                { word: "Animal", sentence: "A cat is an <span class='target-word'>animal</span>.", choices: ["حيوان", "نبات", "جماد"], answer: "حيوان" },
+                { word: "Plant", sentence: "A tree is a <span class='target-word'>plant</span>.", choices: ["نبات", "صخرة", "بحر"], answer: "نبات" },
+                { word: "Breathe", sentence: "I <span class='target-word'>breathe</span> air.", choices: ["يتنفس", "يأكل", "ينام"], answer: "يتنفس" },
+                { word: "Grow", sentence: "Plants <span class='target-word'>grow</span> big.", choices: ["ينمو / يكبر", "يصغر", "يموت"], answer: "ينمو / يكبر" },
+                { word: "Habitat", sentence: "The sea is a <span class='target-word'>habitat</span>.", choices: ["موطن / بيئة", "طعام", "طقس"], answer: "موطن / بيئة" },
+                { word: "Cat", sentence: "I have a pet <span class='target-word'>cat</span>.", choices: ["قطة", "كلب", "طائر"], answer: "قطة" },
+                { word: "Dog", sentence: "The <span class='target-word'>dog</span> is fast.", choices: ["كلب", "قطة", "فأر"], answer: "كلب" },
+                { word: "Bird", sentence: "The <span class='target-word'>bird</span> can fly.", choices: ["طائر", "سمكة", "أسد"], answer: "طائر" },
+                { word: "Fish", sentence: "The <span class='target-word'>fish</span> swims.", choices: ["سمكة", "بقرة", "نمر"], answer: "سمكة" },
+                { word: "Tree", sentence: "The <span class='target-word'>tree</span> is tall.", choices: ["شجرة", "زهرة", "حجر"], answer: "شجرة" },
+                { word: "Flower", sentence: "The <span class='target-word'>flower</span> is red.", choices: ["زهرة", "ورقة", "جذر"], answer: "زهرة" },
+                { word: "Grass", sentence: "The <span class='target-word'>grass</span> is green.", choices: ["عشب", "رمل", "ماء"], answer: "عشب" },
+                { word: "Leaf", sentence: "A green <span class='target-word'>leaf</span> fell.", choices: ["ورقة شجر", "غصن", "جذر"], answer: "ورقة شجر" },
+                { word: "Root", sentence: "The <span class='target-word'>root</span> is under ground.", choices: ["جذر", "ورقة", "زهرة"], answer: "جذر" },
+                { word: "Sun", sentence: "The <span class='target-word'>sun</span> is hot.", choices: ["شمس", "قمر", "نجمة"], answer: "شمس" },
+                { word: "Water", sentence: "I drink <span class='target-word'>water</span>.", choices: ["ماء", "عصير", "حليب"], answer: "ماء" },
+                { word: "Air", sentence: "We need <span class='target-word'>air</span>.", choices: ["هواء", "نار", "تراب"], answer: "هواء" },
+                { word: "Food", sentence: "I eat good <span class='target-word'>food</span>.", choices: ["طعام", "شراب", "هواء"], answer: "طعام" },
+                { word: "Eat", sentence: "I <span class='target-word'>eat</span> an apple.", choices: ["يأكل", "يشرب", "ينام"], answer: "يأكل" },
+                { word: "Drink", sentence: "I <span class='target-word'>drink</span> milk.", choices: ["يشرب", "يأكل", "يلعب"], answer: "يشرب" },
+                { word: "Sleep", sentence: "I <span class='target-word'>sleep</span> at night.", choices: ["ينام", "يستيقظ", "يجري"], answer: "ينام" },
+                { word: "Live", sentence: "Fish <span class='target-word'>live</span> in water.", choices: ["يعيش", "يموت", "يطير"], answer: "يعيش" },
+                { word: "Die", sentence: "Old plants <span class='target-word'>die</span>.", choices: ["يموت", "يعيش", "ينمو"], answer: "يموت" },
+                { word: "Fast", sentence: "A tiger is <span class='target-word'>fast</span>.", choices: ["سريع", "بطيء", "كبير"], answer: "سريع" },
+                { word: "Slow", sentence: "A turtle is <span class='target-word'>slow</span>.", choices: ["بطيء", "سريع", "طويل"], answer: "بطيء" },
+                { word: "Big", sentence: "An elephant is <span class='target-word'>big</span>.", choices: ["كبير", "صغير", "قصير"], answer: "كبير" },
+                { word: "Small", sentence: "An ant is <span class='target-word'>small</span>.", choices: ["صغير", "كبير", "طويل"], answer: "صغير" },
+                { word: "Sea", sentence: "Fish live in the <span class='target-word'>sea</span>.", choices: ["بحر", "جبل", "صحراء"], answer: "بحر" },
+                { word: "Land", sentence: "Lions live on <span class='target-word'>land</span>.", choices: ["يابسة / أرض", "بحر", "سماء"], answer: "يابسة / أرض" },
+                { word: "Forest", sentence: "Bears live in the <span class='target-word'>forest</span>.", choices: ["غابة", "صحراء", "مدينة"], answer: "غابة" },
+                { word: "Desert", sentence: "Camels live in the <span class='target-word'>desert</span>.", choices: ["صحراء", "بحر", "غابة"], answer: "صحراء" },
+                { word: "Sky", sentence: "Birds fly in the <span class='target-word'>sky</span>.", choices: ["سماء", "أرض", "بحر"], answer: "سماء" },
+                { word: "Fly", sentence: "Birds <span class='target-word'>fly</span> high.", choices: ["يطير", "يسبح", "يمشي"], answer: "يطير" },
+                { word: "Swim", sentence: "Fish <span class='target-word'>swim</span> well.", choices: ["يسبح", "يطير", "يجري"], answer: "يسبح" },
+                { word: "Run", sentence: "I can <span class='target-word'>run</span> fast.", choices: ["يجري", "يمشي", "يقف"], answer: "يجري" },
+                { word: "Walk", sentence: "I <span class='target-word'>walk</span> to school.", choices: ["يمشي", "يجري", "يطير"], answer: "يمشي" },
+                { word: "Insect", sentence: "A bee is an <span class='target-word'>insect</span>.", choices: ["حشرة", "طائر", "حيوان"], answer: "حشرة" },
+                { word: "Bee", sentence: "The <span class='target-word'>bee</span> makes honey.", choices: ["نحلة", "نملة", "عنكبوت"], answer: "نحلة" },
+                { word: "Ant", sentence: "The <span class='target-word'>ant</span> is small.", choices: ["نملة", "فراشة", "ذبابة"], answer: "نملة" },
+                { word: "Spider", sentence: "The <span class='target-word'>spider</span> has eight legs.", choices: ["عنكبوت", "ثعبان", "نحلة"], answer: "عنكبوت" },
+                { word: "Snake", sentence: "The <span class='target-word'>snake</span> is long.", choices: ["ثعبان", "سحلية", "ضفدع"], answer: "ثعبان" },
+                { word: "Lion", sentence: "The <span class='target-word'>lion</span> is strong.", choices: ["أسد", "قرد", "دب"], answer: "أسد" },
+                { word: "Tiger", sentence: "The <span class='target-word'>tiger</span> is fast.", choices: ["نمر", "أسد", "فيل"], answer: "نمر" },
+                { word: "Bear", sentence: "The <span class='target-word'>bear</span> is big.", choices: ["دب", "حصان", "جمل"], answer: "دب" },
+                { word: "Monkey", sentence: "The <span class='target-word'>monkey</span> climbs trees.", choices: ["قرد", "حمار", "بقرة"], answer: "قرد" },
+                { word: "Elephant", sentence: "The <span class='target-word'>elephant</span> is very big.", choices: ["فيل", "زرافة", "أسد"], answer: "فيل" },
+                { word: "Giraffe", sentence: "The <span class='target-word'>giraffe</span> is tall.", choices: ["زرافة", "فيل", "حمار وحشي"], answer: "زرافة" },
+                { word: "Zebra", sentence: "The <span class='target-word'>zebra</span> is black and white.", choices: ["حمار وحشي", "حصان", "جمل"], answer: "حمار وحشي" },
+                { word: "Horse", sentence: "I ride a <span class='target-word'>horse</span>.", choices: ["حصان", "بقرة", "خروف"], answer: "حصان" },
+                { word: "Cow", sentence: "The <span class='target-word'>cow</span> gives milk.", choices: ["بقرة", "حصان", "دجاجة"], answer: "بقرة" }
+            ],
+            "Lifestyles": [
+                { word: "Healthy", sentence: "Apples are <span class='target-word'>healthy</span>.", choices: ["صحي", "مريض", "سيء"], answer: "صحي" },
+                { word: "Exercise", sentence: "I do <span class='target-word'>exercise</span> daily.", choices: ["تمرين رياضي", "نوم", "طعام"], answer: "تمرين رياضي" },
+                { word: "Habit", sentence: "Reading is a good <span class='target-word'>habit</span>.", choices: ["عادة", "مشكلة", "مرض"], answer: "عادة" },
+                { word: "Routine", sentence: "My daily <span class='target-word'>routine</span>.", choices: ["روتين / نظام", "فوضى", "مفاجأة"], answer: "روتين / نظام" },
+                { word: "Diet", sentence: "A good <span class='target-word'>diet</span> makes me strong.", choices: ["نظام غذائي", "دواء", "رياضة"], answer: "نظام غذائي" },
+                { word: "Wake up", sentence: "I <span class='target-word'>wake up</span> early.", choices: ["يستيقظ", "ينام", "يأكل"], answer: "يستيقظ" },
+                { word: "Wash", sentence: "I <span class='target-word'>wash</span> my hands.", choices: ["يغسل", "يمسح", "ينام"], answer: "يغسل" },
+                { word: "Brush", sentence: "I <span class='target-word'>brush</span> my teeth.", choices: ["يفرش / يمشط", "يغسل", "يأكل"], answer: "يفرش / يمشط" },
+                { word: "Teeth", sentence: "My <span class='target-word'>teeth</span> are white.", choices: ["أسنان", "عيون", "آذان"], answer: "أسنان" },
+                { word: "Face", sentence: "I wash my <span class='target-word'>face</span>.", choices: ["وجه", "يد", "قدم"], answer: "وجه" },
+                { word: "Breakfast", sentence: "I eat <span class='target-word'>breakfast</span>.", choices: ["فطور", "غداء", "عشاء"], answer: "فطور" },
+                { word: "Lunch", sentence: "I eat <span class='target-word'>lunch</span> at noon.", choices: ["غداء", "فطور", "عشاء"], answer: "غداء" },
+                { word: "Dinner", sentence: "I eat <span class='target-word'>dinner</span> at night.", choices: ["عشاء", "فطور", "غداء"], answer: "عشاء" },
+                { word: "Snack", sentence: "I eat a small <span class='target-word'>snack</span>.", choices: ["وجبة خفيفة", "عشاء", "فطور"], answer: "وجبة خفيفة" },
+                { word: "Fruit", sentence: "I like <span class='target-word'>fruit</span>.", choices: ["فاكهة", "خضار", "لحم"], answer: "فاكهة" },
+                { word: "Apple", sentence: "The <span class='target-word'>apple</span> is red.", choices: ["تفاحة", "موزة", "برتقالة"], answer: "تفاحة" },
+                { word: "Banana", sentence: "The <span class='target-word'>banana</span> is yellow.", choices: ["موزة", "تفاحة", "عنبة"], answer: "موزة" },
+                { word: "Orange", sentence: "I eat an <span class='target-word'>orange</span>.", choices: ["برتقالة", "بطيخة", "فراولة"], answer: "برتقالة" },
+                { word: "Vegetable", sentence: "Carrot is a <span class='target-word'>vegetable</span>.", choices: ["خضار", "فاكهة", "عصير"], answer: "خضار" },
+                { word: "Carrot", sentence: "Rabbits love <span class='target-word'>carrot</span>.", choices: ["جزر", "طماطم", "بصل"], answer: "جزر" },
+                { word: "Tomato", sentence: "The <span class='target-word'>tomato</span> is red.", choices: ["طماطم", "خيار", "بطاطس"], answer: "طماطم" },
+                { word: "Salad", sentence: "I eat green <span class='target-word'>salad</span>.", choices: ["سلطة", "شوربة", "لحم"], answer: "سلطة" },
+                { word: "Meat", sentence: "I like <span class='target-word'>meat</span>.", choices: ["لحم", "سمك", "دجاج"], answer: "لحم" },
+                { word: "Chicken", sentence: "I eat <span class='target-word'>chicken</span>.", choices: ["دجاج", "لحم", "سمك"], answer: "دجاج" },
+                { word: "Milk", sentence: "I drink <span class='target-word'>milk</span>.", choices: ["حليب", "ماء", "عصير"], answer: "حليب" },
+                { word: "Juice", sentence: "I drink apple <span class='target-word'>juice</span>.", choices: ["عصير", "ماء", "شاي"], answer: "عصير" },
+                { word: "Early", sentence: "I wake up <span class='target-word'>early</span>.", choices: ["مبكراً", "متأخراً", "ليلاً"], answer: "مبكراً" },
+                { word: "Late", sentence: "Don't sleep <span class='target-word'>late</span>.", choices: ["متأخراً", "مبكراً", "صباحاً"], answer: "متأخراً" },
+                { word: "Night", sentence: "I sleep at <span class='target-word'>night</span>.", choices: ["ليل", "نهار", "صباح"], answer: "ليل" },
+                { word: "Bed", sentence: "I go to <span class='target-word'>bed</span>.", choices: ["سرير", "كرسي", "طاولة"], answer: "سرير" },
+                { word: "Clean", sentence: "My hands are <span class='target-word'>clean</span>.", choices: ["نظيف", "متسخ", "جميل"], answer: "نظيف" },
+                { word: "Dirty", sentence: "Wash your <span class='target-word'>dirty</span> hands.", choices: ["متسخ", "نظيف", "جديد"], answer: "متسخ" },
+                { word: "Active", sentence: "Ali is very <span class='target-word'>active</span>.", choices: ["نشيط", "كسول", "مريض"], answer: "نشيط" },
+                { word: "Lazy", sentence: "Don't be <span class='target-word'>lazy</span>.", choices: ["كسول", "نشيط", "سعيد"], answer: "كسول" },
+                { word: "Jump", sentence: "I can <span class='target-word'>jump</span> high.", choices: ["يقفز", "يمشي", "يجلس"], answer: "يقفز" },
+                { word: "Sport", sentence: "Football is a <span class='target-word'>sport</span>.", choices: ["رياضة", "طعام", "كتاب"], answer: "رياضة" },
+                { word: "Gym", sentence: "I train in the <span class='target-word'>gym</span>.", choices: ["صالة رياضية", "مدرسة", "مستشفى"], answer: "صالة رياضية" },
+                { word: "Strong", sentence: "Milk makes you <span class='target-word'>strong</span>.", choices: ["قوي", "ضعيف", "مريض"], answer: "قوي" },
+                { word: "Weak", sentence: "The sick boy is <span class='target-word'>weak</span>.", choices: ["ضعيف", "قوي", "سريع"], answer: "ضعيف" },
+                { word: "Happy", sentence: "I am very <span class='target-word'>happy</span>.", choices: ["سعيد", "حزين", "غاضب"], answer: "سعيد" },
+                { word: "Sad", sentence: "Don't be <span class='target-word'>sad</span>.", choices: ["حزين", "سعيد", "جائع"], answer: "حزين" },
+                { word: "Good", sentence: "This is a <span class='target-word'>good</span> book.", choices: ["جيد / طيب", "سيء", "قبيح"], answer: "جيد / طيب" },
+                { word: "Bad", sentence: "This is a <span class='target-word'>bad</span> habit.", choices: ["سيء", "جيد", "جميل"], answer: "سيء" },
+                { word: "Water", sentence: "Drink lots of <span class='target-word'>water</span>.", choices: ["ماء", "عصير", "حليب"], answer: "ماء" },
+                { word: "Bread", sentence: "I eat <span class='target-word'>bread</span>.", choices: ["خبز", "لحم", "أرز"], answer: "خبز" },
+                { word: "Cheese", sentence: "I like yellow <span class='target-word'>cheese</span>.", choices: ["جبن", "عسل", "مربى"], answer: "جبن" },
+                { word: "Egg", sentence: "I eat an <span class='target-word'>egg</span>.", choices: ["بيضة", "دجاجة", "تفاحة"], answer: "بيضة" },
+                { word: "Soup", sentence: "Hot <span class='target-word'>soup</span> is good.", choices: ["حساء / شوربة", "سلطة", "خبز"], answer: "حساء / شوربة" },
+                { word: "Rice", sentence: "I eat chicken and <span class='target-word'>rice</span>.", choices: ["أرز", "خبز", "مكرونة"], answer: "أرز" },
+                { word: "Cake", sentence: "I love sweet <span class='target-word'>cake</span>.", choices: ["كعكة", "لحم", "دجاج"], answer: "كعكة" }
+            ],
+            "Interests": [
+                { word: "Hobby", sentence: "My <span class='target-word'>hobby</span> is drawing.", choices: ["هواية", "وظيفة", "مدرسة"], answer: "هواية" },
+                { word: "Photography", sentence: "I like <span class='target-word'>photography</span>.", choices: ["التصوير", "الرسم", "السباحة"], answer: "التصوير" },
+                { word: "Reading", sentence: "I like <span class='target-word'>reading</span> books.", choices: ["القراءة", "الكتابة", "التحدث"], answer: "القراءة" },
+                { word: "Collecting", sentence: "I like <span class='target-word'>collecting</span> coins.", choices: ["جمع (الأشياء)", "تكسير", "بيع"], answer: "جمع (الأشياء)" },
+                { word: "Sports", sentence: "Football and tennis are <span class='target-word'>sports</span>.", choices: ["رياضات", "ألوان", "حيوانات"], answer: "رياضات" },
+                { word: "Drawing", sentence: "I like <span class='target-word'>drawing</span> cats.", choices: ["الرسم", "القراءة", "السباحة"], answer: "الرسم" },
+                { word: "Painting", sentence: "I like <span class='target-word'>painting</span> with colors.", choices: ["التلوين / الرسم", "الغناء", "الطبخ"], answer: "التلوين / الرسم" },
+                { word: "Singing", sentence: "I like <span class='target-word'>singing</span> a song.", choices: ["الغناء", "الرقص", "الكتابة"], answer: "الغناء" },
+                { word: "Dancing", sentence: "I like <span class='target-word'>dancing</span>.", choices: ["الرقص", "القفز", "الجري"], answer: "الرقص" },
+                { word: "Cooking", sentence: "My mom likes <span class='target-word'>cooking</span>.", choices: ["الطبخ", "القراءة", "الغسيل"], answer: "الطبخ" },
+                { word: "Baking", sentence: "I like <span class='target-word'>baking</span> a cake.", choices: ["الخبز", "الطبخ", "الرسم"], answer: "الخبز" },
+                { word: "Swimming", sentence: "I like <span class='target-word'>swimming</span> in the pool.", choices: ["السباحة", "الجري", "الطيران"], answer: "السباحة" },
+                { word: "Cycling", sentence: "I like <span class='target-word'>cycling</span> on my bike.", choices: ["ركوب الدراجة", "ركوب الخيل", "السباحة"], answer: "ركوب الدراجة" },
+                { word: "Fishing", sentence: "I like <span class='target-word'>fishing</span> in the sea.", choices: ["صيد السمك", "السباحة", "الغوص"], answer: "صيد السمك" },
+                { word: "Camping", sentence: "I go <span class='target-word'>camping</span> in a tent.", choices: ["التخييم", "السفر", "الصيد"], answer: "التخييم" },
+                { word: "Traveling", sentence: "I love <span class='target-word'>traveling</span> to Dubai.", choices: ["السفر", "النوم", "الأكل"], answer: "السفر" },
+                { word: "Music", sentence: "I listen to <span class='target-word'>music</span>.", choices: ["موسيقى", "قصة", "أخبار"], answer: "موسيقى" },
+                { word: "Guitar", sentence: "I play the <span class='target-word'>guitar</span>.", choices: ["جيتار", "بيانو", "طبلة"], answer: "جيتار" },
+                { word: "Piano", sentence: "I play the <span class='target-word'>piano</span>.", choices: ["بيانو", "مزمار", "جيتار"], answer: "بيانو" },
+                { word: "Games", sentence: "I play <span class='target-word'>games</span>.", choices: ["ألعاب", "واجبات", "دروس"], answer: "ألعاب" },
+                { word: "Chess", sentence: "I play <span class='target-word'>chess</span> with Ali.", choices: ["شطرنج", "كرة قدم", "تنس"], answer: "شطرنج" },
+                { word: "Puzzle", sentence: "I solve a <span class='target-word'>puzzle</span>.", choices: ["لغز / بازل", "قصة", "لعبة"], answer: "لغز / بازل" },
+                { word: "Video", sentence: "I watch a <span class='target-word'>video</span>.", choices: ["فيديو", "كتاب", "صورة"], answer: "فيديو" },
+                { word: "Movie", sentence: "I watch a <span class='target-word'>movie</span>.", choices: ["فيلم", "أغنية", "لعبة"], answer: "فيلم" },
+                { word: "Cinema", sentence: "I go to the <span class='target-word'>cinema</span>.", choices: ["سينما", "مستشفى", "مدرسة"], answer: "سينما" },
+                { word: "TV", sentence: "I watch <span class='target-word'>TV</span>.", choices: ["تلفاز", "راديو", "كتاب"], answer: "تلفاز" },
+                { word: "Watch", sentence: "I <span class='target-word'>watch</span> a match.", choices: ["يشاهد", "يلعب", "ينام"], answer: "يشاهد" },
+                { word: "Radio", sentence: "I listen to the <span class='target-word'>radio</span>.", choices: ["مذياع / راديو", "تلفاز", "تليفون"], answer: "مذياع / راديو" },
+                { word: "Story", sentence: "I read a <span class='target-word'>story</span>.", choices: ["قصة", "لعبة", "صورة"], answer: "قصة" },
+                { word: "Comic", sentence: "I read a <span class='target-word'>comic</span> book.", choices: ["قصة مصورة", "رواية", "جريدة"], answer: "قصة مصورة" },
+                { word: "Stamp", sentence: "I collect a <span class='target-word'>stamp</span>.", choices: ["طابع بريد", "عملة", "صورة"], answer: "طابع بريد" },
+                { word: "Coin", sentence: "I have a gold <span class='target-word'>coin</span>.", choices: ["عملة معدنية", "ورقة", "طابع"], answer: "عملة معدنية" },
+                { word: "Toy", sentence: "I play with my <span class='target-word'>toy</span>.", choices: ["لعبة", "طعام", "قلم"], answer: "لعبة" },
+                { word: "Doll", sentence: "She has a nice <span class='target-word'>doll</span>.", choices: ["دمية / عروسة", "سيارة", "دراجة"], answer: "دمية / عروسة" },
+                { word: "Kite", sentence: "I fly my <span class='target-word'>kite</span>.", choices: ["طائرة ورقية", "بالون", "كرة"], answer: "طائرة ورقية" },
+                { word: "Park", sentence: "I go to the <span class='target-word'>park</span>.", choices: ["حديقة", "مدرسة", "مستشفى"], answer: "حديقة" },
+                { word: "Garden", sentence: "I plant a flower in the <span class='target-word'>garden</span>.", choices: ["حديقة منزل", "شارع", "بحر"], answer: "حديقة منزل" },
+                { word: "Beach", sentence: "I play on the <span class='target-word'>beach</span>.", choices: ["شاطئ", "جبل", "صحراء"], answer: "شاطئ" },
+                { word: "Museum", sentence: "I visit the <span class='target-word'>museum</span>.", choices: ["متحف", "مدرسة", "سينما"], answer: "متحف" },
+                { word: "Zoo", sentence: "I see a lion in the <span class='target-word'>zoo</span>.", choices: ["حديقة حيوان", "مزرعة", "شارع"], answer: "حديقة حيوان" },
+                { word: "Fun", sentence: "Games are <span class='target-word'>fun</span>.", choices: ["ممتع", "ممل", "حزين"], answer: "ممتع" },
+                { word: "Boring", sentence: "This film is <span class='target-word'>boring</span>.", choices: ["ممل", "ممتع", "جميل"], answer: "ممل" },
+                { word: "Exciting", sentence: "Football is <span class='target-word'>exciting</span>.", choices: ["مثير / حماسي", "ممل", "سيء"], answer: "مثير / حماسي" },
+                { word: "Enjoy", sentence: "I <span class='target-word'>enjoy</span> my time.", choices: ["يستمتع", "يحزن", "يبكي"], answer: "يستمتع" },
+                { word: "Like", sentence: "I <span class='target-word'>like</span> reading.", choices: ["يحب / يعجب بـ", "يكره", "يضرب"], answer: "يحب / يعجب بـ" },
+                { word: "Love", sentence: "I <span class='target-word'>love</span> my mom.", choices: ["يحب بشدة", "يكره", "ينسى"], answer: "يحب بشدة" },
+                { word: "Play", sentence: "I <span class='target-word'>play</span> tennis.", choices: ["يلعب", "يذاكر", "يقرأ"], answer: "يلعب" },
+                { word: "Team", sentence: "We are a good <span class='target-word'>team</span>.", choices: ["فريق", "لاعب", "حكم"], answer: "فريق" },
+                { word: "Match", sentence: "I watch the <span class='target-word'>match</span>.", choices: ["مباراة", "فيلم", "قصة"], answer: "مباراة" },
+                { word: "Win", sentence: "We can <span class='target-word'>win</span>.", choices: ["يفوز", "يخسر", "يلعب"], answer: "يفوز" }
+            ],
+            "Professions": [
+                { word: "Doctor", sentence: "The <span class='target-word'>doctor</span> helps sick people.", choices: ["طبيب", "مهندس", "معلم"], answer: "طبيب" },
+                { word: "Teacher", sentence: "The <span class='target-word'>teacher</span> helps me learn.", choices: ["معلم", "طيار", "خباز"], answer: "معلم" },
+                { word: "Engineer", sentence: "The <span class='target-word'>engineer</span> builds houses.", choices: ["مهندس", "طباخ", "فلاح"], answer: "مهندس" },
+                { word: "Pilot", sentence: "The <span class='target-word'>pilot</span> flies planes.", choices: ["طيار", "سائق", "شرطي"], answer: "طيار" },
+                { word: "Chef", sentence: "The <span class='target-word'>chef</span> cooks food.", choices: ["طباخ", "طبيب", "نجار"], answer: "طباخ" },
+                { word: "Nurse", sentence: "The <span class='target-word'>nurse</span> helps the doctor.", choices: ["ممرضة", "معلمة", "مهندسة"], answer: "ممرضة" },
+                { word: "Dentist", sentence: "The <span class='target-word'>dentist</span> checks teeth.", choices: ["طبيب أسنان", "طبيب عيون", "معلم"], answer: "طبيب أسنان" },
+                { word: "Vet", sentence: "The <span class='target-word'>vet</span> helps sick cats.", choices: ["طبيب بيطري", "طبيب أسنان", "فلاح"], answer: "طبيب بيطري" },
+                { word: "Police", sentence: "The <span class='target-word'>police</span> officer catches thieves.", choices: ["شرطي", "لص", "طباخ"], answer: "شرطي" },
+                { word: "Firefighter", sentence: "The <span class='target-word'>firefighter</span> stops the fire.", choices: ["رجل إطفاء", "رجل شرطة", "طيار"], answer: "رجل إطفاء" },
+                { word: "Farmer", sentence: "The <span class='target-word'>farmer</span> plants seeds.", choices: ["فلاح", "خباز", "نجار"], answer: "فلاح" },
+                { word: "Baker", sentence: "The <span class='target-word'>baker</span> makes bread.", choices: ["خباز", "جزار", "طباخ"], answer: "خباز" },
+                { word: "Butcher", sentence: "The <span class='target-word'>butcher</span> sells meat.", choices: ["جزار", "خباز", "فلاح"], answer: "جزار" },
+                { word: "Builder", sentence: "The <span class='target-word'>builder</span> makes a wall.", choices: ["بناء / عامل بناء", "نجار", "سباك"], answer: "بناء / عامل بناء" },
+                { word: "Carpenter", sentence: "The <span class='target-word'>carpenter</span> makes a chair.", choices: ["نجار", "حداد", "خياط"], answer: "نجار" },
+                { word: "Painter", sentence: "The <span class='target-word'>painter</span> paints the door.", choices: ["رسام / دهان", "سباك", "نجار"], answer: "رسام / دهان" },
+                { word: "Plumber", sentence: "The <span class='target-word'>plumber</span> fixes the pipe.", choices: ["سباك", "كهربائي", "نجار"], answer: "سباك" },
+                { word: "Driver", sentence: "The <span class='target-word'>driver</span> drives a bus.", choices: ["سائق", "طيار", "معلم"], answer: "سائق" },
+                { word: "Mechanic", sentence: "The <span class='target-word'>mechanic</span> fixes my car.", choices: ["ميكانيكي", "كهربائي", "طبيب"], answer: "ميكانيكي" },
+                { word: "Shop", sentence: "I go to the <span class='target-word'>shop</span>.", choices: ["متجر / دكان", "مدرسة", "مستشفى"], answer: "متجر / دكان" },
+                { word: "Assistant", sentence: "The shop <span class='target-word'>assistant</span> is nice.", choices: ["مساعد", "مدير", "صاحب"], answer: "مساعد" },
+                { word: "Cashier", sentence: "I pay the <span class='target-word'>cashier</span>.", choices: ["محاسب", "مدير", "بائع"], answer: "محاسب" },
+                { word: "Waiter", sentence: "The <span class='target-word'>waiter</span> brings food.", choices: ["نادل / جرسون", "طباخ", "مدير"], answer: "نادل / جرسون" },
+                { word: "Hairdresser", sentence: "The <span class='target-word'>hairdresser</span> cuts hair.", choices: ["حلاق / مصفف شعر", "خياط", "طبيب"], answer: "حلاق / مصفف شعر" },
+                { word: "Tailor", sentence: "The <span class='target-word'>tailor</span> makes a dress.", choices: ["خياط", "نجار", "حداد"], answer: "خياط" },
+                { word: "Actor", sentence: "The <span class='target-word'>actor</span> is on TV.", choices: ["ممثل", "مغني", "مخرج"], answer: "ممثل" },
+                { word: "Singer", sentence: "The <span class='target-word'>singer</span> sings a song.", choices: ["مغني", "ممثل", "رسام"], answer: "مغني" },
+                { word: "Artist", sentence: "The <span class='target-word'>artist</span> draws a picture.", choices: ["فنان", "طبيب", "معلم"], answer: "فنان" },
+                { word: "Writer", sentence: "The <span class='target-word'>writer</span> writes a book.", choices: ["كاتب", "قارئ", "رسام"], answer: "كاتب" },
+                { word: "Reporter", sentence: "The <span class='target-word'>reporter</span> is on the news.", choices: ["مراسل / صحفي", "ممثل", "طبيب"], answer: "مراسل / صحفي" },
+                { word: "Hospital", sentence: "The doctor is in the <span class='target-word'>hospital</span>.", choices: ["مستشفى", "مدرسة", "حديقة"], answer: "مستشفى" },
+                { word: "Office", sentence: "My dad works in an <span class='target-word'>office</span>.", choices: ["مكتب", "شارع", "بحر"], answer: "مكتب" },
+                { word: "Airport", sentence: "Planes are at the <span class='target-word'>airport</span>.", choices: ["مطار", "ميناء", "محطة"], answer: "مطار" },
+                { word: "Restaurant", sentence: "I eat in a <span class='target-word'>restaurant</span>.", choices: ["مطعم", "مكتبة", "مدرسة"], answer: "مطعم" },
+                { word: "Clinic", sentence: "The dentist is in the <span class='target-word'>clinic</span>.", choices: ["عيادة", "مطعم", "مطار"], answer: "عيادة" },
+                { word: "Farm", sentence: "The cow is on the <span class='target-word'>farm</span>.", choices: ["مزرعة", "مدينة", "شارع"], answer: "مزرعة" },
+                { word: "Bakery", sentence: "I buy bread from the <span class='target-word'>bakery</span>.", choices: ["مخبز", "مستشفى", "مكتبة"], answer: "مخبز" },
+                { word: "Store", sentence: "I buy toys from the <span class='target-word'>store</span>.", choices: ["متجر", "مدرسة", "مستشفى"], answer: "متجر" },
+                { word: "Street", sentence: "Cars drive on the <span class='target-word'>street</span>.", choices: ["شارع", "رصيف", "بحر"], answer: "شارع" },
+                { word: "Car", sentence: "I drive my <span class='target-word'>car</span>.", choices: ["سيارة", "دراجة", "طائرة"], answer: "سيارة" },
+                { word: "Bus", sentence: "I go to school by <span class='target-word'>bus</span>.", choices: ["حافلة / باص", "قطار", "طائرة"], answer: "حافلة / باص" },
+                { word: "Plane", sentence: "The <span class='target-word'>plane</span> is in the sky.", choices: ["طائرة", "سيارة", "سفينة"], answer: "طائرة" },
+                { word: "Ship", sentence: "The <span class='target-word'>ship</span> is in the sea.", choices: ["سفينة", "طائرة", "قطار"], answer: "سفينة" },
+                { word: "Train", sentence: "The <span class='target-word'>train</span> is very fast.", choices: ["قطار", "سيارة", "دراجة"], answer: "قطار" },
+                { word: "Work", sentence: "I go to <span class='target-word'>work</span>.", choices: ["عمل", "نوم", "لعب"], answer: "عمل" },
+                { word: "Job", sentence: "Teaching is a good <span class='target-word'>job</span>.", choices: ["وظيفة", "هواية", "لعبة"], answer: "وظيفة" },
+                { word: "Money", sentence: "I buy a book with <span class='target-word'>money</span>.", choices: ["نقود / مال", "ورق", "خشب"], answer: "نقود / مال" },
+                { word: "Uniform", sentence: "The police wears a <span class='target-word'>uniform</span>.", choices: ["زي رسمي", "حذاء", "قبعة"], answer: "زي رسمي" },
+                { word: "Boss", sentence: "He is the <span class='target-word'>boss</span>.", choices: ["رئيس عمل", "عامل", "طالب"], answer: "رئيس عمل" },
+                { word: "City", sentence: "Jeddah is a big <span class='target-word'>city</span>.", choices: ["مدينة", "قرية", "شارع"], answer: "مدينة" }
+            ]
+        };
+
+        let currentUnit = "Welcome";
+        let wordList = [];
+        let currentIndex = 0;
+        let isAutoMode = true;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let answered = false;
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('start-overlay').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            changeUnit();
+        });
+
+        function changeUnit() {
+            currentUnit = document.getElementById('unit-select').value;
+            wordList = vocabularyData[currentUnit];
+            currentIndex = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            updateScoreBoard();
+            loadWord();
+        }
+
+        function loadWord() {
+            if (currentIndex >= wordList.length) {
+                alert(`انتهت كلمات هذه الوحدة يا بطل!\nالإجابات الصحيحة: ${correctCount}\nالأخطاء: ${wrongCount}`);
+                currentIndex = 0;
+            }
+
+            answered = false;
+            let currentData = wordList[currentIndex];
+            
+            // تحديث العداد الجديد للكلمات
+            document.getElementById('current-word-num').innerText = currentIndex + 1;
+            document.getElementById('total-word-count').innerText = wordList.length;
+            
+            document.getElementById('word-display').innerText = currentData.word;
+            document.getElementById('sentence-display').innerHTML = currentData.sentence;
+            document.getElementById('next-btn').style.display = 'none';
+
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+            
+            let shuffledChoices = currentData.choices.sort(() => Math.random() - 0.5);
+            
+            shuffledChoices.forEach(choice => {
+                let btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerText = choice;
+                btn.onclick = () => checkAnswer(btn, choice, currentData.answer);
+                choicesContainer.appendChild(btn);
+            });
+
+            playAudio();
+        }
+
+        function playAudio() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                let currentData = wordList[currentIndex];
+                let plainSentence = currentData.sentence.replace(/<[^>]*>?/gm, '');
+                let textToSpeak = currentData.word + ". " + plainSentence;
+                
+                let utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.6; 
+                
+                const sentenceWrapper = document.getElementById('sentence-display');
+                
+                utterance.onstart = () => {
+                    sentenceWrapper.classList.add('reading-highlight');
+                };
+                
+                utterance.onend = () => {
+                    sentenceWrapper.classList.remove('reading-highlight');
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function checkAnswer(btn, selected, correctAnswer) {
+            if (answered) return;
+            answered = true;
+
+            const allButtons = document.querySelectorAll('.choice-btn');
+            
+            if (selected === correctAnswer) {
+                btn.classList.add('correct');
+                correctCount++;
+                
+                if (isAutoMode) {
+                    setTimeout(() => {
+                        currentIndex++;
+                        loadWord();
+                    }, 1500);
+                } else {
+                    document.getElementById('next-btn').style.display = 'block';
+                }
+            } else {
+                btn.classList.add('wrong');
+                wrongCount++;
+                
+                allButtons.forEach(b => {
+                    if (b.innerText === correctAnswer) b.classList.add('correct');
+                });
+                
+                document.getElementById('next-btn').style.display = 'block';
+            }
+            updateScoreBoard();
+        }
+
+        function nextWord() {
+            currentIndex++;
+            loadWord();
+        }
+
+        function updateScoreBoard() {
+            document.getElementById('correct-counter').innerText = correctCount;
+            document.getElementById('wrong-counter').innerText = wrongCount;
+        }
+
+        function toggleMode() {
+            isAutoMode = !isAutoMode;
+            let modeBtn = document.getElementById('mode-btn');
+            if (isAutoMode) {
+                modeBtn.innerText = "الوضع: تلقائي ⚡";
+                modeBtn.classList.add('auto');
+                if (answered && document.getElementById('next-btn').style.display === 'block') {
+                    nextWord();
+                }
+            } else {
+                modeBtn.innerText = "الوضع: يدوي ✋";
+                modeBtn.classList.remove('auto');
+                if (answered) {
+                    document.getElementById('next-btn').style.display = 'block';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
