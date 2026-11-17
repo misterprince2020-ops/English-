@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق كود الديب الماسي - Top Goal 3</title>
+    <style>
+        :root {
+            --primary-blue: #004085;
+            --primary-red: #dc3545;
+            --success-green: #28a745;
+            --info-cyan: #17a2b8;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color); margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .app-container {
+            width: 100%; max-width: 800px; background: var(--card-bg);
+            border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            overflow: hidden; margin-top: 20px; margin-bottom: 30px;
+        }
+        .header {
+            background-color: var(--primary-blue); color: white; padding: 20px; text-align: center;
+        }
+        .header h2 { margin: 0 0 10px 0; font-size: 1.8rem; }
+        .header p { margin: 0; font-size: 1.1rem; opacity: 0.9; }
+        .header select {
+            padding: 10px; font-size: 1.2rem; border-radius: 5px; border: 2px solid white;
+            background: var(--primary-blue); color: white; margin-top: 15px; cursor: pointer;
+        }
+        .control-panel {
+            display: flex; justify-content: space-between; padding: 15px 20px;
+            background-color: #e9ecef; border-bottom: 2px solid #ddd;
+            align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .score-board { display: flex; gap: 15px; font-size: 1.2rem; font-weight: bold; }
+        .score-correct { color: var(--success-green); }
+        .score-wrong { color: var(--primary-red); }
+        .mode-toggle {
+            padding: 8px 15px; font-size: 1rem; background-color: #6c757d; color: white;
+            border: none; border-radius: 5px; cursor: pointer;
+        }
+        .mode-toggle.auto { background-color: var(--primary-blue); }
+        .flashcard { padding: 30px 20px; text-align: center; position: relative; }
+        .progress-badge {
+            background-color: var(--info-cyan); color: white; padding: 8px 20px;
+            border-radius: 25px; font-size: 1.2rem; font-weight: bold;
+            display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .word-container {
+            display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px;
+        }
+        .english-word {
+            font-size: 3.5rem; color: var(--primary-blue); font-weight: bold; margin: 0; direction: ltr;
+        }
+        .audio-btn {
+            font-size: 2rem; background: none; border: none; cursor: pointer;
+            color: var(--primary-blue); transition: transform 0.2s;
+        }
+        .audio-btn:hover { transform: scale(1.1); }
+        .sentence-wrapper {
+            font-size: 2rem; color: #333; margin-bottom: 30px; direction: ltr; font-weight: bold;
+            padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary-blue);
+            transition: background-color 0.3s ease; background-color: #f8f9fa;
+        }
+        .target-word { color: var(--primary-red); font-weight: bold; }
+        .reading-highlight { background-color: yellow !important; }
+        
+        .choices {
+            display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto;
+        }
+        .choice-btn {
+            padding: 15px; font-size: 1.3rem; font-weight: bold; background-color: var(--primary-blue);
+            color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        .choice-btn:hover { background-color: #0056b3; }
+        .choice-btn.correct { background-color: var(--success-green) !important; }
+        .choice-btn.wrong { background-color: var(--primary-red) !important; }
+
+        .nav-buttons {
+            display: flex; justify-content: center; gap: 20px; margin-top: 30px;
+        }
+        .nav-btn {
+            padding: 12px 30px; font-size: 1.2rem; font-weight: bold;
+            border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        #prev-btn { background-color: #6c757d; color: white; }
+        #next-btn { background-color: #ffc107; color: #333; }
+        .nav-btn:hover:not(:disabled) { opacity: 0.8; transform: scale(1.05); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .footer { text-align: center; padding: 15px; background: var(--primary-blue); color: white; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app-container">
+        <div class="header">
+            <h2>إعداد الأستاذ / حمادة الديب</h2>
+            <p>مدارس آفاق الهداية الحديثة للبنين - جدة</p>
+            <select id="unit-select" onchange="changeUnit()">
+                <option value="Welcome">Welcome!</option>
+                <option value="LivingThings">Unit 1: Living Things</option>
+                <option value="Lifestyles">Unit 2: Lifestyles</option>
+                <option value="Interests">Unit 3: Interests</option>
+                <option value="Professions">Unit 4: Professions</option>
+            </select>
+        </div>
+
+        <div class="control-panel">
+            <div class="score-board">
+                <span class="score-correct">صح: <span id="correct-counter">0</span></span> | 
+                <span class="score-wrong">خطأ: <span id="wrong-counter">0</span></span>
+            </div>
+            <button id="mode-btn" class="mode-toggle auto" onclick="toggleMode()">الوضع: تلقائي ⚡</button>
+        </div>
+
+        <div class="flashcard">
+            <div class="progress-badge">الكلمة: <span id="current-word-num">1</span> / <span id="total-word-count">100</span></div>
+
+            <div class="word-container">
+                <h1 class="english-word" id="word-display">Word</h1>
+                <button class="audio-btn" onclick="playAudio()" title="إعادة النطق">🔊</button>
+            </div>
+            
+            <div class="sentence-wrapper" id="sentence-display"></div>
+            
+            <div class="choices" id="choices-container"></div>
+            
+            <div class="nav-buttons">
+                <button id="prev-btn" class="nav-btn" onclick="prevWord()">⏮️ السابق</button>
+                <button id="next-btn" class="nav-btn" onclick="nextWord()">التالي ⏭️</button>
+            </div>
+        </div>
+        <div class="footer">مدارس آفاق الهداية الحديثة للبنين - جدة</div>
+    </div>
+
+    <script>
+        const rawData = {
+            "Welcome": [
+                ["welcome", "Welcome back to school.", "مرحباً", "وداعاً", "شكراً"],
+                ["hello", "Hello, my name is Ali.", "أهلاً", "مع السلامة", "عفواً"],
+                ["hi", "Hi, how are you?", "مرحباً", "وداعاً", "نعم"],
+                ["good", "This is a good book.", "جيد", "سيء", "قبيح"],
+                ["morning", "Good morning, teacher.", "صباح", "مساء", "ليل"],
+                ["afternoon", "Good afternoon.", "بعد الظهر", "الصباح", "الليل"],
+                ["evening", "Good evening.", "مساء", "صباح", "ليل"],
+                ["night", "Good night.", "ليل", "نهار", "صباح"],
+                ["name", "My name is Omar.", "اسم", "عمر", "عنوان"],
+                ["meet", "Nice to meet you.", "يقابل", "يضرب", "يترك"],
+                ["too", "I am fine, too.", "أيضاً", "فقط", "لأنه"],
+                ["how", "How are you?", "كيف", "ماذا", "أين"],
+                ["are", "How are you?", "تكون", "يكون", "أكون"],
+                ["fine", "I am fine, thanks.", "بخير", "مريض", "حزين"],
+                ["thanks", "Thanks for your help.", "شكراً", "عفواً", "أهلاً"],
+                ["thank", "I thank my teacher.", "يشكر", "يسأل", "يجاوب"],
+                ["you", "How are you?", "أنت", "هو", "هي"],
+                ["teacher", "My teacher is nice.", "معلم", "طبيب", "مهندس"],
+                ["student", "I am a student.", "طالب", "معلم", "مدير"],
+                ["school", "I go to school.", "مدرسة", "مستشفى", "حديقة"],
+                ["class", "My class is clean.", "فصل دراسي", "ملعب", "مكتبة"],
+                ["classroom", "Welcome to our classroom.", "غرفة الصف", "فناء", "مكتب"],
+                ["friend", "He is my friend.", "صديق", "عدو", "أخ"],
+                ["boy", "Ali is a tall boy.", "ولد", "بنت", "رجل"],
+                ["girl", "Mona is a nice girl.", "بنت", "ولد", "امرأة"],
+                ["man", "He is a strong man.", "رجل", "امرأة", "طفل"],
+                ["woman", "She is a kind woman.", "امرأة", "رجل", "بنت"],
+                ["please", "Open the door, please.", "من فضلك", "شكراً", "عفواً"],
+                ["sorry", "I am sorry.", "آسف", "عفواً", "مرحباً"],
+                ["excuse", "Excuse me, where is Ali?", "عذراً", "شكراً", "مرحباً"],
+                ["yes", "Yes, I am ready.", "نعم", "لا", "ربما"],
+                ["no", "No, thank you.", "لا", "نعم", "ربما"],
+                ["open", "Open your book.", "يفتح", "يغلق", "يقف"],
+                ["close", "Close your book.", "يغلق", "يفتح", "يجلس"],
+                ["read", "Read the sentence.", "يقرأ", "يكتب", "يلعب"],
+                ["write", "Write your name.", "يكتب", "يقرأ", "ينام"],
+                ["listen", "Listen to the tape.", "يستمع", "يتكلم", "ينظر"],
+                ["speak", "Speak English, please.", "يتحدث", "يقرأ", "يأكل"],
+                ["look", "Look at the board.", "ينظر", "يمشي", "يجري"],
+                ["book", "I read a book.", "كتاب", "باب", "شباك"],
+                ["pen", "I write with a pen.", "قلم حبر", "مسطرة", "كتاب"],
+                ["pencil", "I draw with a pencil.", "قلم رصاص", "دفتر", "سبورة"],
+                ["paper", "I need a paper.", "ورقة", "قلم", "كتاب"],
+                ["bag", "Put books in your bag.", "حقيبة", "مكتب", "كرسي"],
+                ["desk", "Sit at your desk.", "مكتب", "سرير", "دولاب"],
+                ["chair", "Sit on the chair.", "كرسي", "طاولة", "باب"],
+                ["board", "Look at the board.", "سبورة", "ورقة", "حقيبة"],
+                ["door", "Close the door.", "باب", "شباك", "كرسي"],
+                ["window", "Open the window.", "شباك", "باب", "طاولة"],
+                ["clock", "Look at the clock.", "ساعة حائط", "صورة", "حقيبة"],
+                ["table", "Put it on the table.", "طاولة", "كرسي", "سرير"],
+                ["number", "What is your number?", "رقم", "اسم", "لون"],
+                ["one", "I have one apple.", "واحد", "اثنان", "ثلاثة"],
+                ["two", "I have two cats.", "اثنان", "واحد", "أربعة"],
+                ["three", "I have three books.", "ثلاثة", "اثنان", "خمسة"],
+                ["four", "I have four pens.", "أربعة", "ثلاثة", "ستة"],
+                ["five", "I have five fingers.", "خمسة", "أربعة", "سبعة"],
+                ["six", "I have six pencils.", "ستة", "خمسة", "ثمانية"],
+                ["seven", "I have seven days.", "سبعة", "ستة", "تسعة"],
+                ["eight", "I have eight books.", "ثمانية", "سبعة", "عشرة"],
+                ["nine", "I have nine pens.", "تسعة", "ثمانية", "ستة"],
+                ["ten", "I have ten fingers.", "عشرة", "تسعة", "خمسة"],
+                ["zero", "The score is zero.", "صفر", "واحد", "عشرة"],
+                ["spell", "Spell your name, please.", "يتهجى", "يكتب", "يقرأ"],
+                ["alphabet", "Learn the English alphabet.", "حروف الهجاء", "أرقام", "كلمات"],
+                ["letter", "A is a letter.", "حرف", "كلمة", "جملة"],
+                ["word", "This is a new word.", "كلمة", "حرف", "جملة"],
+                ["page", "Open page five.", "صفحة", "كتاب", "قلم"],
+                ["exercise", "Do this exercise.", "تمرين", "لعبة", "اختبار"],
+                ["answer", "Write the answer.", "إجابة", "سؤال", "كلمة"],
+                ["question", "Ask a question.", "سؤال", "إجابة", "قصة"],
+                ["goodbye", "Goodbye, my friend.", "مع السلامة", "مرحباً", "أهلاً"],
+                ["later", "See you later.", "لاحقاً", "الآن", "أمس"],
+                ["soon", "See you soon.", "قريباً", "متأخراً", "أبداً"],
+                ["day", "It is a nice day.", "يوم", "شهر", "سنة"],
+                ["today", "Today is Sunday.", "اليوم", "غداً", "أمس"],
+                ["tomorrow", "Tomorrow is Monday.", "غداً", "اليوم", "أمس"],
+                ["yesterday", "Yesterday was Saturday.", "أمس", "غداً", "اليوم"],
+                ["week", "There are seven days in a week.", "أسبوع", "شهر", "سنة"],
+                ["time", "What time is it?", "وقت", "اسم", "لون"],
+                ["hour", "Wait one hour.", "ساعة", "دقيقة", "ثانية"],
+                ["minute", "Wait a minute.", "دقيقة", "ساعة", "يوم"],
+                ["second", "Wait one second.", "ثانية", "دقيقة", "ساعة"],
+                ["right", "That is right.", "صحيح", "خطأ", "يسار"],
+                ["wrong", "Your answer is wrong.", "خطأ", "صحيح", "جيد"],
+                ["test", "We have a test.", "اختبار", "لعبة", "قصة"],
+                ["score", "My score is high.", "نتيجة", "لعبة", "خطأ"],
+                ["pass", "I can pass the test.", "ينجح", "يرسب", "يلعب"],
+                ["fail", "Study hard not to fail.", "يرسب", "ينجح", "يفوز"],
+                ["easy", "The test is easy.", "سهل", "صعب", "معقد"],
+                ["difficult", "English is not difficult.", "صعب", "سهل", "بسيط"],
+                ["hard", "Work hard to learn.", "شاق", "سهل", "سريع"],
+                ["ready", "Are you ready?", "جاهز", "نائم", "كسول"],
+                ["start", "Let us start.", "يبدأ", "ينتهي", "يقف"],
+                ["finish", "Finish your work.", "ينهي", "يبدأ", "يفتح"],
+                ["end", "This is the end.", "نهاية", "بداية", "وسط"],
+                ["example", "Look at the example.", "مثال", "سؤال", "إجابة"],
+                ["practice", "Practice makes perfect.", "تدريب", "نوم", "لعب"],
+                ["repeat", "Repeat after me.", "يكرر", "يسكت", "ينام"],
+                ["understand", "Do you understand?", "يفهم", "ينسى", "يكره"]
+            ],
+            "LivingThings": [
+                ["beetle", "The beetle is a strong insect.", "خنفساء", "فراشة", "سلحفاة"],
+                ["butterfly", "A colorful butterfly is on the flower.", "فراشة", "خنفساء", "ديناصور"],
+                ["creature", "There are many creatures in the park.", "مخلوق", "نبات", "جماد"],
+                ["dinosaur", "Dinosaurs lived millions of years ago.", "ديناصور", "فأر", "قطة"],
+                ["extinct", "Dinosaurs are now extinct.", "منقرض", "حي", "صغير"],
+                ["furry", "Foxes are furry animals.", "ذو فراء", "أملس", "ريشي"],
+                ["heavy", "Beetles are heavy and strong.", "ثقيل", "خفيف", "صغير"],
+                ["insect", "Other animals eat insects.", "حشرة", "طائر", "حيوان ضخم"],
+                ["quiet", "Be quiet near wild animals.", "هادئ", "صاخب", "سريع"],
+                ["tortoise", "A tortoise is found in the mountains.", "سلحفاة برية", "سمكة", "نسر"],
+                ["touch", "Don't touch wild animals.", "يلمس", "يترك", "يضرب"],
+                ["wild", "Tigers live in the wild.", "بري", "أليف", "منزلي"],
+                ["wing", "A butterfly has wings and can fly.", "جناح", "رجل", "ذيل"],
+                ["camel", "Camels live in the desert.", "جمل", "حصان", "بقرة"],
+                ["desert", "The desert is hot and dry.", "صحراء", "بحر", "غابة"],
+                ["eagle", "An eagle builds a nest in the tree.", "نسر", "عصفور", "دجاجة"],
+                ["fur", "The fur on its back is very soft.", "فرو", "ريش", "جلد"],
+                ["journey", "Camels make long journeys.", "رحلة طويلة", "نوم", "لعبة"],
+                ["nest", "Birds build nests to lay eggs.", "عش", "بيت", "قفص"],
+                ["octopus", "That is an octopus under water.", "أخطبوط", "سمكة", "بجعة"],
+                ["pond", "Swans live in the pond.", "بركة ماء", "نهر", "محيط"],
+                ["swan", "Look at the swan in the pond.", "بجعة", "بطة", "نسر"],
+                ["scratch", "The cat can scratch you.", "يخدش", "يلمس", "يضرب"],
+                ["animal", "Lions are wild animals.", "حيوان", "نبات", "جماد"],
+                ["plant", "Trees and flowers are plants.", "نبات", "حجر", "حيوان"],
+                ["tree", "The tree is tall and green.", "شجرة", "زهرة", "عشب"],
+                ["flower", "The flower is colorful.", "زهرة", "شجرة", "جذر"],
+                ["grass", "Cows eat green grass.", "عشب", "رمل", "ماء"],
+                ["leaf", "A green leaf is on the plant.", "ورقة شجر", "جذر", "زهرة"],
+                ["root", "Roots are under the ground.", "جذر", "ورقة", "ساق"],
+                ["sun", "The sun is hot.", "شمس", "قمر", "نجمة"],
+                ["air", "We breathe fresh air.", "هواء", "ماء", "تراب"],
+                ["rain", "It rains in winter.", "مطر", "شمس", "ثلج"],
+                ["snow", "White snow covers the mountain.", "ثلج", "مطر", "رمل"],
+                ["wind", "The wind is strong today.", "رياح", "ماء", "شمس"],
+                ["sea", "Sharks live in the sea.", "بحر", "نهر", "سماء"],
+                ["ocean", "The ocean is deep and salty.", "محيط", "بحيرة", "بركة"],
+                ["river", "Rivers flow into the sea.", "نهر", "بحر", "محيط"],
+                ["lake", "Ducks swim in the lake.", "بحيرة", "نهر", "بحر"],
+                ["forest", "Forests are full of trees.", "غابة", "صحراء", "مدينة"],
+                ["jungle", "Tigers hunt in the jungle.", "أدغال", "صحراء", "قرية"],
+                ["mountain", "Turtles are found in mountains.", "جبل", "بحر", "نهر"],
+                ["sky", "Birds fly in the sky.", "سماء", "أرض", "بحر"],
+                ["bone", "Dinosaur bones are found in ground.", "عظم", "لحم", "جلد"],
+                ["meat", "Other animals eat meat.", "لحم", "خضار", "فاكهة"],
+                ["fish", "Fish swim in water.", "سمكة", "طائر", "أسد"],
+                ["cat", "Cats live at home.", "قطة", "كلب", "أسد"],
+                ["dog", "Dogs are loyal pets.", "كلب", "قطة", "فأر"],
+                ["frog", "Green frogs can jump.", "ضفدع", "سمكة", "سلحفاة"],
+                ["snake", "Snakes live in the desert.", "ثعبان", "سحلية", "ضفدع"],
+                ["spider", "Spiders have eight legs.", "عنكبوت", "نحلة", "نملة"],
+                ["bee", "Bees make honey.", "نحلة", "نملة", "عنكبوت"],
+                ["ant", "Ants are small insects.", "نملة", "فراشة", "ذبابة"],
+                ["monkey", "Monkeys play in trees.", "قرد", "حمار", "بقرة"],
+                ["tiger", "Tigers have orange and black fur.", "نمر", "أسد", "فيل"],
+                ["bear", "Bears live in forests.", "دب", "حصان", "جمل"],
+                ["wolf", "Wolves live in the wild.", "ذئب", "كلب", "أسد"],
+                ["fox", "Cute furry foxes live outside.", "ثعلب", "ذئب", "قطة"],
+                ["rabbit", "Rabbits love carrots.", "أرنب", "قطة", "كلب"],
+                ["mouse", "Mice are small creatures.", "فأر", "قطة", "أرنب"],
+                ["horse", "Horses run fast.", "حصان", "بقرة", "خروف"],
+                ["cow", "Cows give us milk.", "بقرة", "حصان", "دجاجة"],
+                ["sheep", "Sheep give us wool.", "خروف", "بقرة", "جمل"],
+                ["goat", "Goats eat grass.", "معزة", "خروف", "بقرة"],
+                ["donkey", "Donkeys are strong animals.", "حمار", "حصان", "جمل"],
+                ["chicken", "Chickens give us eggs.", "دجاجة", "بقرة", "خروف"],
+                ["duck", "Ducks swim in the pond.", "بطة", "دجاجة", "عصفور"],
+                ["lizard", "Lizards live in warm places.", "سحلية", "ثعبان", "ضفدع"],
+                ["crocodile", "Crocodiles live in rivers.", "تمساح", "سمكة", "سلحفاة"],
+                ["fly", "Insects can fly.", "يُحلق / يطير", "يمشي", "يسبح"],
+                ["swim", "Fish swim underwater.", "يسبح", "يطير", "يجري"],
+                ["run", "Cheetahs run very fast.", "يجري", "يمشي", "يقف"],
+                ["walk", "Turtles walk slowly.", "يمشي", "يجري", "يطير"],
+                ["jump", "Frogs can jump high.", "يقفز", "يمشي", "يجلس"],
+                ["climb", "Monkeys climb trees.", "يتسلق", "يجري", "يسبح"],
+                ["sleep", "Bears sleep in winter.", "ينام", "يستيقظ", "يجري"],
+                ["hunt", "Tigers hunt for food.", "يصطاد", "يأكل", "ينام"],
+                ["live", "Animals live in different environments.", "يعيش", "يموت", "ينمو"],
+                ["grow", "Plants and animals grow.", "ينمو", "يصغر", "يتوقف"],
+                ["eat", "Animals eat food to survive.", "يأكل", "يشرب", "ينام"],
+                ["drink", "Animals need water to drink.", "يشرب", "يأكل", "يلعب"],
+                ["breathe", "Fish breathe underwater.", "يتنفس", "يأكل", "ينام"],
+                ["see", "We can see animals in the zoo.", "يرى", "يسمع", "يتكلم"],
+                ["find", "Tortoises are found in mountains.", "يجد / توجد", "يفقد", "يسرق"],
+                ["protect", "We must protect wildlife.", "يحمي", "يؤذي", "يهمل"],
+                ["save", "Kind people save animals.", "ينقذ", "يقتل", "يترك"],
+                ["danger", "Many animals are in danger.", "خطر", "أمان", "سلام"],
+                ["safe", "Animals need safe homes.", "آمن", "خطير", "خائف"],
+                ["color", "Chameleons change their color.", "لون", "اسم", "حجم"],
+                ["body", "Animals have different body parts.", "جسم", "رأس", "قدم"],
+                ["head", "The head has eyes and mouth.", "رأس", "يد", "قدم"],
+                ["tail", "Cats have long tails.", "ذيل", "رأس", "قدم"],
+                ["leg", "Dogs have four legs.", "رجل", "يد", "رأس"],
+                ["skin", "Chameleons change their skin color.", "جلد", "عظم", "ريش"],
+                ["environment", "Animals adapt to their environment.", "بيئة", "مدينة", "شارع"],
+                ["world", "Creatures around the world.", "العالم", "دولة", "مدينة"],
+                ["bird", "The bird sings beautifully.", "طائر", "حيوان", "نبات"],
+                ["big", "Elephants are big animals.", "كبير", "صغير", "سريع"],
+                ["small", "The mouse is very small.", "صغير", "كبير", "ضخم"],
+                ["strong", "The lion is strong.", "قوي", "ضعيف", "بطيء"]
+            ],
+            "Lifestyles": [
+                ["delicious", "The breakfast was delicious.", "لذيذ", "سيء", "حار"],
+                ["cut", "Cut the bread with a knife.", "يقطع", "يلصق", "يرمي"],
+                ["restaurant", "We went to a nice restaurant.", "مطعم", "مستشفى", "مدرسة"],
+                ["xray", "The doctor gave me an X-ray.", "صورة أشعة", "دواء", "ضمادة"],
+                ["bandage", "Put a bandage on your knee.", "ضمادة", "قبعة", "حذاء"],
+                ["break", "Did I break my toe?", "يكسر", "يصلح", "يبني"],
+                ["broken", "I think my arm is broken.", "مكسور", "سليم", "جديد"],
+                ["burn", "I burned my hand on the grill.", "يحرق", "يغسل", "يقطع"],
+                ["elbow", "I banged my elbow on the shelf.", "مرفق", "ركبة", "كتف"],
+                ["fall", "I fell over and hurt my knee.", "يسقط", "يقف", "يجري"],
+                ["finger", "I broke my finger last week.", "إصبع اليد", "إصبع القدم", "أنف"],
+                ["hand", "Wash your hand with soap.", "يد", "قدم", "وجه"],
+                ["knee", "I fell and hurt my knee.", "ركبة", "مرفق", "كتف"],
+                ["knife", "I was cutting bread with a knife.", "سكين", "ملعقة", "شوكة"],
+                ["medicine", "He needs to take medicine.", "دواء", "طعام", "عصير"],
+                ["pharmacy", "Go to the pharmacy to buy medicine.", "صيدلية", "مستشفى", "مدرسة"],
+                ["soap", "Wash with soap and water.", "صابون", "ماء", "شامبو"],
+                ["sore", "I have a sore back.", "مؤلم / ملتهب", "سليم", "بارد"],
+                ["toe", "I hurt my toe.", "إصبع القدم", "إصبع اليد", "أنف"],
+                ["bread", "I cut bread with a knife.", "خبز", "أرز", "لحم"],
+                ["cereal", "I eat cereal in the morning.", "حبوب إفطار", "خبز", "أرز"],
+                ["egg", "Boiled eggs are good for breakfast.", "بيضة", "دجاجة", "تفاحة"],
+                ["fork", "Eat salad with a fork.", "شوكة", "ملعقة", "طبق"],
+                ["jam", "I like strawberry jam.", "مربى", "عسل", "زبدة"],
+                ["milk", "Drink a glass of milk.", "حليب", "ماء", "عصير"],
+                ["olive", "Add a few olives to pizza.", "زيتون", "ليمون", "تفاح"],
+                ["pepper", "Add salt and pepper.", "فلفل", "ملح", "سكر"],
+                ["pizza", "We ordered a pizza.", "بيتزا", "دجاج", "لحم"],
+                ["salt", "Add salt to the food.", "ملح", "سكر", "بهارات"],
+                ["spoon", "Eat cereal with a spoon.", "ملعقة", "شوكة", "سكين"],
+                ["strawberry", "Strawberries are sweet.", "فراولة", "بطيخ", "عنب"],
+                ["health", "A healthy lifestyle is important.", "صحة", "مرض", "تعب"],
+                ["healthy", "Eat healthy food to stay strong.", "صحي", "مريض", "سيء"],
+                ["unhealthy", "Fast food is unhealthy.", "غير صحي", "صحي", "مفيد"],
+                ["life", "Live a healthy life.", "حياة", "موت", "نوم"],
+                ["lifestyle", "What activities are part of your lifestyle?", "نمط حياة", "عمل", "هواية"],
+                ["body", "Keep your body strong.", "جسم", "رأس", "قدم"],
+                ["head", "My head hurts.", "رأس", "يد", "قدم"],
+                ["arm", "His arm is broken.", "ذراع", "ساق", "رأس"],
+                ["leg", "My leg was broken.", "ساق", "ذراع", "رأس"],
+                ["foot", "Wash your foot.", "قدم", "يد", "أذن"],
+                ["back", "I have a sore back.", "ظهر", "بطن", "صدر"],
+                ["stomach", "My stomach hurts.", "معدة", "رأس", "ظهر"],
+                ["hospital", "Go to the hospital if you are sick.", "مستشفى", "مدرسة", "حديقة"],
+                ["doctor", "The doctor gave me medicine.", "طبيب", "معلم", "مهندس"],
+                ["nurse", "The nurse helped me.", "ممرضة", "طبيبة", "معلمة"],
+                ["patient", "Patients need rest.", "مريض", "طبيب", "ممرض"],
+                ["rest", "If you rest, you feel better.", "راحة", "تعب", "عمل"],
+                ["sleep", "Go to sleep early.", "ينام", "يستيقظ", "يجري"],
+                ["wake", "Wake up early in the morning.", "يستيقظ", "ينام", "يأكل"],
+                ["food", "Eat healthy food.", "طعام", "شراب", "هواء"],
+                ["drink", "Drink water every day.", "يشرب", "يأكل", "يلعب"],
+                ["water", "Water is essential for life.", "ماء", "عصير", "حليب"],
+                ["fruit", "Eat fresh fruit.", "فاكهة", "خضار", "لحم"],
+                ["vegetable", "Vegetables are good for health.", "خضار", "فاكهة", "عصير"],
+                ["meat", "Cook meat well.", "لحم", "سمك", "دجاج"],
+                ["chicken", "We had chicken for dinner.", "دجاج", "لحم", "سمك"],
+                ["rice", "Eat rice with chicken.", "أرز", "خبز", "مكرونة"],
+                ["soup", "Hot soup is delicious.", "حساء", "سلطة", "خبز"],
+                ["salad", "Eat green salad.", "سلطة", "لحم", "أرز"],
+                ["sugar", "Too much sugar is bad.", "سكر", "ملح", "بهارات"],
+                ["oil", "Cook with a little oil.", "زيت", "ماء", "حليب"],
+                ["breakfast", "Eat a good breakfast.", "فطور", "غداء", "عشاء"],
+                ["lunch", "We eat lunch at noon.", "غداء", "فطور", "عشاء"],
+                ["dinner", "Eat a light dinner.", "عشاء", "فطور", "غداء"],
+                ["kitchen", "Mom is in the kitchen.", "مطبخ", "حمام", "غرفة"],
+                ["stove", "Cook on the stove.", "موقد", "ثلاجة", "غسالة"],
+                ["oven", "Bake bread in the oven.", "فرن", "ثلاجة", "موقد"],
+                ["fridge", "Keep food in the fridge.", "ثلاجة", "فرن", "غسالة"],
+                ["plate", "Put food on the plate.", "طبق", "كوب", "ملعقة"],
+                ["cup", "A cup of tea.", "كوب", "طبق", "شوكة"],
+                ["glass", "A glass of water.", "كأس زجاجي", "طبق", "سكين"],
+                ["cook", "Dad likes to cook.", "يطبخ", "يلعب", "يقرأ"],
+                ["bake", "Bake cakes in the oven.", "يخبز", "يغسل", "يسبح"],
+                ["wash", "Wash your hands.", "يغسل", "يمسح", "يقرأ"],
+                ["clean", "Keep your room clean.", "نظيف", "متسخ", "سيء"],
+                ["exercise", "Do exercise to stay fit.", "تمرين رياضي", "نوم", "طعام"],
+                ["sport", "Play sports every day.", "رياضة", "طعام", "كتاب"],
+                ["energy", "Good food gives you energy.", "طاقة", "تعب", "مرض"],
+                ["strong", "Exercise makes you strong.", "قوي", "ضعيف", "مريض"],
+                ["weak", "Illness makes you weak.", "ضعيف", "قوي", "سريع"],
+                ["happy", "Stay happy and healthy.", "سعيد", "حزين", "مريض"],
+                ["sad", "Don't be sad.", "حزين", "سعيد", "جائع"],
+                ["pain", "I feel pain in my leg.", "ألم", "راحة", "سعادة"],
+                ["hurt", "I hurt my knee.", "يؤذي / يؤلم", "يضحك", "يلعب"],
+                ["sick", "He is sick in bed.", "مريض", "سليم", "سعيد"],
+                ["better", "You will feel better soon.", "أفضل", "أسوأ", "مريض"],
+                ["test", "The doctor did a test.", "اختبار / فحص", "لعبة", "قصة"],
+                ["result", "The test result is good.", "نتيجة", "خطأ", "لعبة"],
+                ["help", "The doctor can help you.", "يساعد", "يضرب", "يهرب"],
+                ["family", "Eat with your family.", "عائلة", "مدرسة", "مدينة"],
+                ["friend", "Play with your friends.", "صديق", "عدو", "أخ"],
+                ["time", "Spend time with family.", "وقت", "اسم", "لون"],
+                ["hungry", "I am very hungry.", "جائع", "عطشان", "شبعان"],
+                ["thirsty", "Drink water if you are thirsty.", "عطشان", "جائع", "تعبان"],
+                ["sweet", "The cake is very sweet.", "حلو", "مالح", "حامض"],
+                ["salty", "The soup is salty.", "مالح", "حلو", "مر"],
+                ["sour", "Lemon is sour.", "حامض", "حلو", "مالح"],
+                ["bitter", "Coffee can be bitter.", "مر", "حلو", "حامض"],
+                ["fresh", "Eat fresh vegetables.", "طازج", "قديم", "فاسد"]
+            ],
+            "Interests": [
+                ["join", "Join a club.", "ينضم إلى", "يغادر", "يرفض"],
+                ["program", "Summer music program.", "برنامج", "لعبة", "درس"],
+                ["bored", "Don't be bored over summer.", "ملان / شعور بالملل", "سعيد", "نشيط"],
+                ["classical", "Listen to classical music.", "كلاسيكي", "حديث", "سريع"],
+                ["concert", "Play in a concert.", "حفلة موسيقية", "مباراة", "حفلة"],
+                ["drum", "Learn to play the drums.", "طبلة", "جيتار", "بيانو"],
+                ["festival", "Join the music festival.", "مهرجان", "حزن", "مدرسة"],
+                ["instrument", "Play a musical instrument.", "آلة موسيقية", "لعبة", "كتاب"],
+                ["invitation", "This is your invitation.", "دعوة", "رسالة", "صورة"],
+                ["jazz", "They play jazz music.", "جاز", "كلاسيكي", "تقليدي"],
+                ["member", "Become a member of the program.", "عضو", "رئيس", "زائر"],
+                ["online", "Take online lessons.", "عبر الإنترنت", "في المدرسة", "في البيت"],
+                ["oud", "The oud is a traditional instrument.", "عود", "جيتار", "كمان"],
+                ["prize", "You may win a prize.", "جائزة", "عقاب", "كتاب"],
+                ["traditional", "Play traditional music.", "تقليدي", "حديث", "جديد"],
+                ["violin", "The violin is my favorite instrument.", "كمان", "عود", "جيتار"],
+                ["chess", "My grandfather plays chess.", "شطرنج", "كرة قدم", "تنس"],
+                ["collect", "I collect stamps and coins.", "يجمع", "يرمي", "يبيع"],
+                ["experiment", "Do science experiments.", "تجربة علمية", "لعبة", "درس"],
+                ["magazine", "I read a sports magazine.", "مجلة", "كتاب", "جريدة"],
+                ["midday", "Watching the sun at midday.", "منتصف النهار", "منتصف الليل", "الصباح"],
+                ["midnight", "Watching the moon at midnight.", "منتصف الليل", "منتصف النهار", "المساء"],
+                ["poetry", "Writing poetry about nature.", "شعر", "نثر", "قصة"],
+                ["puzzle", "I completed a crossword puzzle.", "لغز", "قصة", "أغنية"],
+                ["pyramid", "Visiting pyramids in Egypt.", "هرم", "قصر", "قلعة"],
+                ["stamp", "Collecting stamps.", "طابع بريد", "عملة", "صورة"],
+                ["tune", "Play your favorite tune.", "لحن", "صوت", "لون"],
+                ["hobby", "Reading is my favorite hobby.", "هواية", "وظيفة", "لعبة"],
+                ["interest", "What are your interests?", "اهتمام", "عمل", "هواية"],
+                ["music", "I love listening to music.", "موسيقى", "طعام", "رياضة"],
+                ["song", "She sings a nice song.", "أغنية", "قصة", "فيلم"],
+                ["band", "He plays in a band.", "فرقة موسيقية", "فريق", "صف"],
+                ["famous", "Become famous.", "مشهور", "مجهول", "فقير"],
+                ["family", "Lily's family interests.", "عائلة", "مدرسة", "مدينة"],
+                ["father", "My father plays chess.", "أب", "أم", "أخ"],
+                ["mother", "My mother writes poetry.", "أم", "أب", "أخت"],
+                ["brother", "My brother collects coins.", "أخ", "أخت", "عم"],
+                ["sister", "My sister does experiments.", "أخت", "أخ", "خال"],
+                ["grandfather", "Grandfather plays chess.", "جد", "جدة", "عم"],
+                ["grandmother", "Grandmother is kind.", "جدة", "جد", "خالة"],
+                ["cat", "The family cat watches the moon.", "قطة", "كلب", "طائر"],
+                ["coin", "Collecting coins is fun.", "عملة معدنية", "ورقة", "صورة"],
+                ["science", "Doing science experiments.", "علوم", "رياضيات", "تاريخ"],
+                ["moon", "Watching the moon at midnight.", "قمر", "شمس", "نجمة"],
+                ["sun", "Watching the sun at midday.", "شمس", "قمر", "نجمة"],
+                ["history", "History is an interesting subject.", "تاريخ", "علوم", "رياضيات"],
+                ["language", "English is a global language.", "لغة", "دولة", "مدينة"],
+                ["art", "Drawing is a nice art.", "فن", "رياضيات", "علوم"],
+                ["sport", "Football is a great sport.", "رياضة", "طعام", "كتاب"],
+                ["game", "Video games are fun.", "لعبة", "كتاب", "درس"],
+                ["book", "Reading books expands the mind.", "كتاب", "باب", "شباك"],
+                ["read", "I read stories every day.", "يقرأ", "يكتب", "يلعب"],
+                ["write", "Write poetry or stories.", "يكتب", "يقرأ", "ينام"],
+                ["draw", "Draw pictures in art class.", "يرسم", "يقرأ", "يسبح"],
+                ["paint", "Paint colorful pictures.", "يلون", "يكتب", "يركض"],
+                ["sing", "Sing songs with the band.", "يغني", "يقرأ", "يكتب"],
+                ["dance", "Dance to traditional music.", "يرقص", "يجري", "يسبح"],
+                ["play", "Play musical instruments.", "يلعب / يعزف", "يذاكر", "ينام"],
+                ["listen", "Listen to music.", "يستمع", "يتكلم", "ينظر"],
+                ["love", "I love playing the violin.", "يحب بشدة", "يكره", "ينسى"],
+                ["like", "I like listening to jazz.", "يحب", "يكره", "يرفض"],
+                ["want", "I want to learn guitar.", "يريد", "يعطي", "يأخذ"],
+                ["have", "I have a stamp collection.", "يمتلك", "يفقد", "يبيع"],
+                ["do", "What do you like to do?", "يفعل", "ينام", "يأكل"],
+                ["is", "Music is my passion.", "يكون", "تكون", "أكون"],
+                ["am", "I am a music fan.", "أكون", "يكون", "تكون"],
+                ["are", "You are a good musician.", "تكونون", "يكون", "أكون"],
+                ["ago", "Started drum lessons six years ago.", "منذ", "غداً", "بعد"],
+                ["for", "Played drums for six years.", "لمدة (للدلالة على المدة)", "منذ", "في"],
+                ["since", "Interested since she was a baby.", "منذ (بداية نقطة زمنية)", "لمدة", "في"],
+                ["just", "I just returned from a trip.", "للتو / حالاً", "أبداً", "دائماً"],
+                ["already", "I have already finished.", "بالفعل", "بعد", "حالاً"],
+                ["yet", "I haven't decided yet.", "بعد (في النفي والسؤال)", "بالفعل", "حالاً"],
+                ["ever", "Have you ever played chess?", "في أي وقت / سبق لك", "أبداً", "دائماً"],
+                ["never", "I have never been there.", "أبداً", "دائماً", "غالباً"],
+                ["how", "How long have you played?", "كيف / كم المدة", "ماذا", "أين"],
+                ["long", "How long have you had this?", "مدة طويلة", "قصير", "صغير"],
+                ["year", "Played for six years.", "سنة", "شهر", "يوم"],
+                ["month", "Member of band for three weeks.", "شهر", "سنة", "يوم"],
+                ["week", "Practicing for a week.", "أسبوع", "شهر", "سنة"],
+                ["day", "Every day is a new day.", "يوم", "شهر", "سنة"],
+                ["baby", "Interested since she was a baby.", "طفل رضيع", "رجل", "عجوز"],
+                ["child", "Children love music.", "طفل", "رجل", "امرأة"],
+                ["boy", "The boy plays guitar.", "ولد", "بنت", "رجل"],
+                ["girl", "The girl sings a song.", "بنت", "ولد", "امرأة"],
+                ["man", "The man listens to jazz.", "رجل", "امرأة", "طفل"],
+                ["woman", "The woman plays piano.", "امرأة", "رجل", "بنت"],
+                ["people", "Many people like concerts.", "ناس", "حيوانات", "طيور"],
+                ["person", "He is a talented person.", "شخص", "حيوان", "نبات"],
+                ["friend", "Play music with a friend.", "صديق", "عدو", "أخ"],
+                ["classmate", "Classmates listen to music.", "زميل دراسة", "معلم", "مدير"],
+                ["school", "School music band.", "مدرسة", "مستشفى", "حديقة"],
+                ["class", "Music class is fun.", "فصل دراسي", "ملعب", "مكتبة"],
+                ["teacher", "Music teacher helps us.", "معلم", "طبيب", "مهندس"],
+                ["student", "Students love prizes.", "طالب", "معلم", "مدير"],
+                ["enjoy", "I enjoy playing music.", "يستمتع", "يمل", "يحزن"],
+                ["hate", "I hate being bored.", "يكره", "يحب", "يستمتع"],
+                ["prefer", "I prefer jazz.", "يفضل", "يكره", "يترك"],
+                ["camera", "I take photos with my camera.", "كاميرا", "صورة", "كتاب"],
+                ["photo", "This is a nice photo.", "صورة", "كاميرا", "رسالة"]
+            ],
+            "Professions": [
+                ["specialist", "He is an AI specialist.", "أخصائي / متخصص", "معلم", "طبيب"],
+                ["artificial", "Artificial intelligence is modern technology.", "اصطناعي", "طبيعي", "قديم"],
+                ["intelligence", "Artificial intelligence is amazing.", "ذكاء", "جهل", "سرعة"],
+                ["astronaut", "An astronaut travels to space.", "رائد فضاء", "طيار", "مهندس"],
+                ["cybersecurity", "She works as a cybersecurity analyst.", "أمن سيبراني", "برمجة", "تصميم"],
+                ["analyst", "He is a data analyst.", "محلل", "مبرمج", "مدير"],
+                ["design", "Design a new website.", "يصمم", "يهدم", "يبني"],
+                ["earth", "We live on planet Earth.", "الأرض", "المريخ", "القمر"],
+                ["planet", "Earth is a beautiful planet.", "كوكب", "نجمة", "قمر"],
+                ["robotics", "He studies robotics engineering.", "روبوتات / إنسان آلي", "برمجة", "فيزياء"],
+                ["engineer", "An engineer builds machines.", "مهندس", "طبيب", "معلم"],
+                ["rocket", "The rocket launched into space.", "صاروخ", "طائرة", "سيارة"],
+                ["satellite", "Satellites orbit the Earth.", "قمر صناعي", "صاروخ", "طائرة"],
+                ["space", "Astronauts travel in space.", "فضاء", "سماء", "أرض"],
+                ["message", "Send a video message.", "رسالة", "صورة", "كتاب"],
+                ["ambulance", "Call an ambulance.", "سيارة إسعاف", "سيارة شرطة", "تاكسي"],
+                ["business", "He runs his own business.", "عمل تجاري", "نوم", "لعب"],
+                ["fire", "Firefighters put out fire.", "حريق / نار", "ماء", "هواء"],
+                ["firefighter", "The firefighter saved the cat.", "رجل إطفاء", "شرطي", "طيار"],
+                ["station", "Go to the fire station.", "محطة / مركز", "مدرسة", "مستشفى"],
+                ["truck", "The fire truck arrived quickly.", "شاحنة", "سيارة", "دراجة"],
+                ["missing", "The pet cat is missing.", "مفقود", "موجود", "آمن"],
+                ["police", "The police officer helps people.", "شرطة", "إسعاف", "مطافي"],
+                ["officer", "A police officer wears a uniform.", "ضابط", "عامل", "مدير"],
+                ["worried", "Don't be worried.", "قلق", "مطمئن", "سعيد"],
+                ["job", "What is your job?", "وظيفة", "لعبة", "هواية"],
+                ["work", "People work to earn money.", "يعمل", "يلعب", "ينام"],
+                ["worker", "Factory workers work hard.", "عامل", "مدير", "رئيس"],
+                ["boss", "He is the company boss.", "مدير / رئيس", "عامل", "طالب"],
+                ["office", "Dad works in an office.", "مكتب", "شارع", "بحر"],
+                ["company", "She works for a tech company.", "شركة", "مدرسة", "مستشفى"],
+                ["factory", "Cars are made in a factory.", "مصنع", "مدرسة", "حديقة"],
+                ["hospital", "Doctors work in a hospital.", "مستشفى", "مدرسة", "حديقة"],
+                ["school", "Teachers work in a school.", "مدرسة", "مستشفى", "حديقة"],
+                ["store", "He works in a store.", "متجر", "مدرسة", "مستشفى"],
+                ["restaurant", "Waiters work in a restaurant.", "مطعم", "مكتبة", "مستشفى"],
+                ["bank", "Cashiers work in a bank.", "بنك", "مدرسة", "مستشفى"],
+                ["hotel", "Staff work in a hotel.", "فندق", "مستشفى", "مصنع"],
+                ["farm", "Farmers work on a farm.", "مزرعة", "مدينة", "شارع"],
+                ["airport", "Pilots work at the airport.", "مطار", "ميناء", "محطة"],
+                ["doctor", "The doctor helps sick people.", "طبيب", "مهندس", "معلم"],
+                ["nurse", "The nurse helps the doctor.", "ممرضة", "معلمة", "مهندسة"],
+                ["teacher", "The teacher explains the lesson.", "معلم", "طيار", "خباز"],
+                ["student", "I am a hard-working student.", "طالب", "معلم", "مدير"],
+                ["pilot", "The pilot flies the airplane.", "طيار", "سائق", "شرطي"],
+                ["driver", "The bus driver is careful.", "سائق", "طيار", "معلم"],
+                ["mechanic", "The mechanic repairs cars.", "ميكانيكي", "كهربائي", "طبيب"],
+                ["chef", "The chef cooks delicious food.", "طباخ", "طبيب", "نجار"],
+                ["waiter", "The waiter brings the menu.", "نادل", "طباخ", "مدير"],
+                ["cashier", "Pay money to the cashier.", "محاسب", "مدير", "بائع"],
+                ["salesman", "The salesman helps customers.", "رجل مبيعات", "مدير", "طبيب"],
+                ["farmer", "The farmer plants wheat.", "فلاح", "خباز", "نجار"],
+                ["baker", "The baker makes fresh bread.", "خباز", "جزار", "طباخ"],
+                ["butcher", "The butcher sells meat.", "جزار", "خباز", "فلاح"],
+                ["carpenter", "The carpenter makes chairs.", "نجار", "حداد", "خياط"],
+                ["plumber", "The plumber fixes pipes.", "سباك", "كهربائي", "نجار"],
+                ["electrician", "Call the electrician for lights.", "كهربائي", "سباك", "نجار"],
+                ["painter", "The painter colors the wall.", "دهان / رسام", "سباك", "نجار"],
+                ["cleaner", "The office cleaner is busy.", "عامل نظافة", "مدير", "طبيب"],
+                ["guard", "The security guard is strong.", "حارس", "لص", "طبيب"],
+                ["lawyer", "The lawyer helps in court.", "محامي", "طبيب", "معلم"],
+                ["judge", "The judge works in court.", "قاضٍ", "محامي", "طبيب"],
+                ["journalist", "The journalist writes news.", "صحفي", "كاتب", "رسام"],
+                ["actor", "He is a movie actor.", "ممثل", "مغني", "مخرج"],
+                ["singer", "The singer has a sweet voice.", "مغني", "ممثل", "رسام"],
+                ["artist", "The artist draws beautiful pictures.", "فنان", "طبيب", "معلم"],
+                ["writer", "The writer writes novels.", "كاتب", "قارئ", "رسام"],
+                ["photographer", "The photographer takes pictures.", "مصور", "رسام", "كاتب"],
+                ["businessman", "He is a successful businessman.", "رجل أعمال", "عامل", "طالب"],
+                ["secretary", "The secretary answers calls.", "سكرتير", "مدير", "طبيب"],
+                ["dentist", "The dentist checks teeth.", "طبيب أسنان", "طبيب عيون", "معلم"],
+                ["vet", "The vet helps sick animals.", "طبيب بيطري", "طبيب أسنان", "فلاح"],
+                ["scientist", "The scientist works in a lab.", "عالم", "معلم", "طبيب"],
+                ["pharmacist", "Get medicine from the pharmacist.", "صيدلي", "طبيب", "ممرض"],
+                ["postman", "The postman brings letters.", "ساعي بريد", "شرطي", "سائق"],
+                ["barber", "The barber cuts hair.", "حلاق", "خياط", "طبيب"],
+                ["tailor", "The tailor makes clothes.", "خياط", "نجار", "حداد"],
+                ["fisherman", "The fisherman catches fish.", "صياد سمك", "فلاح", "راعي"],
+                ["path", "Choose your career path.", "مسار / طريق", "لعبة", "كتاب"],
+                ["career", "She wants a career in medicine.", "مهنة", "لعبة", "هواية"],
+                ["profession", "Teaching is a noble profession.", "مهنة", "لعبة", "درس"],
+                ["occupation", "State your occupation.", "وظيفة / مهنة", "اسم", "لون"],
+                ["uniform", "Police wear a special uniform.", "زي رسمي", "حذاء", "قبعة"],
+                ["salary", "He gets a good monthly salary.", "راتب", "سعر", "هدية"],
+                ["money", "People work to earn money.", "نقود", "طعام", "كتب"],
+                ["manager", "The bank manager is kind.", "مدير", "عامل", "بائع"],
+                ["assistant", "The manager has an assistant.", "مساعد", "مدير", "صاحب"],
+                ["interview", "I have a job interview today.", "مقابلة عمل", "اختبار", "لعبة"],
+                ["resume", "Send your resume by email.", "سيرة ذاتية", "رسالة", "كتاب"],
+                ["application", "Fill out the job application.", "طلب توظيف", "كتاب", "صورة"],
+                ["skill", "Computer skill is important.", "مهارة", "لعبة", "لون"],
+                ["experience", "He has five years of experience.", "خبرة", "عمر", "سعر"],
+                ["training", "Job training starts tomorrow.", "تدريب", "نوم", "لعب"],
+                ["full", "He works full time.", "كامل", "جزئي", "فارغ"],
+                ["part", "She has a part time job.", "جزئي", "كامل", "كبير"],
+                ["day", "He works day shifts.", "نهار / يوم", "ليل", "شهر"],
+                ["night", "She works night shifts.", "ليل", "نهار", "صباح"],
+                ["schedule", "Check your work schedule.", "جدول مواعيد", "كتاب", "صورة"],
+                ["safe", "Keep the workplace safe.", "آمن", "خطير", "خائف"],
+                ["earn", "Parents earn money for family.", "يكسب / يجني", "يصرف", "يفقد"]
+            ]
+        };
+
+        let currentUnit = "Welcome";
+        let wordList = [];
+        let currentIndex = 0;
+        let isAutoMode = true;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let answered = false;
+
+        function highlightTargetWord(word, sentence) {
+            let escapedWord = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            let regex = new RegExp("\\b(" + escapedWord + ")\\b", "gi");
+            return sentence.replace(regex, "<span class='target-word'>$1</span>");
+        }
+
+        function changeUnit() {
+            currentUnit = document.getElementById('unit-select').value;
+            wordList = rawData[currentUnit].map(item => {
+                let plainWord = item[0];
+                let plainSentence = item[1];
+                return {
+                    word: plainWord,
+                    rawSentence: plainSentence,
+                    sentence: highlightTargetWord(plainWord, plainSentence),
+                    choices: [item[2], item[3], item[4]],
+                    answer: item[2]
+                };
+            });
+            currentIndex = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            updateScoreBoard();
+            loadWord();
+        }
+
+        function loadWord() {
+            answered = false;
+            let currentData = wordList[currentIndex];
+            
+            document.getElementById('current-word-num').innerText = currentIndex + 1;
+            document.getElementById('total-word-count').innerText = wordList.length;
+            
+            document.getElementById('word-display').innerText = currentData.word;
+            document.getElementById('sentence-display').innerHTML = currentData.sentence;
+            
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+            
+            let shuffledChoices = [...currentData.choices].sort(() => Math.random() - 0.5);
+            
+            shuffledChoices.forEach(choice => {
+                let btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerText = choice;
+                btn.onclick = () => checkAnswer(btn, choice, currentData.answer);
+                choicesContainer.appendChild(btn);
+            });
+
+            document.getElementById('prev-btn').disabled = (currentIndex === 0);
+            
+            playAudio();
+        }
+
+        function playAudio() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let currentData = wordList[currentIndex];
+                let textToSpeak = `${currentData.word}. ${currentData.rawSentence}.`;
+                
+                let utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.6; 
+                
+                const sentenceWrapper = document.getElementById('sentence-display');
+                utterance.onstart = () => sentenceWrapper.classList.add('reading-highlight');
+                utterance.onend = () => sentenceWrapper.classList.remove('reading-highlight');
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function checkAnswer(btn, selected, correctAnswer) {
+            if (answered) return;
+            answered = true;
+            const allButtons = document.querySelectorAll('.choice-btn');
+            
+            if (selected === correctAnswer) {
+                btn.classList.add('correct');
+                correctCount++;
+                if (isAutoMode) {
+                    setTimeout(() => nextWord(), 1500);
+                }
+            } else {
+                btn.classList.add('wrong');
+                wrongCount++;
+                allButtons.forEach(b => {
+                    if (b.innerText === correctAnswer) b.classList.add('correct');
+                });
+            }
+            updateScoreBoard();
+        }
+
+        function nextWord() {
+            if (currentIndex < wordList.length - 1) {
+                currentIndex++;
+                loadWord();
+            } else {
+                alert(`انتهت كلمات هذه الوحدة يا بطل!\nالإجابات الصحيحة: ${correctCount}\nالأخطاء: ${wrongCount}`);
+                currentIndex = 0;
+                loadWord();
+            }
+        }
+
+        function prevWord() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadWord();
+            }
+        }
+
+        function updateScoreBoard() {
+            document.getElementById('correct-counter').innerText = correctCount;
+            document.getElementById('wrong-counter').innerText = wrongCount;
+        }
+
+        function toggleMode() {
+            isAutoMode = !isAutoMode;
+            let modeBtn = document.getElementById('mode-btn');
+            if (isAutoMode) {
+                modeBtn.innerText = "الوضع: تلقائي ⚡";
+                modeBtn.classList.add('auto');
+            } else {
+                modeBtn.innerText = "الوضع: يدوي ✋";
+                modeBtn.classList.remove('auto');
+            }
+        }
+
+        window.onload = () => {
+            changeUnit();
+        };
+    </script>
+</body>
+</html>
