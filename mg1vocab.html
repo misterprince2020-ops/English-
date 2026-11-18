@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار مفردات Mega Goal 1 - 300 كلمة</title>
+    <style>
+        :root {
+            --success: #10B981;
+            --danger: #DC2626;
+            --primary: #4F46E5;
+            --text-dark: #1F2937;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #startScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #4F46E5 0%, #9333EA 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 20000; color: white; text-align: center; padding: 20px; box-sizing: border-box;
+        }
+        .btn-start {
+            background: #F59E0B; color: white; border: none; padding: 15px 40px;
+            font-size: 26px; font-weight: 900; border-radius: 20px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; margin-top: 25px;
+        }
+        .btn-start:hover { transform: scale(1.08); background: #D97706; }
+
+        .header {
+            background: rgba(255, 255, 255, 0.96);
+            width: 100%; max-width: 680px; border-radius: 20px;
+            padding: 15px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 16px; box-sizing: border-box;
+        }
+        .app-title { color: var(--danger); font-size: 22px; font-weight: 900; margin: 0 0 4px 0; }
+        .school-info { font-size: 14px; font-weight: bold; color: var(--primary); margin-bottom: 12px; }
+
+        .unit-tabs {
+            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px;
+        }
+        .unit-tab {
+            background-color: #EEF2FF; color: var(--primary); border: 2px solid #C7D2FE;
+            padding: 9px 14px; border-radius: 12px; font-size: 15px; font-weight: 800;
+            cursor: pointer; transition: 0.2s; flex: 1; min-width: 150px;
+        }
+        .unit-tab:hover { background-color: #E0E7FF; transform: translateY(-2px); }
+        .unit-tab.active {
+            background-color: #9333EA; color: white; border-color: #7E22CE;
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.35);
+        }
+
+        .meta-row {
+            display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;
+        }
+        .cat-badge {
+            background-color: #FEF3C7; color: #B45309; font-weight: bold;
+            font-size: 13px; padding: 3px 12px; border-radius: 12px;
+        }
+        .word-counter { font-size: 15px; color: #4B5563; font-weight: bold; }
+
+        .quiz-container {
+            background: #ffffff; width: 100%; max-width: 680px; border-radius: 25px;
+            padding: 24px 20px; box-shadow: 0 15px 30px rgba(79, 70, 229, 0.15);
+            box-sizing: border-box; display: flex; flex-direction: column; align-items: center;
+            border: 4px solid #c7d2fe; margin-bottom: 18px;
+        }
+        .target-word-container {
+            min-height: 58px; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; width: 100%;
+        }
+        .target-word {
+            display: inline-block; font-size: 38px; font-weight: 900; color: var(--primary);
+            letter-spacing: 1px; text-align: center; direction: ltr; padding: 6px 18px; transition: all 0.2s ease;
+        }
+        .highlight-yellow {
+            background-color: #FDE047 !important; color: #000000 !important; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(253, 224, 71, 0.55);
+        }
+
+        .sentence-box {
+            background-color: #F9FAFB; border-left: 5px solid var(--primary);
+            padding: 14px 18px; border-radius: 10px; font-size: 22px; font-weight: bold;
+            color: var(--text-dark); direction: ltr; text-align: left; width: 100%;
+            box-sizing: border-box; margin-bottom: 8px; line-height: 1.6; min-height: 68px;
+            transition: all 0.2s ease;
+        }
+        .word-in-sentence {
+            color: var(--danger);
+            font-weight: 900;
+            text-decoration: underline;
+        }
+        .sentence-ar-box {
+            width: 100%; box-sizing: border-box; text-align: center; direction: rtl;
+            color: var(--danger); font-size: 19px; font-weight: 800;
+            background-color: #FEF2F2; border: 1.5px dashed #FCA5A5;
+            padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; line-height: 1.6;
+        }
+        .ar-blank {
+            display: inline-block;
+            min-width: 75px;
+            border-bottom: 3px solid var(--danger);
+            color: transparent;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+        .ar-filled {
+            color: #059669;
+            background-color: #D1FAE5;
+            padding: 1px 8px;
+            border-radius: 6px;
+            text-decoration: underline;
+        }
+
+        .btn-repeat {
+            background-color: #8B5CF6; color: white; border: none; padding: 10px 28px;
+            font-size: 18px; font-weight: bold; border-radius: 15px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); margin-bottom: 20px;
+            transition: 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-repeat:hover { transform: scale(1.05); background-color: #7C3AED; }
+
+        .options-container { display: flex; flex-direction: column; gap: 13px; width: 100%; }
+        .option-btn {
+            background-color: #EEF2FF; color: var(--primary); border: 2px solid #C7D2FE;
+            padding: 14px 20px; font-size: 22px; font-weight: bold; border-radius: 15px;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .option-btn:hover { background-color: #E0E7FF; transform: scale(1.02); }
+        .option-correct { background-color: #D1FAE5 !important; border-color: #10B981 !important; color: #065F46 !important; }
+        .option-wrong {
+            background-color: #FEE2E2 !important; border-color: #EF4444 !important;
+            color: #991B1B !important; animation: shake 0.4s;
+        }
+        .option-disabled { pointer-events: none; opacity: 0.85; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        .controls {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 680px; direction: ltr; margin-bottom: 20px; gap: 10px;
+        }
+        .nav-btn {
+            background-color: #4B5563; color: white; border: none; padding: 12px 24px;
+            border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .nav-btn:hover { background-color: #374151; }
+        .mode-btn {
+            background-color: #F59E0B; color: white; border: none; padding: 10px 18px;
+            border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .mode-btn.auto-mode { background-color: #10B981; }
+
+        #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .confetti-piece { position: absolute; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="startScreen">
+        <h1 style="font-size: 34px; margin-bottom: 8px;">مفردات أول ثانوي - Mega Goal 1</h1>
+        <h2 style="font-size: 22px; margin-bottom: 6px;">Big Changes • Careers • What Will Be</h2>
+        <p style="font-size: 18px; opacity: 0.95;">300 كلمة وتعبير — استنتج المعنى من السياق</p>
+        <button class="btn-start" onclick="startApp()">ابدأ الاختبار 🚀</button>
+    </div>
+
+    <div id="confetti-container"></div>
+
+    <div class="header">
+        <h1 class="app-title">اختبار مفردات Mega Goal 1 (300 كلمة)</h1>
+        <div class="school-info">إعداد الأستاذ/ حمادة الديب — مدارس آفاق الهداية الحديثة للبنين</div>
+
+        <div class="unit-tabs">
+            <button id="tab-1" class="unit-tab active" onclick="selectUnit(1)">الوحدة الأولى: Big Changes (100)</button>
+            <button id="tab-2" class="unit-tab" onclick="selectUnit(2)">الوحدة الثانية: Careers (100)</button>
+            <button id="tab-3" class="unit-tab" onclick="selectUnit(3)">الوحدة الثالثة: What Will Be (100)</button>
+        </div>
+
+        <div class="meta-row">
+            <span id="catBadge" class="cat-badge">Dictionary</span>
+            <span class="word-counter">الكلمة: <span id="wordCounter">1 / 100</span> (الإجمالي: <span id="totalCounter">1 / 300</span>)</span>
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <div class="target-word-container">
+            <div id="targetWord" class="target-word">Word</div>
+        </div>
+        <div id="sentenceBox" class="sentence-box"></div>
+        <div id="sentenceArBox" class="sentence-ar-box"></div>
+        <button class="btn-repeat" onclick="playWordAndSentence()">تكرار الصوت 🔁</button>
+        <div id="optionsContainer" class="options-container"></div>
+    </div>
+
+    <div class="controls">
+        <button class="nav-btn" onclick="prevWord()">&laquo; السابق</button>
+        <button id="modeBtn" class="mode-btn" onclick="toggleMode()">الانتقال: يدوي ✋</button>
+        <button class="nav-btn" onclick="nextWord()">التالي &raquo;</button>
+    </div>
+
+    <script>
+        // [رقم الوحدة، التصنيف، الكلمة، الجملة، ترجمة الجملة مع فراغ مكان الكلمة، المعنى الصحيح، تشتيت1، تشتيت2]
+        const quizData = [
+            // ==================== UNIT 1: BIG CHANGES (100 WORDS) ====================
+            [1,"Dictionary","biologist","The biologist studies living things.","يدرس ______ الكائنات الحية.","عالم أحياء","مهندس معماري","محاسب"],
+            [1,"Dictionary","citizen","Every citizen loves their country.","كل ______ يحب وطنه.","مواطن","سائح","غريب"],
+            [1,"Dictionary","currency","The Saudi riyal is our currency.","الريال السعودي هو ______ بلادنا.","عملة نقدية","لغة رسمية","خريطة"],
+            [1,"Dictionary","exploration","Space exploration is very exciting.","______ الفضاء مثير جداً.","استكشاف","تدمير","إغلاق"],
+            [1,"Dictionary","federation","The states formed a strong federation.","شكّلت الولايات ______ قوياً.","اتحاد / فيدرالية","قرية صغيرة","شركة خاصة"],
+            [1,"Dictionary","government","The government builds new schools.","تبني ______ مدارس جديدة.","حكومة","عائلة","فريق رياضي"],
+            [1,"Dictionary","infrastructure","Good roads are part of infrastructure.","الطرق الجيدة جزء من ______.","بنية تحتية","ثقافة شعبية","هواية"],
+            [1,"Dictionary","reunification","They celebrated the reunification of the country.","احتفلوا بـ ______ البلاد.","إعادة التوحيد","الانفصال","الهجرة"],
+            [1,"Dictionary","satellite","The satellite sends signals from space.","يرسل ______ إشارات من الفضاء.","قمر صناعي","طائرة ورقية","غواصة"],
+            [1,"Dictionary","transmission","The live transmission was very clear.","كان ______ المباشر واضحاً جداً.","بث / إرسال","توقف","تخزين"],
+            [1,"Global issues","disease","Doctors work hard to stop disease.","يعمل الأطباء بجد لإيقاف ______.","مرض","صحة","علاج"],
+            [1,"Global issues","economy","Tourism helps grow the economy.","تساعد السياحة في نمو ______.","اقتصاد","طقس","رياضة"],
+            [1,"Global issues","endangered species","We must protect endangered species.","يجب أن نحمي ______.","فصائل مهددة بالانقراض","حيوانات أليفة","نباتات منزلية"],
+            [1,"Global issues","fresh water","Everyone needs clean fresh water.","الجميع يحتاج إلى ______ نظيفة.","مياه عذبة","مياه مالحة","وقود"],
+            [1,"Global issues","globalization","Globalization connects countries together.","تربط ______ الدول ببعضها.","العولمة","العزلة","الزراعة"],
+            [1,"Global issues","global warming","Global warming makes the Earth hotter.","يجعل ______ الأرض أكثر حرارة.","الاحتباس الحراري","العصر الجليدي","هطول الأمطار"],
+            [1,"Global issues","natural disaster","An earthquake is a natural disaster.","الزلزال يعتبر ______.","كارثة طبيعية","احتفال سنوي","رحلة بحرية"],
+            [1,"Global issues","overpopulation","Overpopulation makes cities very crowded.","تجعل ______ المدن مزدحمة جداً.","الزيادة السكانية","قلة السكان","الهدوء"],
+            [1,"Global issues","pollution","Factory smoke causes air pollution.","يسبب دخان المصانع ______ الهواء.","تلوث","نظافة","انتعاش"],
+            [1,"Global issues","poverty","Charity helps reduce poverty.","تساعد الصدقة في تقليل ______.","فقر","ثراء","تجارة"],
+            [1,"Global issues","security","Police work for our security.","تعمل الشرطة من أجل ______ المجتمع.","أمن / أمان","خطر","فوضى"],
+            [1,"Global issues","terrorism","All nations stand against terrorism.","تقف جميع الأمم ضد ______.","إرهاب","سلام","تعاون"],
+            [1,"Global issues","traffic","There is heavy traffic in the morning.","توجد ______ كثيفة في الصباح.","حركة المرور","الطقس","البحر"],
+            [1,"Global issues","unemployment","New jobs help reduce unemployment.","تساعد الوظائف الجديدة في تقليل ______.","بطالة","توظيف","تقاعد"],
+            [1,"Dictionary","affect","Bad weather can affect our trip.","يمكن أن ______ الطقس السيئ رحلتنا.","يؤثر على","يتجاهل","يبتعد عن"],
+            [1,"Dictionary","establish","They want to establish a new company.","يريدون أن ______ شركة جديدة.","يؤسس / ينشئ","يهدم","يغلق"],
+            [1,"Dictionary","initiate","We will initiate a new project.","سوف ______ مشروعاً جديداً.","يبدأ / يطلق","ينهي","يوقف"],
+            [1,"Dictionary","launch","They will launch the rocket tomorrow.","سوف ______ الصاروخ غداً.","يطلق","يهبط","يلغي"],
+            [1,"Dictionary","lose touch","Don't lose touch with old friends.","لا ______ مع الأصدقاء القدامى.","يفقد التواصل","يتصل دائماً","يلتقي يومياً"],
+            [1,"Dictionary","obtain","You need to obtain a visa first.","تحتاج أن ______ تأشيرة أولاً.","يحصل على","يفقد","يرفض"],
+            [1,"Dictionary","accessible","The library is accessible to everyone.","المكتبة ______ للجميع.","سهل الوصول إليه / متاح","مغلق دائماً","مستحيل"],
+            [1,"Dictionary","legendary","He is a legendary football player.","إنه لاعب كرة قدم ______.","أسطوري / مشهور جداً","مجهول","عادي"],
+            [1,"Dictionary","numerous","There are numerous stars in the sky.","توجد نجوم ______ في السماء.","عديد / كثير جداً","قليل جداً","واحد فقط"],
+            [1,"Idiom","take for granted","Don't take your health for granted.","لا ______ صحتك أبداً.","يعتبره أمراً مسلماً به","يشكر عليه دائماً","يشتريه بالمال"],
+            [1,"Real Talk","by the way","By the way, where is Ali?","______، أين علي؟","بالمناسبة","في النهاية","بالتأكيد لا"],
+            [1,"Real Talk","fit in","He quickly managed to fit in at school.","استطاع أن ______ بسرعة في المدرسة.","ينسجم / يتأقلم","يغادر بسرعة","يتشاجر"],
+            [1,"Real Talk","in fact","In fact, I really like this subject.","______، أنا أحب هذه المادة حقاً.","في الحقيقة / في الواقع","في الخيال","ربما لا"],
+            [1,"Real Talk","you see","You see, it is not difficult at all.","______، الأمر ليس صعباً على الإطلاق.","كما ترى / أتفهم","لا تنظر","اسمعني بصمت"],
+            [1,"Unit 1 Core","unification","Saudi Arabia celebrates its unification.","تحتفل السعودية بـ ______ أراضيها.","توحيد","انقسام","تأخير"],
+            [1,"Unit 1 Core","kingdom","The Kingdom is growing very fast.","هذه ______ تنمو بسرعة كبيرة.","مملكة","قرية","جزيرة"],
+            [1,"Unit 1 Core","vision","Vision 2030 brings big changes.","______ 2030 تجلب تغييرات كبيرة.","رؤية","ذكرى","ماضي"],
+            [1,"Unit 1 Core","transform","Technology can transform our lives.","يمكن للتكنولوجيا أن ______ حياتنا.","يحوّل / يغيّر","يوقف","يبقي كما هو"],
+            [1,"Unit 1 Core","communication","Phones made communication very easy.","جعلت الهواتف ______ سهلاً جداً.","تواصل / اتصال","انقطاع","صمت"],
+            [1,"Unit 1 Core","invention","The internet is a great invention.","الإنترنت ______ عظيم.","اختراع","مشكلة","عادة"],
+            [1,"Unit 1 Core","discovery","Oil was an important discovery.","كان النفط ______ مهماً.","اكتشاف","خسارة","نسيان"],
+            [1,"Unit 1 Core","astronaut","The astronaut walked on the moon.","مشى ______ على سطح القمر.","رائد فضاء","طيار حربي","غواص"],
+            [1,"Unit 1 Core","spacecraft","The spacecraft landed safely.","هبطت ______ بأمان.","مركبة فضائية","سفينة بحرية","قطار"],
+            [1,"Unit 1 Core","orbit","Satellites orbit the Earth.","الأقمار الصناعية ______ حول الأرض.","يدور في مدار","يهبط","يتوقف"],
+            [1,"Unit 1 Core","planet","Earth is our home planet.","الأرض هي ______ الأم.","كوكب","نجم","قمر"],
+            [1,"Unit 1 Core","environment","We must protect the environment.","يجب علينا حماية ______.","البيئة","الشارع","المبنى"],
+            [1,"Unit 1 Core","climate","The desert climate is very dry.","______ الصحراء جاف جداً.","مناخ","وقت","تاريخ"],
+            [1,"Unit 1 Core","recycle","We should recycle plastic bottles.","يجب أن ______ الزجاجات البلاستيكية.","يعيد التدوير","يرمي","يحرق"],
+            [1,"Unit 1 Core","energy","Solar energy is very clean.","______ الشمسية نظيفة جداً.","طاقة","ظلام","تعب"],
+            [1,"Unit 1 Core","population","The city population is increasing.","______ المدينة في ازدياد.","عدد السكان","المساحة","الطقس"],
+            [1,"Unit 1 Core","education","Good education builds the future.","______ الجيد يبني المستقبل.","تعليم","لعب","سفر"],
+            [1,"Unit 1 Core","healthcare","Modern hospitals improve healthcare.","تحسّن المستشفيات الحديثة ______.","الرعاية الصحية","التجارة","الزراعة"],
+            [1,"Unit 1 Core","progress","The country made great progress.","حققت البلاد ______ كبيراً.","تقدم / تطور","تراجع","توقف"],
+            [1,"Unit 1 Core","development","Economic development creates jobs.","______ الاقتصادية تخلق وظائف.","تنمية / تطوير","تدمير","إهمال"],
+            [1,"Unit 1 Core","global","Climate change is a global issue.","تغير المناخ قضية ______.","عالمي","محلي","شخصي"],
+            [1,"Unit 1 Core","international","This is an international airport.","هذا مطار ______.","دولي","محلي","داخلي"],
+            [1,"Unit 1 Core","border","The train crossed the border.","عبر القطار ______.","حدود (دولية)","شارع","جسر"],
+            [1,"Unit 1 Core","nation","The whole nation celebrated together.","احتفلت ______ بأكملها معاً.","أمة / دولة","مدينة","حي"],
+            [1,"Unit 1 Core","society","Volunteers help our society.","يساعد المتطوعون ______ بأكمله.","مجتمع","فرد","شركة"],
+            [1,"Unit 1 Core","community","We live in a friendly community.","نعيش في ______ ودود.","مجتمع محلي","صحراء","غابة"],
+            [1,"Unit 1 Core","culture","Every country has a rich culture.","لكل دولة ______ غنية.","ثقافة","مبنى","طريق"],
+            [1,"Unit 1 Core","tradition","Hospitality is a Saudi tradition.","الضيافة ______ سعودي أصيل.","تقليد / عرف","موضة","قانون"],
+            [1,"Unit 1 Core","heritage","We are proud of our heritage.","نحن فخورون بـ ______ بلادنا.","تراث","مستقبل","حلم"],
+            [1,"Unit 1 Core","modern","Riyadh has many modern towers.","تضم الرياض العديد من الأبراج ______.","حديث / عصري","قديم","عتيق"],
+            [1,"Unit 1 Core","ancient","AlUla has ancient historical sites.","تضم العلا مواقع تاريخية ______.","قديم جداً / عتيق","جديد","حديث"],
+            [1,"Unit 1 Core","history","We learn lessons from history.","نتعلم الدروس من ______.","تاريخ","جغرافيا","رياضيات"],
+            [1,"Unit 1 Core","century","We live in the 21st century.","نحن نعيش في ______ الحادي والعشرين.","قرن (100 عام)","سنة","شهر"],
+            [1,"Unit 1 Core","decade","A lot changed in the last decade.","تغير الكثير في ______ الماضي.","عقد (10 سنوات)","أسبوع","يوم"],
+            [1,"Unit 1 Core","event","The World Cup is a huge event.","كأس العالم ______ ضخم.","حدث","مكان","شخص"],
+            [1,"Unit 1 Core","achievement","Graduating is a big achievement.","التخرج ______ كبير.","إنجاز","فشل","خسارة"],
+            [1,"Unit 1 Core","challenge","Pollution is a big challenge today.","التلوث ______ كبير اليوم.","تحدٍ","حل سهل","هدية"],
+            [1,"Unit 1 Core","solution","We need a smart solution.","نحتاج إلى ______ ذكي.","حل","مشكلة","سؤال"],
+            [1,"Unit 1 Core","issue","Traffic is an important issue.","حركة المرور ______ مهمة.","قضية / مسألة","لعبة","قصة"],
+            [1,"Unit 1 Core","crisis","Countries work to solve the water crisis.","تعمل الدول لحل ______ المياه.","أزمة","احتفال","نجاح"],
+            [1,"Unit 1 Core","protect","Laws protect wild animals.","القوانين ______ الحيوانات البرية.","يحمي","يؤذي","يترك"],
+            [1,"Unit 1 Core","reduce","We must reduce air pollution.","يجب أن ______ تلوث الهواء.","يقلل","يزيد","يضاعف"],
+            [1,"Unit 1 Core","improve","Practice will improve your English.","الممارسة سوف ______ لغتك الإنجليزية.","يحسّن","يضعف","يوقف"],
+            [1,"Unit 1 Core","increase","Prices may increase next year.","قد ______ الأسعار العام القادم.","يزداد / يرتفع","ينخفض","يتوقف"],
+            [1,"Unit 1 Core","decrease","We want to decrease waste.","نريد أن ______ النفايات.","ينخفض / يقلل","يزيد","يرفع"],
+            [1,"Unit 1 Core","connect","The bridge connects two cities.","الجسر ______ بين مدينتين.","يربط / يصل","يفصل","يقطع"],
+            [1,"Unit 1 Core","exchange","Students exchange ideas in class.","الطلاب ______ الأفكار في الفصل.","يتبادل","يحتفظ بـ","يخفي"],
+            [1,"Unit 1 Core","trade","Sea routes helped global trade.","ساعدت الطرق البحرية ______ العالمية.","تجارة","زراعة","صيد"],
+            [1,"Unit 1 Core","industry","The oil industry is very important.","______ النفط مهمة جداً.","صناعة","سياحة","رياضة"],
+            [1,"Unit 1 Core","agriculture","Water is essential for agriculture.","الماء ضروري لـ ______.","زراعة","تجارة","تعدين"],
+            [1,"Unit 1 Core","transport","Public transport reduces traffic.","______ العام يقلل حركة المرور.","نقل / مواصلات","سكن","تعليم"],
+            [1,"Unit 1 Core","network","We have a fast internet network.","لدينا ______ إنترنت سريعة.","شبكة","جهاز","شاشة"],
+            [1,"Unit 1 Core","digital","We live in a digital age.","نعيش في عصر ______.","رقمي","ورقي","يدوي"],
+            [1,"Unit 1 Core","information","The internet gives us information.","يمنحنا الإنترنت الكثير من ______.","معلومات","ألعاب","ملابس"],
+            [1,"Unit 1 Core","media","Social media connects millions.","تربط ______ الاجتماعية الملايين.","وسائل الإعلام","الكتب القديمة","المصانع"],
+            [1,"Unit 1 Core","impact","Technology has a huge impact.","للتكنولوجيا ______ ضخم.","تأثير / أثر","غياب","ضعف"],
+            [1,"Unit 1 Core","significant","This is a significant change.","هذا تغيير ______.","مهم / ملحوظ","تافه","بسيط"],
+            [1,"Unit 1 Core","rapid","There is rapid growth in tech.","يوجد نمو ______ في التقنية.","سريع جداً","بطيء","ثابت"],
+            [1,"Unit 1 Core","major","Health is a major concern.","الصحة اهتمام ______.","رئيسي / كبير","فرعي","صغير"],
+            [1,"Unit 1 Core","effective","This is an effective method.","هذه طريقة ______.","فعّال / مؤثر","ضعيف","غير مجدٍ"],
+            [1,"Unit 1 Core","sustainable","We need sustainable energy sources.","نحتاج إلى مصادر طاقة ______.","مستدام","مؤقت","مضر"],
+            [1,"Unit 1 Core","future","Education shapes our future.","التعليم يشكّل ______.","المستقبل","الماضي","الأمس"],
+
+            // ==================== UNIT 2: CAREERS (100 WORDS) ====================
+            [2,"Dictionary","animation","He loves watching 3D animation.","يحب مشاهدة ______ ثلاثية الأبعاد.","الرسوم المتحركة","الأخبار اليومية","التصوير الفوتوغرافي"],
+            [2,"Dictionary","animator","The animator drew the cartoon character.","رسم ______ الشخصية الكرتونية.","رسام رسوم متحركة","طباخ","سائق"],
+            [2,"Dictionary","computer generated imagery (CGI)","Modern movies use computer generated imagery (CGI).","تستخدم الأفلام الحديثة ______.","الصور المولدة بالحاسوب","الرسم باليد","الكتابة على الورق"],
+            [2,"Dictionary","flavor","Vanilla is my favorite ice cream flavor.","الفانيليا هي ______ الآيس كريم المفضلة لدي.","نكهة / طعم","لون","رائحة"],
+            [2,"Dictionary","microscope","We see tiny cells with a microscope.","نرى الخلايا الدقيقة باستخدام ______.","مجهر / ميكروسكوب","تلسكوب","كاميرا"],
+            [2,"Dictionary","qualification","A university degree is a good qualification.","الشهادة الجامعية ______ جيد.","مؤهل علمي أو عملي","إجازة","راتب"],
+            [2,"Dictionary","sculptor","The sculptor carved a statue from stone.","نحت ______ تمثالاً من الحجر.","نحات","نجار","حداد"],
+            [2,"Dictionary","sculpture","There is a nice sculpture in the museum.","توجد ______ جميلة في المتحف.","تمثال / منحوتة","لوحة زيتية","قصيدة"],
+            [2,"Dictionary","showroom","We saw new cars in the showroom.","شاهدنا سيارات جديدة في ______.","صالة عرض","مخزن قديم","مطبخ"],
+            [2,"Dictionary","staff","The hotel staff are very helpful.","______ الفندق متعاونون جداً.","طاقم العمل / الموظفون","الزبائن","الزوار"],
+            [2,"Dictionary","test tube","The scientist held a glass test tube.","أمسك العالم ______ زجاجياً.","أنبوب اختبار","قلم رصاص","كوب ماء"],
+            [2,"Dictionary","trend","Electric cars are a new trend.","السيارات الكهربائية ______ جديد.","توجه / موضة سائدة","عادة قديمة","مشكلة"],
+            [2,"Job Qualities","adaptability","Adaptability helps you in a new job.","______ تساعدك في وظيفة جديدة.","القدرة على التكيف","العناد","الكسل"],
+            [2,"Job Qualities","analytical skills","Engineers need strong analytical skills.","يحتاج المهندسون إلى ______ قوية.","مهارات تحليلية","مهارات رياضية","مهارات الطبخ"],
+            [2,"Job Qualities","flexibility","Flexibility is important in teamwork.","______ مهمة في العمل الجماعي.","المرونة","الصرامة","التأخير"],
+            [2,"Job Qualities","honesty","Honesty is the best policy.","______ هو أفضل سياسة.","الصدق / الأمانة","الكذب","الخداع"],
+            [2,"Job Qualities","initiative","She showed great initiative at work.","أظهرت ______ رائعة في العمل.","المبادرة","التردد","الانتظار"],
+            [2,"Job Qualities","integrity","A good leader has high integrity.","القائد الجيد يتمتع بـ ______ عالية.","النزاهة / الاستقامة","الغش","الإهمال"],
+            [2,"Job Qualities","motivation","He has high motivation to succeed.","لديه ______ عالية للنجاح.","الدافعية / التحفيز","الإحباط","الملل"],
+            [2,"Job Qualities","teamwork skills","Good teamwork skills help the group win.","______ الجيدة تساعد الفريق على الفوز.","مهارات العمل الجماعي","العمل الفردي","المنافسة"],
+            [2,"Job Qualities","work ethic","He has a very strong work ethic.","لديه ______ قوية جداً.","أخلاقيات العمل","وقت الفراغ","الإجازة"],
+            [2,"Dictionary","design","Architects design modern buildings.","المهندسون المعماريون ______ مباني حديثة.","يصمم","يهدم","يبيع"],
+            [2,"Dictionary","end up","He studied law but ended up as a chef.","درس القانون لكن ______ طاهياً.","ينتهي به الأمر","يبدأ من جديد","يتوقف فوراً"],
+            [2,"Dictionary","expand","The company plans to expand next year.","تخطط الشركة أن ______ العام القادم.","يتوسع","ينكمش","يغلق"],
+            [2,"Dictionary","experiment","Scientists experiment in the lab.","العلماء ______ في المختبر.","يجرب / يجري تجربة","ينام","يقرأ قصة"],
+            [2,"Dictionary","visualize","Try to visualize your future success.","حاول أن ______ نجاحك المستقبلي.","يتصور / يتخيل","ينسى","يتجاهل"],
+            [2,"Dictionary","challenging","This math problem is very challenging.","مسألة الرياضيات هذه ______.","صعب / يمثل تحدياً","سهل جداً","ممل"],
+            [2,"Dictionary","creative","She is a very creative artist.","إنها فنانة ______ جداً.","مبدع / خلاق","مقلد","عادي"],
+            [2,"Dictionary","crucial","Water is crucial for all life.","الماء ______ لكل أشكال الحياة.","حاسم / بالغ الأهمية","ثانوي","غير مهم"],
+            [2,"Dictionary","efficient","This new machine is very efficient.","هذه الآلة الجديدة ______ جداً.","فعّال / ذو كفاءة","بطيء","معطل"],
+            [2,"Dictionary","hands-on","Students need hands-on experience.","يحتاج الطلاب إلى خبرة ______.","عملي / تطبيقي","نظري فقط","خيالي"],
+            [2,"Dictionary","hardworking","He is a hardworking student.","إنه طالب ______.","مجتهد","كسول","مهمل"],
+            [2,"Dictionary","lucky","I was lucky to win the prize.","كنت ______ بالفوز بالجائزة.","محظوظ","تعيس","حزين"],
+            [2,"Dictionary","miniature","He collects miniature cars.","يجمع السيارات ______.","مصغّر / صغير جداً","عملاق","ضخم"],
+            [2,"Dictionary","permanent","He found a permanent job.","وجد وظيفة ______.","دائم","مؤقت","سريع"],
+            [2,"Dictionary","reliable","Ali is a reliable friend.","علي صديق ______.","موثوق / يُعتمد عليه","غير موثوق","كثير النسيان"],
+            [2,"Dictionary","sociable","She is sociable and makes friends easily.","إنها ______ وتكوّن صداقات بسهولة.","اجتماعي","منعزل","خجول"],
+            [2,"Dictionary","stuck","We were stuck in traffic for an hour.","كنا ______ في الزحام لمدة ساعة.","عالق","منطلق","سريع"],
+            [2,"Real Talk","bored to death","I was bored to death during the long wait.","كنت ______ أثناء الانتظار الطويل.","يشعر بملل شديد جداً","سعيد للغاية","متحمس جداً"],
+            [2,"Real Talk","day after day","He worked hard day after day.","عمل بجد ______.","يوماً بعد يوم","مرة في السنة","أبداً"],
+            [2,"Real Talk","day in and day out","She practices piano day in and day out.","تتدرب على البيانو ______.","باستمرار / كل يوم دون توقف","نادراً جداً","في العطلات فقط"],
+            [2,"Real Talk","luckily","Luckily, we arrived before the rain.","______، وصلنا قبل المطر.","لحسن الحظ","لسوء الحظ","للأسف"],
+            [2,"Real Talk","talk someone out of it","I tried to talk him out of it.","حاولت أن ______.","يقنع شخصاً بالعدول عن قراره","يشجعه على الفعل","يتجاهله تماماً"],
+            [2,"Unit 2 Core","career","He wants a career in medicine.","يريد ______ في مجال الطب.","مهنة / مسار وظيفي","إجازة","هواية"],
+            [2,"Unit 2 Core","profession","Teaching is a noble profession.","التدريس ______ نبيلة.","مهنة","رحلة","لعبة"],
+            [2,"Unit 2 Core","interview","I have a job interview tomorrow.","لدي ______ غداً.","مقابلة عمل","حفلة","اختبار قيادة"],
+            [2,"Unit 2 Core","resume","Send your resume to the company.","أرسل ______ إلى الشركة.","سيرة ذاتية","رسالة شخصية","بطاقة دعوة"],
+            [2,"Unit 2 Core","candidate","She is the best candidate for the job.","إنها أفضل ______ للوظيفة.","مرشح (لوظيفة)","مدير","زبون"],
+            [2,"Unit 2 Core","applicant","Every applicant must fill out this form.","يجب على كل ______ تعبئة هذا النموذج.","متقدم لطلب وظيفة","صاحب عمل","متقاعد"],
+            [2,"Unit 2 Core","employer","The employer pays good salaries.","يدفع ______ رواتب جيدة.","صاحب العمل","الموظف","العميل"],
+            [2,"Unit 2 Core","employee","He is a loyal employee.","إنه ______ مخلص.","موظف","مدير عام","زائر"],
+            [2,"Unit 2 Core","colleague","My colleague helped me finish the task.","ساعدني ______ في إنهاء المهمة.","زميل عمل","جار","قريب"],
+            [2,"Unit 2 Core","manager","The manager leads the whole team.","يقود ______ الفريق بأكمله.","مدير","طالب","متدرب"],
+            [2,"Unit 2 Core","supervisor","Ask your supervisor for permission.","اطلب الإذن من ______.","مشرف","عميل","ضيف"],
+            [2,"Unit 2 Core","salary","He receives a monthly salary.","يتقاضى ______ كل شهر.","راتب شهري","غرامة","ضريبة"],
+            [2,"Unit 2 Core","wage","Workers get a fair hourly wage.","يحصل العمال على ______ عادل بالساعة.","أجر","هدية","قرض"],
+            [2,"Unit 2 Core","promotion","She got a promotion for her hard work.","حصلت على ______ لعملها الجاد.","ترقية وظيفية","فصل من العمل","تقاعد"],
+            [2,"Unit 2 Core","experience","This job requires two years of experience.","تتطلب هذه الوظيفة سنتين من ______.","خبرة","شهادة ميلاد","جواز سفر"],
+            [2,"Unit 2 Core","skill","Communication is a key skill.","التواصل ______ أساسية.","مهارة","مشكلة","عادة"],
+            [2,"Unit 2 Core","talent","He has a natural talent for drawing.","لديه ______ طبيعية في الرسم.","موهبة","كسل","خوف"],
+            [2,"Unit 2 Core","degree","He holds a degree in engineering.","يحمل ______ في الهندسة.","درجة / شهادة جامعية","رخصة قيادة","تذكرة"],
+            [2,"Unit 2 Core","training","New workers attend a training course.","يحضر العمال الجدد دورة ______.","تدريب","إجازة","تقاعد"],
+            [2,"Unit 2 Core","internship","She did an internship at a bank.","أتمت ______ في أحد البنوك.","تدريب تعاوني / مهني","رحلة سياحية","تقاعد"],
+            [2,"Unit 2 Core","apply","I will apply for this job online.","سوف ______ لهذه الوظيفة عبر الإنترنت.","يتقدم بطلب (لوظيفة)","يستقيل","يرفض"],
+            [2,"Unit 2 Core","hire","The company will hire five engineers.","الشركة سوف ______ خمسة مهندسين.","يوظّف","يفصل","يتقاعد"],
+            [2,"Unit 2 Core","fire","They had to fire the lazy worker.","اضطروا أن ______ العامل الكسول.","يفصل من العمل","يرقّي","يكافئ"],
+            [2,"Unit 2 Core","resign","He decided to resign and start a business.","قرر أن ______ ويبدأ عملاً تجارياً.","يستقيل","يتوظف","يتدرب"],
+            [2,"Unit 2 Core","retire","People usually retire at age 60.","الناس عادة ______ في سن الستين.","يتقاعد","يتخرج","يبدأ العمل"],
+            [2,"Unit 2 Core","full-time","She works a full-time job.","تعمل في وظيفة بـ ______.","دوام كامل","دوام جزئي","إجازة"],
+            [2,"Unit 2 Core","part-time","Students often take part-time jobs.","غالباً ما يعمل الطلاب بـ ______.","دوام جزئي","دوام كامل","تقاعد"],
+            [2,"Unit 2 Core","overtime","He worked overtime to finish early.","عمل ______ لينهي مبكراً.","عمل إضافي","وقت راحة","إجازة مرضية"],
+            [2,"Unit 2 Core","deadline","We must finish before the deadline.","يجب أن ننتهي قبل ______.","الموعد النهائي","بداية اليوم","العطلة"],
+            [2,"Unit 2 Core","schedule","Check your work schedule for Monday.","راجع ______ عملك ليوم الاثنين.","جدول مواعيد","خريطة","قائمة طعام"],
+            [2,"Unit 2 Core","responsibility","Being a leader is a big responsibility.","كونك قائداً ______ كبيرة.","مسؤولية","لعبة","إجازة"],
+            [2,"Unit 2 Core","duty","It is my duty to help customers.","من ______ مساعدة العملاء.","واجب / مهمة","هواية","حلم"],
+            [2,"Unit 2 Core","task","I completed the first task quickly.","أكملت ______ الأولى بسرعة.","مهمة","مشكلة","عطلة"],
+            [2,"Unit 2 Core","project","Our team is working on a new project.","يعمل فريقنا على ______ جديد.","مشروع","قصة","نزهة"],
+            [2,"Unit 2 Core","meeting","We have a staff meeting at 10 AM.","لدينا ______ للموظفين الساعة 10 صباحاً.","اجتماع","حفلة","مباراة"],
+            [2,"Unit 2 Core","presentation","He gave a great presentation.","قدم ______ رائعاً.","عرض تقديمي","رسالة","مكالمة"],
+            [2,"Unit 2 Core","client","We always listen to our client.","نستمع دائماً إلى ______.","عميل / زبون","موظف","مدير"],
+            [2,"Unit 2 Core","customer","The customer is always right.","______ دائماً على حق.","زبون","بائع","مدير"],
+            [2,"Unit 2 Core","department","She works in the sales department.","تعمل في ______ المبيعات.","قسم / إدارة","مبنى","شارع"],
+            [2,"Unit 2 Core","office","My office is on the third floor.","______ في الطابق الثالث.","مكتب","مطبخ","حديقة"],
+            [2,"Unit 2 Core","workplace","A clean workplace helps you focus.","______ النظيف يساعدك على التركيز.","بيئة / مكان العمل","ملعب","منزل"],
+            [2,"Unit 2 Core","ambitious","He is ambitious and wants to be a CEO.","إنه ______ ويريد أن يصبح رئيساً تنفيذياً.","طموح","كسول","خائف"],
+            [2,"Unit 2 Core","confident","Be confident during your interview.","كن ______ أثناء المقابلة.","واثق من نفسه","متردد","خجول"],
+            [2,"Unit 2 Core","organized","An organized person never loses files.","الشخص ______ لا يضيع ملفاته أبداً.","منظّم","فوضوي","متأخر"],
+            [2,"Unit 2 Core","punctual","She is always punctual and arrives early.","إنها ______ وتصل مبكراً.","دقيق في المواعيد","كثير التأخير","مهمل"],
+            [2,"Unit 2 Core","professional","He acts in a very professional way.","يتصرف بطريقة ______ جداً.","احترافي / مهني","عشوائي","طفولي"],
+            [2,"Unit 2 Core","experienced","We need an experienced driver.","نحتاج إلى سائق ______.","ذو خبرة","مبتدئ","جديد"],
+            [2,"Unit 2 Core","qualified","She is fully qualified for the role.","إنها ______ تماماً لهذا الدور.","مؤهل","غير مناسب","مرفوض"],
+            [2,"Unit 2 Core","patient","Teachers must be very patient.","يجب أن يكون المعلمون ______ جداً.","صبور","عصبي","متسرع"],
+            [2,"Unit 2 Core","cooperative","He is a cooperative team member.","إنه عضو فريق ______.","متعاون","أناني","عنيد"],
+            [2,"Unit 2 Core","dedicated","She is dedicated to her medical work.","إنها ______ في عملها الطبي.","متفانٍ / مخلص","مهمل","كسول"],
+            [2,"Unit 2 Core","passion","Follow your passion when choosing a job.","اتبع ______ عند اختيار وظيفة.","شغف","ملل","خوف"],
+            [2,"Unit 2 Core","goal","My goal is to become a pilot.","______ أن أصبح طياراً.","هدف","عائق","ماضي"],
+            [2,"Unit 2 Core","success","Hard work leads to success.","العمل الجاد يؤدي إلى ______.","نجاح","فشل","تأخير"],
+            [2,"Unit 2 Core","opportunity","This job is a great opportunity.","هذه الوظيفة ______ رائعة.","فرصة","مشكلة","خسارة"],
+            [2,"Unit 2 Core","chef","The chef prepared a delicious meal.","أعدّ ______ وجبة لذيذة.","طاهٍ / شيف","سائق","مهندس"],
+            [2,"Unit 2 Core","architect","The architect designed the new mall.","صمم ______ المجمع الجديد.","مهندس معماري","طبيب","محامٍ"],
+
+            // ==================== UNIT 3: WHAT WILL BE, WILL BE (100 WORDS) ====================
+            [3,"Dictionary","appliance","A washing machine is a home appliance.","الغسالة عبارة عن ______.","جهاز منزلي","قطعة أثاث","لعبة"],
+            [3,"Dictionary","character","Who is your favorite character in the story?","من هي ______ المفضلة لديك في القصة؟","شخصية (في قصة أو فيلم)","مكان","عنوان"],
+            [3,"Dictionary","exploration","Ocean exploration reveals new sea life.","يكشف ______ المحيطات عن حياة بحرية جديدة.","استكشاف","سباحة","صيد"],
+            [3,"Dictionary","glass","Be careful with the broken glass.","كن حذراً من ______ المكسور.","زجاج","خشب","حديد"],
+            [3,"Dictionary","haircut","I need to get a haircut today.","أحتاج إلى ______ اليوم.","قصة شعر","حذاء جديد","قبعة"],
+            [3,"Dictionary","novel","She is reading an exciting novel.","تقرأ ______ مثيرة.","رواية","جريدة","رسالة"],
+            [3,"Dictionary","prediction","His prediction about the weather was right.","كان ______ بالطقس صحيحاً.","تنبؤ / توقع","ذكرى قديمة","حقيقة تاريخية"],
+            [3,"Dictionary","robot","The robot can clean the house.","يمكن لـ ______ تنظيف المنزل.","إنسان آلي / روبوت","سيارة","طائرة"],
+            [3,"Dictionary","rocket","The rocket flew into space.","طار ______ إلى الفضاء.","صاروخ","قطار","سفينة"],
+            [3,"Dictionary","shard","Don't step on that sharp shard.","لا تخطُ على تلك ______ الحادة.","شظية / قطعة حادة","وسادة","ورقة"],
+            [3,"Dictionary","shipwreck","Divers found an old shipwreck under the sea.","عثر الغواصون على ______ قديم تحت البحر.","حطام سفينة","ميناء جديد","جزيرة"],
+            [3,"Dictionary","skyscraper","Burj Khalifa is a famous skyscraper.","برج خليفة ______ مشهورة.","ناطحة سحاب","كوخ صغير","جسر"],
+            [3,"Dictionary","steel","Bridges are made of strong steel.","تُصنع الجسور من ______ القوي.","فولاذ / صلب","بلاستيك","ورق"],
+            [3,"Dictionary","submarine","A submarine travels under the water.","تبحر ______ تحت الماء.","غواصة","طائرة مروحية","قطار"],
+            [3,"Dictionary","tentacle","An octopus has eight tentacles.","للأخطبوط ثمانية ______.","مجس / ذراع (للأخطبوط)","جناح","ذيل"],
+            [3,"Dictionary","vision","Saudi Vision 2030 is very inspiring.","______ السعودية 2030 ملهمة جداً.","رؤية","صوت","ماضي"],
+            [3,"Dictionary","visionary","He is a visionary leader with big ideas.","إنه قائد ______ بأفكار كبيرة.","صاحب رؤية مستقبلية","شخص متشائم","مقلد"],
+            [3,"Dictionary","whale","The blue whale is the biggest animal.","______ الأزرق هو أكبر حيوان.","حوت","سمكة صغيرة","طائر"],
+            [3,"Dictionary","activate","Press the button to activate the alarm.","اضغط على الزر لكي ______ المنبه.","يفعّل / يشغّل","يطفئ","يكسر"],
+            [3,"Dictionary","attach","Please attach your photo to the email.","يرجى أن ______ صورتك بالبريد الإلكتروني.","يرفق / يربط","يحذف","يفصل"],
+            [3,"Dictionary","dive","He likes to dive in the Red Sea.","يحب أن ______ في البحر الأحمر.","يغوص","يطير","يجري"],
+            [3,"Dictionary","monitor","Doctors monitor the patient's heart.","الأطباء ______ قلب المريض.","يراقب / يرصد","يتجاهل","يترك"],
+            [3,"Dictionary","optimize","We want to optimize our study time.","نريد أن ______ وقت دراستنا.","يحسّن / يستغل بأفضل شكل","يضيّع","يقلل"],
+            [3,"Dictionary","gas-powered","Old cars are mostly gas-powered.","معظم السيارات القديمة ______.","يعمل بالبنزين / الوقود","يعمل بالكهرباء","يعمل بالرياح"],
+            [3,"Dictionary","high-speed","We traveled on a high-speed train.","سافرنا على قطار ______.","فائق السرعة","بطيء جداً","متوقف"],
+            [3,"Real Talk","certainly","Certainly, I will help you!","______، سأساعدك!","بالتأكيد","مستحيل","ربما لا"],
+            [3,"Real Talk","No kidding?","You won first prize? No kidding?","فزت بالجائزة الأولى؟ ______","حقاً؟ / لا تمزح!","لا أهتم","هذا ممل"],
+            [3,"Unit 3 Core","predict","Can you predict what will happen?","هل يمكنك أن ______ بما سيحدث؟","يتنبأ / يتوقع","يتذكر","ينسى"],
+            [3,"Unit 3 Core","forecast","The weather forecast says it will rain.","تقول ______ الطقس إنها ستمطر.","توقعات / نشرة جوية","تاريخ","قصة"],
+            [3,"Unit 3 Core","science fiction","Jules Verne wrote science fiction.","كتب جول فيرن قصص ______.","خيال علمي","تاريخ قديم","شعر"],
+            [3,"Unit 3 Core","author","He is a famous French author.","إنه ______ فرنسي مشهور.","مؤلف / كاتب","قارئ","رسام"],
+            [3,"Unit 3 Core","imagine","Imagine living on another planet!","______ العيش على كوكب آخر!","يتخيل","ينسى","يرفض"],
+            [3,"Unit 3 Core","imagination","Writers need a strong imagination.","يحتاج الكتّاب إلى ______ قوي.","خيال","واقع","خوف"],
+            [3,"Unit 3 Core","futuristic","The city has a futuristic design.","للمدينة تصميم ______.","مستقبلي","قديم جداً","تقليدي"],
+            [3,"Unit 3 Core","smart home","A smart home controls lights automatically.","يتحكم ______ بالإضاءة تلقائياً.","منزل ذكي","كوخ قديم","خيمة"],
+            [3,"Unit 3 Core","artificial intelligence","Artificial intelligence helps solve problems.","يساعد ______ في حل المشكلات.","الذكاء الاصطناعي","العمل اليدوي","الطبيعة"],
+            [3,"Unit 3 Core","automation","Automation makes factories faster.","تجعل ______ المصانع أسرع.","الأتمتة / التشغيل الآلي","البطء","التوقف"],
+            [3,"Unit 3 Core","microchip","Every smartphone has a tiny microchip.","يحتوي كل هاتف ذكي على ______.","شريحة إلكترونية دقيقة","بطارية كبيرة","شاشة"],
+            [3,"Unit 3 Core","sensor","The door opens using a motion sensor.","يُفتح الباب باستخدام ______ حركة.","مستشعر / حساس","مفتاح حديدي","قفل"],
+            [3,"Unit 3 Core","screen","Touch the screen to start.","المس ______ للبدء.","شاشة","لوحة مفاتيح","سماعة"],
+            [3,"Unit 3 Core","virtual","Students joined a virtual classroom.","انضم الطلاب إلى فصل ______.","افتراضي","تقليدي","ورقي"],
+            [3,"Unit 3 Core","hologram","We saw a 3D hologram in the show.","شاهدنا ______ في العرض.","صورة ثلاثية الأبعاد (هولوجرام)","صورة ورقية","لوحة"],
+            [3,"Unit 3 Core","drone","A drone delivered the small package.","قامت ______ بتوصيل الطرد الصغير.","طائرة بدون طيار","سفينة","قطار"],
+            [3,"Unit 3 Core","flying car","Will we drive a flying car one day?","هل سنقود ______ يوماً ما؟","سيارة طائرة","دراجة هوائية","قارب"],
+            [3,"Unit 3 Core","electric","Electric cars do not pollute the air.","السيارات ______ لا تلوث الهواء.","كهربائي","يعمل بالفحم","يدوي"],
+            [3,"Unit 3 Core","solar","Solar panels produce clean electricity.","تنتج الألواح ______ كهرباء نظيفة.","شمسي","مائي","ترابي"],
+            [3,"Unit 3 Core","fuel","Planes need a lot of fuel.","تحتاج الطائرات إلى الكثير من ______.","وقود","ماء","رمل"],
+            [3,"Unit 3 Core","battery","Charge the battery before you go.","اشحن ______ قبل أن تذهب.","بطارية","شاشة","سلك"],
+            [3,"Unit 3 Core","wireless","I use wireless headphones.","أستخدم سماعات ______.","لاسلكي","بسلك طويل","يدوي"],
+            [3,"Unit 3 Core","device","A tablet is a useful device.","الجهاز اللوحي ______ مفيد.","جهاز","كتاب","قلم"],
+            [3,"Unit 3 Core","gadget","He loves buying every new gadget.","يحب شراء كل ______ جديدة.","أداة تقنية ذكية","ملابس","طعام"],
+            [3,"Unit 3 Core","machine","This machine saves a lot of time.","توفر هذه ______ الكثير من الوقت.","آلة / ماكينة","شجرة","حيوان"],
+            [3,"Unit 3 Core","engine","The rocket engine is very powerful.","______ الصاروخ قوي جداً.","محرك","إطار","مقعد"],
+            [3,"Unit 3 Core","system","The security system protects the house.","يحمي ______ الأمان المنزل.","نظام","غرفة","نافذة"],
+            [3,"Unit 3 Core","control","You can control the TV with your phone.","يمكنك أن ______ التلفاز بهاتفك.","يتحكم في","يكسر","يترك"],
+            [3,"Unit 3 Core","operate","Robots can operate day and night.","يمكن للروبوتات أن ______ ليلاً ونهاراً.","يشغّل / يعمل","ينام","يتوقف"],
+            [3,"Unit 3 Core","program","Engineers program robots to help us.","المهندسون ______ الروبوتات لمساعدتنا.","يبرمج","يرسم","يطبخ"],
+            [3,"Unit 3 Core","data","Computers store huge amounts of data.","تخزّن الحواسيب كميات ضخمة من ______.","بيانات","أوراق","كتب"],
+            [3,"Unit 3 Core","space","Astronauts travel into outer space.","يسافر رواد الفضاء إلى ______ الخارجي.","الفضاء","البحر","الصحراء"],
+            [3,"Unit 3 Core","moon","Humans landed on the moon in 1969.","هبط البشر على ______ عام 1969.","القمر","الشمس","المريخ"],
+            [3,"Unit 3 Core","Mars","Scientists want to send people to Mars.","يريد العلماء إرسال بشر إلى ______.","كوكب المريخ","الأرض","القمر"],
+            [3,"Unit 3 Core","galaxy","There are billions of stars in our galaxy.","توجد مليارات النجوم في ______.","مجرة","مدينة","قارة"],
+            [3,"Unit 3 Core","universe","The universe is endlessly huge.","______ ضخم بلا حدود.","الكون","القرية","البحر"],
+            [3,"Unit 3 Core","gravity","There is no gravity in space.","لا توجد ______ في الفضاء.","الجاذبية","الهواء","الضوء"],
+            [3,"Unit 3 Core","ocean","The ocean is very deep and mysterious.","______ عميق جداً وغامض.","محيط","نهر","بحيرة"],
+            [3,"Unit 3 Core","underwater","Fish live in an underwater world.","تعيش الأسماك في عالم ______.","تحت الماء","في السماء","على الجبل"],
+            [3,"Unit 3 Core","captain","The captain led the submarine crew.","قاد ______ طاقم الغواصة.","قبطان","راكب","صياد"],
+            [3,"Unit 3 Core","crew","The crew worked together on the ship.","عمل ______ معاً على السفينة.","طاقم (سفينة أو طائرة)","ركاب","سياح"],
+            [3,"Unit 3 Core","voyage","They went on a long sea voyage.","ذهبوا في ______.","رحلة بحرية طويلة","نزهة قصيرة","اجتماع"],
+            [3,"Unit 3 Core","adventure","Exploring the ocean is an adventure.","استكشاف المحيط يعتبر ______.","مغامرة","روتين","نوم"],
+            [3,"Unit 3 Core","creature","The giant squid is a sea creature.","الحبار العملاق ______ بحري.","مخلوق / كائن","صخرة","سفينة"],
+            [3,"Unit 3 Core","giant","They saw a giant octopus.","شاهدوا أخطبوطاً ______.","عملاق / ضخم","صغير جداً","نحيف"],
+            [3,"Unit 3 Core","mystery","The deep sea is full of mystery.","البحر العميق مليء بـ ______.","غموض / لغز","وضوح","ملل"],
+            [3,"Unit 3 Core","discover","We discover new species every year.","نحن ______ فصائل جديدة كل عام.","يكتشف","يخفي","ينسى"],
+            [3,"Unit 3 Core","invent","Who will invent the next big thing?","من سوف ______ الشيء العظيم القادم؟","يخترع","يقلد","يشتري"],
+            [3,"Unit 3 Core","create","Technology helps us create new art.","تساعدنا التقنية أن ______ فناً جديداً.","ينشئ / يبتكر","يهدم","يمسح"],
+            [3,"Unit 3 Core","replace","Will robots replace human workers?","هل سوف ______ الروبوتات العمال البشر؟","يستبدل / يحل محل","يبقي","يساعد"],
+            [3,"Unit 3 Core","adapt","Humans can adapt to new changes.","يستطيع البشر أن ______ مع التغييرات الجديدة.","يتكيف","يعاند","يتوقف"],
+            [3,"Unit 3 Core","evolve","Phones continue to evolve every year.","تستمر الهواتف في أن ______ كل عام.","يتطور تدريجياً","يتراجع","يثبت"],
+            [3,"Unit 3 Core","advance","Medical science continues to advance.","يستمر العلم الطبي في أن ______.","يتقدم","يتأخر","يتوقف"],
+            [3,"Unit 3 Core","breakthrough","This vaccine is a medical breakthrough.","هذا اللقاح يعتبر ______.","إنجاز علمي كبير / طفرة","خطأ","فشل"],
+            [3,"Unit 3 Core","innovation","Innovation drives the modern world.","______ يقود العالم الحديث.","ابتكار","تقليد","روتين"],
+            [3,"Unit 3 Core","possible","Anything is possible with hard work.","كل شيء ______ بالعمل الجاد.","ممكن","مستحيل","صعب"],
+            [3,"Unit 3 Core","impossible","Flying used to seem impossible.","كان الطيران يبدو ______ في السابق.","مستحيل","سهل","عادي"],
+            [3,"Unit 3 Core","probable","Rain is probable this evening.","المطر ______ هذا المساء.","محتمل","مستحيل","ممنوع"],
+            [3,"Unit 3 Core","likely","He is likely to win the race.","______ أن يفوز بالسباق.","مرجّح / من المحتمل","مستبعد","مستحيل"],
+            [3,"Unit 3 Core","unlikely","Snow in summer is very unlikely.","الثلج في الصيف ______ جداً.","غير محتمل","أكيد","دائم"],
+            [3,"Unit 3 Core","certain","I am certain he will succeed.","أنا ______ أنه سينجح.","متأكد / واثق","شاكّ","محتار"],
+            [3,"Unit 3 Core","expect","I expect great results this term.","أنا ______ نتائج رائعة هذا الفصل.","يتوقع","ينسى","يرفض"],
+            [3,"Unit 3 Core","hope","I hope to visit space one day.","أنا ______ أن أزور الفضاء يوماً ما.","يأمل","ييأس","يخاف"],
+            [3,"Unit 3 Core","plan","We plan to build a smart city.","نحن ______ لبناء مدينة ذكية.","يخطط","يعشوائي","يتوقف"],
+            [3,"Unit 3 Core","destiny","We work hard to shape our destiny.","نعمل بجد لنشكّل ______.","مصير / قدر","ماضي","لعبة"],
+            [3,"Unit 3 Core","century","Next century will look very different.","______ القادم سيبدو مختلفاً جداً.","قرن (100 سنة)","أسبوع","يوم"],
+            [3,"Unit 3 Core","generation","The next generation will use new tech.","سيستخدم ______ القادم تقنيات جديدة.","جيل","فرد","مكان"],
+            [3,"Unit 3 Core","modernize","They plan to modernize the airport.","يخططون أن ______ المطار.","يحدّث / يعصرن","يهدم","يغلق"],
+            [3,"Unit 3 Core","transport","High-speed trains improve transport.","تحسّن القطارات السريعة ______.","مواصلات / نقل","زراعة","طبخ"],
+            [3,"Unit 3 Core","architecture","The tower has amazing architecture.","يتميز البرج بـ ______ مذهلة.","هندسة معمارية","موسيقى","رياضة"],
+            [3,"Unit 3 Core","structure","Steel makes the structure very strong.","يجعل الفولاذ ______ قوياً جداً.","بناء / هيكل","ورقة","ماء"],
+            [3,"Unit 3 Core","material","Glass is a transparent material.","الزجاج ______ شفافة.","مادة / خامة","فكرة","وقت"],
+            [3,"Unit 3 Core","reality","Dreams can become reality one day.","يمكن للأحلام أن تصبح ______ يوماً ما.","واقع / حقيقة","خيال","وهم"]
+        ];
+
+        let currentIndex = 0;
+        let synth = window.speechSynthesis;
+        let isSpeaking = false;
+        let isAutoMode = false;
+
+        function startApp() {
+            document.getElementById('startScreen').style.display = 'none';
+            loadQuestion();
+        }
+
+        function getPreferredVoice() {
+            const voices = synth.getVoices();
+            return voices.find(v => v.lang === 'en-US' && /male|david|mark|alex|google us/i.test(v.name)) ||
+                   voices.find(v => v.lang === 'en-US') ||
+                   voices[0];
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectUnit(unitNumber) {
+            const foundIndex = quizData.findIndex(item => item[0] === unitNumber);
+            if (foundIndex !== -1) {
+                currentIndex = foundIndex;
+                loadQuestion();
+            }
+        }
+
+        function updateUnitTabs(activeUnit) {
+            [1, 2, 3].forEach(u => {
+                const tab = document.getElementById(`tab-${u}`);
+                if (u === activeUnit) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+        }
+
+        function highlightTargetInSentence(sentence, word) {
+            const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            let regex = new RegExp(`(${escaped}\\w*)`, 'gi');
+            if (regex.test(sentence)) {
+                return sentence.replace(regex, '<span class="word-in-sentence">$1</span>');
+            }
+            const firstPart = word.split(' ')[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const fallbackRegex = new RegExp(`(${firstPart}\\w*)`, 'i');
+            return sentence.replace(fallbackRegex, '<span class="word-in-sentence">$1</span>');
+        }
+
+        function formatArabicWithBlank(arSentence) {
+            return arSentence.replace('______', '<span class="ar-blank">______</span>');
+        }
+
+        function revealArabicBlank(arSentence, correctAr) {
+            return arSentence.replace('______', `<span class="ar-filled">${correctAr}</span>`);
+        }
+
+        function toggleMode() {
+            isAutoMode = !isAutoMode;
+            const btn = document.getElementById('modeBtn');
+            if (isAutoMode) {
+                btn.innerHTML = 'الانتقال: تلقائي ⚡';
+                btn.classList.add('auto-mode');
+            } else {
+                btn.innerHTML = 'الانتقال: يدوي ✋';
+                btn.classList.remove('auto-mode');
+            }
+        }
+
+        function loadQuestion() {
+            synth.cancel();
+            isSpeaking = false;
+
+            const targetEl = document.getElementById('targetWord');
+            const sentenceBox = document.getElementById('sentenceBox');
+            targetEl.classList.remove('highlight-yellow');
+            sentenceBox.classList.remove('highlight-yellow');
+
+            const q = quizData[currentIndex];
+            const unitNum = q[0];
+            const cat = q[1];
+            const enWord = q[2];
+            const fullSentence = q[3];
+            const arSentence = q[4];
+            const correctAr = q[5];
+
+            updateUnitTabs(unitNum);
+            const unitStartIndex = quizData.findIndex(item => item[0] === unitNum);
+            const indexInUnit = currentIndex - unitStartIndex + 1;
+
+            document.getElementById('catBadge').innerText = cat;
+            document.getElementById('wordCounter').innerText = `${indexInUnit} / 100`;
+            document.getElementById('totalCounter').innerText = `${currentIndex + 1} / ${quizData.length}`;
+
+            targetEl.innerText = enWord;
+            sentenceBox.innerHTML = highlightTargetInSentence(fullSentence, enWord);
+            document.getElementById('sentenceArBox').innerHTML = formatArabicWithBlank(arSentence);
+
+            let options = shuffleArray([correctAr, q[6], q[7]]);
+            const optionsBox = document.getElementById('optionsContainer');
+            optionsBox.innerHTML = '';
+
+            options.forEach(optionText => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optionText;
+                btn.onclick = () => checkAnswer(btn, optionText, correctAr, arSentence);
+                optionsBox.appendChild(btn);
+            });
+
+            setTimeout(() => { playWordAndSentence(); }, 250);
+        }
+
+        function playWordAndSentence() {
+            if (isSpeaking) synth.cancel();
+            isSpeaking = true;
+
+            const q = quizData[currentIndex];
+            const enWord = q[2];
+            const fullSentence = q[3];
+            const targetEl = document.getElementById('targetWord');
+            const sentenceBox = document.getElementById('sentenceBox');
+            const voice = getPreferredVoice();
+
+            let wordUtt = new SpeechSynthesisUtterance(enWord);
+            wordUtt.lang = 'en-US';
+            wordUtt.rate = 0.9;
+            if (voice) wordUtt.voice = voice;
+
+            let sentUtt = new SpeechSynthesisUtterance(fullSentence);
+            sentUtt.lang = 'en-US';
+            sentUtt.rate = 0.85;
+            if (voice) sentUtt.voice = voice;
+
+            wordUtt.onstart = () => {
+                targetEl.classList.add('highlight-yellow');
+                sentenceBox.classList.remove('highlight-yellow');
+            };
+            wordUtt.onend = () => {
+                targetEl.classList.remove('highlight-yellow');
+                synth.speak(sentUtt);
+            };
+            sentUtt.onstart = () => {
+                sentenceBox.classList.add('highlight-yellow');
+            };
+            sentUtt.onend = () => {
+                sentenceBox.classList.remove('highlight-yellow');
+                isSpeaking = false;
+            };
+
+            synth.speak(wordUtt);
+        }
+
+        function checkAnswer(btn, selected, correct, arSentence) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.add('option-disabled'));
+
+            // إظهار المعنى الصحيح داخل الفراغ في الجملة العربية بعد الإجابة
+            document.getElementById('sentenceArBox').innerHTML = revealArabicBlank(arSentence, correct);
+
+            if (selected === correct) {
+                btn.classList.add('option-correct');
+                fireConfetti();
+                if (isAutoMode) setTimeout(() => { nextWord(); }, 1800);
+            } else {
+                btn.classList.add('option-wrong');
+                allBtns.forEach(b => {
+                    if (b.innerText === correct) b.classList.add('option-correct');
+                });
+                if (isAutoMode) setTimeout(() => { nextWord(); }, 2800);
+            }
+        }
+
+        function fireConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const emojis = ['⭐', '🎉', '🏆', '✨'];
+            for (let i = 0; i < 30; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                piece.style.fontSize = Math.random() * 20 + 20 + 'px';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.top = -50 + 'px';
+                piece.style.animation = `fall ${Math.random() * 2.5 + 1.5}s linear forwards`;
+                container.appendChild(piece);
+            }
+        }
+
+        function nextWord() {
+            currentIndex++;
+            if (currentIndex >= quizData.length) currentIndex = 0;
+            loadQuestion();
+        }
+
+        function prevWord() {
+            currentIndex--;
+            if (currentIndex < 0) currentIndex = quizData.length - 1;
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
