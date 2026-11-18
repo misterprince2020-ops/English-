@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار مفردات Mega Goal 1 - الوحدات 4 إلى 6 (300 كلمة)</title>
+    <style>
+        :root {
+            --success: #10B981;
+            --danger: #DC2626;
+            --primary: #4F46E5;
+            --text-dark: #1F2937;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #startScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #4F46E5 0%, #9333EA 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 20000; color: white; text-align: center; padding: 20px; box-sizing: border-box;
+        }
+        .btn-start {
+            background: #F59E0B; color: white; border: none; padding: 15px 40px;
+            font-size: 26px; font-weight: 900; border-radius: 20px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; margin-top: 25px;
+        }
+        .btn-start:hover { transform: scale(1.08); background: #D97706; }
+
+        .header {
+            background: rgba(255, 255, 255, 0.96);
+            width: 100%; max-width: 680px; border-radius: 20px;
+            padding: 15px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 16px; box-sizing: border-box;
+        }
+        .app-title { color: var(--danger); font-size: 22px; font-weight: 900; margin: 0 0 4px 0; }
+        .school-info { font-size: 14px; font-weight: bold; color: var(--primary); margin-bottom: 12px; }
+
+        .unit-tabs {
+            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px;
+        }
+        .unit-tab {
+            background-color: #EEF2FF; color: var(--primary); border: 2px solid #C7D2FE;
+            padding: 9px 12px; border-radius: 12px; font-size: 14px; font-weight: 800;
+            cursor: pointer; transition: 0.2s; flex: 1; min-width: 160px;
+        }
+        .unit-tab:hover { background-color: #E0E7FF; transform: translateY(-2px); }
+        .unit-tab.active {
+            background-color: #9333EA; color: white; border-color: #7E22CE;
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.35);
+        }
+
+        .meta-row {
+            display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;
+        }
+        .cat-badge {
+            background-color: #FEF3C7; color: #B45309; font-weight: bold;
+            font-size: 13px; padding: 3px 12px; border-radius: 12px;
+        }
+        .word-counter { font-size: 15px; color: #4B5563; font-weight: bold; }
+
+        .quiz-container {
+            background: #ffffff; width: 100%; max-width: 680px; border-radius: 25px;
+            padding: 24px 20px; box-shadow: 0 15px 30px rgba(79, 70, 229, 0.15);
+            box-sizing: border-box; display: flex; flex-direction: column; align-items: center;
+            border: 4px solid #c7d2fe; margin-bottom: 18px;
+        }
+        .target-word-container {
+            min-height: 58px; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; width: 100%;
+        }
+        .target-word {
+            display: inline-block; font-size: 36px; font-weight: 900; color: var(--primary);
+            letter-spacing: 1px; text-align: center; direction: ltr; padding: 6px 18px; transition: all 0.2s ease;
+        }
+        .highlight-yellow {
+            background-color: #FDE047 !important; color: #000000 !important; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(253, 224, 71, 0.55);
+        }
+
+        .sentence-box {
+            background-color: #F9FAFB; border-left: 5px solid var(--primary);
+            padding: 14px 18px; border-radius: 10px; font-size: 22px; font-weight: bold;
+            color: var(--text-dark); direction: ltr; text-align: left; width: 100%;
+            box-sizing: border-box; margin-bottom: 8px; line-height: 1.6; min-height: 68px;
+            transition: all 0.2s ease;
+        }
+        .word-in-sentence {
+            color: var(--danger);
+            font-weight: 900;
+            text-decoration: underline;
+        }
+        .sentence-ar-box {
+            width: 100%; box-sizing: border-box; text-align: center; direction: rtl;
+            color: var(--danger); font-size: 19px; font-weight: 800;
+            background-color: #FEF2F2; border: 1.5px dashed #FCA5A5;
+            padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; line-height: 1.6;
+        }
+        .ar-blank {
+            display: inline-block;
+            min-width: 75px;
+            border-bottom: 3px solid var(--danger);
+            color: transparent;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+        .ar-filled {
+            color: #059669;
+            background-color: #D1FAE5;
+            padding: 1px 8px;
+            border-radius: 6px;
+            text-decoration: underline;
+        }
+
+        .btn-repeat {
+            background-color: #8B5CF6; color: white; border: none; padding: 10px 28px;
+            font-size: 18px; font-weight: bold; border-radius: 15px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); margin-bottom: 20px;
+            transition: 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-repeat:hover { transform: scale(1.05); background-color: #7C3AED; }
+
+        .options-container { display: flex; flex-direction: column; gap: 13px; width: 100%; }
+        .option-btn {
+            background-color: #EEF2FF; color: var(--primary); border: 2px solid #C7D2FE;
+            padding: 14px 20px; font-size: 22px; font-weight: bold; border-radius: 15px;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .option-btn:hover { background-color: #E0E7FF; transform: scale(1.02); }
+        .option-correct { background-color: #D1FAE5 !important; border-color: #10B981 !important; color: #065F46 !important; }
+        .option-wrong {
+            background-color: #FEE2E2 !important; border-color: #EF4444 !important;
+            color: #991B1B !important; animation: shake 0.4s;
+        }
+        .option-disabled { pointer-events: none; opacity: 0.85; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        .controls {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 680px; direction: ltr; margin-bottom: 20px; gap: 10px;
+        }
+        .nav-btn {
+            background-color: #4B5563; color: white; border: none; padding: 12px 24px;
+            border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .nav-btn:hover { background-color: #374151; }
+        .mode-btn {
+            background-color: #F59E0B; color: white; border: none; padding: 10px 18px;
+            border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .mode-btn.auto-mode { background-color: #10B981; }
+
+        #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .confetti-piece { position: absolute; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="startScreen">
+        <h1 style="font-size: 34px; margin-bottom: 8px;">مفردات أول ثانوي - Mega Goal 1</h1>
+        <h2 style="font-size: 21px; margin-bottom: 6px;">The Art of Advertising • Did You Hurt Yourself? • Take My Advice</h2>
+        <p style="font-size: 18px; opacity: 0.95;">300 كلمة وتعبير (الوحدات 4 إلى 6 + Expansion)</p>
+        <button class="btn-start" onclick="startApp()">ابدأ الاختبار 🚀</button>
+    </div>
+
+    <div id="confetti-container"></div>
+
+    <div class="header">
+        <h1 class="app-title">اختبار مفردات Mega Goal 1 (الوحدات 4 – 6)</h1>
+        <div class="school-info">إعداد الأستاذ/ حمادة الديب — مدارس آفاق الهداية الحديثة للبنين</div>
+
+        <div class="unit-tabs">
+            <button id="tab-4" class="unit-tab active" onclick="selectUnit(4)">الوحدة 4: The Art of Advertising (100)</button>
+            <button id="tab-5" class="unit-tab" onclick="selectUnit(5)">الوحدة 5: Did You Hurt Yourself? (100)</button>
+            <button id="tab-6" class="unit-tab" onclick="selectUnit(6)">الوحدة 6: Take My Advice (100)</button>
+        </div>
+
+        <div class="meta-row">
+            <span id="catBadge" class="cat-badge">Dictionary</span>
+            <span class="word-counter">الكلمة: <span id="wordCounter">1 / 100</span> (الإجمالي: <span id="totalCounter">1 / 300</span>)</span>
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <div class="target-word-container">
+            <div id="targetWord" class="target-word">Word</div>
+        </div>
+        <div id="sentenceBox" class="sentence-box"></div>
+        <div id="sentenceArBox" class="sentence-ar-box"></div>
+        <button class="btn-repeat" onclick="playWordAndSentence()">تكرار الصوت 🔁</button>
+        <div id="optionsContainer" class="options-container"></div>
+    </div>
+
+    <div class="controls">
+        <button class="nav-btn" onclick="prevWord()">&laquo; السابق</button>
+        <button id="modeBtn" class="mode-btn" onclick="toggleMode()">الانتقال: يدوي ✋</button>
+        <button class="nav-btn" onclick="nextWord()">التالي &raquo;</button>
+    </div>
+
+    <script>
+        // [رقم الوحدة، التصنيف، الكلمة، الجملة، ترجمة الجملة مع فراغ، المعنى الصحيح، تشتيت1، تشتيت2]
+        const quizData = [
+            // ==================== UNIT 4: THE ART OF ADVERTISING (100 WORDS) ====================
+            // --- 1-24: Dictionary & Real Talk ---
+            [4,"Dictionary","brick","Old phones were as heavy as a brick.","كانت الهواتف القديمة ثقيلة مثل ______.","طوبة / قالب طوب","ورقة","ريشة"],
+            [4,"Dictionary","classic","This car has a classic design.","تتميز هذه السيارة بتصميم ______.","كلاسيكي / تقليدي فاخر","مكسور","مؤقت"],
+            [4,"Dictionary","combination","The bag is a combination of style and quality.","الحقيبة عبارة عن ______ بين الأناقة والجودة.","مزيج / تركيبة","انفصال","مشكلة"],
+            [4,"Dictionary","compact car","A compact car is easy to park.","من السهل إيقاف ______.","سيارة صغيرة الحجم","شاحنة كبيرة","حافلة"],
+            [4,"Dictionary","frame","The bicycle has a strong metal frame.","تتميز الدراجة بـ ______ معدني قوي.","إطار / هيكل","مقعد","عجلة"],
+            [4,"Dictionary","fuel","This car uses very little fuel.","تستهلك هذه السيارة القليل جداً من ______.","وقود","ماء","هواء"],
+            [4,"Dictionary","legend","That sports car became a legend.","أصبحت تلك السيارة الرياضية ______.","أسطورة","خطأ","إشاعة"],
+            [4,"Dictionary","option","You have the option to pay online.","لديك ______ الدفع عبر الإنترنت.","خيار","إجبار","منع"],
+            [4,"Dictionary","pedal","Push the pedal to ride faster.","اضغط على ______ لتسير أسرع.","دواسة","مقود","مرآة"],
+            [4,"Dictionary","provider","Choose a fast internet provider.","اختر ______ إنترنت سريع.","مزوّد خدمة","عميل","مستخدم"],
+            [4,"Dictionary","triumph","The new product was a great triumph.","كان المنتج الجديد ______ عظيماً.","انتصار / نجاح باهر","فشل","خسارة"],
+            [4,"Dictionary","conduct","They conduct surveys about shoppers.","يقومون بـ ______ استطلاعات عن المتسوقين.","يجري / ينفذ","يلغي","ينسى"],
+            [4,"Dictionary","customize","You can customize your phone screen.","يمكنك أن ______ شاشة هاتفك.","يخصص / يعدّل حسب الرغبة","يكسر","يبيع"],
+            [4,"Dictionary","devise","They devised a smart ad plan.","قاموا بـ ______ خطة إعلانية ذكية.","يبتكر / يضع خطة","يمسح","يرفض"],
+            [4,"Dictionary","opt","Many buyers opt for electric cars.","الكثير من المشترين ______ السيارات الكهربائية.","يختار","يرفض","يبيع"],
+            [4,"Dictionary","bulky","Old computers were very bulky.","كانت الحواسيب القديمة ______ جداً.","ضخم الحجم / ثقيل","صغير جداً","خفيف"],
+            [4,"Dictionary","portable","A laptop is a portable computer.","الحاسوب المحمول جهاز ______.","محمول / سهل النقل","ثابت","ثقيل جداً"],
+            [4,"Dictionary","renewable","Solar power is a renewable energy.","الطاقة الشمسية طاقة ______.","متجدد","مؤقت","منتهٍ"],
+            [4,"Dictionary","smooth","The new car gives a smooth ride.","تمنح السيارة الجديدة قيادة ______.","سلس / ناعم","وعر","صعب"],
+            [4,"Dictionary","substantial","They offered a substantial discount.","قدموا خصماً ______.","كبير / ملموس","ضئيل جداً","وهمي"],
+            [4,"Dictionary","surgical","The doctor used surgical tools.","استخدم الطبيب أدوات ______.","جراحي","زراعي","منزلي"],
+            [4,"Dictionary","wireless","I bought a wireless mouse.","اشتريت فأرة ______.","لاسلكي","بسلك طويل","قديمة"],
+            [4,"Real Talk","What are you up to?","Hi Ali! What are you up to?","مرحباً علي! ______","ماذا تفعل؟ / ما أخبارك؟","أين تسكن؟","كم عمرك؟"],
+            [4,"Real Talk","What on earth...?","What on earth is that strange gadget?","______ تلك الأداة الغريبة؟","بحق السماء ماذا...؟ (للتعجب)","أين اشتريت...؟","متى وصلت...؟"],
+            // --- 25-100: Core Unit 4 Vocabulary ---
+            [4,"Unit 4 Core","advertising","Advertising helps companies sell products.","______ يساعد الشركات على بيع المنتجات.","الإعلان / الدعاية","التصنيع","الشحن"],
+            [4,"Unit 4 Core","advertisement","I saw a funny advertisement on TV.","شاهدت ______ مضحكاً على التلفاز.","إعلان","فيلم","خبر"],
+            [4,"Unit 4 Core","commercial","That car commercial was very creative.","كان ______ السيارة ذلك مبدعاً جداً.","إعلان تجاري (تلفزيوني)","برنامج رياضي","مسلسل"],
+            [4,"Unit 4 Core","product","This company makes a great product.","تصنع هذه الشركة ______ رائعاً.","منتج","متجر","شارع"],
+            [4,"Unit 4 Core","brand","What is your favorite shoe brand?","ما هي ______ الأحذية المفضلة لديك؟","علامة تجارية","مقاس","لون"],
+            [4,"Unit 4 Core","logo","The company has a simple logo.","للشركة ______ بسيط.","شعار","عنوان","موقع"],
+            [4,"Unit 4 Core","slogan","A good slogan is easy to remember.","______ الجيد يسهل تذكره.","شعار لفظي (عبارة إعلانية)","سعر","فاتورة"],
+            [4,"Unit 4 Core","consumer","The consumer wants high quality.","يريد ______ جودة عالية.","المستهلك","المصنع","المعلن"],
+            [4,"Unit 4 Core","buyer","The buyer checked the price first.","فحص ______ السعر أولاً.","المشتري","البائع","المدير"],
+            [4,"Unit 4 Core","seller","The seller gave us a good offer.","قدم لنا ______ عرضاً جيداً.","البائع","المشتري","الزبون"],
+            [4,"Unit 4 Core","market","Smartphones have a huge market.","للهواتف الذكية ______ ضخم.","سوق","مصنع","مخزن"],
+            [4,"Unit 4 Core","marketing","Digital marketing reaches millions.","يصل ______ الرقمي إلى الملايين.","التسويق","التعليم","الزراعة"],
+            [4,"Unit 4 Core","campaign","They launched a new ad campaign.","أطلقوا ______ إعلانية جديدة.","حملة","رحلة","مباراة"],
+            [4,"Unit 4 Core","target","Young people are our target audience.","الشباب هم جمهورنا ______.","مستهدف","مجهول","قديم"],
+            [4,"Unit 4 Core","audience","The ad caught the audience's attention.","جذب الإعلان انتباه ______.","الجمهور","العمال","المنافسين"],
+            [4,"Unit 4 Core","persuade","Good ads persuade people to buy.","الإعلانات الجيدة ______ الناس بالشراء.","يقنع","يمنع","يخيف"],
+            [4,"Unit 4 Core","promote","Companies promote their new phones.","الشركات ______ هواتفها الجديدة.","يروّج لـ","يخفي","يوقف"],
+            [4,"Unit 4 Core","attract","Bright colors attract shoppers.","الألوان الزاهية ______ المتسوقين.","يجذب","يبعد","يزعج"],
+            [4,"Unit 4 Core","quality","People pay more for high quality.","يدفع الناس أكثر مقابل ______ العالية.","جودة","وزن","حجم"],
+            [4,"Unit 4 Core","feature","The camera is the best feature.","الكاميرا هي أفضل ______.","ميزة / خاصية","عيب","مشكلة"],
+            [4,"Unit 4 Core","design","The sleek design looks very modern.","يبدو ______ الأنيق عصرياً جداً.","تصميم","سعر","لون"],
+            [4,"Unit 4 Core","style","This jacket has a unique style.","تتميز هذه السترة بـ ______ فريد.","أسلوب / طراز","حجم","وزن"],
+            [4,"Unit 4 Core","fashion","Fashion changes every season.","تتغير ______ كل موسم.","الموضة","اللغة","الطقس"],
+            [4,"Unit 4 Core","luxury","Gold watches are luxury items.","الساعات الذهبية سلع ______.","فاخر / رفاهية","رخيص","بسيط"],
+            [4,"Unit 4 Core","affordable","This phone is good and affordable.","هذا الهاتف جيد و ______.","بسعر معقول","غالي جداً","مكسور"],
+            [4,"Unit 4 Core","bargain","I bought this coat at a bargain!","اشتريت هذا المعطف بـ ______!","صفقة رابحة / سعر رخيص","خسارة","سعر مضاعف"],
+            [4,"Unit 4 Core","discount","There is a 30% discount today.","يوجد ______ 30% اليوم.","خصم / تخفيض","زيادة","ضريبة"],
+            [4,"Unit 4 Core","offer","Don't miss this special offer.","لا تفوّت هذا ______ الخاص.","عرض","طلب","سؤال"],
+            [4,"Unit 4 Core","deal","We got a great deal on the TV.","حصلنا على ______ رائعة على التلفاز.","صفقة","مشكلة","غرامة"],
+            [4,"Unit 4 Core","price","The price includes free delivery.","يشمل ______ التوصيل المجاني.","السعر","الوزن","المقاس"],
+            [4,"Unit 4 Core","value","This laptop offers great value.","يقدم هذا الحاسوب ______ رائعة.","قيمة","مشكلة","تأخير"],
+            [4,"Unit 4 Core","warranty","The phone comes with a 2-year warranty.","يأتي الهاتف مع ______ لمدة سنتين.","ضمان","فاتورة","خصم"],
+            [4,"Unit 4 Core","guarantee","We guarantee fast shipping.","نحن ______ الشحن السريع.","يضمن","يرفض","يؤجل"],
+            [4,"Unit 4 Core","billboard","I saw a huge billboard on the highway.","شاهدت ______ ضخمة على الطريق السريع.","لوحة إعلانية","سيارة","جسر"],
+            [4,"Unit 4 Core","poster","There is a movie poster on the wall.","يوجد ______ فيلم على الحائط.","ملصق إعلاني","ساعة","مرآة"],
+            [4,"Unit 4 Core","brochure","Take a brochure to read the details.","خذ ______ لقراءة التفاصيل.","كتيّب إعلاني","كتاب ضخم","جريدة"],
+            [4,"Unit 4 Core","flyer","They handed out flyers at the mall.","وزعوا ______ في المجمع التجاري.","منشور إعلاني","تذاكر سفر","فواتير"],
+            [4,"Unit 4 Core","magazine","She read an ad in a magazine.","قرأت إعلاناً في ______.","مجلة","رسالة","دفتر"],
+            [4,"Unit 4 Core","sponsor","The bank is the main sponsor.","البنك هو ______ الرئيسي.","راعي (داعم مالي)","منافس","لاعب"],
+            [4,"Unit 4 Core","celebrity","A famous celebrity appeared in the ad.","ظهر ______ مشهور في الإعلان.","شخصية مشهورة","عامل","طالب"],
+            [4,"Unit 4 Core","endorse","Athletes endorse sports shoes.","الرياضيون ______ الأحذية الرياضية.","يدعم / يروّج لـ","ينتقد","يمنع"],
+            [4,"Unit 4 Core","compare","Always compare prices before buying.","دائماً ______ الأسعار قبل الشراء.","يقارن","يدفع","ينسى"],
+            [4,"Unit 4 Core","review","Read the online review first.","اقرأ ______ عبر الإنترنت أولاً.","مراجعة / تقييم","قصة","إعلان"],
+            [4,"Unit 4 Core","rating","This app has a five-star rating.","هذا التطبيق لديه ______ خمس نجوم.","تقييم","سعر","حجم"],
+            [4,"Unit 4 Core","recommend","I recommend this smart watch.","أنا ______ بهذه الساعة الذكية.","يوصي بـ / ينصح بـ","يحذر من","يرفض"],
+            [4,"Unit 4 Core","popular","This brand is very popular.","هذه العلامة التجارية ______ جداً.","شائع / محبوب","مجهول","مرفوض"],
+            [4,"Unit 4 Core","unique","The phone has a unique color.","يتميز الهاتف بلون ______.","فريد من نوعه","عادي","مكرر"],
+            [4,"Unit 4 Core","innovative","It is an innovative new invention.","إنه اختراع جديد ______.","مبتكر","قديم","تقليدي"],
+            [4,"Unit 4 Core","compact","The camera is small and compact.","الكاميرا صغيرة و ______.","مدمج / صغير الحجم","ضخم","ثقيل"],
+            [4,"Unit 4 Core","lightweight","A lightweight bag is easy to carry.","الحقيبة ______ سهلة الحمل.","خفيف الوزن","ثقيل جداً","كبير"],
+            [4,"Unit 4 Core","durable","Good leather shoes are very durable.","الأحذية الجلدية الجيدة ______ جداً.","متين / يدوم طويلاً","ضعيف","سريع التلف"],
+            [4,"Unit 4 Core","reliable","Buy a reliable car for travel.","اشترِ سيارة ______ للسفر.","موثوق / يُعتمد عليه","معطل","بطيء"],
+            [4,"Unit 4 Core","convenient","Online shopping is very convenient.","التسوق عبر الإنترنت ______ جداً.","مريح / مناسب","متعب","صعب"],
+            [4,"Unit 4 Core","practical","This tool is very practical.","هذه الأداة ______ جداً.","عملي / مفيد","غير مفيد","معقد"],
+            [4,"Unit 4 Core","efficient","LED bulbs are energy efficient.","مصابيح LED ______ في استهلاك الطاقة.","فعّال / موفّر","مبذّر","ضعيف"],
+            [4,"Unit 4 Core","eco-friendly","Use eco-friendly shopping bags.","استخدم حقائب تسوق ______.","صديق للبيئة","مضر بالبيئة","باهظ الثمن"],
+            [4,"Unit 4 Core","solar-powered","I have a solar-powered calculator.","لدي آلة حاسبة ______.","تعمل بالطاقة الشمسية","تعمل بالبنزين","يدوية"],
+            [4,"Unit 4 Core","battery-operated","This toy is battery-operated.","هذه اللعبة ______.","تعمل بالبطارية","تعمل بالماء","يدوية"],
+            [4,"Unit 4 Core","waterproof","My new watch is waterproof.","ساعتي الجديدة ______.","مقاوم للماء","قابل للكسر","ثقيل"],
+            [4,"Unit 4 Core","automatic","The car has an automatic gearbox.","للسيارة ناقل حركة ______.","أوتوماتيكي / آلي","يدوي","قديم"],
+            [4,"Unit 4 Core","manual","Read the user manual carefully.","اقرأ ______ المستخدم بعناية.","دليل (أو يدوي)","فاتورة","إعلان"],
+            [4,"Unit 4 Core","gadget","He loves every new tech gadget.","يحب كل ______ تقنية جديدة.","أداة ذكية","قطعة ملابس","لعبة قديمة"],
+            [4,"Unit 4 Core","device","Turn off your electronic device.","أغلق ______ الإلكتروني.","جهاز","كتاب","قلم"],
+            [4,"Unit 4 Core","upgrade","I want to upgrade my phone.","أريد أن ______ هاتفي.","يرقّي / يحدّث","يبيع","يكسر"],
+            [4,"Unit 4 Core","release","They will release the new model soon.","سوف ______ الطراز الجديد قريباً.","يُصدر / يطرح","يلغي","يخفي"],
+            [4,"Unit 4 Core","purchase","Keep the receipt after your purchase.","احتفظ بالإيصال بعد عملية ______.","شراء","بيع","تأجير"],
+            [4,"Unit 4 Core","refund","Can I get a full refund?","هل يمكنني الحصول على ______ كامل؟","استرداد للمبلغ","خصم","هدية"],
+            [4,"Unit 4 Core","exchange","You can exchange the size easily.","يمكنك أن ______ المقاس بسهولة.","يستبدل","يرمي","يشتري"],
+            [4,"Unit 4 Core","delivery","The store offers free home delivery.","يقدم المتجر ______ مجانياً للمنزل.","توصيل","تغليف","صيانة"],
+            [4,"Unit 4 Core","package","The package arrived this morning.","وصل ______ هذا الصباح.","طرد / عبوة","رسالة","فاتورة"],
+            [4,"Unit 4 Core","label","Read the label on the bottle.","اقرأ ______ الموجود على الزجاجة.","ملصق البيانات","غطاء","سعر"],
+            [4,"Unit 4 Core","ingredient","Check every ingredient on the box.","افحص كل ______ على العلبة.","مكوّن","لون","حجم"],
+            [4,"Unit 4 Core","demand","There is high demand for this car.","يوجد ______ مرتفع على هذه السيارة.","طلب (في السوق)","خصم","خسارة"],
+            [4,"Unit 4 Core","supply","The store has a large supply.","لدى المتجر ______ كبير.","إمداد / مخزون","نقص","عجز"],
+            [4,"Unit 4 Core","competitor","Every company watches its competitor.","كل شركة تراقب ______.","منافس","عميل","موظف"],
+            [4,"Unit 4 Core","profit","The company made a huge profit.","حققت الشركة ______ ضخماً.","ربح","خسارة","دين"],
+
+            // ==================== UNIT 5: DID YOU HURT YOURSELF? (100 WORDS) ====================
+            // --- 1-57: Dictionary & Real Talk ---
+            [5,"Conjunctions","because","He stayed home because he was sick.","بقي في المنزل ______ كان مريضاً.","لأن","لذلك","ولكن"],
+            [5,"Conjunctions","so","It was raining, so I took an umbrella.","كانت تمطر، ______ أخذت مظلة.","لذلك / لذا","لأن","أو"],
+            [5,"Dictionary","badge","The police officer wore a shiny badge.","ارتدى ضابط الشرطة ______ لامعة.","شارة","قبعة","ساعة"],
+            [5,"Dictionary","equipment","Wear safety equipment at work.","ارتدِ ______ السلامة في العمل.","معدات / أدوات","ملابس نوم","أحذية رياضية"],
+            [5,"Dictionary","fog","Drive slowly in heavy fog.","قُد ببطء في ______ الكثيف.","ضباب","شمس","حر"],
+            [5,"Dictionary","helmet","Always wear a helmet on a bike.","ارتدِ ______ دائماً على الدراجة.","خوذة","نظارة","قبعة"],
+            [5,"Dictionary","injury","The player had a leg injury.","أصيب اللاعب بـ ______ في الساق.","إصابة","فوز","راحة"],
+            [5,"Dictionary","intersection","Stop at the busy intersection.","توقف عند ______ المزدحم.","تقاطع طرق","موقف سيارات","جسر"],
+            [5,"Dictionary","knee pad","Skaters wear a knee pad for safety.","يرتدي المتزلجون ______ للسلامة.","واقي الركبة","قفاز","حزام"],
+            [5,"Dictionary","ostrich","An ostrich can run very fast.","تستطيع ______ الجري بسرعة كبيرة.","نعامة","بطة","حمامة"],
+            [5,"Dictionary","risk","Speeding increases the risk of accidents.","السرعة تزيد من ______ الحوادث.","خطر / مجازفة","أمان","فرصة"],
+            [5,"Dictionary","scar","He has a small scar on his hand.","لديه ______ صغيرة على يده.","ندبة / أثر جرح","خاتم","ساعة"],
+            [5,"Dictionary","shock","He was in shock after the crash.","كان في حالة ______ بعد الحادث.","صدمة","فرح","ضحك"],
+            [5,"Dictionary","snowstorm","Roads closed during the snowstorm.","أُغلقت الطرق أثناء ______.","عاصفة ثلجية","يوم مشمس","ربيع"],
+            [5,"Dictionary","speed","Reduce your speed near schools.","خفف ______ بالقرب من المدارس.","سرعة","صوت","إضاءة"],
+            [5,"Dictionary","adjust","Adjust your seat before driving.","______ مقعدك قبل القيادة.","يضبط / يعدّل","يكسر","يترك"],
+            [5,"Dictionary","avoid","Try to avoid bad roads.","حاول أن ______ الطرق السيئة.","يتجنب","يتبع","يزور"],
+            [5,"Dictionary","crash","The car almost crashed into a wall.","كادت السيارة أن ______ بالجدار.","يصطدم / يتحطم","تقف","تطير"],
+            [5,"Dictionary","encounter","Drivers may encounter animals on the road.","قد ______ السائقون حيوانات على الطريق.","يصادف / يواجه","يتجاهل","ينسى"],
+            [5,"Dictionary","misjudge","Don't misjudge the distance.","لا ______ المسافة.","يسيء التقدير","يحسب بدقة","يقيس"],
+            [5,"Dictionary","obey","You must obey traffic laws.","يجب أن ______ قوانين المرور.","يطيع / يلتزم بـ","يخالف","ينسى"],
+            [5,"Dictionary","occur","Most accidents occur at night.","معظم الحوادث ______ في الليل.","يحدث / يقع","يتوقف","يختفي"],
+            [5,"Dictionary","pay attention","Pay attention to the road signs.","______ إلى لافتات الطريق.","ينتبه","ينام","يتجاهل"],
+            [5,"Dictionary","prevent","Seat belts prevent serious injuries.","أحزمة الأمان ______ الإصابات الخطيرة.","يمنع","يسبب","يزيد"],
+            [5,"Dictionary","release","Release the brake slowly.","______ الفرامل ببطء.","يحرر / يفلت","يضغط بقوة","يكسر"],
+            [5,"Dictionary","skid","Cars can skid on wet roads.","يمكن للسيارات أن ______ على الطرق المبللة.","ينزلق (للسيارة)","تطير","تتوقف"],
+            [5,"Dictionary","swerve","He had to swerve to miss the cat.","اضطر أن ______ ليتفادى القطة.","ينحرف فجأة","يقف تماماً","يرجع للخلف"],
+            [5,"Dictionary","tailgate","Never tailgate the car in front.","لا ______ السيارة التي أمامك أبداً.","يلاحق سيارة عن قرب شديد","يترك مسافة","يتوقف"],
+            [5,"Dictionary","weave","Don't weave through heavy traffic.","لا ______ بين السيارات في الزحام.","يناور / يتعرج بين المسارات","يقود ببطء","يقف"],
+            [5,"Injuries","break","Be careful or you might break your arm.","كن حذراً وإلا قد ______ ذراعك.","يكسر","يغسل","يرفع"],
+            [5,"Injuries","burn","Don't touch the stove or you will burn yourself.","لا تلمس الموقد وإلا سوف ______ نفسك.","يحرق","يبرد","ينظف"],
+            [5,"Injuries","cut","He cut his finger with a knife.","لقد ______ إصبعه بالسكين.","يجرح / يقطع","يغسل","يدهن"],
+            [5,"Injuries","die","Plants die without water.","النباتات ______ بدون ماء.","يموت","ينمو","يعيش"],
+            [5,"Injuries","fracture","He fell and fractured his wrist.","سقط و ______ معصمه.","يكسر / يشرخ (عظمة)","يشفي","يحرك"],
+            [5,"Injuries","poke","Don't poke your eye with a pen.","لا ______ عينك بالقلم.","يوخز / يغرز","يغلق","يمسح"],
+            [5,"Injuries","slip","Watch out! You might slip on the ice.","انتبه! قد ______ على الجليد.","ينزلق (للشخص)","يقفز","يجلس"],
+            [5,"Injuries","sprain","He sprained his ankle playing football.","______ كاحله أثناء لعب كرة القدم.","يلوي (مفصلاً)","يقوي","يغسل"],
+            [5,"Dictionary","aggressive","Aggressive driving causes accidents.","القيادة ______ تسبب الحوادث.","عدواني / متهور","هادئ","آمن"],
+            [5,"Dictionary","cautious","Be cautious when crossing the street.","كن ______ عند عبور الشارع.","حذر / متأنٍ","متهور","مسرع"],
+            [5,"Dictionary","distracted","Never drive when you are distracted.","لا تقد أبداً وأنت ______.","مشتت الذهن","مركز","يقظ"],
+            [5,"Dictionary","drowsy","Stop and rest if you feel drowsy.","توقف واسترح إذا شعرت بأنك ______.","نعسان","نشيط","سعيد"],
+            [5,"Dictionary","injured","The ambulance took the injured man.","نقلت الإسعاف الرجل ______.","مصاب / جريح","سليم","نشيط"],
+            [5,"Dictionary","rude","It is rude to shout at drivers.","من ______ الصراخ على السائقين.","وقح / غير مهذب","مهذب","لطيف"],
+            [5,"Dictionary","severe","He had a severe headache.","أصيب بصداع ______.","شديد / خطير","خفيف","بسيط"],
+            [5,"Dictionary","unconscious","The driver was unconscious after the hit.","كان السائق ______ بعد الصدمة.","فاقد للوعي","مستيقظ","يتحدث"],
+            [5,"Reflexive","herself","She hurt herself while cooking.","آذت ______ أثناء الطبخ.","نفسها","نفسه","نفسي"],
+            [5,"Reflexive","himself","He looked at himself in the mirror.","نظر إلى ______ في المرآة.","نفسه","نفسها","أنفسهم"],
+            [5,"Reflexive","itself","The cat cleaned itself.","نظفت القطة ______.","نفسه / نفسها (لغير العاقل)","نفسك","نفسي"],
+            [5,"Reflexive","myself","I taught myself how to swim.","علمت ______ كيف أسبح.","نفسي","نفسك","نفسه"],
+            [5,"Reflexive","ourselves","We enjoyed ourselves at the park.","استمتعنا ______ في الحديقة.","أنفسنا","أنفسهم","أنفسكم"],
+            [5,"Reflexive","themselves","They prepared themselves for the test.","جهزوا ______ للاختبار.","أنفسهم","أنفسنا","نفسه"],
+            [5,"Reflexive","yourself","Take care of yourself!","اعتنِ بـ ______!","نفسك","نفسي","نفسه"],
+            [5,"Reflexive","yourselves","Did you all hurt yourselves?","هل آذيتم ______ جميعاً؟","أنفسكم","أنفسنا","أنفسهم"],
+            [5,"Real Talk","I guess","I guess we should leave early.","______ أنه يجب أن نغادر مبكراً.","أعتقد / أظن","أنا متأكد لا","مستحيل"],
+            [5,"Real Talk","look at it this way","Look at it this way: nobody got hurt.","______: لم يُصب أحد بأذى.","انظر للأمر بهذه الطريقة","تجاهل الأمر","لا تنظر"],
+            [5,"Real Talk","lucky day","You found your keys! It's your lucky day.","وجدت مفاتيحك! إنه ______.","يومك المحظوظ","يوم سيء","يوم عادي"],
+            [5,"Real Talk","stuck in","We were stuck in traffic for an hour.","كنا ______ الزحام لمدة ساعة.","عالق في","مسرع في","خارج من"],
+            // --- 58-100: Core Unit 5 Vocabulary ---
+            [5,"Unit 5 Core","accident","Call 911 if you see a car accident.","اتصل بالطوارئ إذا رأيت ______ سيارة.","حادث","سباق","معرض"],
+            [5,"Unit 5 Core","safety","Road safety is everyone's duty.","______ الطرق واجب الجميع.","سلامة / أمان","سرعة","زحام"],
+            [5,"Unit 5 Core","seat belt","Always fasten your seat belt.","اربط ______ دائماً.","حزام الأمان","حذاءك","ساعتك"],
+            [5,"Unit 5 Core","airbag","The airbag protects the driver.","يحمي ______ السائق.","الوسادة الهوائية","المقود","المرآة"],
+            [5,"Unit 5 Core","brake","Press the brake to stop the car.","اضغط على ______ لإيقاف السيارة.","الفرامل / المكابح","الدواسة","البوق"],
+            [5,"Unit 5 Core","steering wheel","Keep both hands on the steering wheel.","أبقِ كلتا يديك على ______.","عجلة القيادة / المقود","الباب","النافذة"],
+            [5,"Unit 5 Core","mirror","Check the side mirror before turning.","تفقد ______ الجانبية قبل الانعطاف.","مرآة","نافذة","إشارة"],
+            [5,"Unit 5 Core","windshield","Clean the windshield to see clearly.","نظف ______ لترى بوضوح.","الزجاج الأمامي","الإطار","السقف"],
+            [5,"Unit 5 Core","headlight","Turn on the headlight at night.","شغّل ______ في الليل.","المصباح الأمامي","المكيف","الراديو"],
+            [5,"Unit 5 Core","horn","Don't honk the horn unnecessarily.","لا تضغط على ______ دون داعٍ.","بوق السيارة","الفرامل","المرآة"],
+            [5,"Unit 5 Core","tire","Check the air in every tire.","افحص الهواء في كل ______.","إطار / كفر","مقعد","باب"],
+            [5,"Unit 5 Core","highway","Drive carefully on the highway.","قُد بحذر على ______.","الطريق السريع","الرصيف","الموقف"],
+            [5,"Unit 5 Core","lane","Stay in your lane while driving.","ابقَ في ______ أثناء القيادة.","مسار (الطريق)","موقف","جسر"],
+            [5,"Unit 5 Core","crosswalk","Use the crosswalk to cross safely.","استخدم ______ للعبور بأمان.","معبر المشاة","الموقف","النفق"],
+            [5,"Unit 5 Core","pedestrian","Drivers must stop for a pedestrian.","يجب على السائقين التوقف لـ ______.","عابر سبيل / ماشٍ","سائق","راكب"],
+            [5,"Unit 5 Core","traffic light","Stop when the traffic light is red.","توقف عندما تكون ______ حمراء.","إشارة المرور","اللوحة","السيارة"],
+            [5,"Unit 5 Core","speed limit","Never exceed the speed limit.","لا تتجاوز ______ أبداً.","السرعة المحددة","الإشارة","الموقف"],
+            [5,"Unit 5 Core","fine","Speeding leads to a heavy fine.","السرعة تؤدي إلى ______ كبيرة.","غرامة مالية","مكافأة","هدية"],
+            [5,"Unit 5 Core","license","You need a license to drive.","تحتاج إلى ______ للقيادة.","رخصة قيادة","تذكرة","جواز سفر"],
+            [5,"Unit 5 Core","ambulance","The ambulance arrived very quickly.","وصلت ______ بسرعة كبيرة.","سيارة الإسعاف","الحافلة","الشاحنة"],
+            [5,"Unit 5 Core","emergency","Call this number in an emergency.","اتصل بهذا الرقم في حالة ______.","طوارئ","إجازة","سفر"],
+            [5,"Unit 5 Core","first aid","Learn basic first aid skills.","تعلّم مهارات ______ الأساسية.","الإسعافات الأولية","السباحة","الطبخ"],
+            [5,"Unit 5 Core","bandage","Put a clean bandage on the cut.","ضع ______ نظيفة على الجرح.","ضمادة","ورقة","قبعة"],
+            [5,"Unit 5 Core","bruise","He got a blue bruise on his arm.","أصيب بـ ______ زرقاء على ذراعه.","كدمة","ساعة","خاتم"],
+            [5,"Unit 5 Core","bleed","Press the cloth to stop the cut from bleeding.","اضغط بالقماش ليوقف الجرح ______.","ينزف","يبرد","يجف"],
+            [5,"Unit 5 Core","pain","He felt sharp pain in his knee.","شعر بـ ______ حاد في ركبته.","ألم","فرح","راحة"],
+            [5,"Unit 5 Core","hurt","Did you hurt your back?","هل ______ ظهرك؟","يؤذي / يجرح","يعالج","يغسل"],
+            [5,"Unit 5 Core","heal","The broken bone will heal soon.","سوف ______ العظمة المكسورة قريباً.","يلتئم / يشفى","ينكسر","يؤلم"],
+            [5,"Unit 5 Core","recover","We hope you recover very quickly.","نتمنى أن ______ بسرعة كبيرة.","يتعافى","يمرض","يسقط"],
+            [5,"Unit 5 Core","hospital","He went to the hospital for an X-ray.","ذهب إلى ______ لعمل أشعة.","مستشفى","مدرسة","سوق"],
+            [5,"Unit 5 Core","cast","His broken leg is in a cast.","ساقه المكسورة في ______.","جبيرة (جبس)","حذاء","جورب"],
+            [5,"Unit 5 Core","crutches","He walked using crutches for a month.","مشى باستخدام ______ لمدة شهر.","عكازات","دراجة","حذاء رياضي"],
+            [5,"Unit 5 Core","fall","Be careful not to fall down the stairs.","انتبه ألا ______ من على الدرج.","يسقط","يصعد","يجري"],
+            [5,"Unit 5 Core","trip","Don't trip over that electric cord.","لا ______ بذلك السلك الكهربائي.","يتعثر","يقفز","يجلس"],
+            [5,"Unit 5 Core","collide","Two cars collided at the corner.","______ سيارتان عند الزاوية.","يصطدم","توقفتا","مرتا"],
+            [5,"Unit 5 Core","damage","The storm caused heavy damage.","سببت العاصفة ______ كبيراً.","ضرر / تلف","فائدة","إصلاح"],
+            [5,"Unit 5 Core","warning","Read the warning sign carefully.","اقرأ لافتة ______ بعناية.","تحذير","ترحيب","إعلان"],
+            [5,"Unit 5 Core","hazard","Wet floors are a safety hazard.","الأرضيات المبللة تعتبر ______ على السلامة.","خطر","ميزة","راحة"],
+            [5,"Unit 5 Core","careless","Careless drivers cause many crashes.","السائقون ______ يسببون الكثير من الحوادث.","مهمل / غير مبالٍ","حذر","ماهر"],
+            [5,"Unit 5 Core","alert","Stay alert during long drives.","ابقَ ______ أثناء القيادة الطويلة.","يقظ / منتبه","نائم","مشتت"],
+            [5,"Unit 5 Core","focus","Always focus on the road ahead.","دائماً ______ على الطريق أمامك.","يركز","ينسى","ينظر للخلف"],
+            [5,"Unit 5 Core","texting","Texting while driving is very dangerous.","______ أثناء القيادة خطير جداً.","إرسال الرسائل النصية","الاستماع","التوقف"],
+            [5,"Unit 5 Core","safe","Arrive safe and sound!","نتمنى أن تصل ______!","آمن / سليم","متعب","متأخر"],
+
+            // ==================== UNIT 6: TAKE MY ADVICE + EXPANSION 4-6 (100 WORDS) ====================
+            // --- 1-39: Unit 6 Dictionary & Real Talk ---
+            [6,"Dictionary","anorexia","Anorexia is a serious health condition.","______ حالة صحية خطيرة.","فقدان الشهية العصبي","الرشاقة","الرياضة"],
+            [6,"Dictionary","appetite","Exercise gives you a good appetite.","التمارين تمنحك ______ جيدة.","شهية (للطعام)","نوم","قوة"],
+            [6,"Dictionary","carbohydrate","Bread and rice contain carbohydrate.","يحتوي الخبز والأرز على ______.","كربوهيدرات","فيتامينات","ماء"],
+            [6,"Dictionary","counselor","Talk to the school counselor for advice.","تحدث إلى ______ المدرسة لطلب النصيحة.","مرشد / مستشار","مدرب","سائق"],
+            [6,"Dictionary","eating disorder","She got help for her eating disorder.","حصلت على مساعدة لعلاج ______.","اضطراب الأكل","نزلة البرد","الصداع"],
+            [6,"Dictionary","fitness","Walking daily improves your fitness.","المشي يومياً يحسّن ______.","اللياقة البدنية","الكتابة","القراءة"],
+            [6,"Dictionary","peer pressure","Say no to negative peer pressure.","قل لا لـ ______ السلبي.","ضغط الأقران / الأصدقاء","نصيحة الوالدين","العمل الجماعي"],
+            [6,"Dictionary","principle","Honesty is an important principle.","الصدق ______ مهم.","مبدأ","عادة","لعبة"],
+            [6,"Dictionary","self-worth","Believe in your own self-worth.","آمن بـ ______ الخاصة بك.","تقدير الذات / قيمة النفس","الخوف","التردد"],
+            [6,"Dictionary","substance","Avoid any harmful substance.","تجنب أي ______ ضارة.","مادة","رياضة","فكرة"],
+            [6,"Dictionary","well-being","Good sleep supports your well-being.","النوم الجيد يدعم ______.","الصحة والعافية / الرفاهية","التعب","المرض"],
+            [6,"Dictionary","avoid","Avoid eating too much fast food.","______ تناول الكثير من الوجبات السريعة.","يتجنب","يكثر من","يحب"],
+            [6,"Dictionary","gain weight","Eating too many sweets makes you gain weight.","تناول الكثير من الحلويات يجعلك ______.","يزداد وزنه","ينقص وزنه","ينمو طولاً"],
+            [6,"Dictionary","lose weight","Healthy food helps you lose weight.","الطعام الصحي يساعدك على أن ______.","ينقص وزنه","يزداد وزنه","يتعب"],
+            [6,"Dictionary","regain","He worked hard to regain his strength.","عمل بجد لكي ______ قوته.","يستعيد","يفقد","ينسى"],
+            [6,"Dictionary","achievable","Set an achievable study goal.","ضع هدفاً دراسياً ______.","قابل للتحقيق","مستحيل","صعب جداً"],
+            [6,"Dictionary","bland","The soup tasted a bit bland.","كان طعم الشوربة ______ قليلاً.","بلا نكهة / باهت الطعم","حار جداً","مالح"],
+            [6,"Dictionary","depressed","Talk to someone if you feel depressed.","تحدث إلى شخص ما إذا شعرت بأنك ______.","مكتئب / حزين جداً","سعيد","متحمس"],
+            [6,"Dictionary","illegal","Texting while driving is illegal.","إرسال الرسائل أثناء القيادة ______.","غير قانوني","مسموح","مفيد"],
+            [6,"Dictionary","lean","Eat lean meat like grilled chicken.","تناول اللحوم ______ مثل الدجاج المشوي.","قليل الدهون","دسم جداً","مقلي"],
+            [6,"Dictionary","nutritious","Fruits and vegetables are very nutritious.","الفواكه والخضروات ______ جداً.","مغذٍ","ضار","بلا فائدة"],
+            [6,"Dictionary","old-fashioned","That hat looks a bit old-fashioned.","تبدو تلك القبعة ______ قليلاً.","قديم الطراز","عصري","مستقبلي"],
+            [6,"Dictionary","slim","Exercise keeps your body slim.","التمارين تحافظ على جسمك ______.","نحيف / رشيق","سمين","ثقيل"],
+            [6,"Advice","could","You could try joining a gym.","______ تجربة الاشتراك في نادٍ رياضي.","يمكنك (للاقتراح)","يجب ألا","مستحيل أن"],
+            [6,"Advice","had better","You had better see a doctor soon.","______ زيارة الطبيب قريباً.","من الأفضل لك","لا يجب عليك","ربما لا"],
+            [6,"Advice","might","You might want to rest today.","______ ترغب في الراحة اليوم.","ربما / قد","أكيد لا","ممنوع"],
+            [6,"Advice","ought to","You ought to drink more water.","______ شرب المزيد من الماء.","ينبغي عليك","لا داعي لـ","توقف عن"],
+            [6,"Advice","should","Students should sleep eight hours.","______ على الطلاب النوم ثماني ساعات.","يجب / ينبغي","ممنوع","مستحيل"],
+            [6,"Two-word verbs","give up","Never give up on your dreams!","لا ______ عن أحلامك أبداً!","يستسلم / يتخلى عن","يستمر في","يبدأ"],
+            [6,"Two-word verbs","put off","Don't put off your homework until late.","لا ______ واجبك حتى وقت متأخر.","يؤجل","ينجز","يكتب"],
+            [6,"Two-word verbs","take up","I decided to take up swimming.","قررت أن ______ السباحة.","يبدأ بممارسة (هواية)","يتوقف عن","ينسى"],
+            [6,"Two-word verbs","throw away","Throw away old expired food.","______ الطعام القديم منتهي الصلاحية.","يرمي / يتخلص من","يحتفظ بـ","يأكل"],
+            [6,"Two-word verbs","turn down","He had to turn down the invitation.","اضطر أن ______ الدعوة.","يرفض","يقبل","يرسل"],
+            [6,"Three-word verbs","cut down on","You should cut down on sugar.","يجب عليك أن ______ السكر.","يقلل من","يزيد من","يشتري"],
+            [6,"Three-word verbs","get along with","I get along with all my classmates.","أنا ______ مع جميع زملائي في الفصل.","ينسجم / يتوافق مع","يتشاجر مع","يبتعد عن"],
+            [6,"Three-word verbs","put up with","It is hard to put up with loud noise.","من الصعب أن ______ الضجيج العالي.","يتحمل","يحب","يستمتع بـ"],
+            [6,"Real Talk","feeling down","Why are you feeling down today?","لماذا ______ اليوم؟","تشعر بالحزن / الإحباط","تشعر بالسعادة","تشعر بالجوع"],
+            [6,"Real Talk","look out for myself","I am old enough to look out for myself.","أنا كبير بما يكفي لأقوم بـ ______.","أعتني بنفسي","أنسى نفسي","أعتمد على غيري"],
+            [6,"Real Talk","to be honest","To be honest, I prefer tea.","______، أنا أفضل الشاي.","لأكون صريحاً","في الخيال","ربما لا"],
+            // --- 40-77: EXPANSION Units 4-6 Dictionary ---
+            [6,"Expansion 4-6","acceptance","Everyone wants acceptance from friends.","الجميع يريد ______ من الأصدقاء.","القبول","الرفض","الغضب"],
+            [6,"Expansion 4-6","adolescence","Adolescence is a stage of growth.","______ مرحلة من مراحل النمو.","المراهقة","الشيخوخة","الطفولة المبكرة"],
+            [6,"Expansion 4-6","adulthood","Adulthood brings more responsibilities.","تجلب ______ المزيد من المسؤوليات.","مرحلة البلوغ / الرشد","الطفولة","اللعب"],
+            [6,"Expansion 4-6","attitude","Keep a positive attitude every day.","حافظ على ______ إيجابي كل يوم.","موقف / توجه نفسي","مظهر","مكان"],
+            [6,"Expansion 4-6","childhood","I have happy childhood memories.","لدي ذكريات ______ سعيدة.","الطفولة","العمل","التقاعد"],
+            [6,"Expansion 4-6","clan","The whole clan gathered for Eid.","اجتمعت ______ بأكملها في العيد.","العشيرة / القبيلة","المدرسة","الشركة"],
+            [6,"Expansion 4-6","deadline","Submit the project before the deadline.","سلّم المشروع قبل ______.","الموعد النهائي","البداية","العطلة"],
+            [6,"Expansion 4-6","demand","High demand can cause stress.","يمكن أن يسبب ______ المرتفع توتراً.","الطلب / الضغط","الراحة","النوم"],
+            [6,"Expansion 4-6","equilibrium","Balance brings emotional equilibrium.","التوازن يجلب ______ العاطفي.","التوازن / الاتزان","الفوضى","القلق"],
+            [6,"Expansion 4-6","expert","Ask a nutrition expert for help.","اطلب المساعدة من ______ تغذية.","خبير","مبتدئ","طالب"],
+            [6,"Expansion 4-6","fad","That strange hairstyle was just a fad.","كانت تلك القصة الغريبة مجرد ______.","صيحة مؤقتة / موضة عابرة","عادة دائمة","قانون"],
+            [6,"Expansion 4-6","flip-flop","He wore a flip-flop on the beach.","ارتدى ______ على الشاطئ.","شبشب / نعل صيفي","معطف","قبعة"],
+            [6,"Expansion 4-6","influence","Good friends have a positive influence.","للأصدقاء الجيدين ______ إيجابي.","تأثير","ضرر","خسارة"],
+            [6,"Expansion 4-6","insomnia","Too much coffee can cause insomnia.","الكثير من القهوة قد يسبب ______.","الأرق (عدم النوم)","النوم العميق","الجوع"],
+            [6,"Expansion 4-6","leather","This bag is made of real leather.","هذه الحقيبة مصنوعة من ______ الطبيعي.","الجلد","البلاستيك","الورق"],
+            [6,"Expansion 4-6","moodiness","Lack of sleep can cause moodiness.","قلة النوم قد تسبب ______.","تقلب المزاج","السعادة الدائمة","النشاط"],
+            [6,"Expansion 4-6","outlook","She has a bright outlook on life.","لديها ______ مشرقة للحياة.","نظرة / رؤية","ذاكرة","خطة"],
+            [6,"Expansion 4-6","perception","Your perception affects how you feel.","يؤثر ______ على شعورك.","الإدراك / التصور","الطعام","النوم"],
+            [6,"Expansion 4-6","plastic","Reduce using single-use plastic.","قلل استخدام ______ ذي الاستخدام الواحد.","البلاستيك","الخشب","الزجاج"],
+            [6,"Expansion 4-6","pressure","Exams can put students under pressure.","قد تضع الاختبارات الطلاب تحت ______.","ضغط","راحة","إجازة"],
+            [6,"Expansion 4-6","reaction","What was his reaction to the news?","ما كان ______ تجاه الخبر؟","رد فعل","سؤال","طلب"],
+            [6,"Expansion 4-6","resistance","Exercise builds resistance to illness.","التمارين تبني ______ ضد المرض.","مقاومة","ضعف","استسلام"],
+            [6,"Expansion 4-6","rubber","Car tires are made of strong rubber.","تُصنع إطارات السيارات من ______ القوي.","المطاط","الورق","الزجاج"],
+            [6,"Expansion 4-6","self-esteem","Praising kids builds their self-esteem.","مدح الأطفال يبني ______.","الثقة بالنفس / احترام الذات","الخوف","الخجل"],
+            [6,"Expansion 4-6","stage","High school is an important stage.","الثانوية ______ مهمة.","مرحلة","مكان","لعبة"],
+            [6,"Expansion 4-6","strain","Reading in the dark causes eye strain.","القراءة في الظلام تسبب ______ للعين.","إجهاد","راحة","قوة"],
+            [6,"Expansion 4-6","stress","Deep breathing helps reduce stress.","يساعد التنفس العميق في تقليل ______.","التوتر / الإجهاد النفسي","السعادة","النشاط"],
+            [6,"Expansion 4-6","adapt to","It takes time to adapt to a new school.","يستغرق الأمر وقتاً لكي ______ مدرسة جديدة.","يتكيف مع","يغادر","يرفض"],
+            [6,"Expansion 4-6","combat","Vitamins help combat winter colds.","تساعد الفيتامينات على ______ نزلات البرد.","يحارب / يكافح","يسبب","يزيد"],
+            [6,"Expansion 4-6","deal (with)","Learn how to deal with stress calmly.","تعلّم كيف ______ التوتر بهدوء.","يتعامل مع","يهرب من","ينسى"],
+            [6,"Expansion 4-6","resist","Try to resist eating late-night snacks.","حاول أن ______ تناول الوجبات الخفيفة ليلاً.","يقاوم","يكثر من","يحب"],
+            [6,"Expansion 4-6","carefree","Children enjoy a carefree summer.","يستمتع الأطفال بصيف ______.","خالي البال / بلا هموم","متوتر","حزين"],
+            [6,"Expansion 4-6","constructive","We welcome constructive advice.","نرحب بالنصيحة ______.","بنّاء / مفيد","هدّام","سيء"],
+            [6,"Expansion 4-6","external","Check the external temperature first.","تفقد درجة الحرارة ______ أولاً.","خارجي","داخلي","سري"],
+            [6,"Expansion 4-6","internal","Internal peace makes you happy.","السلام ______ يجعلك سعيداً.","داخلي","خارجي","بعيد"],
+            [6,"Expansion 4-6","tremendous","He made a tremendous effort.","بذل جهداً ______.","هائل / ضخم","بسيط","ضعيف"],
+            [6,"Expansion 4-6","be aware of","Be aware of your daily habits.","______ عاداتك اليومية.","كن واعياً بـ / مدركاً لـ","تجاهل","انسَ"],
+            [6,"Expansion 4-6","related to","Sleep is closely related to health.","النوم ______ بالصحة بشكل وثيق.","مرتبط بـ","منفصل عن","بعيد عن"],
+            // --- 78-100: Core Unit 6 Vocabulary ---
+            [6,"Unit 6 Core","advice","Thank you for your helpful advice.","شكراً لك على ______ المفيدة.","نصيحة","مشكلة","هدية"],
+            [6,"Unit 6 Core","advise","Doctors advise us to walk daily.","الأطباء ______ بالمشي يومياً.","ينصح","يمنع","يحذر"],
+            [6,"Unit 6 Core","habit","Drinking water is a healthy habit.","شرب الماء ______ صحية.","عادة","مشكلة","مرض"],
+            [6,"Unit 6 Core","diet","A balanced diet keeps you strong.","______ المتوازن يبقيك قوياً.","نظام غذائي","تمرين","دواء"],
+            [6,"Unit 6 Core","balanced","Eat a balanced meal every day.","تناول وجبة ______ كل يوم.","متوازن","ناقص","ضار"],
+            [6,"Unit 6 Core","calorie","Check the calorie count on the snack.","افحص عدد ______ في الوجبة الخفيفة.","سعرة حرارية","جرام","ريال"],
+            [6,"Unit 6 Core","protein","Fish and eggs are rich in protein.","السمك والبيض غنيان بـ ______.","بروتين","سكر","ملح"],
+            [6,"Unit 6 Core","vitamin","Oranges are full of vitamin C.","البرتقال مليء بـ ______ سي.","فيتامين","دهون","ملح"],
+            [6,"Unit 6 Core","junk food","Eating too much junk food is unhealthy.","تناول الكثير من ______ غير صحي.","الوجبات السريعة الضارة","الفواكه","الخضار"],
+            [6,"Unit 6 Core","healthy","Sleep early to stay healthy.","نم مبكراً لتبقى ______.","صحي / سليم","متعب","مريض"],
+            [6,"Unit 6 Core","exercise","Do 30 minutes of exercise daily.","مارس 30 دقيقة من ______ يومياً.","التمارين الرياضية","النوم","التلفاز"],
+            [6,"Unit 6 Core","workout","He felt great after his morning workout.","شعر بالروعة بعد ______ الصباحي.","تمرين رياضي","نوم","اجتماع"],
+            [6,"Unit 6 Core","relax","Take a deep breath and relax.","خذ نفساً عميقاً و ______.","يسترخي","يركض","يغضب"],
+            [6,"Unit 6 Core","rest","Your body needs enough rest.","يحتاج جسمك إلى ______ كافٍ.","راحة","تعب","عمل"],
+            [6,"Unit 6 Core","anxious","Don't feel anxious before the exam.","لا تشعر بـ ______ قبل الاختبار.","قلق","سعيد","هادئ"],
+            [6,"Unit 6 Core","worried","She was worried about her grades.","كانت ______ بشأن درجاتها.","قلق","مطمئن","فرح"],
+            [6,"Unit 6 Core","confident","Studying well makes you confident.","المذاكرة الجيدة تجعلك ______.","واثق من نفسك","خائف","متوتر"],
+            [6,"Unit 6 Core","positive","Always think in a positive way.","فكّر دائماً بطريقة ______.","إيجابي","سلبي","محبط"],
+            [6,"Unit 6 Core","negative","Avoid negative thoughts.","تجنب الأفكار ______.","سلبي","إيجابي","مفيدة"],
+            [6,"Unit 6 Core","support","Family support is very important.","______ العائلة مهم جداً.","دعم / مساندة","إهمال","رفض"],
+            [6,"Unit 6 Core","encourage","Teachers encourage students to succeed.","المعلمون ______ الطلاب على النجاح.","يشجع","يحبط","يمنع"],
+            [6,"Unit 6 Core","improve","Good habits improve your life.","العادات الجيدة ______ حياتك.","يحسّن","يضعف","يؤخر"],
+            [6,"Unit 6 Core","balance","Find a balance between study and rest.","ابحث عن ______ بين الدراسة والراحة.","توازن","فرق","صراع"]
+        ];
+
+        let currentIndex = 0;
+        let synth = window.speechSynthesis;
+        let isSpeaking = false;
+        let isAutoMode = false;
+
+        function startApp() {
+            document.getElementById('startScreen').style.display = 'none';
+            loadQuestion();
+        }
+
+        function getPreferredVoice() {
+            const voices = synth.getVoices();
+            return voices.find(v => v.lang === 'en-US' && /male|david|mark|alex|google us/i.test(v.name)) ||
+                   voices.find(v => v.lang === 'en-US') ||
+                   voices[0];
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectUnit(unitNumber) {
+            const foundIndex = quizData.findIndex(item => item[0] === unitNumber);
+            if (foundIndex !== -1) {
+                currentIndex = foundIndex;
+                loadQuestion();
+            }
+        }
+
+        function updateUnitTabs(activeUnit) {
+            [4, 5, 6].forEach(u => {
+                const tab = document.getElementById(`tab-${u}`);
+                if (u === activeUnit) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+        }
+
+        function highlightTargetInSentence(sentence, word) {
+            const cleanWord = word.replace(/\.\.\.\??/g, '').replace(/\(.*?\)/g, '').trim();
+            const escaped = cleanWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            let regex = new RegExp(`(${escaped}\\w*)`, 'gi');
+            if (regex.test(sentence)) {
+                return sentence.replace(regex, '<span class="word-in-sentence">$1</span>');
+            }
+            const firstPart = cleanWord.split(' ')[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const fallbackRegex = new RegExp(`(${firstPart}\\w*)`, 'i');
+            return sentence.replace(fallbackRegex, '<span class="word-in-sentence">$1</span>');
+        }
+
+        function formatArabicWithBlank(arSentence) {
+            return arSentence.replace('______', '<span class="ar-blank">______</span>');
+        }
+
+        function revealArabicBlank(arSentence, correctAr) {
+            return arSentence.replace('______', `<span class="ar-filled">${correctAr}</span>`);
+        }
+
+        function toggleMode() {
+            isAutoMode = !isAutoMode;
+            const btn = document.getElementById('modeBtn');
+            if (isAutoMode) {
+                btn.innerHTML = 'الانتقال: تلقائي ⚡';
+                btn.classList.add('auto-mode');
+            } else {
+                btn.innerHTML = 'الانتقال: يدوي ✋';
+                btn.classList.remove('auto-mode');
+            }
+        }
+
+        function loadQuestion() {
+            synth.cancel();
+            isSpeaking = false;
+
+            const targetEl = document.getElementById('targetWord');
+            const sentenceBox = document.getElementById('sentenceBox');
+            targetEl.classList.remove('highlight-yellow');
+            sentenceBox.classList.remove('highlight-yellow');
+
+            const q = quizData[currentIndex];
+            const unitNum = q[0];
+            const cat = q[1];
+            const enWord = q[2];
+            const fullSentence = q[3];
+            const arSentence = q[4];
+            const correctAr = q[5];
+
+            updateUnitTabs(unitNum);
+            const unitStartIndex = quizData.findIndex(item => item[0] === unitNum);
+            const indexInUnit = currentIndex - unitStartIndex + 1;
+
+            document.getElementById('catBadge').innerText = cat;
+            document.getElementById('wordCounter').innerText = `${indexInUnit} / 100`;
+            document.getElementById('totalCounter').innerText = `${currentIndex + 1} / ${quizData.length}`;
+
+            targetEl.innerText = enWord;
+            sentenceBox.innerHTML = highlightTargetInSentence(fullSentence, enWord);
+            document.getElementById('sentenceArBox').innerHTML = formatArabicWithBlank(arSentence);
+
+            let options = shuffleArray([correctAr, q[6], q[7]]);
+            const optionsBox = document.getElementById('optionsContainer');
+            optionsBox.innerHTML = '';
+
+            options.forEach(optionText => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optionText;
+                btn.onclick = () => checkAnswer(btn, optionText, correctAr, arSentence);
+                optionsBox.appendChild(btn);
+            });
+
+            setTimeout(() => { playWordAndSentence(); }, 250);
+        }
+
+        function playWordAndSentence() {
+            if (isSpeaking) synth.cancel();
+            isSpeaking = true;
+
+            const q = quizData[currentIndex];
+            const enWord = q[2].replace(/\.\.\./g, '');
+            const fullSentence = q[3];
+            const targetEl = document.getElementById('targetWord');
+            const sentenceBox = document.getElementById('sentenceBox');
+            const voice = getPreferredVoice();
+
+            let wordUtt = new SpeechSynthesisUtterance(enWord);
+            wordUtt.lang = 'en-US';
+            wordUtt.rate = 0.9;
+            if (voice) wordUtt.voice = voice;
+
+            let sentUtt = new SpeechSynthesisUtterance(fullSentence);
+            sentUtt.lang = 'en-US';
+            sentUtt.rate = 0.85;
+            if (voice) sentUtt.voice = voice;
+
+            wordUtt.onstart = () => {
+                targetEl.classList.add('highlight-yellow');
+                sentenceBox.classList.remove('highlight-yellow');
+            };
+            wordUtt.onend = () => {
+                targetEl.classList.remove('highlight-yellow');
+                synth.speak(sentUtt);
+            };
+            sentUtt.onstart = () => {
+                sentenceBox.classList.add('highlight-yellow');
+            };
+            sentUtt.onend = () => {
+                sentenceBox.classList.remove('highlight-yellow');
+                isSpeaking = false;
+            };
+
+            synth.speak(wordUtt);
+        }
+
+        function checkAnswer(btn, selected, correct, arSentence) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.add('option-disabled'));
+
+            document.getElementById('sentenceArBox').innerHTML = revealArabicBlank(arSentence, correct);
+
+            if (selected === correct) {
+                btn.classList.add('option-correct');
+                fireConfetti();
+                if (isAutoMode) setTimeout(() => { nextWord(); }, 1800);
+            } else {
+                btn.classList.add('option-wrong');
+                allBtns.forEach(b => {
+                    if (b.innerText === correct) b.classList.add('option-correct');
+                });
+                if (isAutoMode) setTimeout(() => { nextWord(); }, 2800);
+            }
+        }
+
+        function fireConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const emojis = ['⭐', '🎉', '🏆', '✨'];
+            for (let i = 0; i < 30; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                piece.style.fontSize = Math.random() * 20 + 20 + 'px';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.top = -50 + 'px';
+                piece.style.animation = `fall ${Math.random() * 2.5 + 1.5}s linear forwards`;
+                container.appendChild(piece);
+            }
+        }
+
+        function nextWord() {
+            currentIndex++;
+            if (currentIndex >= quizData.length) currentIndex = 0;
+            loadQuestion();
+        }
+
+        function prevWord() {
+            currentIndex--;
+            if (currentIndex < 0) currentIndex = quizData.length - 1;
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
